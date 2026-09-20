@@ -28,6 +28,8 @@ WINAMAX_TOURNAMENTS = {
 class WinamaxScraper:
     def __init__(self, headless: bool = True):
         self.headless = headless
+        self._tournament_cache: Dict[int, Dict[str, Any]] = {}
+        self._match_cache: Dict[str, Dict[str, Any]] = {}
 
     def get_match_odds(self, home_team: str, away_team: str, competition_id: str = "LALIGA") -> Dict[str, Any]:
         """
@@ -99,20 +101,24 @@ class WinamaxScraper:
         h_key = get_keyword(home_team)
         a_key = get_keyword(away_team)
 
-        # 1. Carregar l'índex del torneig de Winamax mitjançant HTTP directe
+        # 1. Carregar l'índex del torneig de Winamax mitjançant HTTP directe (amb memòria cau per no saturar)
         try:
-            cmd = ['curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', base_tournament_url]
-            res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
-            
-            start = res.stdout.find('var PRELOADED_STATE = ')
-            if start == -1:
-                start = res.stdout.find('PRELOADED_STATE = ')
-            
-            if start != -1:
-                state_str = res.stdout[start + len('var PRELOADED_STATE = '):] if 'var PRELOADED_STATE = ' in res.stdout[start:start+30] else res.stdout[start + len('PRELOADED_STATE = '):]
-                state, _ = json.JSONDecoder().raw_decode(state_str)
+            if tid in self._tournament_cache:
+                state = self._tournament_cache[tid]
             else:
-                state = {}
+                cmd = ['curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', base_tournament_url]
+                res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
+                
+                start = res.stdout.find('var PRELOADED_STATE = ')
+                if start == -1:
+                    start = res.stdout.find('PRELOADED_STATE = ')
+                
+                if start != -1:
+                    state_str = res.stdout[start + len('var PRELOADED_STATE = '):] if 'var PRELOADED_STATE = ' in res.stdout[start:start+30] else res.stdout[start + len('PRELOADED_STATE = '):]
+                    state, _ = json.JSONDecoder().raw_decode(state_str)
+                else:
+                    state = {}
+                self._tournament_cache[tid] = state
 
             matches = state.get("matches") or {}
 
@@ -145,15 +151,18 @@ class WinamaxScraper:
                 print(f"[+] Partit descobert autònomament: '{target_match.get('title')}' (ID Winamax: {target_mid})")
                 print(f"[*] Accedint a tots els mercats: {match_url}")
 
-                # Obtenir la pàgina de detall del partit
-                cmd_m = ['curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', match_url]
-                res_m = subprocess.run(cmd_m, capture_output=True, text=True, encoding='utf-8', errors='replace')
-                start_m = res_m.stdout.find('var PRELOADED_STATE = ')
-                if start_m != -1:
-                    state_m_str = res_m.stdout[start_m + len('var PRELOADED_STATE = '):]
-                    match_state, _ = json.JSONDecoder().raw_decode(state_m_str)
+                if target_mid in self._match_cache:
+                    match_state = self._match_cache[target_mid]
                 else:
-                    match_state = state
+                    cmd_m = ['curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', match_url]
+                    res_m = subprocess.run(cmd_m, capture_output=True, text=True, encoding='utf-8', errors='replace')
+                    start_m = res_m.stdout.find('var PRELOADED_STATE = ')
+                    if start_m != -1:
+                        state_m_str = res_m.stdout[start_m + len('var PRELOADED_STATE = '):]
+                        match_state, _ = json.JSONDecoder().raw_decode(state_m_str)
+                    else:
+                        match_state = state
+                    self._match_cache[target_mid] = match_state
 
                 bets = match_state.get("bets") or {}
                 odds = match_state.get("odds") or {}

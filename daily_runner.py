@@ -290,12 +290,15 @@ def run_daily_autonomous_check(force: bool = False):
 
         main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
 
-        safe_multi = multileague_combos.get("safe_combo", {})
-        risky_multi = multileague_combos.get("risky_combo", {})
-        if safe_multi and safe_multi.get("legs"):
-            db.save_combo_recommendation("MULTI", "2026-2027", main_j, "SAFE", 25.0, safe_multi)
-        if risky_multi and risky_multi.get("legs"):
-            db.save_combo_recommendation("MULTI", "2026-2027", main_j, "RISKY", 5.0, risky_multi)
+        for idx, sc in enumerate(multileague_combos.get("safe", []), 1):
+            if sc and sc.get("legs"):
+                db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SAFE_{idx}", 25.0, sc)
+        for idx, sm in enumerate(multileague_combos.get("semi", []), 1):
+            if sm and sm.get("legs"):
+                db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SEMI_{idx}", 10.0, sm)
+        for idx, rc in enumerate(multileague_combos.get("risky", []), 1):
+            if rc and rc.get("legs"):
+                db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"RISKY_{idx}", 5.0, rc)
 
         highlight_matches = sorted(
             all_predicted_matches,
@@ -317,16 +320,38 @@ def run_daily_autonomous_check(force: bool = False):
         print("\n[*] FASE 4: Només juga una competició (jornada individual). S'omet l'informe combinat multi-lliga com s'ha demanat.")
 
     # -----------------------------------------------------------------
-    # FASE 5: ENVIAMENT PER CORREU ELECTRÒNIC
+    # FASE 5: EXPORTACIÓ PER A LA WEB I ENVIAMENT D'AVIS PER CORREU
     # -----------------------------------------------------------------
+    print("\n[*] FASE 5: Actualitzant la plataforma web a 'web/data/data.json'...")
+    try:
+        from engine.web_data_exporter import WebDataExporter
+        exporter = WebDataExporter(db=db)
+        exported_path = exporter.export_all()
+        print(f"   [+] Web actualitzada amb èxit: {exported_path}")
+    except Exception as e:
+        print(f"   [!] Error actualitzant dades de la web: {e}")
+
+    email_sender = EmailSender()
+    active_j_str = ", ".join(f"{c} J{round_infos[c]['jornada']}" for c in leagues_to_predict)
+    sim_summary = tracker.get_simulation_summary()
+    import os
+    web_url = os.getenv("VERCEL_WEB_URL", "https://prediccions.vercel.app")
+
+    # Enviament de l'alerta web interactiva
+    email_sender.send_web_alert(
+        jornada_info=active_j_str,
+        web_url=web_url,
+        simulation_summary=sim_summary
+    )
+
+    # Si també s'han generat PDFs, enviar-los com a còpia adjunta
     if generated_pdfs:
-        print("\n[*] FASE 5: Enviant informes generats per correu electrònic...")
-        email_sender = EmailSender()
-        active_j_str = ", ".join(f"{c} J{round_infos[c]['jornada']}" for c in leagues_to_predict)
+        print("\n[*] Enviant també informes PDF adjunts per correu...")
         main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
         res = email_sender.send_reports(
             pdf_paths=generated_pdfs,
-            jornada=main_j
+            jornada=main_j,
+            simulation_summary=sim_summary
         )
         print(f"   [Èxit enviament correu]: {res}")
 

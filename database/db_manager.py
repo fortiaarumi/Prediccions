@@ -667,7 +667,9 @@ class DatabaseManager:
         if not legs:
             return ""
 
-        combo_id = f"COMBO_{season}_{competition_id}_J{jornada}_{profile.upper()}"
+        import re
+        safe_prof = re.sub(r'[^A-Za-z0-9_]', '_', profile).strip('_').upper()
+        combo_id = f"COMBO_{season}_{competition_id}_J{jornada}_{safe_prof}"
         combined_odd = float(combo_summary.get("combined_odd", 1.0))
         prob_pct = float(combo_summary.get("combined_prob_pct", 0.0))
         fair_odd = float(combo_summary.get("fair_odd", 1.0))
@@ -773,6 +775,8 @@ class DatabaseManager:
         total_payout = 0.0
         safe_count = 0
         safe_won = 0
+        semi_count = 0
+        semi_won = 0
         risky_count = 0
         risky_won = 0
 
@@ -780,11 +784,16 @@ class DatabaseManager:
             if c["status"] in ["WON", "LOST"]:
                 total_stake += c["stake"]
                 total_payout += c["payout"]
-                if c["profile"].upper() == "SAFE":
+                prof = c["profile"].upper()
+                if "SAFE" in prof or "SEGURA" in prof:
                     safe_count += 1
                     if c["status"] == "WON":
                         safe_won += 1
-                elif c["profile"].upper() == "RISKY":
+                elif "SEMI" in prof:
+                    semi_count += 1
+                    if c["status"] == "WON":
+                        semi_won += 1
+                elif "RISKY" in prof or "ARRISCADA" in prof:
                     risky_count += 1
                     if c["status"] == "WON":
                         risky_won += 1
@@ -794,7 +803,7 @@ class DatabaseManager:
 
         return {
             "total_combos": len(combos),
-            "evaluated_combos": safe_count + risky_count,
+            "evaluated_combos": safe_count + semi_count + risky_count,
             "total_stake": round(total_stake, 2),
             "total_payout": round(total_payout, 2),
             "net_profit": round(net_profit, 2),
@@ -803,6 +812,11 @@ class DatabaseManager:
                 "total": safe_count,
                 "won": safe_won,
                 "hit_rate_pct": round(safe_won / safe_count * 100.0, 1) if safe_count > 0 else 0.0
+            },
+            "semi": {
+                "total": semi_count,
+                "won": semi_won,
+                "hit_rate_pct": round(semi_won / semi_count * 100.0, 1) if semi_count > 0 else 0.0
             },
             "risky": {
                 "total": risky_count,

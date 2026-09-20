@@ -9,6 +9,13 @@ Execució de les prediccions completes per a qualsevol lliga (LaLiga EA Sports, 
 - Genera automàticament l'informe en PDF oficial ('reports/informe_jornada_{N}_{comp}.pdf').
 """
 
+import sys
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 from pathlib import Path
 from typing import List, Dict, Any, Tuple, Optional
 from database.db_manager import DatabaseManager
@@ -135,24 +142,36 @@ class JornadaPredictor:
         risky_c = combo_bets.get("risky_combo", {})
 
         # Registrar automàticament les combinades al sistema de seguiment ('Què hagués passat si...')
-        if safe_c and safe_c.get("legs"):
-            self.db.save_combo_recommendation(
-                competition_id=comp_id,
-                season=season,
-                jornada=jornada,
-                profile="SAFE",
-                stake=25.0,
-                combo_summary=safe_c
-            )
-        if risky_c and risky_c.get("legs"):
-            self.db.save_combo_recommendation(
-                competition_id=comp_id,
-                season=season,
-                jornada=jornada,
-                profile="RISKY",
-                stake=5.0,
-                combo_summary=risky_c
-            )
+        for idx, sc in enumerate(combo_bets.get("safe", []), 1):
+            if sc and sc.get("legs"):
+                self.db.save_combo_recommendation(
+                    competition_id=comp_id,
+                    season=season,
+                    jornada=jornada,
+                    profile=f"SAFE_{idx}",
+                    stake=25.0,
+                    combo_summary=sc
+                )
+        for idx, sm in enumerate(combo_bets.get("semi", []), 1):
+            if sm and sm.get("legs"):
+                self.db.save_combo_recommendation(
+                    competition_id=comp_id,
+                    season=season,
+                    jornada=jornada,
+                    profile=f"SEMI_{idx}",
+                    stake=10.0,
+                    combo_summary=sm
+                )
+        for idx, rc in enumerate(combo_bets.get("risky", []), 1):
+            if rc and rc.get("legs"):
+                self.db.save_combo_recommendation(
+                    competition_id=comp_id,
+                    season=season,
+                    jornada=jornada,
+                    profile=f"RISKY_{idx}",
+                    stake=5.0,
+                    combo_summary=rc
+                )
 
         print("\n" + "-" * 75)
         print(f"   🎯 APOSTES COMBINADES RECOMANADES ({comp_name.upper()} - WINAMAX ESPANYA)")

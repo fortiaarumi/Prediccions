@@ -41,6 +41,7 @@ jobs:
           GMAIL_SENDER_EMAIL: ${{ secrets.GMAIL_SENDER_EMAIL }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+          VERCEL_WEB_URL: ${{ secrets.VERCEL_WEB_URL }}
         run: |
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             python daily_runner.py --force
@@ -48,10 +49,10 @@ jobs:
             python daily_runner.py
           fi
 
-      - name: 5. Desar i fer push de la Base de Dades i Estat a GitHub
+      - name: 5. Desar i fer push de la Base de Dades, Estat i Web a GitHub
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/laliga.db data/pipeline_state.json
-          git commit -m "chore: actualització automàtica de dades i estats [skip ci]" || echo "Sense canvis per fer commit"
+          git add data/laliga.db data/pipeline_state.json web/data/data.json
+          git commit -m "chore: actualització automàtica de dades i web [skip ci]" || echo "Sense canvis per fer commit"
           git push

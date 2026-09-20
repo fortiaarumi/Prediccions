@@ -263,3 +263,117 @@ class EmailSender:
         except Exception as e:
             print(f"[!] Error enviant correu SMTP: {e}")
             return False
+
+    def send_web_alert(
+        self,
+        jornada_info: str,
+        web_url: str = "https://prediccions.vercel.app",
+        simulation_summary: Optional[Dict[str, Any]] = None
+    ) -> bool:
+        """
+        Envia un avís per correu comunicant que la nova jornada és a punt de començar
+        amb l'enllaç directe a la nova web interactiva de Vercel.
+        """
+        recipients = self.get_recipients()
+        if not recipients:
+            print("[AVÍS CORREU]: No s'han trobat adreces de correu a 'config/recipients.txt'.")
+            return False
+
+        if not self.is_configured():
+            print("\n" + "=" * 75)
+            print("   ℹ️ [CONFIGURACIÓ PENDENT DE CORREU]")
+            print("   Per rebre avisos per correu, configura 'config/email_config.json'.")
+            print("=" * 75 + "\n")
+            return False
+
+        smtp_server = self.config.get("smtp_server", "smtp.gmail.com")
+        smtp_port = int(self.config.get("smtp_port", 587))
+        use_tls = self.config.get("use_tls", True)
+        sender_email = self.config["sender_email"]
+        sender_pw = self.config["sender_password"]
+        sender_name = self.config.get("sender_name", "Prediccions de Futbol")
+
+        subject = f"⚽ La Jornada ({jornada_info}) és a punt de començar! Revisa la web"
+
+        pnl_html = ""
+        if simulation_summary:
+            tot_stake = simulation_summary.get("total_stake", 0.0)
+            net_profit = simulation_summary.get("net_profit", 0.0)
+            roi_pct = simulation_summary.get("roi_pct", 0.0)
+            pnl_color = "#10B981" if net_profit >= 0 else "#EF4444"
+            pnl_html = f"""
+            <div style="background-color: #1E293B; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 14px; margin: 18px 0;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #F8FAFC;">
+                    <tr>
+                        <td style="color: #94A3B8;">Inversió Acumulada: <strong>{tot_stake:.2f} €</strong></td>
+                        <td style="color: #94A3B8; text-align: center;">Balanç Net: <strong style="color: {pnl_color};">{net_profit:+.2f} €</strong></td>
+                        <td style="color: #94A3B8; text-align: right;">ROI: <strong style="color: #6366F1;">{roi_pct:+.1f}%</strong></td>
+                    </tr>
+                </table>
+            </div>
+            """
+
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="utf-8"></head>
+        <body style="margin: 0; padding: 24px; background-color: #0B0F19; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            <div style="max-width: 600px; margin: 0 auto; background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; color: #F8FAFC;">
+                <div style="background: linear-gradient(135deg, #4338CA, #6366F1); padding: 28px; text-align: left;">
+                    <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: bold; text-transform: uppercase;">Alerta Oficial</span>
+                    <h1 style="color: #FFFFFF; margin: 12px 0 6px 0; font-size: 22px;">⚽ La Jornada ({jornada_info}) és a punt de començar!</h1>
+                    <p style="color: #C7D2FE; margin: 0; font-size: 14px;">Tots els pronòstics, 6 combinades i el tauler de diners ja estan a la web.</p>
+                </div>
+
+                <div style="padding: 24px;">
+                    <p style="font-size: 15px; color: #94A3B8; margin-top: 0; line-height: 1.6;">
+                        Hola! Les designacions arbitrals del <strong>CTA</strong> i <strong>PGMOL</strong> ja són oficials i el model matemàtic ha actualitzat totes les probabilitats i les cuotes de Winamax.
+                    </p>
+
+                    <div style="text-align: center; margin: 28px 0;">
+                        <a href="{web_url}" target="_blank" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFFFFF; text-decoration: none; padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: bold; display: inline-block; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                            👉 Obrir la Web de Prediccions
+                        </a>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                        <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #F8FAFC;">Què trobaràs a la plataforma web?</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #94A3B8; line-height: 1.8;">
+                            <li>⚡ <strong>Power Rànquings Elo:</strong> Taula de classificació real ajustada per dificultat.</li>
+                            <li>🔮 <strong>Prediccions Partit a Partit:</strong> xG esperat, 1X2, Over/Under 2.5 i àrbitres.</li>
+                            <li>💎 <strong>Apostes de Valor (+EV%):</strong> Oportunitats matemàtiques davant Winamax.</li>
+                            <li>🎯 <strong>Suite de 6 Combinades:</strong> 2 Segures (25€), 2 Semi (10€) i 2 Arriscades (5€).</li>
+                            <li>💰 <strong>Simulador Financer:</strong> 'Què hagués passat si...' amb balanç acumulatiu.</li>
+                        </ul>
+                    </div>
+
+                    {pnl_html}
+                </div>
+
+                <div style="background-color: rgba(0,0,0,0.2); padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-size: 12px; color: #64748B;">
+                    Creat per Fortià Arumí Casals · Sistema autònom al núvol (GitHub Actions & Vercel)
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"] = f"{sender_name} <{sender_email}>"
+        msg["To"] = ", ".join(recipients)
+        msg.attach(MIMEText(html, "html", "utf-8"))
+
+        print(f"\n[*] Enviant correu d'avís de la web a {len(recipients)} destinataris...")
+        try:
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                if use_tls:
+                    server.starttls()
+                server.login(sender_email, sender_pw)
+                server.sendmail(sender_email, recipients, msg.as_string())
+            print(f"   [ÈXIT CORREU] S'ha enviat l'avís de la web correctament a tots els destinataris!")
+            return True
+        except Exception as e:
+            print(f"[!] Error enviant avís per correu: {e}")
+            return False
+

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediccions de Futbol · Model Poisson GLM & Winamax</title>
+  <meta name="description" content="Plataforma d'anàlisi predictiu de futbol professional basada en models matemàtics Poisson GLM, contrastats amb cuotes Winamax, designacions arbitrals del CTA i rànquings Elo oficials.">
+  <meta name="theme-color" content="#0b0f19">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <span>⚽</span>
+        </div>
+        <div>
+          <div class="brand-title">PREDICCIONS <span class="accent-glow">AI</span></div>
+          <div class="brand-subtitle">Poisson GLM · Winamax Live Odds · Rànquings Elo</div>
+        </div>
+      </div>
+
+      <div class="header-meta">
+        <div class="status-badge live-pulse">
+          <span class="pulse-dot"></span>
+          <span>Sincronitzat amb CTA / PGMOL & Winamax</span>
+        </div>
+        <div class="timestamp-badge" id="last-updated-badge">
+          Carregant dades...
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs-container">
+      <div class="nav-tabs" role="tablist">
+        <button class="nav-tab active" id="tab-btn-rankings" role="tab" aria-selected="true" data-tab="rankings">
+          <span class="tab-icon">⚡</span>
+          <span class="tab-label">Power Rànquings</span>
+        </button>
+        <button class="nav-tab" id="tab-btn-predictions" role="tab" aria-selected="false" data-tab="predictions">
+          <span class="tab-icon">🔮</span>
+          <span class="tab-label">Prediccions Jornada</span>
+        </button>
+        <button class="nav-tab" id="tab-btn-value" role="tab" aria-selected="false" data-tab="value">
+          <span class="tab-icon">💎</span>
+          <span class="tab-label">Apostes de Valor (+EV)</span>
+        </button>
+        <button class="nav-tab" id="tab-btn-combos" role="tab" aria-selected="false" data-tab="combos">
+          <span class="tab-icon">🎯</span>
+          <span class="tab-label">Combinades (6 per Lliga)</span>
+        </button>
+        <button class="nav-tab" id="tab-btn-bankroll" role="tab" aria-selected="false" data-tab="bankroll">
+          <span class="tab-icon">💰</span>
+          <span class="tab-label">Recompte de Diners</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Global Filter & Search Bar -->
+  <section class="filter-bar-section">
+    <div class="filter-bar-container">
+      <div class="league-pills" id="league-selector">
+        <button class="pill-btn active" data-league="ALL" id="pill-all">Totes les Lligues</button>
+        <button class="pill-btn" data-league="LALIGA" id="pill-laliga">🇪🇸 LaLiga EA Sports</button>
+        <button class="pill-btn" data-league="PREMIER" id="pill-premier">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</button>
+        <button class="pill-btn" data-league="HYPERMOTION" id="pill-hypermotion">🇪🇸 LaLiga Hypermotion</button>
+        <button class="pill-btn" data-league="MULTI" id="pill-multi">🌍 Multi-Lliga</button>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" placeholder="Cercar equip, partit o selecció..." aria-label="Cercar">
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Area -->
+  <main class="main-content" id="main-content">
+    
+    <!-- SECTION 1: POWER RÀNQUINGS -->
+    <section class="tab-content active" id="section-rankings" role="tabpanel">
+      <div class="section-hero">
+        <div>
+          <h1 class="section-title">⚡ Power Rànquings Elo Oficials</h1>
+          <p class="section-subtitle">Avaluació de la força real dels equips independentment de la sort circumstancial. Ordenat per puntuació Elo ajustada a la dificultat del calendari.</p>
+        </div>
+        <div class="hero-stats-row" id="rankings-summary-stats"></div>
+      </div>
+
+      <div id="rankings-tables-container" class="tables-grid">
+        <!-- Taules generades dinàmicament per JS -->
+      </div>
+    </section>
+
+    <!-- SECTION 2: PREDICCIONS DE JORNADA -->
+    <section class="tab-content" id="section-predictions" role="tabpanel">
+      <div class="section-hero">
+        <div>
+          <h1 class="section-title">🔮 Prediccions Matemàtiques de la Jornada</h1>
+          <p class="section-subtitle">Pronòstics partit a partit utilitzant el model bivariant de Poisson GLM, expected goals (xG), probabilitats 1X2 i impacte arbitral.</p>
+        </div>
+        <div class="round-status-pill" id="predictions-round-status"></div>
+      </div>
+
+      <div id="matches-grid" class="matches-grid">
+        <!-- Targetes de partits generades dinàmicament per JS -->
+      </div>
+    </section>
+
+    <!-- SECTION 3: APOSTES DE VALOR (+EV%) -->
+    <section class="tab-content" id="section-value" role="tabpanel">
+      <div class="section-hero">
+        <div>
+          <h1 class="section-title">💎 Apostes Recomanades (+EV%)</h1>
+          <p class="section-subtitle">Seleccions on la probabilitat real del nostre model matemàtic supera clarament la probabilitat implícita a les cuotes de Winamax Espanya.</p>
+        </div>
+      </div>
+
+      <div class="value-bets-wrapper">
+        <div class="value-bets-grid" id="value-bets-container">
+          <!-- Targetes de valor generades per JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: COMBINADES RECOMANADES (6 PER LLIGA) -->
+    <section class="tab-content" id="section-combos" role="tabpanel">
+      <div class="section-hero">
+        <div>
+          <h1 class="section-title">🎯 Combinades Recomanades · Suite de 6 Apostes</h1>
+          <p class="section-subtitle">Estratègia diversificada de bankroll: 2 Segures (25€ · Cuota 2-3.5), 2 Semi-Arriscades (10€ · Cuota ~10.0) i 2 Arriscades (5€ · Cuota &ge;30.0).</p>
+        </div>
+        <div class="stake-policy-badge">
+          <span>Inversió per jornada: <strong>25€</strong> Segura · <strong>10€</strong> Semi · <strong>5€</strong> Arriscada</span>
+        </div>
+      </div>
+
+      <div id="combos-container" class="combos-container">
+        <!-- Targetes de combinades generades per JS -->
+      </div>
+    </section>
+
+    <!-- SECTION 5: RECOMPTE DE DINERS ("QUÈ HAGUÉS PASSAT SI...") -->
+    <section class="tab-content" id="section-bankroll" role="tabpanel">
+      <div class="section-hero">
+        <div>
+          <h1 class="section-title">💰 Recompte de Diners · Simulador Financer</h1>
+          <p class="section-subtitle">Seguiment matemàtic d'alta precisió: Quants diners tindríem avui si des del primer report haguéssim posat 25€ a la Segura, 10€ a la Semi i 5€ a l'Arriscada?</p>
+        </div>
+      </div>
+
+      <!-- KPI Hero Cards -->
+      <div class="kpi-grid" id="bankroll-kpi-grid">
+        <!-- Generat per JS -->
+      </div>
+
+      <!-- Breakdown per Perfil d'Aposta -->
+      <div class="profiles-breakdown-section">
+        <h2 class="sub-section-title">Rendibilitat per Perfil d'Aposta</h2>
+        <div class="profiles-cards-grid" id="profiles-breakdown-grid">
+          <!-- Generat per JS -->
+        </div>
+      </div>
+
+      <!-- Historial Jornada a Jornada (Ledger) -->
+      <div class="ledger-section">
+        <h2 class="sub-section-title">Historial Detallat Jornada a Jornada</h2>
+        <div class="ledger-list" id="ledger-rounds-list">
+          <!-- Generat per JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div>
+        <div class="footer-title">Prediccions de Futbol Professional</div>
+        <p class="footer-desc">Model Poisson Bivariant GLM + Rànquings Elo Dinàmics + Scraping en directe de Flashscore i Winamax.</p>
+      </div>
+      <div class="footer-copy">
+        Desenvolupat per Fortià Arumí Casals · Actualització diària autònoma al núvol (GitHub Actions & Vercel)
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

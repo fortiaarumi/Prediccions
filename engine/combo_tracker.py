@@ -212,6 +212,7 @@ class ComboTracker:
             "net_profit": history["net_profit"],
             "roi_pct": history["roi_pct"],
             "safe": history["safe"],
+            "semi": history.get("semi", {"total": 0, "won": 0, "hit_rate_pct": 0.0}),
             "risky": history["risky"],
             "evaluated_combos": history["evaluated_combos"],
             "last_round_combos": last_evaluated,
