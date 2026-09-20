@@ -1,0 +1,8 @@
+{
+  "smtp_server": "smtp.gmail.com",
+  "smtp_port": 587,
+  "use_tls": true,
+  "sender_email": "teu_correu@gmail.com",
+  "sender_password": "xxxx xxxx xxxx xxxx",
+  "sender_name": "Sistema de Prediccions de Futbol"
+}

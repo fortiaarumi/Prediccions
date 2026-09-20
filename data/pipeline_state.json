@@ -1,0 +1,18 @@
+{
+  "LALIGA": {
+    "last_predicted_jornada": 1,
+    "last_predicted_date": "2026-09-21",
+    "last_scraped_jornada": 7
+  },
+  "PREMIER": {
+    "last_predicted_jornada": 1,
+    "last_predicted_date": "2026-09-21",
+    "last_scraped_jornada": 5
+  },
+  "HYPERMOTION": {
+    "last_predicted_jornada": 1,
+    "last_predicted_date": "2026-09-21",
+    "last_scraped_jornada": 6
+  },
+  "updated_at": "2026-09-21T00:15:25.518815"
+}

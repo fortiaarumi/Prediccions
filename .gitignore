@@ -1,14 +1,21 @@
+# Fitxers de credencials i configuracions privades (MOLT IMPORTANT: MAI PUJAR A GITHUB)
+config/email_config.json
+config/recipients.txt
+.env
+
+# Fitxers temporals i binaris de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Informes generats i scripts d'inspecció
+reports/*.pdf
+data/*_urls.txt
+scratch/
+
+# Fitxers de sistema
 .DS_Store
-.Rhistory
-.Rproj.user*
-_exclude/
-_source/
-*.numbers
-*.aux
+Thumbs.db
 *.log
-*.out
-*.synctex.gz
-*.toc
-worldcup.Rproj
-.Rproj.user
-media-coverage/

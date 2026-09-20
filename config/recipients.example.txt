@@ -1,0 +1,3 @@
+# Un correu per línia
+usuari1@gmail.com
+usuari2@gmail.com
