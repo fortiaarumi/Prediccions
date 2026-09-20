@@ -1,0 +1,16 @@
+# Ignore Python backend files from Vercel static deployment
+cli.py
+daily_runner.py
+requirements.txt
+engine/
+database/
+model/
+notifier/
+scraper/
+scratch/
+reports/
+data/*.db
+data/*.json
+data/*.txt
+config/
+*.py
