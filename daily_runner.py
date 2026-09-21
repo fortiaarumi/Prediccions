@@ -242,85 +242,81 @@ def run_daily_autonomous_check(force: bool = False):
     # -----------------------------------------------------------------
     # FASE 3: GENERACIÓ DE PREDICCIONS I INFORMES
     # -----------------------------------------------------------------
-    if not leagues_to_predict:
-        print("\n" + "-" * 80)
-        print("   ℹ️ Cap lliga comença la seva jornada avui en la finestra d'enviament.")
-        print("   L'executor finalitza sense enviar correus innecessaris.")
-        print("=" * 80 + "\n")
-        save_state(state)
-        return
-
-    print(f"\n[*] FASE 3: Generant prediccions per a: {', '.join(leagues_to_predict)}...")
-    predictor = JornadaPredictor(db=db)
     generated_pdfs: List[Path] = []
     all_predicted_matches: List[Dict[str, Any]] = []
 
-    for comp in leagues_to_predict:
-        j = round_infos[comp]["jornada"]
-        print(f"\n   >> Predient {comp} - Jornada {j}...")
-        try:
-            res = predictor.predict_jornada(
-                jornada=j,
-                competition_id=comp,
-                include_odds=True,
-                generate_pdf=True
-            )
-            if res.get("pdf_path"):
-                generated_pdfs.append(Path(res["pdf_path"]))
-            all_predicted_matches.extend(res.get("predicted_matches", []))
-
-            # Actualitzar estat d'aquesta lliga
-            state[comp]["last_predicted_jornada"] = j
-            state[comp]["last_predicted_date"] = now.strftime("%Y-%m-%d")
-        except Exception as e:
-            print(f"   [!] Error predient {comp} J{j}: {e}")
-
-    # -----------------------------------------------------------------
-    # FASE 4: MULTI-LLIGA COMBINADES (NOMÉS SI JUGUEN MÚLTIPLES LLIGUES)
-    # -----------------------------------------------------------------
-    # "cal pensar que per exemple si la lliga en juga una de intersetmeneal
-    # però les altres no, no cal passar combinades, només quan juguin totes
-    # al matiex cap de setmana o entre setmana"
-    multiple_leagues_active = len(leagues_to_predict) >= 2
-
-    if multiple_leagues_active and all_predicted_matches:
-        print("\n[*] FASE 4: Múltiples lligues en joc simultani. Generant Mega-Combinada Multi-Lliga...")
-        combo_engine = ComboBetEngine()
-        multileague_combos = combo_engine.analyze_multileague_combos(all_predicted_matches)
-
-        main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
-
-        for idx, sc in enumerate(multileague_combos.get("safe", []), 1):
-            if sc and sc.get("legs"):
-                db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SAFE_{idx}", 25.0, sc)
-        for idx, sm in enumerate(multileague_combos.get("semi", []), 1):
-            if sm and sm.get("legs"):
-                db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SEMI_{idx}", 10.0, sm)
-        for idx, rc in enumerate(multileague_combos.get("risky", []), 1):
-            if rc and rc.get("legs"):
-                db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"RISKY_{idx}", 5.0, rc)
-
-        highlight_matches = sorted(
-            all_predicted_matches,
-            key=lambda x: max(x.get("goals", {}).get("prob_1X2", {}).values() or [0]),
-            reverse=True
-        )[:5]
-
-        pdf_gen = PDFReportGenerator()
-        sim_summary = tracker.get_simulation_summary()
-        multi_pdf = pdf_gen.generate_multileague_report(
-            jornada=main_j,
-            multileague_combos=multileague_combos,
-            simulation_summary=sim_summary,
-            highlight_matches=highlight_matches
-        )
-        generated_pdfs.append(multi_pdf)
-        print(f"   [+] Informe Multi-Lliga generat amb èxit: {multi_pdf.name}")
+    if not leagues_to_predict:
+        print("\n" + "-" * 80)
+        print("   ℹ️ Cap lliga comença la seva jornada avui en la finestra d'enviament.")
+        print("   S'omet l'enviament de correu, però s'actualitzen les dades de la web i el balanç.")
+        print("-" * 80)
     else:
-        print("\n[*] FASE 4: Només juga una competició (jornada individual). S'omet l'informe combinat multi-lliga com s'ha demanat.")
+        print(f"\n[*] FASE 3: Generant prediccions per a: {', '.join(leagues_to_predict)}...")
+        predictor = JornadaPredictor(db=db)
+
+        for comp in leagues_to_predict:
+            j = round_infos[comp]["jornada"]
+            print(f"\n   >> Predient {comp} - Jornada {j}...")
+            try:
+                res = predictor.predict_jornada(
+                    jornada=j,
+                    competition_id=comp,
+                    include_odds=True,
+                    generate_pdf=True
+                )
+                if res.get("pdf_path"):
+                    generated_pdfs.append(Path(res["pdf_path"]))
+                all_predicted_matches.extend(res.get("predicted_matches", []))
+
+                # Actualitzar estat d'aquesta lliga
+                state[comp]["last_predicted_jornada"] = j
+                state[comp]["last_predicted_date"] = now.strftime("%Y-%m-%d")
+            except Exception as e:
+                print(f"   [!] Error predient {comp} J{j}: {e}")
+
+        # -----------------------------------------------------------------
+        # FASE 4: MULTI-LLIGA COMBINADES (NOMÉS SI JUGUEN MÚLTIPLES LLIGUES)
+        # -----------------------------------------------------------------
+        multiple_leagues_active = len(leagues_to_predict) >= 2
+
+        if multiple_leagues_active and all_predicted_matches:
+            print("\n[*] FASE 4: Múltiples lligues en joc simultani. Generant Mega-Combinada Multi-Lliga...")
+            combo_engine = ComboBetEngine()
+            multileague_combos = combo_engine.analyze_multileague_combos(all_predicted_matches)
+
+            main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
+
+            for idx, sc in enumerate(multileague_combos.get("safe", []), 1):
+                if sc and sc.get("legs"):
+                    db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SAFE_{idx}", 25.0, sc)
+            for idx, sm in enumerate(multileague_combos.get("semi", []), 1):
+                if sm and sm.get("legs"):
+                    db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SEMI_{idx}", 10.0, sm)
+            for idx, rc in enumerate(multileague_combos.get("risky", []), 1):
+                if rc and rc.get("legs"):
+                    db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"RISKY_{idx}", 5.0, rc)
+
+            highlight_matches = sorted(
+                all_predicted_matches,
+                key=lambda x: max(x.get("goals", {}).get("prob_1X2", {}).values() or [0]),
+                reverse=True
+            )[:5]
+
+            pdf_gen = PDFReportGenerator()
+            sim_summary = tracker.get_simulation_summary()
+            multi_pdf = pdf_gen.generate_multileague_report(
+                jornada=main_j,
+                multileague_combos=multileague_combos,
+                simulation_summary=sim_summary,
+                highlight_matches=highlight_matches
+            )
+            generated_pdfs.append(multi_pdf)
+            print(f"   [+] Informe Multi-Lliga generat amb èxit: {multi_pdf.name}")
+        else:
+            print("\n[*] FASE 4: Jornada individual o sense lligues simultànies. S'omet la mega-combinada.")
 
     # -----------------------------------------------------------------
-    # FASE 5: EXPORTACIÓ PER A LA WEB I ENVIAMENT D'AVIS PER CORREU
+    # FASE 5: EXPORTACIÓ PER A LA WEB I SECCIÓ DE NOVETATS (SEMPRE S'EXECUTA)
     # -----------------------------------------------------------------
     print("\n[*] FASE 5: Actualitzant la plataforma web a 'web/data/data.json'...")
     try:
@@ -331,29 +327,31 @@ def run_daily_autonomous_check(force: bool = False):
     except Exception as e:
         print(f"   [!] Error actualitzant dades de la web: {e}")
 
-    email_sender = EmailSender()
-    active_j_str = ", ".join(f"{c} J{round_infos[c]['jornada']}" for c in leagues_to_predict)
-    sim_summary = tracker.get_simulation_summary()
-    import os
-    web_url = os.getenv("VERCEL_WEB_URL", "https://prediccions.vercel.app")
+    # Enviament d'avis per correu només quan hi ha nova jornada a disputar
+    if leagues_to_predict:
+        email_sender = EmailSender()
+        active_j_str = ", ".join(f"{c} J{round_infos[c]['jornada']}" for c in leagues_to_predict)
+        sim_summary = tracker.get_simulation_summary()
+        import os
+        web_url = os.getenv("VERCEL_WEB_URL", "https://prediccions.vercel.app")
 
-    # Enviament de l'alerta web interactiva
-    email_sender.send_web_alert(
-        jornada_info=active_j_str,
-        web_url=web_url,
-        simulation_summary=sim_summary
-    )
-
-    # Si també s'han generat PDFs, enviar-los com a còpia adjunta
-    if generated_pdfs:
-        print("\n[*] Enviant també informes PDF adjunts per correu...")
-        main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
-        res = email_sender.send_reports(
-            pdf_paths=generated_pdfs,
-            jornada=main_j,
+        # Enviament de l'alerta web interactiva
+        email_sender.send_web_alert(
+            jornada_info=active_j_str,
+            web_url=web_url,
             simulation_summary=sim_summary
         )
-        print(f"   [Èxit enviament correu]: {res}")
+
+        # Si també s'han generat PDFs, enviar-los com a còpia adjunta
+        if generated_pdfs:
+            print("\n[*] Enviant també informes PDF adjunts per correu...")
+            main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
+            res = email_sender.send_reports(
+                pdf_paths=generated_pdfs,
+                jornada=main_j,
+                simulation_summary=sim_summary
+            )
+            print(f"   [Èxit enviament correu]: {res}")
 
     save_state(state)
     print("\n" + "=" * 80)

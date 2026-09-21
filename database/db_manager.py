@@ -667,6 +667,18 @@ class DatabaseManager:
         if not legs:
             return ""
 
+        # Protecció: No registrar apostes al bankroll si la jornada ja ha finalitzat en el passat
+        if competition_id != "MULTI":
+            with self.get_connection() as conn:
+                c_check = conn.cursor()
+                c_check.execute(
+                    "SELECT count(*) as total, sum(case when status = 'FINISHED' then 1 else 0 end) as fin FROM matches WHERE competition_id = ? AND jornada = ?",
+                    (competition_id, jornada)
+                )
+                r_chk = c_check.fetchone()
+                if r_chk and r_chk["total"] > 0 and r_chk["total"] == r_chk["fin"]:
+                    return ""
+
         import re
         safe_prof = re.sub(r'[^A-Za-z0-9_]', '_', profile).strip('_').upper()
         combo_id = f"COMBO_{season}_{competition_id}_J{jornada}_{safe_prof}"
@@ -700,7 +712,7 @@ class DatabaseManager:
                 """, (
                     combo_id,
                     matchup,
-                    leg.get("name", ""),
+                    leg.get("name") or leg.get("selection_name", ""),
                     leg.get("category", ""),
                     float(leg.get("bookie_odd", 1.0)),
                     float(leg.get("model_prob", 0.0)),
@@ -712,6 +724,40 @@ class DatabaseManager:
 
             conn.commit()
         return combo_id
+
+    def get_combos_for_jornada(self, competition_id: str, jornada: int) -> List[Dict[str, Any]]:
+        """Recupera les combinades registrades per a una jornada i competició concreta."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT * FROM combo_recommendations WHERE competition_id = ? AND jornada = ? ORDER BY profile ASC",
+                (competition_id, jornada)
+            )
+            combos = [dict(r) for r in cursor.fetchall()]
+            for c in combos:
+                cursor.execute("SELECT * FROM combo_legs WHERE combo_id = ?", (c["id"],))
+                c["legs"] = [dict(l) for l in cursor.fetchall()]
+            return combos
+
+    def purge_historical_combos_before_today(self):
+        """
+        Elimina totes les combinades de jornades passades anteriors a l'inici del seguiment viu (J1 a J5),
+        garantint que el recompte de diners (bankroll) comenci estrictament a 0.00 €.
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                DELETE FROM combo_legs 
+                WHERE combo_id IN (
+                    SELECT id FROM combo_recommendations 
+                    WHERE jornada < 6 OR profile IN ('SAFE', 'RISKY')
+                )
+            """)
+            cursor.execute("""
+                DELETE FROM combo_recommendations 
+                WHERE jornada < 6 OR profile IN ('SAFE', 'RISKY')
+            """)
+            conn.commit()
 
     def get_pending_combos(self) -> List[Dict[str, Any]]:
         """Retorna totes les combinades pendents d'avaluació."""

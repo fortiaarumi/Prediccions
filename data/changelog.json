@@ -1,0 +1,17 @@
+[
+  {
+    "date": "2026-09-21",
+    "timestamp": "2026-09-21T14:38:50.507578",
+    "title": "Reinici de Bankroll a 0€ i Calibratge Complet del Model",
+    "badge": "Sistema",
+    "badge_type": "info",
+    "items": [
+      "🔄 Reinici oficial del Bankroll a 0.00 € per iniciar el seguiment de les prediccions a partir d'avui (21/09/2026).",
+      "🎯 Generades 2 combinades diferents per perfil (Segures, Semi i Arriscades) per a cada lliga i Multi-Lliga (sense duplicats).",
+      "⚖️ Revisió i assignació de designacions arbitrals oficials (CTA / PGMOL) per als propers partits.",
+      "📊 Power Rànquings dinàmics d'Atac i Defensa calibrats amb gols reals per partit (GF/p i GC/p).",
+      "💎 Resolució de les mètriques d'avantatge matemàtic (+EV%) a totes les targetes d'apostes recomanades.",
+      "⏳ Suport per a actualització dinàmica de les combinades de cap de setmana (seguiment de cada partit individual)."
+    ]
+  }
+]

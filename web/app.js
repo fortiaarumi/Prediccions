@@ -98,6 +98,7 @@ function renderAll() {
   renderValueBets();
   renderCombos();
   renderBankroll();
+  renderChangelog();
 }
 
 function applyFilters() {
@@ -423,23 +424,43 @@ function renderCombos() {
             if (c.type === 'semi') oddCls = 'odd-semi';
             else if (c.type === 'risky') oddCls = 'odd-risky';
 
+            let statusTag = '<span class="status-pending-tag" style="font-size: 10px; padding: 2px 6px;">⏳ EN CURS</span>';
+            if (c.status === 'WON') {
+              statusTag = '<span class="status-won-tag" style="font-size: 10px; padding: 2px 6px;">🏆 GUANYADA</span>';
+            } else if (c.status === 'LOST') {
+              statusTag = '<span class="status-lost-tag" style="font-size: 10px; padding: 2px 6px;">❌ FALLADA</span>';
+            }
+
             return `
               <div class="combo-card ${c.type}">
                 <div class="combo-header">
-                  <div class="combo-title">${c.profile}</div>
+                  <div>
+                    <div class="combo-title">${c.profile}</div>
+                    <div style="margin-top: 4px;">${statusTag}</div>
+                  </div>
                   <div class="combo-odd-pill ${oddCls}">@ ${c.combined_odd.toFixed(2)}</div>
                 </div>
 
                 <ul class="combo-legs-list">
-                  ${(c.legs || []).map(l => `
-                    <li class="combo-leg-item">
-                      <div class="leg-desc">
-                        <div class="leg-matchup">${l.matchup}</div>
-                        <div class="leg-name">${l.selection_name}</div>
-                      </div>
-                      <div class="leg-odd">@${l.bookie_odd.toFixed(2)}</div>
-                    </li>
-                  `).join('')}
+                  ${(c.legs || []).map(l => {
+                    let legBadge = '<span class="leg-pill pill-pending">⏳ Pendent</span>';
+                    if (l.status === 'WON') {
+                      legBadge = `<span class="leg-pill pill-won">✅ ${l.actual_result || 'Encertat'}</span>`;
+                    } else if (l.status === 'LOST') {
+                      legBadge = `<span class="leg-pill pill-lost">❌ ${l.actual_result || 'Fallat'}</span>`;
+                    }
+
+                    return `
+                      <li class="combo-leg-item">
+                        <div class="leg-desc">
+                          <div class="leg-matchup">${l.matchup}</div>
+                          <div class="leg-name">${l.selection_name}</div>
+                          <div style="margin-top: 4px;">${legBadge}</div>
+                        </div>
+                        <div class="leg-odd">@${l.bookie_odd.toFixed(2)}</div>
+                      </li>
+                    `;
+                  }).join('')}
                 </ul>
 
                 <div class="combo-footer">
@@ -625,3 +646,63 @@ window.toggleLedgerDetails = function(idx) {
     el.classList.toggle('open');
   }
 };
+
+// -----------------------------------------------------------------------------
+// 6. NOVETATS I CANVIS DIARIS DEL MODEL (CHANGELOG FEED)
+// -----------------------------------------------------------------------------
+function renderChangelog() {
+  const container = document.getElementById('changelog-feed');
+  if (!container) return;
+
+  const entries = appData.changelog || [];
+  if (entries.length === 0) {
+    container.innerHTML = `<p style="text-align: center; padding: 40px; color: var(--text-muted);">No hi ha novetats registrades.</p>`;
+    return;
+  }
+
+  const html = `
+    <div class="timeline-container">
+      ${entries.map((entry, idx) => {
+        let dateFormatted = entry.date;
+        try {
+          if (entry.date) {
+            const parts = entry.date.split('-');
+            if (parts.length === 3) {
+              dateFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+          }
+        } catch (e) {}
+
+        const badgeLabel = entry.badge || 'Actualització';
+        const badgeClass = entry.badge_type === 'primary' ? 'timeline-badge-primary' : 'timeline-badge-info';
+
+        return `
+          <div class="timeline-entry ${idx === 0 ? 'latest-entry' : ''}">
+            <div class="timeline-marker">
+              <span class="timeline-dot"></span>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <div class="timeline-title-row">
+                  <span class="timeline-badge ${badgeClass}">${badgeLabel}</span>
+                  <h3 class="timeline-title">${entry.title}</h3>
+                </div>
+                <div class="timeline-date">📅 ${dateFormatted}</div>
+              </div>
+              <ul class="timeline-items-list">
+                ${(entry.items || []).map(item => `
+                  <li class="timeline-item">
+                    <span class="timeline-item-icon">✓</span>
+                    <span class="timeline-item-text">${item}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  container.innerHTML = html;
+}

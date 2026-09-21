@@ -37,6 +37,7 @@ from engine.match_predictor import MatchPredictor
 from engine.value_bet_engine import ValueBetEngine
 from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
+from engine.changelog_manager import ChangelogManager
 
 COMPETITIONS_META = [
     {
@@ -77,6 +78,7 @@ class WebDataExporter:
         self.value_engine = ValueBetEngine(kelly_fraction=0.25)
         self.combo_engine = ComboBetEngine()
         self.tracker = ComboTracker(db=self.db)
+        self.changelog_mgr = ChangelogManager()
 
     def get_power_rankings(self, competition_id: str) -> List[Dict[str, Any]]:
         """Calcula el rànquing Elo complet amb taula clàssica de classificació i forma recent."""
@@ -147,11 +149,35 @@ class WebDataExporter:
                     st["lost"] += 1
                     st["form"].append("L")
 
-        # Fusionar amb dades d'Elo
-        result = []
-        for rank_idx, team in enumerate(elo_standings, 1):
+        # Calcular rànquings ofensius i defensius dinàmics per a cada equip segons gols reals
+        team_stats_list = []
+        for team in elo_standings:
             tid = team["id"]
             st = stats.get(tid, {"played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "points": 0, "form": []})
+            pj = max(1, st["played"])
+            gf_per_game = round(st["gf"] / pj, 2)
+            ga_per_game = round(st["ga"] / pj, 2)
+            team_stats_list.append({
+                "team": team,
+                "st": st,
+                "gf_per_game": gf_per_game,
+                "ga_per_game": ga_per_game
+            })
+
+        # Ordenar per millor atac (més gols per partit) -> rànquing 1 a N
+        sorted_by_off = sorted(team_stats_list, key=lambda x: (x["gf_per_game"], x["st"]["gf"]), reverse=True)
+        off_ranks = {item["team"]["id"]: idx for idx, item in enumerate(sorted_by_off, 1)}
+
+        # Ordenar per millor defensa (menys gols encaixats per partit) -> rànquing 1 a N
+        sorted_by_def = sorted(team_stats_list, key=lambda x: (x["ga_per_game"], x["st"]["ga"]))
+        def_ranks = {item["team"]["id"]: idx for idx, item in enumerate(sorted_by_def, 1)}
+
+        # Fusionar amb dades d'Elo
+        result = []
+        for rank_idx, item in enumerate(team_stats_list, 1):
+            team = item["team"]
+            tid = team["id"]
+            st = item["st"]
             gd = st["gf"] - st["ga"]
             recent_form = st["form"][-5:] if st["form"] else ["-"]
 
@@ -161,8 +187,8 @@ class WebDataExporter:
                 "name": team["name"],
                 "short_name": team.get("short_name") or team["name"][:3].upper(),
                 "elo_rating": round(float(team.get("elo_rating", 1500.0)), 1),
-                "off_rank": round(float(team.get("off_rank", 1.0)), 2),
-                "def_rank": round(float(team.get("def_rank", 1.0)), 2),
+                "off_rank": float(off_ranks.get(tid, rank_idx)),
+                "def_rank": float(def_ranks.get(tid, rank_idx)),
                 "played": st["played"],
                 "won": st["won"],
                 "drawn": st["drawn"],
@@ -175,6 +201,11 @@ class WebDataExporter:
                 "avg_cards": round(float(team.get("avg_cards_for_5", 2.0)), 1),
                 "avg_corners": round(float(team.get("avg_corners_for_5", 4.5)), 1)
             })
+
+        # Ordenar per rànquing Elo descendent
+        result.sort(key=lambda x: x["elo_rating"], reverse=True)
+        for idx, r in enumerate(result, 1):
+            r["rank"] = idx
 
         return result
 
@@ -255,14 +286,31 @@ class WebDataExporter:
             # Extracció de probabilitats netes
             goals = pred.get("goals", {})
             prob_1x2 = goals.get("prob_1X2", {})
-            prob_ou = goals.get("prob_over_under_2_5", {})
-            prob_btts = goals.get("prob_btts", {})
-            scores = goals.get("most_likely_scores", [])
-            top_score = scores[0][0] if scores else "1-1"
+            prob_ou = goals.get("over_under", {})
+            prob_btts = goals.get("btts", {})
+            scores = goals.get("top_scorelines", [])
+            if scores and isinstance(scores[0], dict):
+                top_score = scores[0].get("score", "1-1")
+            elif scores and isinstance(scores[0], (list, tuple)):
+                top_score = str(scores[0][0])
+            else:
+                top_score = "1-1"
 
             o_1x2 = odds.get("1X2") or odds.get("odds_1x2") or {}
             o_ou = odds.get("over_under_2_5") or {}
             o_btts = odds.get("btts") or {}
+
+            # Helper per percentatges segurs (de 0..100)
+            def _to_pct(val, default=50.0):
+                if val is None:
+                    return default
+                try:
+                    f = float(val)
+                    if 0 < f <= 1.0:
+                        return round(f * 100.0, 1)
+                    return round(f, 1)
+                except Exception:
+                    return default
 
             # Àrbitre info neta
             ref_info = {
@@ -291,16 +339,16 @@ class WebDataExporter:
                 },
                 "date": match_date,
                 "verdict": pred.get("verdict_1x2", "Pronòstic Reservat"),
-                "prob_1": round(float(prob_1x2.get("1", 0.33)) * 100, 1),
-                "prob_x": round(float(prob_1x2.get("X", 0.33)) * 100, 1),
-                "prob_2": round(float(prob_1x2.get("2", 0.33)) * 100, 1),
-                "xg_home": round(float(goals.get("lambda_home", 1.30)), 2),
-                "xg_away": round(float(goals.get("mu_away", 1.05)), 2),
+                "prob_1": _to_pct(prob_1x2.get("1"), 33.3),
+                "prob_x": _to_pct(prob_1x2.get("X"), 33.3),
+                "prob_2": _to_pct(prob_1x2.get("2"), 33.3),
+                "xg_home": round(float(goals.get("expected_goals_home", goals.get("lambda_home", 1.30))), 2),
+                "xg_away": round(float(goals.get("expected_goals_away", goals.get("mu_away", 1.05))), 2),
                 "most_likely_score": top_score,
-                "prob_over_25": round(float(prob_ou.get("over", 0.50)) * 100, 1),
-                "prob_under_25": round(float(prob_ou.get("under", 0.50)) * 100, 1),
-                "prob_btts_yes": round(float(prob_btts.get("yes", 0.50)) * 100, 1),
-                "prob_btts_no": round(float(prob_btts.get("no", 0.50)) * 100, 1),
+                "prob_over_25": _to_pct(prob_ou.get("over_2_5", prob_ou.get("over")), 50.0),
+                "prob_under_25": _to_pct(prob_ou.get("under_2_5", prob_ou.get("under")), 50.0),
+                "prob_btts_yes": _to_pct(prob_btts.get("yes"), 50.0),
+                "prob_btts_no": _to_pct(prob_btts.get("no"), 50.0),
                 "referee": ref_info,
                 "odds_1x2": {
                     "1": o_1x2.get("1"),
@@ -326,15 +374,129 @@ class WebDataExporter:
         }
 
     def get_full_combos_suite(self, predicted_matches: List[Dict[str, Any]], competition_id: str, jornada: int) -> Dict[str, Any]:
-        """Genera el paquet oficial de 6 combinades per lliga o multi-lliga."""
+        """
+        Retorna el paquet oficial de 6 combinades per lliga o multi-lliga.
+        Si la jornada ja s'havia generat (ex: divendres), NO regenera les combinades
+        sinó que les preserva i n'avalua dinàmicament l'estat de cada partit (dissabte/diumenge).
+        """
+        existing_combos = self.db.get_combos_for_jornada(competition_id, jornada)
+
+        if existing_combos and len(existing_combos) >= 2:
+            safe_list = []
+            semi_list = []
+            risky_list = []
+
+            for c in existing_combos:
+                legs_evaluated = []
+                all_finished = True
+                any_lost = False
+
+                for leg in c.get("legs", []):
+                    h_id = leg.get("home_team_id")
+                    a_id = leg.get("away_team_id")
+                    match_row = None
+
+                    if h_id and a_id:
+                        with self.db.get_connection() as conn:
+                            cursor = conn.cursor()
+                            cursor.execute(
+                                "SELECT * FROM matches WHERE home_team_id = ? AND away_team_id = ? ORDER BY date_time DESC LIMIT 1",
+                                (h_id, a_id)
+                            )
+                            row = cursor.fetchone()
+                            if row:
+                                match_row = dict(row)
+
+                    if not match_row or match_row.get("status") != "FINISHED":
+                        all_finished = False
+                        leg_status = "PENDING"
+                        actual_res = "Pendent de disputar"
+                    else:
+                        leg_status, actual_res = self.tracker.evaluate_leg(leg, match_row)
+
+                    if leg_status == "LOST":
+                        any_lost = True
+                    elif leg_status == "PENDING":
+                        all_finished = False
+
+                    legs_evaluated.append({
+                        "matchup": leg.get("matchup", ""),
+                        "selection_name": leg.get("selection_name", ""),
+                        "category": leg.get("category", ""),
+                        "bookie_odd": float(leg.get("bookie_odd", 1.0)),
+                        "model_prob": float(leg.get("model_prob", 0.0)),
+                        "date": leg.get("match_date", leg.get("date", "")),
+                        "url": leg.get("url", ""),
+                        "status": leg_status,
+                        "actual_result": actual_res
+                    })
+
+                stake = float(c.get("stake", 10.0))
+                odd = float(c.get("combined_odd", 1.0))
+
+                if any_lost:
+                    final_status = "LOST"
+                    payout = 0.0
+                    profit = -stake
+                elif all_finished:
+                    final_status = "WON"
+                    payout = round(stake * odd, 2)
+                    profit = round(payout - stake, 2)
+                else:
+                    final_status = "PENDING"
+                    payout = round(stake * odd, 2)
+                    profit = round(payout - stake, 2)
+
+                if final_status != c.get("status") and final_status in ["WON", "LOST"]:
+                    self.db.update_combo_evaluation(
+                        combo_id=c["id"],
+                        status=final_status,
+                        payout=payout,
+                        profit=profit,
+                        legs_evaluation=legs_evaluated
+                    )
+
+                combo_obj = {
+                    "id": c.get("id"),
+                    "profile": c.get("profile", ""),
+                    "category_code": "SAFE" if "SAFE" in c.get("profile", "").upper() or "SEGURA" in c.get("profile", "").upper() else ("SEMI" if "SEMI" in c.get("profile", "").upper() else "RISKY"),
+                    "stake": stake,
+                    "combined_odd": odd,
+                    "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
+                    "fair_odd": float(c.get("fair_odd", 1.0)),
+                    "ev_pct": float(c.get("ev_pct", 0.0)),
+                    "potential_payout": round(stake * odd, 2),
+                    "potential_profit": round((stake * odd) - stake, 2),
+                    "status": final_status,
+                    "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
+                    "legs": legs_evaluated
+                }
+
+                prof_upper = c.get("profile", "").upper()
+                if "SAFE" in prof_upper or "SEGURA" in prof_upper:
+                    safe_list.append(combo_obj)
+                elif "SEMI" in prof_upper:
+                    semi_list.append(combo_obj)
+                else:
+                    risky_list.append(combo_obj)
+
+            return {
+                "competition_id": competition_id,
+                "jornada": jornada,
+                "safe": safe_list,
+                "semi": semi_list,
+                "risky": risky_list
+            }
+
+        # 2. Si no hi ha combinades prèvies, generar-les amb el motor de combinades
         raw_preds = [m.get("raw_pred", m) for m in predicted_matches]
         if not raw_preds:
-            return {"safe": [], "semi": [], "risky": []}
+            return {"competition_id": competition_id, "jornada": jornada, "safe": [], "semi": [], "risky": []}
 
         is_multi = (competition_id == "MULTI")
         combos_data = self.combo_engine.generate_full_combos_suite(raw_preds, is_multi=is_multi)
 
-        def format_combo(c: Dict[str, Any]) -> Dict[str, Any]:
+        def format_and_save_combo(c: Dict[str, Any], prof_idx: int) -> Dict[str, Any]:
             if not c or not c.get("legs"):
                 return {}
             legs = []
@@ -346,7 +508,9 @@ class WebDataExporter:
                     "bookie_odd": float(leg.get("bookie_odd", 1.0)),
                     "model_prob": float(leg.get("model_prob", 0.0)),
                     "date": leg.get("date", ""),
-                    "url": leg.get("url", "")
+                    "url": leg.get("url", ""),
+                    "status": "PENDING",
+                    "actual_result": "Pendent de disputar"
                 })
 
             stake = float(c.get("recommended_stake", 10.0))
@@ -354,9 +518,21 @@ class WebDataExporter:
             payout = round(stake * odd, 2)
             profit = round(payout - stake, 2)
 
+            # Desar a la BD per garantir persistència durant tot el cap de setmana
+            cat_code = c.get("category_code", "SAFE")
+            profile_name = f"{cat_code}_{prof_idx}"
+            self.db.save_combo_recommendation(
+                competition_id=competition_id,
+                season="2026-2027",
+                jornada=jornada,
+                profile=profile_name,
+                stake=stake,
+                combo_summary=c
+            )
+
             return {
                 "profile": c.get("profile", ""),
-                "category_code": c.get("category_code", ""),
+                "category_code": cat_code,
                 "stake": stake,
                 "combined_odd": odd,
                 "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
@@ -364,13 +540,14 @@ class WebDataExporter:
                 "ev_pct": float(c.get("ev_pct", 0.0)),
                 "potential_payout": payout,
                 "potential_profit": profit,
+                "status": "PENDING",
                 "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
                 "legs": legs
             }
 
-        safe_list = [format_combo(c) for c in combos_data.get("safe", []) if c]
-        semi_list = [format_combo(c) for c in combos_data.get("semi", []) if c]
-        risky_list = [format_combo(c) for c in combos_data.get("risky", []) if c]
+        safe_list = [format_and_save_combo(c, idx) for idx, c in enumerate(combos_data.get("safe", []), 1) if c]
+        semi_list = [format_and_save_combo(c, idx) for idx, c in enumerate(combos_data.get("semi", []), 1) if c]
+        risky_list = [format_and_save_combo(c, idx) for idx, c in enumerate(combos_data.get("risky", []), 1) if c]
 
         return {
             "competition_id": competition_id,
@@ -402,7 +579,7 @@ class WebDataExporter:
                     "total_stake": 0.0,
                     "total_payout": 0.0,
                     "net_profit": 0.0,
-                    "status_summary": "WON" if c["status"] == "WON" else "LOST",
+                    "status_summary": "PENDING",
                     "combos": []
                 }
             r = rounds_dict[key]
@@ -411,6 +588,14 @@ class WebDataExporter:
                 r["total_stake"] += float(c["stake"])
                 r["total_payout"] += float(c["payout"])
                 r["net_profit"] += float(c["profit"])
+
+        for key, item in rounds_dict.items():
+            if any(c["status"] == "PENDING" for c in item["combos"]):
+                item["status_summary"] = "PENDING"
+            elif item["net_profit"] > 0:
+                item["status_summary"] = "WON"
+            else:
+                item["status_summary"] = "LOST"
 
         # Ordenar rondes
         rounds_history = []
@@ -538,6 +723,19 @@ class WebDataExporter:
             for m in pred_data["matches"]:
                 all_predicted_matches_flat.append(m)
                 for vb in m.get("value_bets", []):
+                    # Extreure el percentatge d'avantatge real (ev_pct)
+                    edge_val = vb.get("ev_pct")
+                    if edge_val is None:
+                        edge_val = vb.get("edge")
+                    if edge_val is None:
+                        p_calc = float(vb.get("model_prob", 0.0)) / 100.0
+                        b_calc = float(vb.get("bookie_odd", 1.0))
+                        edge_val = (p_calc * b_calc - 1.0) * 100.0
+
+                    stake_val = vb.get("kelly_pct")
+                    if stake_val is None:
+                        stake_val = vb.get("stake_pct", 2.5)
+
                     all_value_bets.append({
                         "competition_id": cid,
                         "competition_name": cname,
@@ -545,11 +743,11 @@ class WebDataExporter:
                         "date": m["date"],
                         "selection": vb.get("name"),
                         "category": vb.get("category"),
-                        "bookie_odd": vb.get("bookie_odd"),
-                        "model_prob": vb.get("model_prob"),
-                        "fair_odd": vb.get("fair_odd"),
-                        "edge_pct": vb.get("edge"),
-                        "kelly_stake": vb.get("stake_pct"),
+                        "bookie_odd": float(vb.get("bookie_odd", 1.0)),
+                        "model_prob": float(vb.get("model_prob", 0.0)),
+                        "fair_odd": float(vb.get("fair_odd", 1.0)),
+                        "edge_pct": round(float(edge_val), 1),
+                        "kelly_stake": round(float(stake_val), 1),
                         "winamax_url": vb.get("url", m.get("odds", {}).get("match_url", "https://www.winamax.es"))
                     })
 
@@ -588,6 +786,7 @@ class WebDataExporter:
                 "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
                 "competitions": active_comps_meta
             },
+            "changelog": self.changelog_mgr.get_feed(),
             "power_rankings": power_rankings,
             "predictions": predictions,
             "value_bets": all_value_bets,
