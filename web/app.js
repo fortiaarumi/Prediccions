@@ -1026,6 +1026,7 @@ function getAutofillUrl(combo) {
       matchup: l.matchup,
       selection: l.selection_name,
       selection_name: l.selection_name,
+      category: l.category || '',
       odd: (l.bookie_odd != null) ? l.bookie_odd.toFixed(2) : '',
       bookie_odd: l.bookie_odd,
       model_prob: l.model_prob,
@@ -1038,7 +1039,7 @@ function getAutofillUrl(combo) {
     ? combo.legs[0].url 
     : (combo.winamax_url || 'https://www.winamax.es/apuestas-deportivas');
 
-  return `${initialUrl}#combo_autofill=${hash}`;
+  return `${initialUrl}#combo_autofill=${hash}&leg_idx=0`;
 }
 
 function openWinamaxAutofill(comboKey) {
