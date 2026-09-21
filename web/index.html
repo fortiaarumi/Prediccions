@@ -208,7 +208,7 @@
       <div class="section-hero">
         <div>
           <h1 class="section-title">⚡ Com estalviar temps a Winamax (Guia d'Ús)</h1>
-          <p class="section-subtitle">Winamax no permet enllaços directes al cupó per seguretat web. Aquí t'expliquem com estalviar el 90% del temps des del PC i des del mòbil.</p>
+          <p class="section-subtitle">Winamax no permet enllaços públics directes a la cistella per seguretat web. Aquí t'expliquem les dues maneres més ràpides d'omplir les teves combinades des del PC i des del mòbil.</p>
         </div>
       </div>
 
@@ -216,15 +216,15 @@
         <!-- Card 1: PC Automatització -->
         <div class="guide-card highlight-card">
           <div class="guide-badge">💻 ORDINADOR (CHROME / EDGE / BRAVE / FIREFOX)</div>
-          <h2 class="guide-title">Mètode 1-Clic Automàtic (Tampermonkey)</h2>
-          <p class="guide-text">Mitjançant un petit script que només s'executa quan cliques des de la nostra web, Winamax detectarà la combinada i prémerà automàticament les quotes per omplir el teu cupó en 1 segon.</p>
+          <h2 class="guide-title">Mètode 1-Clic Automàtic (Tampermonkey v1.3.0)</h2>
+          <p class="guide-text">Mitjançant el nostre script segur, Winamax detectarà la combinada sencera, obrirà cada partit automàticament i clicarà les quotes per omplir el teu cupó en segons sense que hagis de buscar res.</p>
           
           <div class="guide-steps">
             <div class="guide-step">
               <span class="step-num">1</span>
               <div>
-                <strong>Instal·la Tampermonkey al navegador:</strong>
-                <p>És l'extensió segura més popular del món per gestionar scripts personals.</p>
+                <strong>Instal·la l'extensió oficial Tampermonkey:</strong>
+                <p>És el gestor d'scripts més segur i popular del món (amb més de 10 milions d'usuaris).</p>
                 <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener noreferrer" class="btn-subaction" style="margin-top: 6px; display: inline-block;">
                   Descarregar Tampermonkey Oficial ↗
                 </a>
@@ -234,56 +234,101 @@
             <div class="guide-step">
               <span class="step-num">2</span>
               <div>
-                <strong>Instal·la el nostre Script amb 1 Clic:</strong>
-                <p>Fes clic al botó de sota. Tampermonkey obrirà una finestra per confirmar la instal·lació:</p>
-                <a href="./tools/winamax_autofill.user.js" target="_blank" class="btn-action-primary" style="margin-top: 6px; display: inline-block;">
-                  📥 Instal·lar Script "Winamax Auto Betslip"
-                </a>
-                <p style="margin-top: 8px; font-size: 12px; color: #f59e0b; background: rgba(245,158,11,0.1); padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(245,158,11,0.25);">
-                  ⚠️ <strong>Si veus un punt vermell a Tampermonkey</strong>: Obre <code>chrome://extensions</code> i activa l'interruptor <strong>"Mode desenvolupador"</strong> a dalt a la dreta perquè Chrome permeti executar scripts personals.
-                </p>
+                <strong>Activa el "Mode desenvolupador" a Chrome/Edge (Molt Important):</strong>
+                <p>A Google Chrome, si no actives aquest mode, Chrome bloqueja Tampermonkey i mostra un punt vermell d'avís:</p>
+                <div style="margin-top: 8px; font-size: 12.5px; color: #f59e0b; background: rgba(245,158,11,0.1); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.3); line-height: 1.5;">
+                  👉 Obre una pestanya, escriu <code>chrome://extensions</code> a la barra d'adreces i activa l'interruptor <strong>"Modo de desarrollador"</strong> (a dalt a la dreta).
+                </div>
               </div>
             </div>
 
             <div class="guide-step">
               <span class="step-num">3</span>
               <div>
-                <strong>Fet! Gaudeix d'1 sol clic automàtic:</strong>
-                <p>En prémer <strong>"⚡ 1-Clic Auto"</strong>, s'obrirà Winamax i el nostre assistent anirà afegint cada selecció al teu cupó pas a pas fins a completar tota la combinada!</p>
+                <strong>Instal·la o Actualitza el nostre Script (v1.3.0):</strong>
+                <p>Fes clic al botó de sota. Tampermonkey t'obrirà la finestra per instal·lar-lo o actualitzar-lo amb 1 clic:</p>
+                <a href="./tools/winamax_autofill.user.js" target="_blank" class="btn-action-primary" style="margin-top: 8px; display: inline-flex;">
+                  📥 Instal·lar Script "Winamax Auto Betslip v1.3.0"
+                </a>
               </div>
             </div>
+
+            <div class="guide-step">
+              <span class="step-num">4</span>
+              <div>
+                <strong>Com funciona a Winamax (Auto-Hopper pas a pas):</strong>
+                <p>En prémer <strong>"⚡ 1-Clic Auto"</strong> a qualsevol combinada, s'obrirà Winamax amb un panell verd a baix a la dreta. L'script seleccionarà la quota del Partit 1, saltarà sol al Partit 2, i anirà afegint totes les seleccions a la cistella fins a completar tota la combinada!</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-glass);">
+            <button class="btn-assistant" onclick="switchTab('combos')" style="width: 100%; justify-content: center; font-size: 13.5px; padding: 11px;">
+              🎯 Provar ara a la pestanya Combinades ↗
+            </button>
           </div>
         </div>
 
         <!-- Card 2: Mòbil Assistent -->
         <div class="guide-card">
           <div class="guide-badge">📱 TELÈFON MÒBIL (IOS / ANDROID)</div>
-          <h2 class="guide-title">Assistent Ràpid Universal (App Winamax)</h2>
-          <p class="guide-text">Si apostes des del mòbil, no cal instal·lar absolutament res. Fes servir el nostre assistent interactiu dissenyat específicament per a pantalles tàctils.</p>
+          <h2 class="guide-title">Assistent Ràpid Universal (Sense Extensions)</h2>
+          <p class="guide-text">Si apostes des del mòbil, no cal instal·lar absolutament res. Fes servir el nostre assistent dissenyat expressament per a la pantalla tàctil i l'App oficial.</p>
           
           <div class="guide-steps">
             <div class="guide-step">
               <span class="step-num">1</span>
               <div>
-                <strong>Obre l'Assistent de la combinada:</strong>
-                <p>Fes clic a <strong>"📲 Assistent Ràpid"</strong> a qualsevol targeta de combinada.</p>
+                <strong>Obre l'Assistent de qualsevol combinada:</strong>
+                <p>Fes clic al botó verd <strong>"📲 Assistent Ràpid"</strong> que hi ha a qualsevol targeta.</p>
               </div>
             </div>
 
             <div class="guide-step">
               <span class="step-num">2</span>
               <div>
-                <strong>Enllaços directes a l'App oficial:</strong>
-                <p>Clica cada partit: si tens l'aplicació oficial de Winamax instal·lada al mòbil, se t'obrirà directament el partit exacte dins l'aplicació.</p>
+                <strong>Enllaços directes a l'App oficial de Winamax:</strong>
+                <p>Clica el botó de cada partit. Si tens l'aplicació oficial de Winamax al mòbil, el telèfon t'obrirà directament la pantalla del partit dins l'App.</p>
               </div>
             </div>
 
             <div class="guide-step">
               <span class="step-num">3</span>
               <div>
-                <strong>Guia visual i checklist:</strong>
-                <p>L'assistent et ressalta exactament quina casella has de tocar (ex: <em>"1X"</em> o <em>"Més d'1.5 gols"</em>) i et permet marcar les apostes que ja has afegit per no perdre't mai.</p>
+                <strong>Checklist i Guia de selecció:</strong>
+                <p>L'assistent et diu exactament quina casella tocar (ex: <em>"FC Barcelona marca (+0.5 gols)"</em>) i et permet marcar les apostes que ja has afegit per portar el compte clar.</p>
               </div>
+            </div>
+
+            <div class="guide-step">
+              <span class="step-num">4</span>
+              <div>
+                <strong>Eines per compartir:</strong>
+                <p>Pots prémer <strong>"📋 Copiar Resum"</strong> per enganxar tota la combinada amb enllaços directes a WhatsApp o Telegram.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Preguntes Freqüents & Trucs -->
+        <div class="guide-card" style="grid-column: 1 / -1;">
+          <div class="guide-badge">💡 TRUCS I PREGUNTES FREQÜENTS</div>
+          <h2 class="guide-title">Consells per aprofitar al màxim l'automatització</h2>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 14px;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 16px;">
+              <strong style="color: var(--accent-cyan); font-size: 14px; display: block; margin-bottom: 6px;">⚽ On són les apostes de gols (ex: Barça marca +0.5)?</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">A Winamax, les apostes de gols estan dins la pestanya <em>"Goles"</em>. L'script v1.3.0 la clica automàticament, i també tens el botó blau <code>📂 Obrir Goles / Mercat</code> al panell flotant verd per obrir-la a l'instant.</p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 16px;">
+              <strong style="color: var(--accent-emerald); font-size: 14px; display: block; margin-bottom: 6px;">👆 Puc fer clic manualment a la quota?</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">I tant! Si prefereixes fer clic tu mateix a la quota que et ressalta el panell, l'script detectarà el teu clic i saltarà tot sol al següent partit al cap d'un segon.</p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 16px;">
+              <strong style="color: var(--accent-amber); font-size: 14px; display: block; margin-bottom: 6px;">🚀 S'activen els Combo Boosters de Winamax?</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">Sí! Com que les quotes s'afegeixen directament a la cistella oficial de Winamax, el sistema de Winamax activa automàticament els augments Combo Booster (+5%, +10%, +15% o més de guanys extres).</p>
             </div>
           </div>
         </div>
