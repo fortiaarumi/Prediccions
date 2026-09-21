@@ -1049,6 +1049,15 @@ function openWinamaxAutofill(comboKey) {
   window.open(targetUrl, '_blank');
 }
 
+function launchTestComboAutofill() {
+  const keys = Object.keys(window.combosRegistry || {});
+  if (keys.length > 0) {
+    openWinamaxAutofill(keys[0]);
+  } else {
+    switchTab('combos');
+  }
+}
+
 // Exportar globals per als controladors en línia
 window.getAutofillUrl = getAutofillUrl;
 window.openQuickAssistant = openQuickAssistant;
@@ -1058,3 +1067,5 @@ window.toggleLegChecked = toggleLegChecked;
 window.copyModalComboSummary = copyModalComboSummary;
 window.openModalAllMatches = openModalAllMatches;
 window.openWinamaxAutofill = openWinamaxAutofill;
+window.launchTestComboAutofill = launchTestComboAutofill;
+
