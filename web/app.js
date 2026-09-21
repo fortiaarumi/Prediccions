@@ -364,6 +364,10 @@ function renderValueBets() {
             <div class="stat-item-val" style="color: #ffffff;">@${bookie}</div>
           </div>
           <div>
+            <div class="stat-item-label">Prob. Model</div>
+            <div class="stat-item-val" style="color: var(--accent-cyan); font-family: var(--font-mono);">${b.model_prob != null ? b.model_prob.toFixed(1) : '-'}%</div>
+          </div>
+          <div>
             <div class="stat-item-label">Cuota Justa</div>
             <div class="stat-item-val" style="color: var(--text-muted);">@${fair}</div>
           </div>
@@ -435,6 +439,7 @@ function renderCombos() {
             const boostedOdd = c.boosted_odd || c.combined_odd;
             const hasBooster = boosterPct > 0;
             const boosterBadge = hasBooster ? `<span class="booster-pill">🚀 +${boosterPct}% Booster</span>` : '';
+            const probConjunta = c.combined_prob_pct != null ? c.combined_prob_pct.toFixed(1) : '-';
 
             return `
               <div class="combo-card ${c.type}">
@@ -444,6 +449,9 @@ function renderCombos() {
                     <div style="display: flex; gap: 6px; align-items: center; margin-top: 5px; flex-wrap: wrap;">
                       ${statusTag}
                       ${boosterBadge}
+                      <span class="combo-joint-prob-pill" title="Probabilitat conjunta estimada pel model">
+                        🎯 Prob. Conjunta: <strong>${probConjunta}%</strong>
+                      </span>
                     </div>
                   </div>
                   <div style="text-align: right;">
@@ -471,6 +479,7 @@ function renderCombos() {
                     else if (cat === '1X2') catIcon = '🎯';
 
                     const catTag = cat ? `<span class="leg-category-tag">${catIcon} ${cat}</span>` : '';
+                    const modelProb = l.model_prob != null ? l.model_prob.toFixed(1) : '-';
 
                     return `
                       <li class="combo-leg-item">
@@ -482,7 +491,12 @@ function renderCombos() {
                           <div class="leg-name">${l.selection_name}</div>
                           <div style="margin-top: 4px;">${legBadge}</div>
                         </div>
-                        <div class="leg-odd">@${l.bookie_odd.toFixed(2)}</div>
+                        <div class="leg-odds-box">
+                          <div class="leg-odd" title="Cuota Winamax">@${l.bookie_odd.toFixed(2)}</div>
+                          <div class="leg-prob-pill" title="Probabilitat del model per a aquesta selecció">
+                            ${modelProb}%
+                          </div>
+                        </div>
                       </li>
                     `;
                   }).join('')}
@@ -491,6 +505,9 @@ function renderCombos() {
                 <div class="combo-footer">
                   <div class="stake-info">
                     Inversió: <strong>${c.stake.toFixed(2)} €</strong>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 11.5px; color: var(--accent-emerald);">
+                    Prob. Conjunta: <strong>${probConjunta}%</strong>
                   </div>
                   <div class="payout-info">
                     Retorn: +${c.potential_payout.toFixed(2)} €
