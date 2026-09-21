@@ -153,54 +153,7 @@ class ComboBetEngine:
                     item["url"] = match_url
                     valid_markets.append(item)
 
-            if not valid_markets:
-                # Extreure probabilitats normalitzades
-                raw_p1 = float(p.get("prob_1") or raw_pred.get("goals", {}).get("prob_1X2", {}).get("1", 33.3))
-                raw_px = float(p.get("prob_x") or raw_pred.get("goals", {}).get("prob_1X2", {}).get("X", 33.3))
-                raw_p2 = float(p.get("prob_2") or raw_pred.get("goals", {}).get("prob_1X2", {}).get("2", 33.3))
-                tot_p = raw_p1 + raw_px + raw_p2
-                if tot_p > 0:
-                    p1 = raw_p1 / tot_p
-                    px = raw_px / tot_p
-                    p2 = raw_p2 / tot_p
-                else:
-                    p1, px, p2 = 0.33, 0.33, 0.34
-
-                p_1x = p1 + px
-                p_x2 = px + p2
-
-                o_1x2 = p.get("odds_1x2") or odds_info.get("1X2") or {}
-                o1 = float(o_1x2.get("1") or max(1.15, round(0.93 / p1, 2)))
-                ox = float(o_1x2.get("X") or max(1.20, round(0.93 / px, 2)))
-                o2 = float(o_1x2.get("2") or max(1.15, round(0.93 / p2, 2)))
-
-                odd_1x = round(0.93 / (1.0 / o1 + 1.0 / ox), 2) if o1 > 0 and ox > 0 else max(1.10, round(0.93 / p_1x, 2))
-                odd_x2 = round(0.93 / (1.0 / ox + 1.0 / o2), 2) if ox > 0 and o2 > 0 else max(1.10, round(0.93 / p_x2, 2))
-                odd_1x = max(1.08, odd_1x)
-                odd_x2 = max(1.08, odd_x2)
-
-                markets = [
-                    {"name": f"1X - {h_name} o Empat", "category": "Doble Oportunitat", "bookie_odd": odd_1x, "model_prob": round(p_1x * 100, 1)},
-                    {"name": f"X2 - Empat o {a_name}", "category": "Doble Oportunitat", "bookie_odd": odd_x2, "model_prob": round(p_x2 * 100, 1)},
-                    {"name": f"1 - Victòria Local ({h_name})", "category": "1X2", "bookie_odd": o1, "model_prob": round(p1 * 100, 1)},
-                    {"name": f"2 - Victòria Visitant ({a_name})", "category": "1X2", "bookie_odd": o2, "model_prob": round(p2 * 100, 1)},
-                ]
-
-                p_over = float(p.get("prob_over_25", 50.0)) / 100.0
-                p_under = float(p.get("prob_under_25", 50.0)) / 100.0
-                o_ou = p.get("odds_ou25") or {}
-                o_over = float(o_ou.get("over") or max(1.20, round(0.93 / p_over, 2)))
-                o_under = float(o_ou.get("under") or max(1.20, round(0.93 / p_under, 2)))
-                markets.append({"name": "Més de 2.5 gols", "category": "Gols", "bookie_odd": o_over, "model_prob": round(p_over * 100, 1)})
-                markets.append({"name": "Menys de 2.5 gols", "category": "Gols", "bookie_odd": o_under, "model_prob": round(p_under * 100, 1)})
-
-                for m in markets:
-                    m["matchup"] = matchup
-                    m["competition_id"] = comp_id
-                    m["date"] = date_str
-                    m["url"] = match_url
-                    valid_markets.append(m)
-
+            # Només afegim el partit si té mercats reals publicats i verificats a Winamax
             if valid_markets:
                 match_markets.append({
                     "matchup": matchup,

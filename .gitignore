@@ -13,6 +13,7 @@ __pycache__/
 # Informes generats i scripts d'inspecció
 reports/*.pdf
 data/*_urls.txt
+database/*.db
 scratch/
 
 # Fitxers de sistema

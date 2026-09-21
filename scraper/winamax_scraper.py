@@ -22,7 +22,13 @@ from typing import Dict, Any, Optional
 WINAMAX_TOURNAMENTS = {
     "LALIGA": "32",
     "PREMIER": "1",
-    "HYPERMOTION": "32/37",
+    "HYPERMOTION": "32",
+}
+
+WINAMAX_TOURNAMENT_IDS = {
+    "LALIGA": 36,
+    "PREMIER": 1,
+    "HYPERMOTION": 37,
 }
 
 class WinamaxScraper:
@@ -38,7 +44,7 @@ class WinamaxScraper:
         comp_id = competition_id.upper()
         tid = str(WINAMAX_TOURNAMENTS.get(comp_id, "32"))
         base_tournament_url = f"https://www.winamax.es/apuestas-deportivas/sports/1/{tid}"
-        print(f"\n[*] Cercant dinàmicament a Winamax ({comp_id} | Ruta {tid}): {home_team} vs {away_team}...")
+        print(f"\n[*] Cercant dinàmicament a Winamax ({comp_id} | Categoria {tid}): {home_team} vs {away_team}...")
         
         odds_data = {
             "source": f"Winamax Espanya ({comp_id})",
@@ -48,7 +54,9 @@ class WinamaxScraper:
             "matched": False,
             "1X2": {},
             "double_chance": {},
+            "goals": {},
             "over_under_2_5": {},
+            "team_goals": {},
             "btts": {},
             "cards": {},
             "corners": {},
@@ -127,9 +135,12 @@ class WinamaxScraper:
 
             target_match = None
             target_mid = None
+            target_tourn_id = WINAMAX_TOURNAMENT_IDS.get(comp_id)
 
             for mid, m in matches.items():
                 if not isinstance(m, dict):
+                    continue
+                if target_tourn_id and m.get("tournamentId") != target_tourn_id:
                     continue
                 c1 = m.get("competitor1Name")
                 c2 = m.get("competitor2Name")
@@ -139,7 +150,8 @@ class WinamaxScraper:
                 c1_key = get_keyword(c1)
                 c2_key = get_keyword(c2)
 
-                if (h_key == c1_key or h_key in normalize(c1)) and (a_key == c2_key or a_key in normalize(c2)):
+                if (h_key == c1_key or h_key in normalize(c1) or normalize(c1) in h_key) and \
+                   (a_key == c2_key or a_key in normalize(c2) or normalize(c2) in a_key):
                     target_match = m
                     target_mid = str(mid)
                     break
@@ -219,7 +231,7 @@ class WinamaxScraper:
                                     elif "o" in lbl_lower and "empate" not in lbl_lower:
                                         odds_data["double_chance"]["12"] = float(val)
 
-                        # Total de Gols (Over / Under 2.5)
+                        # Total de Gols (Over / Under 1.5, 2.5, 3.5)
                         elif b_cat_lower == "total de goles" and b_title_lower == "número total de goles":
                             for oid in out_ids:
                                 o_obj = outcomes.get(str(oid)) or {}
@@ -227,10 +239,40 @@ class WinamaxScraper:
                                 val = odds.get(str(oid))
                                 if val is not None:
                                     lbl_lower = lbl.lower()
-                                    if "más de 2,5" in lbl_lower or "más de 2.5" in lbl_lower:
+                                    if "más de 1,5" in lbl_lower or "más de 1.5" in lbl_lower:
+                                        odds_data["goals"]["Over 1.5"] = float(val)
+                                    elif "menos de 1,5" in lbl_lower or "menos de 1.5" in lbl_lower:
+                                        odds_data["goals"]["Under 1.5"] = float(val)
+                                    elif "más de 2,5" in lbl_lower or "más de 2.5" in lbl_lower:
+                                        odds_data["goals"]["Over 2.5"] = float(val)
                                         odds_data["over_under_2_5"]["Over 2.5"] = float(val)
                                     elif "menos de 2,5" in lbl_lower or "menos de 2.5" in lbl_lower:
+                                        odds_data["goals"]["Under 2.5"] = float(val)
                                         odds_data["over_under_2_5"]["Under 2.5"] = float(val)
+                                    elif "más de 3,5" in lbl_lower or "más de 3.5" in lbl_lower:
+                                        odds_data["goals"]["Over 3.5"] = float(val)
+                                    elif "menos de 3,5" in lbl_lower or "menos de 3.5" in lbl_lower:
+                                        odds_data["goals"]["Under 3.5"] = float(val)
+
+                        # Gols per equip (si Winamax ho ofereix de forma real)
+                        elif b_cat_lower == "goles por equipo" and "número total de goles marcados por" in b_title_lower:
+                            c1_norm = normalize(target_match.get("competitor1Name", ""))
+                            c2_norm = normalize(target_match.get("competitor2Name", ""))
+                            title_norm = normalize(b_title)
+                            team_key = "home" if c1_norm and c1_norm in title_norm else ("away" if c2_norm and c2_norm in title_norm else None)
+                            if team_key:
+                                if team_key not in odds_data["team_goals"]:
+                                    odds_data["team_goals"][team_key] = {}
+                                for oid in out_ids:
+                                    o_obj = outcomes.get(str(oid)) or {}
+                                    lbl = str(o_obj.get("label") or o_obj.get("code") or "").strip()
+                                    val = odds.get(str(oid))
+                                    if val is not None:
+                                        lbl_lower = lbl.lower()
+                                        if "más de 0,5" in lbl_lower or "más de 0.5" in lbl_lower:
+                                            odds_data["team_goals"][team_key]["Over 0.5"] = float(val)
+                                        elif "más de 1,5" in lbl_lower or "más de 1.5" in lbl_lower:
+                                            odds_data["team_goals"][team_key]["Over 1.5"] = float(val)
 
                         # Ambdós marquen
                         elif b_title_lower in ["ambos equipos marcan", "¿ambos equipos marcarán?", "ambos equipos marcarán"]:
