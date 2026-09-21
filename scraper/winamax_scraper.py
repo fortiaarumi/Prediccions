@@ -20,15 +20,15 @@ import subprocess
 from typing import Dict, Any, Optional
 
 WINAMAX_TOURNAMENTS = {
-    "LALIGA": 32,
-    "PREMIER": 1,
-    "HYPERMOTION": 37,
+    "LALIGA": "32",
+    "PREMIER": "1",
+    "HYPERMOTION": "32/37",
 }
 
 class WinamaxScraper:
     def __init__(self, headless: bool = True):
         self.headless = headless
-        self._tournament_cache: Dict[int, Dict[str, Any]] = {}
+        self._tournament_cache: Dict[str, Dict[str, Any]] = {}
         self._match_cache: Dict[str, Dict[str, Any]] = {}
 
     def get_match_odds(self, home_team: str, away_team: str, competition_id: str = "LALIGA") -> Dict[str, Any]:
@@ -36,9 +36,9 @@ class WinamaxScraper:
         Descobreix dinàmicament l'ID del partit a Winamax i n'extreu exactament les cuotes reals.
         """
         comp_id = competition_id.upper()
-        tid = WINAMAX_TOURNAMENTS.get(comp_id, 32)
+        tid = str(WINAMAX_TOURNAMENTS.get(comp_id, "32"))
         base_tournament_url = f"https://www.winamax.es/apuestas-deportivas/sports/1/{tid}"
-        print(f"\n[*] Cercant dinàmicament a Winamax ({comp_id} | Torneig {tid}): {home_team} vs {away_team}...")
+        print(f"\n[*] Cercant dinàmicament a Winamax ({comp_id} | Ruta {tid}): {home_team} vs {away_team}...")
         
         odds_data = {
             "source": f"Winamax Espanya ({comp_id})",
@@ -84,11 +84,14 @@ class WinamaxScraper:
             "ipswich": "ipswich", "leicester": "leicester", "southampton": "southampton",
             # LaLiga Hypermotion
             "zaragoza": "zaragoza", "oviedo": "oviedo", "sporting": "sporting",
-            "eibar": "eibar", "castellon": "castellon", "burgos": "burgos",
+            "gijon": "sporting", "eibar": "eibar", "castellon": "castellon", "burgos": "burgos",
             "albacete": "albacete", "huesca": "huesca", "granada": "granada",
             "almeria": "almeria", "cadiz": "cadiz", "cordoba": "cordoba",
             "mirandes": "mirandes", "eldense": "eldense", "ferrol": "ferrol",
-            "tenerife": "tenerife", "cartagena": "cartagena"
+            "tenerife": "tenerife", "cartagena": "cartagena", "girona": "girona",
+            "sabadell": "sabadell", "ceuta": "ceuta", "palmas": "palmas",
+            "leganes": "leganes", "andorra": "andorra", "valladolid": "valladolid",
+            "mallorca": "mallorca", "fortuna": "celta"
         }
 
         def get_keyword(name_str: str) -> str:

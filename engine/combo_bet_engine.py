@@ -241,15 +241,18 @@ class ComboBetEngine:
             for mm in match_markets:
                 c_id = mm.get("competition_id", "OTHER")
                 by_comp.setdefault(c_id, []).append(mm)
-            for c_id, comp_mms in by_comp.items():
-                for mm in comp_mms[:max_per_comp]:
-                    cands = extract_diverse_cands(mm)
-                    if cands:
-                        pools.append({
-                            "matchup": mm["matchup"],
-                            "competition_id": c_id,
-                            "markets": cands
-                        })
+            
+            # Intercalar partits de manera round-robin (LaLiga #1, Premier #1, Hypermotion #1, LaLiga #2...)
+            for i in range(max_per_comp):
+                for c_id, comp_mms in by_comp.items():
+                    if i < len(comp_mms):
+                        cands = extract_diverse_cands(comp_mms[i])
+                        if cands:
+                            pools.append({
+                                "matchup": comp_mms[i]["matchup"],
+                                "competition_id": c_id,
+                                "markets": cands
+                            })
         else:
             for mm in match_markets:
                 cands = extract_diverse_cands(mm)
@@ -262,7 +265,7 @@ class ComboBetEngine:
         return pools
 
     def find_pair_safe(self, match_markets: List[Dict[str, Any]], is_multi: bool = False) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """Genera dues combinades segures (cuota 1.95 - 3.50) totalment diferents i amb diversitat de mercats."""
+        """Genera dues combinades segures (cuota 1.95 - 3.50) optimitzant la màxima probabilitat conjunta."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
         pools = self._prepare_balanced_pools(match_markets, is_multi=is_multi, min_prob=60.0, min_odd=1.07, max_per_comp=4)
 
@@ -270,13 +273,14 @@ class ComboBetEngine:
             return self.calculate_combo_summary([], f"{prefix} Segura #1 (Cuota 2-3)"), self.calculate_combo_summary([], f"{prefix} Segura #2 (Cuota 2-3 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 10)
+        n_pools = min(len(pools), 14)
         for k in range(2, min(n_pools, 4) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
-                if is_multi:
-                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                    if len(comps) < 2:
-                        continue
+                comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
+                if is_multi and len(comps) < 2:
+                    continue
+                league_bonus = 0.06 if is_multi and len(comps) >= 3 else (0.02 if is_multi and len(comps) >= 2 else 0.0)
+
                 cand_lists = [m["markets"] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -285,8 +289,8 @@ class ComboBetEngine:
                         cats = {l.get("category") for l in leg_choice}
                         p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
                         non_win = cats - {"1X2", "Doble Oportunitat"}
-                        div_bonus = 0.05 if non_win else 0.0
-                        score = p_dec * (1.0 + div_bonus) - abs(c_odd - 2.25) * 0.01
+                        div_bonus = 0.04 if non_win else 0.0
+                        score = p_dec * (1.0 + div_bonus + league_bonus) - abs(c_odd - 2.25) * 0.01
                         candidates.append({
                             "legs": list(leg_choice),
                             "c_odd": c_odd,
@@ -299,9 +303,8 @@ class ComboBetEngine:
         if not candidates:
             for k in range(2, min(n_pools, 5) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
-                    if is_multi:
-                        comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                        if len(comps) < 2: continue
+                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
+                    if is_multi and len(comps) < 2: continue
                     cand_lists = [m["markets"] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         odds = [l["bookie_odd"] for l in leg_choice]
@@ -351,7 +354,7 @@ class ComboBetEngine:
         return c1, c2
 
     def find_pair_semi(self, match_markets: List[Dict[str, Any]], is_multi: bool = False) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """Genera dues combinades semi-arriscades (cuota ~8.5 - 16.5) totalment diferents i multimerkat."""
+        """Genera dues combinades semi-arriscades (cuota ~8.5 - 16.5) optimitzant probabilitat i varietat."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
         pools = self._prepare_balanced_pools(match_markets, is_multi=is_multi, min_prob=45.0, min_odd=1.15, max_per_comp=4)
 
@@ -359,13 +362,14 @@ class ComboBetEngine:
             return self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)"), self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 10)
+        n_pools = min(len(pools), 14)
         for k in range(3, min(n_pools, 6) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
-                if is_multi:
-                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                    if len(comps) < 2:
-                        continue
+                comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
+                if is_multi and len(comps) < 2:
+                    continue
+                league_bonus = 0.08 if is_multi and len(comps) >= 3 else (0.03 if is_multi and len(comps) >= 2 else 0.0)
+
                 cand_lists = [m["markets"] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -380,7 +384,7 @@ class ComboBetEngine:
                         if "BTTS" in cats: div_bonus += 0.04
                         if "Gols" in cats: div_bonus += 0.03
                         
-                        score = p_dec * (1.0 + div_bonus) - abs(c_odd - 10.0) * 0.002
+                        score = p_dec * (1.0 + div_bonus + league_bonus) - abs(c_odd - 10.0) * 0.002
                         candidates.append({
                             "legs": list(leg_choice),
                             "c_odd": c_odd,
@@ -393,9 +397,8 @@ class ComboBetEngine:
         if not candidates:
             for k in range(3, min(n_pools, 7) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
-                    if is_multi:
-                        comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                        if len(comps) < 2: continue
+                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
+                    if is_multi and len(comps) < 2: continue
                     cand_lists = [m["markets"] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         odds = [l["bookie_odd"] for l in leg_choice]
@@ -449,13 +452,14 @@ class ComboBetEngine:
             return self.calculate_combo_summary([], f"{prefix} Arriscada #1 (Cuota >= 30.0)"), self.calculate_combo_summary([], f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 10)
+        n_pools = min(len(pools), 14)
         for k in range(5, min(n_pools, 8) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
-                if is_multi:
-                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                    if len(comps) < 2:
-                        continue
+                comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
+                if is_multi and len(comps) < 2:
+                    continue
+                league_bonus = 0.10 if is_multi and len(comps) >= 3 else (0.04 if is_multi and len(comps) >= 2 else 0.0)
+
                 cand_lists = [m["markets"] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -470,7 +474,7 @@ class ComboBetEngine:
                         if "BTTS" in cats: div_bonus += 0.06
                         if "Gols" in cats: div_bonus += 0.05
                         
-                        score = p_dec * (1.0 + div_bonus) - abs(c_odd - 35.0) * 0.0005
+                        score = p_dec * (1.0 + div_bonus + league_bonus) - abs(c_odd - 35.0) * 0.0005
                         candidates.append({
                             "legs": list(leg_choice),
                             "c_odd": c_odd,
