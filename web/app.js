@@ -487,6 +487,8 @@ function renderCombos() {
             const boosterBadge = hasBooster ? `<span class="booster-pill">🚀 +${boosterPct}% Booster</span>` : '';
             const probConjunta = c.combined_prob_pct != null ? c.combined_prob_pct.toFixed(1) : '-';
 
+            const autofillUrl = getAutofillUrl(c);
+
             return `
               <div class="combo-card ${c.type}">
                 <div class="combo-header">
@@ -565,9 +567,9 @@ function renderCombos() {
                     <button type="button" class="btn-assistant" onclick="openQuickAssistant('${comboKey}')" title="Obre assistent interactiu pas a pas (Mòbil i PC)">
                       📲 Assistent Ràpid
                     </button>
-                    <button type="button" class="btn-auto-pc" onclick="openWinamaxAutofill('${comboKey}')" title="Omple el cupó automàticament a Winamax amb l'script de Tampermonkey (PC)">
+                    <a href="${autofillUrl}" target="_blank" rel="noopener noreferrer" class="btn-auto-pc" title="Obre Winamax i omple el cupó automàticament (Tampermonkey)">
                       ⚡ 1-Clic Auto
-                    </button>
+                    </a>
                   </div>
                   <a href="${c.winamax_url || 'https://www.winamax.es'}" target="_blank" rel="noopener noreferrer" class="combo-direct-link">
                     Obrir lliga a Winamax ↗
@@ -829,6 +831,11 @@ function openQuickAssistant(comboKey) {
   if (titleEl) titleEl.textContent = combo.profile;
   if (subEl) subEl.textContent = `${combo.leagueTitle || 'Lliga'} · Assistent Interactiu de Selecció`;
 
+  const btnAutoPc = document.getElementById('qa-btn-auto-pc');
+  if (btnAutoPc) {
+    btnAutoPc.href = getAutofillUrl(combo);
+  }
+
   if (sumEl) {
     sumEl.innerHTML = `
       <div class="qa-sum-col">
@@ -1007,12 +1014,11 @@ function openModalAllMatches() {
   });
 }
 
-function openWinamaxAutofill(comboKey) {
-  const combo = window.combosRegistry[comboKey];
-  if (!combo) return;
+function getAutofillUrl(combo) {
+  if (!combo) return 'https://www.winamax.es/apuestas-deportivas';
 
   const payload = {
-    profile: combo.profile,
+    profile: combo.profile || 'Combinada',
     odd: (combo.boosted_odd || combo.combined_odd || 0).toFixed(2),
     boosted_odd: combo.boosted_odd || combo.combined_odd,
     booster_pct: combo.booster_pct || 0,
@@ -1032,10 +1038,18 @@ function openWinamaxAutofill(comboKey) {
     ? combo.legs[0].url 
     : (combo.winamax_url || 'https://www.winamax.es/apuestas-deportivas');
 
-  window.open(`${initialUrl}#combo_autofill=${hash}`, '_blank');
+  return `${initialUrl}#combo_autofill=${hash}`;
+}
+
+function openWinamaxAutofill(comboKey) {
+  const combo = window.combosRegistry[comboKey];
+  if (!combo) return;
+  const targetUrl = getAutofillUrl(combo);
+  window.open(targetUrl, '_blank');
 }
 
 // Exportar globals per als controladors en línia
+window.getAutofillUrl = getAutofillUrl;
 window.openQuickAssistant = openQuickAssistant;
 window.closeQuickAssistant = closeQuickAssistant;
 window.handleLegClick = handleLegClick;
