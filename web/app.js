@@ -431,14 +431,25 @@ function renderCombos() {
               statusTag = '<span class="status-lost-tag" style="font-size: 10px; padding: 2px 6px;">❌ FALLADA</span>';
             }
 
+            const boosterPct = c.booster_pct || 0;
+            const boostedOdd = c.boosted_odd || c.combined_odd;
+            const hasBooster = boosterPct > 0;
+            const boosterBadge = hasBooster ? `<span class="booster-pill">🚀 +${boosterPct}% Booster</span>` : '';
+
             return `
               <div class="combo-card ${c.type}">
                 <div class="combo-header">
                   <div>
                     <div class="combo-title">${c.profile}</div>
-                    <div style="margin-top: 4px;">${statusTag}</div>
+                    <div style="display: flex; gap: 6px; align-items: center; margin-top: 5px; flex-wrap: wrap;">
+                      ${statusTag}
+                      ${boosterBadge}
+                    </div>
                   </div>
-                  <div class="combo-odd-pill ${oddCls}">@ ${c.combined_odd.toFixed(2)}</div>
+                  <div style="text-align: right;">
+                    <div class="combo-odd-pill ${oddCls}">@ ${boostedOdd.toFixed(2)}</div>
+                    ${hasBooster ? `<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">base @${c.combined_odd.toFixed(2)}</div>` : ''}
+                  </div>
                 </div>
 
                 <ul class="combo-legs-list">
@@ -450,10 +461,24 @@ function renderCombos() {
                       legBadge = `<span class="leg-pill pill-lost">❌ ${l.actual_result || 'Fallat'}</span>`;
                     }
 
+                    let catIcon = '🏷️';
+                    const cat = l.category || '';
+                    if (cat === 'Gols') catIcon = '⚽';
+                    else if (cat === 'Córners') catIcon = '🚩';
+                    else if (cat === 'Targetes') catIcon = '🟨';
+                    else if (cat === 'BTTS') catIcon = '🤝';
+                    else if (cat === 'Doble Oportunitat') catIcon = '🛡️';
+                    else if (cat === '1X2') catIcon = '🎯';
+
+                    const catTag = cat ? `<span class="leg-category-tag">${catIcon} ${cat}</span>` : '';
+
                     return `
                       <li class="combo-leg-item">
                         <div class="leg-desc">
-                          <div class="leg-matchup">${l.matchup}</div>
+                          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 2px;">
+                            <span class="leg-matchup">${l.matchup}</span>
+                            ${catTag}
+                          </div>
                           <div class="leg-name">${l.selection_name}</div>
                           <div style="margin-top: 4px;">${legBadge}</div>
                         </div>

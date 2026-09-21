@@ -68,13 +68,35 @@ class ComboTracker:
             won = h_goals == a_goals
             return ("WON" if won else "LOST"), f"{h_goals}-{a_goals} ({'Empat encertat' if won else 'sense empat'})"
 
-        # 3. Gols (Més / Menys de 2.5 gols)
+        # 3. Gols (Més / Menys d'1.5, 2.5, 3.5 gols i equip marca)
+        elif "més d'1.5" in sel_name or "més de 1.5" in sel_name or "over 1.5" in sel_name or "+1.5 gols" in sel_name:
+            won = tot_goals >= 2
+            return ("WON" if won else "LOST"), f"{tot_goals} gols ({'Over 1.5 encertat' if won else 'Menys de 2 gols'})"
+        elif "menys d'1.5" in sel_name or "menys de 1.5" in sel_name or "under 1.5" in sel_name or "-1.5 gols" in sel_name:
+            won = tot_goals <= 1
+            return ("WON" if won else "LOST"), f"{tot_goals} gols ({'Under 1.5 encertat' if won else 'Més d\'1 gol'})"
         elif "més de 2.5" in sel_name or "over 2.5" in sel_name or "+2.5" in sel_name:
             won = tot_goals >= 3
             return ("WON" if won else "LOST"), f"{tot_goals} gols ({'Over 2.5 encertat' if won else 'Under 2.5'})"
         elif "menys de 2.5" in sel_name or "under 2.5" in sel_name or "-2.5" in sel_name:
             won = tot_goals <= 2
             return ("WON" if won else "LOST"), f"{tot_goals} gols ({'Under 2.5 encertat' if won else 'Over 2.5'})"
+        elif "menys de 3.5" in sel_name or "under 3.5" in sel_name or "-3.5" in sel_name:
+            won = tot_goals <= 3
+            return ("WON" if won else "LOST"), f"{tot_goals} gols ({'Under 3.5 encertat' if won else 'Over 3.5'})"
+        elif "més de 3.5" in sel_name or "over 3.5" in sel_name or "+3.5" in sel_name:
+            won = tot_goals >= 4
+            return ("WON" if won else "LOST"), f"{tot_goals} gols ({'Over 3.5 encertat' if won else 'Under 3.5'})"
+        elif "marca (+0.5" in sel_name or "marca (+0.5 gols)" in sel_name:
+            if (h_name and h_name in sel_name) or "local" in sel_name:
+                won = h_goals >= 1
+                return ("WON" if won else "LOST"), f"{h_goals} gols locals ({'Local ha marcat' if won else 'Local no ha marcat'})"
+            elif (a_name and a_name in sel_name) or "visitant" in sel_name:
+                won = a_goals >= 1
+                return ("WON" if won else "LOST"), f"{a_goals} gols visitants ({'Visitant ha marcat' if won else 'Visitant no ha marcat'})"
+            else:
+                won = tot_goals >= 1
+                return ("WON" if won else "LOST"), f"{tot_goals} gols"
 
         # 4. Ambdós Marquen (BTTS)
         elif "ambdós marquen: sí" in sel_name or "ambos equipos marcan: si" in sel_name or "btts sí" in sel_name or "btts yes" in sel_name:

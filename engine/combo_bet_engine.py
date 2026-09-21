@@ -50,6 +50,22 @@ class ComboBetEngine:
                 prod *= o
         return round(prod, 2)
 
+    def calculate_winamax_booster(self, num_legs: int) -> float:
+        """
+        Retorna el percentatge de bonificació oficial del Combo Booster de Winamax:
+        4 seleccions: +5.0%
+        5 seleccions: +7.5%
+        6 seleccions: +10.0%
+        7 seleccions: +12.5%
+        8 seleccions: +15.0%
+        9 seleccions: +20.0%
+        10+ seleccions: +25.0%
+        """
+        booster_table = {4: 5.0, 5: 7.5, 6: 10.0, 7: 12.5, 8: 15.0, 9: 20.0, 10: 25.0}
+        if num_legs >= 10:
+            return 25.0
+        return booster_table.get(num_legs, 0.0)
+
     def calculate_combo_summary(self, legs: List[Dict[str, Any]], profile_name: str) -> Dict[str, Any]:
         """Calcula totes les mètriques d'una combinada a partir de les seves seleccions (legs)."""
         if not legs:
@@ -61,6 +77,8 @@ class ComboBetEngine:
                 "fair_odd": 99.0,
                 "ev_pct": -100.0,
                 "is_value": False,
+                "booster_pct": 0.0,
+                "boosted_odd": 1.0,
                 "winamax_url": self.winamax_base_url
             }
 
@@ -74,6 +92,9 @@ class ComboBetEngine:
         fair_odd = round(1.0 / p_dec, 2) if p_dec > 0.0 else 999.0
         ev_pct = round((p_dec * combined_odd - 1.0) * 100.0, 1)
 
+        booster_pct = self.calculate_winamax_booster(len(legs))
+        boosted_odd = round(combined_odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else combined_odd
+
         return {
             "profile": profile_name,
             "legs": legs,
@@ -83,6 +104,8 @@ class ComboBetEngine:
             "fair_odd": fair_odd,
             "ev_pct": ev_pct,
             "is_value": ev_pct > 0,
+            "booster_pct": booster_pct,
+            "boosted_odd": boosted_odd,
             "winamax_url": self.winamax_base_url
         }
 
@@ -189,85 +212,108 @@ class ComboBetEngine:
 
         return match_markets
 
-    def _prepare_balanced_pools(self, match_markets: List[Dict[str, Any]], is_multi: bool, min_prob: float, min_odd: float, max_per_comp: int = 4) -> List[Dict[str, Any]]:
-        """Prepara el pool de partits equilibrant entre lligues quan és multi-lliga."""
+    def _prepare_balanced_pools(self, match_markets: List[Dict[str, Any]], is_multi: bool, min_prob: float, min_odd: float, max_per_comp: int = 5) -> List[Dict[str, Any]]:
+        """
+        Prepara el pool de partits seleccionant mercats complementaris de diferents categories
+        (Doble Oportunitat, 1X2, Gols, Córners, Targetes, BTTS) per garantir varietat.
+        """
+        def extract_diverse_cands(mm):
+            valid = [m for m in mm.get("markets", []) if m["model_prob"] >= min_prob and m["bookie_odd"] >= min_odd]
+            if not valid:
+                valid = [m for m in mm.get("markets", []) if m["model_prob"] >= (min_prob * 0.75) and m["bookie_odd"] >= 1.05]
+            if not valid:
+                return []
+            sorted_m = sorted(valid, key=lambda x: x["model_prob"], reverse=True)
+            primary = sorted_m[0]
+            alt = None
+            for m in sorted_m[1:]:
+                if m.get("category") != primary.get("category"):
+                    alt = m
+                    break
+            cands = [primary]
+            if alt:
+                cands.append(alt)
+            return cands
+
+        pools = []
         if is_multi:
             by_comp = {}
             for mm in match_markets:
                 c_id = mm.get("competition_id", "OTHER")
                 by_comp.setdefault(c_id, []).append(mm)
-            pools = []
             for c_id, comp_mms in by_comp.items():
                 for mm in comp_mms[:max_per_comp]:
-                    valid = sorted(mm["markets"], key=lambda x: (x["model_prob"] >= min_prob, x["bookie_odd"] >= min_odd, x["model_prob"]), reverse=True)
-                    if valid:
+                    cands = extract_diverse_cands(mm)
+                    if cands:
                         pools.append({
                             "matchup": mm["matchup"],
                             "competition_id": c_id,
-                            "markets": valid[:2]
+                            "markets": cands
                         })
-            return pools
         else:
-            pools = []
             for mm in match_markets:
-                valid = sorted(mm["markets"], key=lambda x: (x["model_prob"] >= min_prob, x["bookie_odd"] >= min_odd, x["model_prob"]), reverse=True)
-                if valid:
+                cands = extract_diverse_cands(mm)
+                if cands:
                     pools.append({
                         "matchup": mm["matchup"],
                         "competition_id": mm.get("competition_id", ""),
-                        "markets": valid[:2]
+                        "markets": cands
                     })
-            return pools
+        return pools
 
     def find_pair_safe(self, match_markets: List[Dict[str, Any]], is_multi: bool = False) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """Genera dues combinades segures (cuota 1.95 - 3.50) totalment diferents."""
+        """Genera dues combinades segures (cuota 1.95 - 3.50) totalment diferents i amb diversitat de mercats."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
-        pools = self._prepare_balanced_pools(match_markets, is_multi=is_multi, min_prob=65.0, min_odd=1.07, max_per_comp=4)
+        pools = self._prepare_balanced_pools(match_markets, is_multi=is_multi, min_prob=60.0, min_odd=1.07, max_per_comp=4)
 
         if len(pools) < 2:
             return self.calculate_combo_summary([], f"{prefix} Segura #1 (Cuota 2-3)"), self.calculate_combo_summary([], f"{prefix} Segura #2 (Cuota 2-3 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 12)
-        for k in range(2, min(n_pools, 6) + 1):
-            for indices in itertools.combinations(range(n_pools), k):
-                selected = [pools[i] for i in indices]
+        n_pools = min(len(pools), 10)
+        for k in range(2, min(n_pools, 4) + 1):
+            for match_combo in itertools.combinations(pools[:n_pools], k):
                 if is_multi:
-                    comps = {s["competition_id"] for s in selected if s.get("competition_id")}
+                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                     if len(comps) < 2:
                         continue
-                
-                legs = [s["markets"][0] for s in selected]
-                c_odd = self.calculate_combined_odds([l["bookie_odd"] for l in legs])
-                if 1.90 <= c_odd <= 3.80:
-                    p_dec = self.calculate_combined_probability([l["model_prob"] for l in legs])
-                    score = p_dec - abs(c_odd - 2.3) * 0.015
-                    candidates.append({
-                        "legs": legs,
-                        "c_odd": c_odd,
-                        "p_dec": p_dec,
-                        "score": score,
-                        "matchups": {l["matchup"] for l in legs},
-                        "sig": self._get_combo_sig(legs)
-                    })
-
-        if len(candidates) < 2:
-            for k in range(2, min(n_pools, 7) + 1):
-                for indices in itertools.combinations(range(n_pools), k):
-                    selected = [pools[i] for i in indices]
-                    if is_multi:
-                        comps = {s["competition_id"] for s in selected if s.get("competition_id")}
-                        if len(comps) < 2: continue
-                    legs = [s["markets"][0] for s in selected]
-                    c_odd = self.calculate_combined_odds([l["bookie_odd"] for l in legs])
-                    if c_odd >= 1.70:
-                        p_dec = self.calculate_combined_probability([l["model_prob"] for l in legs])
+                cand_lists = [m["markets"] for m in match_combo]
+                for leg_choice in itertools.product(*cand_lists):
+                    odds = [l["bookie_odd"] for l in leg_choice]
+                    c_odd = round(self.calculate_combined_odds(odds), 2)
+                    if 1.90 <= c_odd <= 3.60:
+                        cats = {l.get("category") for l in leg_choice}
+                        p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                        non_win = cats - {"1X2", "Doble Oportunitat"}
+                        div_bonus = 0.05 if non_win else 0.0
+                        score = p_dec * (1.0 + div_bonus) - abs(c_odd - 2.25) * 0.01
                         candidates.append({
-                            "legs": legs, "c_odd": c_odd, "p_dec": p_dec,
-                            "score": p_dec - abs(c_odd - 2.2) * 0.01,
-                            "matchups": {l["matchup"] for l in legs},
-                            "sig": self._get_combo_sig(legs)
+                            "legs": list(leg_choice),
+                            "c_odd": c_odd,
+                            "p_dec": p_dec,
+                            "score": score,
+                            "matchups": {l["matchup"] for l in leg_choice},
+                            "sig": self._get_combo_sig(leg_choice)
                         })
+
+        if not candidates:
+            for k in range(2, min(n_pools, 5) + 1):
+                for match_combo in itertools.combinations(pools[:n_pools], k):
+                    if is_multi:
+                        comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
+                        if len(comps) < 2: continue
+                    cand_lists = [m["markets"] for m in match_combo]
+                    for leg_choice in itertools.product(*cand_lists):
+                        odds = [l["bookie_odd"] for l in leg_choice]
+                        c_odd = round(self.calculate_combined_odds(odds), 2)
+                        if c_odd >= 1.70:
+                            p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                            candidates.append({
+                                "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
+                                "score": p_dec - abs(c_odd - 2.2) * 0.01,
+                                "matchups": {l["matchup"] for l in leg_choice},
+                                "sig": self._get_combo_sig(leg_choice)
+                            })
 
         candidates.sort(key=lambda x: x["score"], reverse=True)
         c1_cand = candidates[0] if candidates else {"legs": [], "sig": frozenset()}
@@ -277,13 +323,13 @@ class ComboBetEngine:
         for cand in candidates[1:]:
             if cand["sig"] == c1_cand["sig"]:
                 continue
-            overlap = len(cand["matchups"] & c1_cand["matchups"])
+            overlap = len(cand["matchups"] & c1_cand.get("matchups", set()))
             adj_score = cand["score"] - (overlap * 0.10)
             if adj_score > best_c2_score:
                 best_c2_score = adj_score
                 c2_cand = cand
 
-        if not c2_cand or c2_cand["sig"] == c1_cand["sig"]:
+        if not c2_cand or c2_cand["sig"] == c1_cand.get("sig"):
             alt_legs = []
             for p in pools:
                 if p["matchup"] not in c1_cand.get("matchups", set()) and len(alt_legs) < len(c1_cand.get("legs", [])):
@@ -305,54 +351,63 @@ class ComboBetEngine:
         return c1, c2
 
     def find_pair_semi(self, match_markets: List[Dict[str, Any]], is_multi: bool = False) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """Genera dues combinades semi-arriscades (cuota ~8.0 - 15.0) totalment diferents."""
+        """Genera dues combinades semi-arriscades (cuota ~8.5 - 16.5) totalment diferents i multimerkat."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
-        pools = self._prepare_balanced_pools(match_markets, is_multi=is_multi, min_prob=50.0, min_odd=1.20, max_per_comp=4)
+        pools = self._prepare_balanced_pools(match_markets, is_multi=is_multi, min_prob=45.0, min_odd=1.15, max_per_comp=4)
 
         if len(pools) < 3:
             return self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)"), self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 12)
+        n_pools = min(len(pools), 10)
         for k in range(3, min(n_pools, 6) + 1):
-            for indices in itertools.combinations(range(n_pools), k):
-                selected = [pools[i] for i in indices]
+            for match_combo in itertools.combinations(pools[:n_pools], k):
                 if is_multi:
-                    comps = {s["competition_id"] for s in selected if s.get("competition_id")}
+                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                     if len(comps) < 2:
                         continue
-
-                legs = [s["markets"][0] for s in selected]
-                c_odd = self.calculate_combined_odds([l["bookie_odd"] for l in legs])
-                if 7.0 <= c_odd <= 16.0:
-                    p_dec = self.calculate_combined_probability([l["model_prob"] for l in legs])
-                    score = p_dec - abs(c_odd - 10.0) * 0.005
-                    candidates.append({
-                        "legs": legs,
-                        "c_odd": c_odd,
-                        "p_dec": p_dec,
-                        "score": score,
-                        "matchups": {l["matchup"] for l in legs},
-                        "sig": self._get_combo_sig(legs)
-                    })
+                cand_lists = [m["markets"] for m in match_combo]
+                for leg_choice in itertools.product(*cand_lists):
+                    odds = [l["bookie_odd"] for l in leg_choice]
+                    c_odd = round(self.calculate_combined_odds(odds), 2)
+                    if 8.50 <= c_odd <= 16.50:
+                        cats = {l.get("category") for l in leg_choice}
+                        p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                        
+                        div_bonus = 0.0
+                        if "Córners" in cats: div_bonus += 0.05
+                        if "Targetes" in cats: div_bonus += 0.05
+                        if "BTTS" in cats: div_bonus += 0.04
+                        if "Gols" in cats: div_bonus += 0.03
+                        
+                        score = p_dec * (1.0 + div_bonus) - abs(c_odd - 10.0) * 0.002
+                        candidates.append({
+                            "legs": list(leg_choice),
+                            "c_odd": c_odd,
+                            "p_dec": p_dec,
+                            "score": score,
+                            "matchups": {l["matchup"] for l in leg_choice},
+                            "sig": self._get_combo_sig(leg_choice)
+                        })
 
         if not candidates:
             for k in range(3, min(n_pools, 7) + 1):
-                for indices in itertools.combinations(range(n_pools), k):
-                    selected = [pools[i] for i in indices]
+                for match_combo in itertools.combinations(pools[:n_pools], k):
                     if is_multi:
-                        comps = {s["competition_id"] for s in selected if s.get("competition_id")}
+                        comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                         if len(comps) < 2: continue
-                    legs = [s["markets"][0] for s in selected]
-                    c_odd = self.calculate_combined_odds([l["bookie_odd"] for l in legs])
-                    if c_odd >= 5.0:
-                        p_dec = self.calculate_combined_probability([l["model_prob"] for l in legs])
-                        candidates.append({
-                            "legs": legs, "c_odd": c_odd, "p_dec": p_dec,
-                            "score": p_dec - abs(c_odd - 10.0) * 0.005,
-                            "matchups": {l["matchup"] for l in legs},
-                            "sig": self._get_combo_sig(legs)
-                        })
+                    cand_lists = [m["markets"] for m in match_combo]
+                    for leg_choice in itertools.product(*cand_lists):
+                        odds = [l["bookie_odd"] for l in leg_choice]
+                        c_odd = round(self.calculate_combined_odds(odds), 2)
+                        if c_odd >= 6.0:
+                            p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                            candidates.append({
+                                "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
+                                "score": p_dec - abs(c_odd - 10.0) * 0.003,
+                                "matchups": {l["matchup"] for l in leg_choice},
+                                "sig": self._get_combo_sig(leg_choice)
+                            })
 
         candidates.sort(key=lambda x: x["score"], reverse=True)
         c1_cand = candidates[0] if candidates else {"legs": [], "sig": frozenset()}
@@ -362,13 +417,13 @@ class ComboBetEngine:
         for cand in candidates[1:]:
             if cand["sig"] == c1_cand["sig"]:
                 continue
-            overlap = len(cand["matchups"] & c1_cand["matchups"])
-            adj_score = cand["score"] - (overlap * 0.03)
+            overlap = len(cand["matchups"] & c1_cand.get("matchups", set()))
+            adj_score = cand["score"] - (overlap * 0.02)
             if adj_score > best_c2_score:
                 best_c2_score = adj_score
                 c2_cand = cand
 
-        if not c2_cand or c2_cand["sig"] == c1_cand["sig"]:
+        if not c2_cand or c2_cand["sig"] == c1_cand.get("sig"):
             alt_legs = list(c1_cand.get("legs", []))
             if len(pools) > len(alt_legs):
                 for p in pools:
@@ -386,37 +441,44 @@ class ComboBetEngine:
         return c1, c2
 
     def find_pair_risky(self, match_markets: List[Dict[str, Any]], is_multi: bool = False) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """Genera dues combinades arriscades (cuota >= 28.0) totalment diferents."""
+        """Genera dues combinades arriscades (cuota >= 28.0) multimerkat amb activació de Combo Booster Winamax."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
-        pools = self._prepare_balanced_pools(match_markets, is_multi=is_multi, min_prob=35.0, min_odd=1.18, max_per_comp=4)
+        pools = self._prepare_balanced_pools(match_markets, is_multi=is_multi, min_prob=35.0, min_odd=1.12, max_per_comp=4)
 
         if len(pools) < 4:
             return self.calculate_combo_summary([], f"{prefix} Arriscada #1 (Cuota >= 30.0)"), self.calculate_combo_summary([], f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 12)
-        for k in range(4, min(n_pools, 9) + 1):
-            for indices in itertools.combinations(range(n_pools), k):
-                selected = [pools[i] for i in indices]
+        n_pools = min(len(pools), 10)
+        for k in range(5, min(n_pools, 8) + 1):
+            for match_combo in itertools.combinations(pools[:n_pools], k):
                 if is_multi:
-                    comps = {s["competition_id"] for s in selected if s.get("competition_id")}
+                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                     if len(comps) < 2:
                         continue
-
-                legs = [s["markets"][0] for s in selected]
-                c_odd = self.calculate_combined_odds([l["bookie_odd"] for l in legs])
-                if c_odd >= 26.0:
-                    p_dec = self.calculate_combined_probability([l["model_prob"] for l in legs])
-                    penalty_excess = max(0.0, c_odd - 60.0) * 0.0001
-                    score = p_dec - penalty_excess
-                    candidates.append({
-                        "legs": legs,
-                        "c_odd": c_odd,
-                        "p_dec": p_dec,
-                        "score": score,
-                        "matchups": {l["matchup"] for l in legs},
-                        "sig": self._get_combo_sig(legs)
-                    })
+                cand_lists = [m["markets"] for m in match_combo]
+                for leg_choice in itertools.product(*cand_lists):
+                    odds = [l["bookie_odd"] for l in leg_choice]
+                    c_odd = round(self.calculate_combined_odds(odds), 2)
+                    if 28.0 <= c_odd <= 65.0:
+                        cats = {l.get("category") for l in leg_choice}
+                        p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                        
+                        div_bonus = 0.0
+                        if "Córners" in cats: div_bonus += 0.08
+                        if "Targetes" in cats: div_bonus += 0.08
+                        if "BTTS" in cats: div_bonus += 0.06
+                        if "Gols" in cats: div_bonus += 0.05
+                        
+                        score = p_dec * (1.0 + div_bonus) - abs(c_odd - 35.0) * 0.0005
+                        candidates.append({
+                            "legs": list(leg_choice),
+                            "c_odd": c_odd,
+                            "p_dec": p_dec,
+                            "score": score,
+                            "matchups": {l["matchup"] for l in leg_choice},
+                            "sig": self._get_combo_sig(leg_choice)
+                        })
 
         if not candidates:
             flat = sorted([p["markets"][0] for p in pools], key=lambda x: x["bookie_odd"], reverse=True)

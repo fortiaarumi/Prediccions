@@ -433,6 +433,8 @@ class WebDataExporter:
 
                 stake = float(c.get("stake", 10.0))
                 odd = float(c.get("combined_odd", 1.0))
+                booster_pct = float(c.get("booster_pct") or self.combo_engine.calculate_winamax_booster(len(legs_evaluated)))
+                boosted_odd = round(odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else odd
 
                 if any_lost:
                     final_status = "LOST"
@@ -440,11 +442,11 @@ class WebDataExporter:
                     profit = -stake
                 elif all_finished:
                     final_status = "WON"
-                    payout = round(stake * odd, 2)
+                    payout = round(stake * boosted_odd, 2)
                     profit = round(payout - stake, 2)
                 else:
                     final_status = "PENDING"
-                    payout = round(stake * odd, 2)
+                    payout = round(stake * boosted_odd, 2)
                     profit = round(payout - stake, 2)
 
                 if final_status != c.get("status") and final_status in ["WON", "LOST"]:
@@ -465,8 +467,10 @@ class WebDataExporter:
                     "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
                     "fair_odd": float(c.get("fair_odd", 1.0)),
                     "ev_pct": float(c.get("ev_pct", 0.0)),
-                    "potential_payout": round(stake * odd, 2),
-                    "potential_profit": round((stake * odd) - stake, 2),
+                    "booster_pct": booster_pct,
+                    "boosted_odd": boosted_odd,
+                    "potential_payout": round(stake * boosted_odd, 2),
+                    "potential_profit": round((stake * boosted_odd) - stake, 2),
                     "status": final_status,
                     "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
                     "legs": legs_evaluated
@@ -515,19 +519,24 @@ class WebDataExporter:
 
             stake = float(c.get("recommended_stake", 10.0))
             odd = float(c.get("combined_odd", 1.0))
-            payout = round(stake * odd, 2)
+            booster_pct = float(c.get("booster_pct") or self.combo_engine.calculate_winamax_booster(len(legs)))
+            boosted_odd = float(c.get("boosted_odd") or (round(odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else odd))
+            payout = round(stake * boosted_odd, 2)
             profit = round(payout - stake, 2)
 
             # Desar a la BD per garantir persistència durant tot el cap de setmana
             cat_code = c.get("category_code", "SAFE")
             profile_name = f"{cat_code}_{prof_idx}"
+            c_to_save = dict(c)
+            c_to_save["booster_pct"] = booster_pct
+            c_to_save["boosted_odd"] = boosted_odd
             self.db.save_combo_recommendation(
                 competition_id=competition_id,
                 season="2026-2027",
                 jornada=jornada,
                 profile=profile_name,
                 stake=stake,
-                combo_summary=c
+                combo_summary=c_to_save
             )
 
             return {
@@ -538,6 +547,8 @@ class WebDataExporter:
                 "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
                 "fair_odd": float(c.get("fair_odd", 1.0)),
                 "ev_pct": float(c.get("ev_pct", 0.0)),
+                "booster_pct": booster_pct,
+                "boosted_odd": boosted_odd,
                 "potential_payout": payout,
                 "potential_profit": profit,
                 "status": "PENDING",

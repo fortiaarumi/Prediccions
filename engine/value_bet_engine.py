@@ -142,20 +142,59 @@ class ValueBetEngine:
             v["category"] = "Gols"
             single_markets.append(v)
 
-        # 4. Ambdós Marquen (BTTS)
-        o_btts = winamax_odds.get("btts", {})
-        if "Sí" in o_btts and o_btts["Sí"]:
-            v = self.calculate_market_value(prob_btts_yes, o_btts["Sí"])
-            v["name"] = "Ambdós Equips Marquen (BTTS Sí)"
-            v["category"] = "Gols"
-            single_markets.append(v)
-        if "No" in o_btts and o_btts["No"]:
-            v = self.calculate_market_value(prob_btts_no, o_btts["No"])
-            v["name"] = "Ambdós Equips Marquen (BTTS No)"
+        prob_over15 = p_goals.get("over_under", {}).get("over_1_5", 75.0) / 100.0
+        prob_under15 = 1.0 - prob_over15
+        prob_over35 = p_goals.get("over_under", {}).get("over_3_5", 28.0) / 100.0
+        prob_under35 = 1.0 - prob_over35
+
+        p_team_goals = p_goals.get("team_goals", {})
+        prob_home_scores = p_team_goals.get("home_scores", 75.0) / 100.0
+        prob_away_scores = p_team_goals.get("away_scores", 68.0) / 100.0
+
+        # Gols addicionals (Over 1.5 / Under 3.5 / Gols per equip)
+        if prob_over15 >= 0.65:
+            odd_o15 = max(1.12, round(0.92 / prob_over15, 2))
+            v = self.calculate_market_value(prob_over15, odd_o15)
+            v["name"] = "Més d'1.5 Gols (Over 1.5)"
             v["category"] = "Gols"
             single_markets.append(v)
 
-        # 5. Targetes (Només si existeixen a Winamax i l'àrbitre està oficialment designat pel CTA)
+        if prob_under35 >= 0.65:
+            odd_u35 = max(1.12, round(0.92 / prob_under35, 2))
+            v = self.calculate_market_value(prob_under35, odd_u35)
+            v["name"] = "Menys de 3.5 Gols (Under 3.5)"
+            v["category"] = "Gols"
+            single_markets.append(v)
+
+        if prob_home_scores >= 0.70:
+            odd_h_scores = max(1.10, round(0.92 / prob_home_scores, 2))
+            v = self.calculate_market_value(prob_home_scores, odd_h_scores)
+            v["name"] = f"{h_name} marca (+0.5 gols)"
+            v["category"] = "Gols"
+            single_markets.append(v)
+
+        if prob_away_scores >= 0.70:
+            odd_a_scores = max(1.12, round(0.92 / prob_away_scores, 2))
+            v = self.calculate_market_value(prob_away_scores, odd_a_scores)
+            v["name"] = f"{a_name} marca (+0.5 gols)"
+            v["category"] = "Gols"
+            single_markets.append(v)
+
+        # 4. Ambdós Marquen (BTTS)
+        o_btts = winamax_odds.get("btts", {})
+        odd_btts_yes = float(o_btts.get("Sí") or max(1.35, round(0.92 / prob_btts_yes, 2)))
+        v = self.calculate_market_value(prob_btts_yes, odd_btts_yes)
+        v["name"] = "Ambdós Equips Marquen (BTTS Sí)"
+        v["category"] = "BTTS"
+        single_markets.append(v)
+
+        odd_btts_no = float(o_btts.get("No") or max(1.35, round(0.92 / prob_btts_no, 2)))
+        v = self.calculate_market_value(prob_btts_no, odd_btts_no)
+        v["name"] = "Ambdós Equips Marquen (BTTS No)"
+        v["category"] = "BTTS"
+        single_markets.append(v)
+
+        # 5. Targetes (Calibrades amb l'àrbitre designat oficialment pel CTA / PGMOL)
         ref_res = model_prediction.get("referee_resolution", {})
         is_ref_generic = ref_res.get("is_generic", False) or "Standard" in ref_res.get("name", "") or "Pendent" in ref_res.get("name", "")
         cards_warning = None
@@ -164,39 +203,44 @@ class ValueBetEngine:
             cards_warning = "⚠️ Àrbitre pendent de designació oficial pel CTA: No és recomanable apostar a targetes."
         else:
             o_cards = winamax_odds.get("cards", {})
-            if "Over 4.5 Targetes" in o_cards and o_cards["Over 4.5 Targetes"]:
-                v = self.calculate_market_value(prob_cards_o45, o_cards["Over 4.5 Targetes"])
-                v["name"] = "Més de 4.5 Targetes"
-                v["category"] = "Targetes"
-                single_markets.append(v)
-            if "Under 4.5 Targetes" in o_cards and o_cards["Under 4.5 Targetes"]:
-                v = self.calculate_market_value(prob_cards_u45, o_cards["Under 4.5 Targetes"])
-                v["name"] = "Menys de 4.5 Targetes"
-                v["category"] = "Targetes"
-                single_markets.append(v)
-            if "Over 5.5 Targetes" in o_cards and o_cards["Over 5.5 Targetes"]:
-                v = self.calculate_market_value(prob_cards_o55, o_cards["Over 5.5 Targetes"])
+            odd_c45 = float(o_cards.get("Over 4.5 Targetes") or max(1.30, round(0.92 / prob_cards_o45, 2)))
+            v = self.calculate_market_value(prob_cards_o45, odd_c45)
+            v["name"] = "Més de 4.5 Targetes"
+            v["category"] = "Targetes"
+            single_markets.append(v)
+
+            odd_u45 = float(o_cards.get("Under 4.5 Targetes") or max(1.30, round(0.92 / prob_cards_u45, 2)))
+            v = self.calculate_market_value(prob_cards_u45, odd_u45)
+            v["name"] = "Menys de 4.5 Targetes"
+            v["category"] = "Targetes"
+            single_markets.append(v)
+
+            if prob_cards_o55 >= 0.35 or "Over 5.5 Targetes" in o_cards:
+                odd_c55 = float(o_cards.get("Over 5.5 Targetes") or max(1.70, round(0.92 / prob_cards_o55, 2)))
+                v = self.calculate_market_value(prob_cards_o55, odd_c55)
                 v["name"] = "Més de 5.5 Targetes"
                 v["category"] = "Targetes"
                 single_markets.append(v)
-            if "Targeta Vermella (Sí)" in o_cards and o_cards["Targeta Vermella (Sí)"]:
-                v = self.calculate_market_value(prob_red_card, o_cards["Targeta Vermella (Sí)"])
-                v["name"] = "Targeta Vermella (Sí)"
-                v["category"] = "Targetes"
-                single_markets.append(v)
 
-        # 6. Córners (Només si existeixen a Winamax)
+        # 6. Córners
         o_corners = winamax_odds.get("corners", {})
-        if "Over 9.5 Córners" in o_corners and o_corners["Over 9.5 Córners"]:
-            v = self.calculate_market_value(prob_corners_o95, o_corners["Over 9.5 Córners"])
-            v["name"] = "Més de 9.5 Córners"
-            v["category"] = "Córners"
-            single_markets.append(v)
-        if "Under 9.5 Córners" in o_corners and o_corners["Under 9.5 Córners"]:
-            v = self.calculate_market_value(prob_corners_u95, o_corners["Under 9.5 Córners"])
-            v["name"] = "Menys de 9.5 Córners"
-            v["category"] = "Córners"
-            single_markets.append(v)
+        odd_corn_o95 = float(o_corners.get("Over 9.5 Córners") or max(1.35, round(0.92 / prob_corners_o95, 2)))
+        v = self.calculate_market_value(prob_corners_o95, odd_corn_o95)
+        v["name"] = "Més de 9.5 Córners"
+        v["category"] = "Córners"
+        single_markets.append(v)
+
+        odd_corn_o85 = float(o_corners.get("Over 8.5 Córners") or max(1.22, round(0.92 / prob_corners_o85, 2)))
+        v = self.calculate_market_value(prob_corners_o85, odd_corn_o85)
+        v["name"] = "Més de 8.5 Córners"
+        v["category"] = "Córners"
+        single_markets.append(v)
+
+        odd_corn_u95 = float(o_corners.get("Under 9.5 Córners") or max(1.35, round(0.92 / prob_corners_u95, 2)))
+        v = self.calculate_market_value(prob_corners_u95, odd_corn_u95)
+        v["name"] = "Menys de 9.5 Córners"
+        v["category"] = "Córners"
+        single_markets.append(v)
 
         # Ordenar mercats pel major Valor Esperat (+EV%)
         single_markets.sort(key=lambda x: x["ev_pct"], reverse=True)

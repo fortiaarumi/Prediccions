@@ -122,8 +122,12 @@ class GoalModel:
             for j in range(self.max_goals):
                 total_goals_prob[i + j] += matrix[i, j]
 
+        over_1_5 = float(total_goals_prob[2:].sum()) * 100
         over_2_5 = float(total_goals_prob[3:].sum()) * 100
+        over_3_5 = float(total_goals_prob[4:].sum()) * 100
         btts_yes = float((1.0 - matrix[0, :].sum() - matrix[:, 0].sum() + matrix[0, 0]) * 100)
+        home_scores = float((1.0 - matrix[0, :].sum()) * 100)
+        away_scores = float((1.0 - matrix[:, 0].sum()) * 100)
 
         return {
             "expected_goals_home": round(lambda_home, 2),
@@ -135,11 +139,19 @@ class GoalModel:
             },
             "top_scorelines": top_scores,
             "over_under": {
+                "over_1_5": round(over_1_5, 1),
+                "under_1_5": round(100.0 - over_1_5, 1),
                 "over_2_5": round(over_2_5, 1),
-                "under_2_5": round(100.0 - over_2_5, 1)
+                "under_2_5": round(100.0 - over_2_5, 1),
+                "over_3_5": round(over_3_5, 1),
+                "under_3_5": round(100.0 - over_3_5, 1),
             },
             "btts": {
                 "yes": round(btts_yes, 1),
                 "no": round(100.0 - btts_yes, 1)
+            },
+            "team_goals": {
+                "home_scores": round(home_scores, 1),
+                "away_scores": round(away_scores, 1)
             }
         }
