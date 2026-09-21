@@ -66,6 +66,10 @@
           <span class="tab-icon">🔔</span>
           <span class="tab-label">Novetats del Model</span>
         </button>
+        <button class="nav-tab" id="tab-btn-guia" role="tab" aria-selected="false" data-tab="guia">
+          <span class="tab-icon">⚡</span>
+          <span class="tab-label">Guia 1-Clic Winamax</span>
+        </button>
       </div>
     </nav>
   </header>
@@ -199,7 +203,124 @@
       </div>
     </section>
 
+    <!-- SECTION 7: GUIA D'AUTOMATITZACIÓ 1-CLIC -->
+    <section class="tab-content" id="section-guia" role="tabpanel">
+      <div class="section-hero">
+        <div>
+          <h1 class="section-title">⚡ Com estalviar temps a Winamax (Guia d'Ús)</h1>
+          <p class="section-subtitle">Winamax no permet enllaços directes al cupó per seguretat web. Aquí t'expliquem com estalviar el 90% del temps des del PC i des del mòbil.</p>
+        </div>
+      </div>
+
+      <div class="guide-grid">
+        <!-- Card 1: PC Automatització -->
+        <div class="guide-card highlight-card">
+          <div class="guide-badge">💻 ORDINADOR (CHROME / EDGE / BRAVE / FIREFOX)</div>
+          <h2 class="guide-title">Mètode 1-Clic Automàtic (Tampermonkey)</h2>
+          <p class="guide-text">Mitjançant un petit script que només s'executa quan cliques des de la nostra web, Winamax detectarà la combinada i prémerà automàticament les quotes per omplir el teu cupó en 1 segon.</p>
+          
+          <div class="guide-steps">
+            <div class="guide-step">
+              <span class="step-num">1</span>
+              <div>
+                <strong>Instal·la Tampermonkey al navegador:</strong>
+                <p>És l'extensió segura més popular del món per gestionar scripts personals.</p>
+                <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener noreferrer" class="btn-subaction" style="margin-top: 6px; display: inline-block;">
+                  Descarregar Tampermonkey Oficial ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="guide-step">
+              <span class="step-num">2</span>
+              <div>
+                <strong>Instal·la el nostre Script amb 1 Clic:</strong>
+                <p>Fes clic al botó de sota. Tampermonkey obrirà una finestra per confirmar la instal·lació:</p>
+                <a href="./tools/winamax_autofill.user.js" target="_blank" class="btn-action-primary" style="margin-top: 6px; display: inline-block;">
+                  📥 Instal·lar Script "Winamax Auto Betslip"
+                </a>
+              </div>
+            </div>
+
+            <div class="guide-step">
+              <span class="step-num">3</span>
+              <div>
+                <strong>Fet! Gaudeix d'1 sol clic:</strong>
+                <p>A la nostra pestanya de combinades, veuràs el botó <strong>"⚡ 1-Clic Auto"</strong>. En clicar-lo, s'obrirà Winamax amb la combinada creada i a punt per apostar!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Mòbil Assistent -->
+        <div class="guide-card">
+          <div class="guide-badge">📱 TELÈFON MÒBIL (IOS / ANDROID)</div>
+          <h2 class="guide-title">Assistent Ràpid Universal (App Winamax)</h2>
+          <p class="guide-text">Si apostes des del mòbil, no cal instal·lar absolutament res. Fes servir el nostre assistent interactiu dissenyat específicament per a pantalles tàctils.</p>
+          
+          <div class="guide-steps">
+            <div class="guide-step">
+              <span class="step-num">1</span>
+              <div>
+                <strong>Obre l'Assistent de la combinada:</strong>
+                <p>Fes clic a <strong>"📲 Assistent Ràpid"</strong> a qualsevol targeta de combinada.</p>
+              </div>
+            </div>
+
+            <div class="guide-step">
+              <span class="step-num">2</span>
+              <div>
+                <strong>Enllaços directes a l'App oficial:</strong>
+                <p>Clica cada partit: si tens l'aplicació oficial de Winamax instal·lada al mòbil, se t'obrirà directament el partit exacte dins l'aplicació.</p>
+              </div>
+            </div>
+
+            <div class="guide-step">
+              <span class="step-num">3</span>
+              <div>
+                <strong>Guia visual i checklist:</strong>
+                <p>L'assistent et ressalta exactament quina casella has de tocar (ex: <em>"1X"</em> o <em>"Més d'1.5 gols"</em>) i et permet marcar les apostes que ja has afegit per no perdre't mai.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- MODAL ASSISTENT DE CÀRREGA RÀPIDA (MÒBIL & PC) -->
+  <div id="modal-quick-assistant" class="modal-backdrop" aria-hidden="true" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <div class="modal-subtitle" id="qa-modal-subtitle">Assistent de Càrrega Ràpida</div>
+          <h2 class="modal-title" id="qa-modal-title">Combinada Recomanada</h2>
+        </div>
+        <button class="modal-close-btn" id="qa-modal-close" aria-label="Tancar">&times;</button>
+      </div>
+
+      <div class="modal-summary-bar" id="qa-modal-summary">
+        <!-- Generat per JS -->
+      </div>
+
+      <div class="modal-body" id="qa-modal-legs-list">
+        <!-- Llista de cames amb links directes -->
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="qa-btn-copy">
+          📋 Copiar Resum
+        </button>
+        <button class="btn-secondary" id="qa-btn-open-all">
+          📑 Obrir Tots els Partits
+        </button>
+        <button class="btn-winamax" id="qa-btn-auto-pc">
+          ⚡ 1-Clic Auto (PC) ↗
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="app-footer">

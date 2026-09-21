@@ -15,6 +15,8 @@ let appData = null;
 let currentTab = 'rankings';
 let currentLeague = 'ALL';
 let currentSearch = '';
+let activeModalComboKey = null;
+window.combosRegistry = {};
 
 document.addEventListener('DOMContentLoaded', () => {
   initEventListeners();
@@ -48,6 +50,42 @@ function initEventListeners() {
     searchInput.addEventListener('input', (e) => {
       currentSearch = e.target.value.toLowerCase().trim();
       applyFilters();
+    });
+  }
+
+  // Quick Assistant Modal Listeners
+  const modalClose = document.getElementById('qa-modal-close');
+  if (modalClose) {
+    modalClose.addEventListener('click', closeQuickAssistant);
+  }
+  const modalBackdrop = document.getElementById('modal-quick-assistant');
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) {
+        closeQuickAssistant();
+      }
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeQuickAssistant();
+    }
+  });
+
+  const btnCopy = document.getElementById('qa-btn-copy');
+  if (btnCopy) {
+    btnCopy.addEventListener('click', copyModalComboSummary);
+  }
+  const btnOpenAll = document.getElementById('qa-btn-open-all');
+  if (btnOpenAll) {
+    btnOpenAll.addEventListener('click', openModalAllMatches);
+  }
+  const btnAutoPc = document.getElementById('qa-btn-auto-pc');
+  if (btnAutoPc) {
+    btnAutoPc.addEventListener('click', () => {
+      if (activeModalComboKey) {
+        openWinamaxAutofill(activeModalComboKey);
+      }
     });
   }
 }
@@ -392,6 +430,7 @@ function renderCombos() {
   const container = document.getElementById('combos-container');
   if (!container || !appData.combos) return;
 
+  window.combosRegistry = {};
   const leagueKeys = ['LALIGA', 'PREMIER', 'HYPERMOTION', 'MULTI'];
   let html = '';
 
@@ -423,7 +462,14 @@ function renderCombos() {
         </div>
 
         <div class="combos-grid">
-          ${allCards.map(c => {
+          ${allCards.map((c, cardIdx) => {
+            const comboKey = `${lKey}_${c.type}_${cardIdx}`;
+            window.combosRegistry[comboKey] = {
+              ...c,
+              leagueKey: lKey,
+              leagueTitle: leagueTitle
+            };
+
             let oddCls = 'odd-safe';
             if (c.type === 'semi') oddCls = 'odd-semi';
             else if (c.type === 'risky') oddCls = 'odd-risky';
@@ -514,9 +560,19 @@ function renderCombos() {
                   </div>
                 </div>
 
-                <a href="${c.winamax_url || 'https://www.winamax.es'}" target="_blank" rel="noopener noreferrer" class="btn-winamax" style="padding: 6px; font-size: 11.5px;">
-                  Obrir combinada a Winamax ↗
-                </a>
+                <div class="combo-actions-wrapper">
+                  <div class="combo-btn-row">
+                    <button type="button" class="btn-assistant" onclick="openQuickAssistant('${comboKey}')" title="Obre assistent interactiu pas a pas (Mòbil i PC)">
+                      📲 Assistent Ràpid
+                    </button>
+                    <button type="button" class="btn-auto-pc" onclick="openWinamaxAutofill('${comboKey}')" title="Omple el cupó automàticament a Winamax amb l'script de Tampermonkey (PC)">
+                      ⚡ 1-Clic Auto
+                    </button>
+                  </div>
+                  <a href="${c.winamax_url || 'https://www.winamax.es'}" target="_blank" rel="noopener noreferrer" class="combo-direct-link">
+                    Obrir lliga a Winamax ↗
+                  </a>
+                </div>
               </div>
             `;
           }).join('')}
@@ -748,3 +804,242 @@ function renderChangelog() {
 
   container.innerHTML = html;
 }
+
+// -----------------------------------------------------------------------------
+// 7. ASSISTENT RÀPID DE CUPÓ WINAMAX (MÒBIL & PC) & 1-CLIC AUTO
+// -----------------------------------------------------------------------------
+function openQuickAssistant(comboKey) {
+  const combo = window.combosRegistry[comboKey];
+  if (!combo) return;
+
+  activeModalComboKey = comboKey;
+  const modal = document.getElementById('modal-quick-assistant');
+  if (!modal) return;
+
+  const titleEl = document.getElementById('qa-modal-title');
+  const subEl = document.getElementById('qa-modal-subtitle');
+  const sumEl = document.getElementById('qa-modal-summary');
+  const legsEl = document.getElementById('qa-modal-legs-list');
+
+  const boosterPct = combo.booster_pct || 0;
+  const boostedOdd = combo.boosted_odd || combo.combined_odd;
+  const probConjunta = combo.combined_prob_pct != null ? combo.combined_prob_pct.toFixed(1) : '-';
+  const legsCount = (combo.legs || []).length;
+
+  if (titleEl) titleEl.textContent = combo.profile;
+  if (subEl) subEl.textContent = `${combo.leagueTitle || 'Lliga'} · Assistent Interactiu de Selecció`;
+
+  if (sumEl) {
+    sumEl.innerHTML = `
+      <div class="qa-sum-col">
+        <span class="qa-sum-lbl">Cuota Total</span>
+        <span class="qa-sum-val" style="color: var(--accent-emerald);">@${boostedOdd.toFixed(2)}</span>
+        ${boosterPct > 0 ? `<span class="qa-sum-sub">🚀 +${boosterPct}% Booster inclòs</span>` : ''}
+      </div>
+      <div class="qa-sum-col">
+        <span class="qa-sum-lbl">Probabilitat Model</span>
+        <span class="qa-sum-val" style="color: var(--accent-cyan);">${probConjunta}%</span>
+        <span class="qa-sum-sub">Estimació conjunta</span>
+      </div>
+      <div class="qa-sum-col">
+        <span class="qa-sum-lbl">Progrés Cupó</span>
+        <span class="qa-sum-val" id="qa-progress-text" style="color: var(--accent-amber);">0 / ${legsCount}</span>
+        <span class="qa-sum-sub">Seleccions afegides</span>
+      </div>
+      <div class="qa-sum-col">
+        <span class="qa-sum-lbl">Inversió Recomanada</span>
+        <span class="qa-sum-val">${combo.stake.toFixed(2)} €</span>
+        <span class="qa-sum-sub">Retorn: +${combo.potential_payout.toFixed(2)} €</span>
+      </div>
+    `;
+  }
+
+  if (legsEl) {
+    legsEl.innerHTML = (combo.legs || []).map((leg, idx) => {
+      let catIcon = '🏷️';
+      const cat = leg.category || '';
+      if (cat === 'Gols') catIcon = '⚽';
+      else if (cat === 'Córners') catIcon = '🚩';
+      else if (cat === 'Targetes') catIcon = '🟨';
+      else if (cat === 'BTTS') catIcon = '🤝';
+      else if (cat === 'Doble Oportunitat') catIcon = '🛡️';
+      else if (cat === '1X2') catIcon = '🎯';
+
+      const legOdd = leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-';
+      const modelProb = leg.model_prob != null ? leg.model_prob.toFixed(1) : '-';
+      const legUrl = leg.url || combo.winamax_url || 'https://www.winamax.es';
+
+      return `
+        <div class="qa-leg-card" id="qa-leg-card-${idx}">
+          <div class="qa-leg-top">
+            <div class="qa-leg-matchup">
+              <span class="qa-leg-num">#${idx + 1}</span>
+              <strong>${leg.matchup}</strong>
+              <span class="leg-category-tag" style="margin-left: 6px;">${catIcon} ${cat}</span>
+            </div>
+            <div class="qa-leg-meta">
+              <span class="qa-leg-odd">@${legOdd}</span>
+              <span class="qa-leg-prob">${modelProb}% model</span>
+            </div>
+          </div>
+
+          <div class="qa-selection-instruction">
+            <div class="qa-instruction-label">👉 Casella exacta a marcar a Winamax:</div>
+            <div class="qa-instruction-value">
+              <strong>${leg.selection_name}</strong>
+            </div>
+          </div>
+
+          <div class="qa-leg-bottom">
+            <a href="${legUrl}" target="_blank" rel="noopener noreferrer" class="btn-leg-open" onclick="handleLegClick(${idx})">
+              ⚽ Obrir Partit (Web / App) ↗
+            </a>
+            <label class="qa-check-label" for="qa-check-${idx}">
+              <input type="checkbox" class="qa-leg-checkbox" id="qa-check-${idx}" onchange="toggleLegChecked(${idx})">
+              <span>Afegit al cupó</span>
+            </label>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  modal.classList.add('active');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeQuickAssistant() {
+  const modal = document.getElementById('modal-quick-assistant');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+}
+
+function handleLegClick(idx) {
+  // Quan l'usuari clica per obrir el partit a Winamax, marquem automàticament la casella
+  const checkbox = document.getElementById(`qa-check-${idx}`);
+  if (checkbox && !checkbox.checked) {
+    checkbox.checked = true;
+    toggleLegChecked(idx);
+  }
+}
+
+function toggleLegChecked(idx) {
+  const card = document.getElementById(`qa-leg-card-${idx}`);
+  const checkbox = document.getElementById(`qa-check-${idx}`);
+  if (card && checkbox) {
+    card.classList.toggle('is-checked', checkbox.checked);
+  }
+  updateProgressText();
+}
+
+function updateProgressText() {
+  const checkboxes = document.querySelectorAll('.qa-leg-checkbox');
+  const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+  const total = checkboxes.length;
+  const progressText = document.getElementById('qa-progress-text');
+  if (progressText) {
+    progressText.textContent = `${checked} / ${total}`;
+    if (checked === total && total > 0) {
+      progressText.style.color = 'var(--accent-emerald)';
+    } else {
+      progressText.style.color = 'var(--accent-amber)';
+    }
+  }
+}
+
+function copyModalComboSummary() {
+  if (!activeModalComboKey) return;
+  const combo = window.combosRegistry[activeModalComboKey];
+  if (!combo) return;
+
+  const boosterPct = combo.booster_pct || 0;
+  const boostedOdd = combo.boosted_odd || combo.combined_odd;
+  const probConjunta = combo.combined_prob_pct != null ? combo.combined_prob_pct.toFixed(1) : '-';
+
+  let text = `⚽ PREDICCIONS FUTBOL · ${combo.profile}\n`;
+  text += `Lliga: ${combo.leagueTitle || ''}\n`;
+  text += `Cuota Total: @${boostedOdd.toFixed(2)}${boosterPct > 0 ? ` (+${boosterPct}% Booster)` : ''}\n`;
+  text += `Probabilitat Conjunta Model: ${probConjunta}%\n`;
+  text += `Inversió Recomanada: ${combo.stake.toFixed(2)} € (Retorn: +${combo.potential_payout.toFixed(2)} €)\n\n`;
+  text += `SELECCIONS DEL CUPÓ:\n`;
+
+  (combo.legs || []).forEach((leg, i) => {
+    text += `${i + 1}. [${leg.matchup}] 👉 ${leg.selection_name} (@${leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-'}) [Model: ${leg.model_prob}%]\n`;
+    if (leg.url) {
+      text += `   Enllaç: ${leg.url}\n`;
+    }
+  });
+
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('qa-btn-copy');
+    if (btn) {
+      const original = btn.innerHTML;
+      btn.innerHTML = '✅ Copiat!';
+      btn.style.borderColor = 'var(--accent-emerald)';
+      btn.style.color = 'var(--accent-emerald)';
+      setTimeout(() => {
+        btn.innerHTML = original;
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 2000);
+    }
+  }).catch(err => {
+    console.error('Error al copiar al porta-retalls:', err);
+    alert('No s\'ha pogut copiar automàticament. Pots seleccionar el text manualment.');
+  });
+}
+
+function openModalAllMatches() {
+  if (!activeModalComboKey) return;
+  const combo = window.combosRegistry[activeModalComboKey];
+  if (!combo || !combo.legs) return;
+
+  combo.legs.forEach((leg, idx) => {
+    if (leg.url) {
+      setTimeout(() => {
+        window.open(leg.url, '_blank');
+      }, idx * 180);
+    }
+  });
+}
+
+function openWinamaxAutofill(comboKey) {
+  const combo = window.combosRegistry[comboKey];
+  if (!combo) return;
+
+  const payload = {
+    profile: combo.profile,
+    odd: (combo.boosted_odd || combo.combined_odd || 0).toFixed(2),
+    boosted_odd: combo.boosted_odd || combo.combined_odd,
+    booster_pct: combo.booster_pct || 0,
+    legs: (combo.legs || []).map(l => ({
+      matchup: l.matchup,
+      selection: l.selection_name,
+      selection_name: l.selection_name,
+      odd: (l.bookie_odd != null) ? l.bookie_odd.toFixed(2) : '',
+      bookie_odd: l.bookie_odd,
+      model_prob: l.model_prob,
+      url: l.url
+    }))
+  };
+
+  const hash = encodeURIComponent(JSON.stringify(payload));
+  const initialUrl = (combo.legs && combo.legs.length > 0 && combo.legs[0].url) 
+    ? combo.legs[0].url 
+    : (combo.winamax_url || 'https://www.winamax.es/apuestas-deportivas');
+
+  window.open(`${initialUrl}#combo_autofill=${hash}`, '_blank');
+}
+
+// Exportar globals per als controladors en línia
+window.openQuickAssistant = openQuickAssistant;
+window.closeQuickAssistant = closeQuickAssistant;
+window.handleLegClick = handleLegClick;
+window.toggleLegChecked = toggleLegChecked;
+window.copyModalComboSummary = copyModalComboSummary;
+window.openModalAllMatches = openModalAllMatches;
+window.openWinamaxAutofill = openWinamaxAutofill;
