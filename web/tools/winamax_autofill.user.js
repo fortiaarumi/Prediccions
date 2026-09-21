@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Prediccions Lliga - Winamax Auto Betslip (1-Clic)
+// @name         Prediccions Lliga - Winamax Auto Betslip (1-Clic Turbo)
 // @namespace    https://github.com/fortiaarumi/Prediccions
-// @version      1.3.0
-// @description  Afegeix automàticament les combinades de Prediccions Lliga al cupó de Winamax en 1 sol clic (Navegació pas a pas fluida i sense bloquejos).
+// @version      2.0.0
+// @description  Omple automàticament la combinada sencera a Winamax a màxima velocitat en 1 sol clic (Mode Turbo amb HUD integrat).
 // @author       Prediccions Lliga
 // @match        https://winamax.es/*
 // @match        https://*.winamax.es/*
@@ -18,7 +18,7 @@
 (function() {
     'use strict';
 
-    console.log("[Prediccions Lliga] Winamax Auto-Betslip v1.3.0 iniciat.");
+    console.log("[Prediccions Lliga] Winamax Auto-Betslip v2.0.0 Turbo iniciat.");
 
     function parseComboPayload() {
         const fullUrl = window.location.href;
@@ -55,7 +55,6 @@
         return;
     }
 
-    // Obtenir la posició del partit actual dins la combinada
     function getCurrentLegIndex() {
         const fullUrl = window.location.href;
         if (fullUrl.includes('leg_idx=')) {
@@ -68,7 +67,6 @@
             } catch (e) {}
         }
 
-        // Si no hi ha leg_idx, deduir-ho pel pathname del partit actual
         const currentPath = window.location.pathname;
         const found = comboData.legs.findIndex(l => {
             if (!l.url) return false;
@@ -84,104 +82,125 @@
     const totalLegs = comboData.legs.length;
     const isLastLeg = currentLegIdx >= totalLegs - 1;
 
-    console.log(`[Prediccions Lliga] Partit actual: ${currentLegIdx + 1}/${totalLegs}`, currentLeg);
-
     let hasSelectedCurrent = false;
-    let switchedTabOnce = false;
 
-    // Crear widget flotant net, ràpid i sense càrrega de CPU
-    function createOverlayWidget() {
-        if (document.getElementById('prediccions-winamax-dock')) return;
+    // Crear el HUD Turbo centrat i d'alt rendiment
+    function renderTurboHud() {
+        if (document.getElementById('prediccions-turbo-hud')) return;
 
-        const dock = document.createElement('div');
-        dock.id = 'prediccions-winamax-dock';
-        dock.style.cssText = `
+        const hud = document.createElement('div');
+        hud.id = 'prediccions-turbo-hud';
+        hud.style.cssText = `
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 999999999;
-            background: linear-gradient(135deg, #0b111e, #131c2e);
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999999999;
+            background: rgba(11, 17, 30, 0.95);
             border: 2px solid #10b981;
-            border-radius: 14px;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.9);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(16, 185, 129, 0.2);
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 16px 18px;
-            width: 360px;
-            font-size: 13px;
-            line-height: 1.4;
+            padding: 18px 24px;
+            width: 440px;
+            max-width: 90vw;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             box-sizing: border-box;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         `;
 
-        const progressPercent = Math.round(((currentLegIdx) / totalLegs) * 100);
+        const pct = Math.round(((currentLegIdx) / totalLegs) * 100);
 
-        dock.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <div style="font-weight: 800; font-size: 14px; color: #34d399; display: flex; align-items: center; gap: 6px;">
-                    <span>⚡ Prediccions Lliga</span>
-                    <span style="font-size: 11px; background: rgba(16,185,129,0.2); color: #34d399; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Pas ${currentLegIdx + 1} de ${totalLegs}</span>
+        hud.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 18px;">⚡</span>
+                    <strong style="font-size: 15px; color: #34d399; letter-spacing: -0.3px;">Turbo Auto-Betslip</strong>
                 </div>
-                <button id="close-dock-btn" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 18px; line-height: 1;">✕</button>
+                <div style="font-size: 11.5px; background: rgba(16,185,129,0.2); color: #34d399; padding: 2px 8px; border-radius: 999px; font-weight: 800; font-family: monospace;">
+                    PAS ${currentLegIdx + 1} DE ${totalLegs}
+                </div>
             </div>
 
             <!-- Progrés -->
-            <div style="background: rgba(255,255,255,0.1); border-radius: 999px; height: 6px; overflow: hidden; margin-bottom: 10px;">
-                <div id="dock-progress-bar" style="background: linear-gradient(90deg, #10b981, #06b6d4); height: 100%; width: ${progressPercent}%; transition: width 0.3s ease;"></div>
+            <div style="background: rgba(255,255,255,0.1); border-radius: 999px; height: 7px; overflow: hidden; margin-bottom: 12px;">
+                <div id="turbo-progress-fill" style="background: linear-gradient(90deg, #10b981, #06b6d4); height: 100%; width: ${pct}%; transition: width 0.25s ease;"></div>
             </div>
 
-            <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 8px;">
-                Combinada: <strong style="color: #ffffff;">${comboData.profile || 'Recomanada'}</strong> 
-                <span style="color: #34d399; font-weight: 700;">@${comboData.odd || comboData.boosted_odd || '-'}</span>
+            <!-- Llista de seleccions -->
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;">
+                ${comboData.legs.map((leg, idx) => {
+                    let icon = '⏳';
+                    let textCol = '#94a3b8';
+                    let bg = 'rgba(255,255,255,0.03)';
+                    let border = 'rgba(255,255,255,0.08)';
+
+                    if (idx < currentLegIdx) {
+                        icon = '✅';
+                        textCol = '#34d399';
+                        bg = 'rgba(16,185,129,0.08)';
+                        border = 'rgba(16,185,129,0.3)';
+                    } else if (idx === currentLegIdx) {
+                        icon = '🎯';
+                        textCol = '#ffffff';
+                        bg = 'rgba(99,102,241,0.15)';
+                        border = 'rgba(99,102,241,0.5)';
+                    }
+
+                    return `
+                        <div style="background: ${bg}; border: 1px solid ${border}; border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
+                            <div style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px;">
+                                <span style="margin-right: 4px;">${icon}</span>
+                                <span style="font-weight: 600; color: ${textCol};">${leg.matchup.split(' vs ')[0]} vs ${leg.matchup.split(' vs ')[1] || ''}:</span>
+                                <span style="color: ${textCol};">${leg.selection || leg.selection_name}</span>
+                            </div>
+                            <div style="font-weight: 800; color: #a5b4fc; font-family: monospace;">@${leg.odd || leg.bookie_odd}</div>
+                        </div>
+                    `;
+                }).join('')}
             </div>
 
-            <!-- Partit actual -->
-            <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(16,185,129,0.3); border-radius: 8px; padding: 10px; margin-bottom: 12px;">
-                <div style="font-size: 10.5px; color: #a5b4fc; font-weight: 700; text-transform: uppercase;">Partit ${currentLegIdx + 1} de ${totalLegs}:</div>
-                <div style="font-size: 13.5px; font-weight: 700; color: #ffffff; margin-top: 2px;">${currentLeg.matchup}</div>
-                
-                <div style="margin-top: 8px; padding: 8px 10px; background: rgba(16,185,129,0.12); border-left: 3px solid #10b981; border-radius: 4px;">
-                    <div style="font-size: 10.5px; color: #94a3b8;">Casella a marcar:</div>
-                    <div style="font-size: 13px; font-weight: 800; color: #34d399;">
-                        👉 ${currentLeg.selection || currentLeg.selection_name}
-                        <span style="color: #ffffff; font-family: monospace; margin-left: 4px;">@${currentLeg.odd || currentLeg.bookie_odd}</span>
-                    </div>
-                </div>
-
-                <div id="dock-status-msg" style="margin-top: 8px; font-size: 12px; font-weight: 700; color: #f59e0b;">
-                    ⏳ Cercant quota...
-                </div>
+            <div id="turbo-hud-status" style="font-size: 12.5px; font-weight: 700; color: #f59e0b; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <span>⚡ Clicant quota de ${currentLeg.matchup}...</span>
             </div>
 
-            <!-- Botons -->
-            <div style="display: flex; gap: 8px;">
-                <button id="btn-next-leg" style="flex: 1.2; background: #059669; color: #ffffff; border: none; border-radius: 6px; padding: 9px; font-weight: 700; cursor: pointer; font-size: 12px;">
-                    ${isLastLeg ? '🏁 Finalitzar Cupó' : '➡️ Següent Partit'}
+            <!-- Botons ràpids per si l'usuari vol controlar -->
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button id="turbo-btn-next" style="flex: 1; background: rgba(255,255,255,0.08); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 7px; font-size: 11.5px; font-weight: 600; cursor: pointer;">
+                    ${isLastLeg ? '🏁 Finalitzar' : '➡️ Saltar Partit'}
                 </button>
-                <button id="btn-switch-tab" style="flex: 1; background: rgba(59,130,246,0.2); color: #93c5fd; border: 1px solid rgba(59,130,246,0.4); border-radius: 6px; padding: 9px; font-weight: 600; cursor: pointer; font-size: 11.5px;">
-                    📂 Obrir Goles / Mercat
+                <button id="turbo-btn-close" style="background: none; color: #64748b; border: none; padding: 7px 10px; font-size: 11.5px; cursor: pointer;">
+                    Ocultar
                 </button>
             </div>
         `;
 
-        document.body.appendChild(dock);
+        document.body.appendChild(hud);
 
-        document.getElementById('close-dock-btn').onclick = () => dock.remove();
-        document.getElementById('btn-next-leg').onclick = () => goToNextLeg();
-        document.getElementById('btn-switch-tab').onclick = () => trySwitchToMarketTab(true);
+        document.getElementById('turbo-btn-close').onclick = () => hud.remove();
+        document.getElementById('turbo-btn-next').onclick = () => fastHopToNextLeg();
     }
 
-    // Saltar al següent partit
-    function goToNextLeg() {
+    // Salt instantani al següent partit
+    function fastHopToNextLeg() {
         if (isLastLeg) {
-            const statusEl = document.getElementById('dock-status-msg');
-            if (statusEl) {
-                statusEl.innerHTML = '🎉 <span style="color: #34d399;">COMBINADA COMPLETADA! Cupó llest!</span>';
+            const hudStatus = document.getElementById('turbo-hud-status');
+            if (hudStatus) {
+                hudStatus.innerHTML = '🎉 <span style="color: #34d399; font-size: 13.5px;">COMBINADA COMPLETADA AL 100%! Cupó llest a la teva cistella!</span>';
             }
-            const btnNext = document.getElementById('btn-next-leg');
-            if (btnNext) {
-                btnNext.style.background = '#10b981';
-                btnNext.textContent = '✅ Fet! Aposta llesta';
-            }
+            const pFill = document.getElementById('turbo-progress-fill');
+            if (pFill) pFill.style.width = '100%';
+
+            setTimeout(() => {
+                const hud = document.getElementById('prediccions-turbo-hud');
+                if (hud) {
+                    hud.style.opacity = '0';
+                    hud.style.transform = 'translateX(-50%) translateY(-20px)';
+                    setTimeout(() => hud.remove(), 400);
+                }
+            }, 2500);
             return;
         }
 
@@ -195,154 +214,133 @@
         }
 
         const nextUrl = `${nextLeg.url}#combo_autofill=${rawPayload}&leg_idx=${nextIdx}`;
-        console.log(`[Prediccions Lliga] Navegant al partit ${nextIdx + 1}: ${nextUrl}`);
-
-        const statusEl = document.getElementById('dock-status-msg');
-        if (statusEl) {
-            statusEl.innerHTML = `🚀 <span style="color: #34d399;">Carregant partit ${nextIdx + 1} de ${totalLegs}...</span>`;
-        }
-
-        setTimeout(() => {
-            window.location.href = nextUrl;
-        }, 400);
+        window.location.href = nextUrl;
     }
 
-    // Canviar automàticament a la pestanya de mercat adequada (ex: Goles, Tarjetas)
-    function trySwitchToMarketTab(force) {
-        if (switchedTabOnce && !force) return;
-
+    // Canvi instantani a pestanya de mercats si cal (Goles, Tarjetas, etc.)
+    function instantOpenMarketTab() {
         const cat = (currentLeg.category || '').toLowerCase();
         const sel = (currentLeg.selection || currentLeg.selection_name || '').toLowerCase();
 
-        // Buscar botons de pestanya de Winamax
-        const buttons = Array.from(document.querySelectorAll('button, div[role="tab"], div[role="button"], span'));
-        
-        let targetKeyword = null;
+        let keyword = null;
         if (cat.includes('gol') || sel.includes('gol') || sel.includes('marca') || sel.includes('+') || sel.includes('-')) {
-            targetKeyword = 'goles';
+            keyword = 'goles';
         } else if (cat.includes('target') || sel.includes('target') || sel.includes('amarill')) {
-            targetKeyword = 'tarjetas';
+            keyword = 'tarjetas';
         } else if (cat.includes('córner') || sel.includes('corner')) {
-            targetKeyword = 'córners';
+            keyword = 'córners';
         }
 
-        if (targetKeyword) {
-            for (const b of buttons) {
-                const txt = (b.innerText || b.textContent || '').trim().toLowerCase();
-                if (txt.includes(targetKeyword) && txt.length < 25) {
-                    console.log(`[Prediccions Lliga] Clicant pestanya de mercat '${targetKeyword}':`, b);
-                    b.click();
-                    switchedTabOnce = true;
-                    break;
-                }
+        if (!keyword) return;
+
+        const tabs = Array.from(document.querySelectorAll('button, div[role="tab"], span'));
+        for (const t of tabs) {
+            const txt = (t.innerText || t.textContent || '').trim().toLowerCase();
+            if (txt.startsWith(keyword) && txt.length < 20) {
+                t.click();
+                break;
             }
         }
     }
 
-    // Cercar i clicar la quota del partit actual
-    function attemptSelectCurrentLeg() {
-        if (hasSelectedCurrent) return;
-
+    // Matcher ràpid i precís
+    function findTargetButton() {
         const targetOdd = parseFloat(currentLeg.odd || currentLeg.bookie_odd);
-        const oddStrDot = targetOdd.toFixed(2);
-        const oddStrComma = targetOdd.toFixed(2).replace('.', ',');
+        const oddDot = targetOdd.toFixed(2);
+        const oddComma = targetOdd.toFixed(2).replace('.', ',');
         const targetName = (currentLeg.selection || currentLeg.selection_name || '').toLowerCase();
 
         const buttons = Array.from(document.querySelectorAll('button, div[role="button"]'));
-        if (buttons.length === 0) return;
-
-        let matchedBtn = null;
+        if (buttons.length === 0) return null;
 
         for (const btn of buttons) {
-            const text = (btn.innerText || btn.textContent || '').trim().toLowerCase();
-            if (!text) continue;
+            const txt = (btn.innerText || btn.textContent || '').trim().toLowerCase();
+            if (!txt) continue;
 
-            const hasOdd = text.includes(oddStrDot) || text.includes(oddStrComma) || text.includes(`@${oddStrDot}`) || text.includes(`@${oddStrComma}`);
+            const hasOdd = txt.includes(oddDot) || txt.includes(oddComma) || txt.includes(`@${oddDot}`) || txt.includes(`@${oddComma}`);
             if (hasOdd) {
-                if (targetName.includes('1x') && text.includes('1x')) { matchedBtn = btn; break; }
-                if (targetName.includes('x2') && text.includes('x2')) { matchedBtn = btn; break; }
-                if (targetName.includes('12') && text.includes('12')) { matchedBtn = btn; break; }
-                if ((targetName.includes('local') || targetName.startsWith('1')) && text.includes('1') && !text.includes('1x') && !text.includes('+1')) { matchedBtn = btn; break; }
-                if ((targetName.includes('visitant') || targetName.startsWith('2')) && text.includes('2') && !text.includes('x2') && !text.includes('+2')) { matchedBtn = btn; break; }
-                if (targetName.includes('empat') && (text.includes('x') || text.includes('empate') || text.includes('nul'))) { matchedBtn = btn; break; }
-                if ((targetName.includes('+0.5') || targetName.includes('marca')) && (text.includes('+0.5') || text.includes('sí') || text.includes('si') || text.includes('marca'))) { matchedBtn = btn; break; }
-                if (targetName.includes('+1.5') && text.includes('+1.5')) { matchedBtn = btn; break; }
-                if (targetName.includes('-3.5') && text.includes('-3.5')) { matchedBtn = btn; break; }
-                if (targetName.includes('+2.5') && text.includes('+2.5')) { matchedBtn = btn; break; }
-                if (targetName.includes('btts') || targetName.includes('ambdós')) {
-                    if (text.includes('sí') || text.includes('si') || text.includes('ambos')) { matchedBtn = btn; break; }
+                if (targetName.includes('1x') && (txt.includes('1x') || txt.includes('1 o x'))) return btn;
+                if (targetName.includes('x2') && (txt.includes('x2') || txt.includes('x o 2'))) return btn;
+                if (targetName.includes('12') && (txt.includes('12') || txt.includes('1 o 2'))) return btn;
+                if (targetName.includes('local') || targetName.startsWith('1')) {
+                    if (txt.includes('1') && !txt.includes('1x') && !txt.includes('+1')) return btn;
                 }
-                if (!matchedBtn) matchedBtn = btn;
+                if (targetName.includes('visitant') || targetName.startsWith('2')) {
+                    if (txt.includes('2') && !txt.includes('x2') && !txt.includes('+2')) return btn;
+                }
+                if (targetName.includes('empat') && (txt.includes('x') || txt.includes('empate') || txt.includes('nul'))) return btn;
+                if ((targetName.includes('+0.5') || targetName.includes('marca')) && (txt.includes('+0.5') || txt.includes('sí') || txt.includes('si') || txt.includes('marca'))) return btn;
+                if (targetName.includes('+1.5') && txt.includes('+1.5')) return btn;
+                if (targetName.includes('-3.5') && txt.includes('-3.5')) return btn;
+                if (targetName.includes('+2.5') && txt.includes('+2.5')) return btn;
+                if (targetName.includes('btts') || targetName.includes('ambdós')) {
+                    if (txt.includes('sí') || txt.includes('si') || txt.includes('ambos')) return btn;
+                }
+                return btn;
             }
         }
+        return null;
+    }
 
-        if (matchedBtn) {
+    // Execució Turbo: cerca cada 120ms
+    function turboRun() {
+        if (hasSelectedCurrent) return;
+
+        instantOpenMarketTab();
+
+        const btn = findTargetButton();
+        if (btn) {
             hasSelectedCurrent = true;
             try {
-                matchedBtn.click();
-                matchedBtn.style.outline = '3px solid #10b981';
-                matchedBtn.style.boxShadow = '0 0 15px #10b981';
+                btn.click();
+                btn.style.outline = '3px solid #10b981';
+                btn.style.boxShadow = '0 0 20px #10b981';
 
-                const statusEl = document.getElementById('dock-status-msg');
-                const pBar = document.getElementById('dock-progress-bar');
-                const newPct = Math.round(((currentLegIdx + 1) / totalLegs) * 100);
-                if (pBar) pBar.style.width = `${newPct}%`;
-
-                if (isLastLeg) {
-                    if (statusEl) {
-                        statusEl.innerHTML = '🎉 <span style="color: #34d399;">COMBINADA COMPLETADA! Cupó llest!</span>';
-                    }
-                    const btnNext = document.getElementById('btn-next-leg');
-                    if (btnNext) {
-                        btnNext.style.background = '#10b981';
-                        btnNext.textContent = '✅ Fet! Introdueix l\'import';
-                    }
-                } else {
-                    if (statusEl) {
-                        statusEl.innerHTML = `✅ <span style="color: #34d399;">Afegida! Passant al partit ${currentLegIdx + 2} en 1.5s...</span>`;
-                    }
-                    setTimeout(goToNextLeg, 1500);
+                const status = document.getElementById('turbo-hud-status');
+                if (status) {
+                    status.innerHTML = `✅ <span style="color: #34d399;">Afegida! ${isLastLeg ? 'Finalitzant...' : 'Saltant al següent partit...'}</span>`;
                 }
+
+                // Espera mínima de 250ms només per deixar que React actualitzi l'estat intern
+                setTimeout(fastHopToNextLeg, 280);
             } catch (err) {
-                console.error("[Prediccions Lliga] Error clicant:", err);
-            }
-        } else {
-            // Si no l'ha trobada encara, intentar obrir pestanya de mercat
-            trySwitchToMarketTab(false);
-            const statusEl = document.getElementById('dock-status-msg');
-            if (statusEl && !hasSelectedCurrent) {
-                statusEl.innerHTML = `⚠️ <span style="color: #cbd5e1;">Clica la casella al partit o prem 'Següent'</span>`;
+                console.error("[Prediccions Lliga] Error:", err);
             }
         }
     }
 
-    // Escolta de clics manuals: si l'usuari clica la quota manualment, el script l'ajuda i avança
+    // Escolta de clics manuals com a pla B
     document.addEventListener('click', (e) => {
         if (hasSelectedCurrent) return;
         const target = e.target.closest('button, div[role="button"]');
-        if (!target || target.id === 'btn-next-leg' || target.id === 'btn-switch-tab' || target.id === 'close-dock-btn') return;
+        if (!target || target.id === 'turbo-btn-next' || target.id === 'turbo-btn-close') return;
 
         const text = (target.innerText || target.textContent || '').trim();
         const targetOdd = parseFloat(currentLeg.odd || currentLeg.bookie_odd);
         if (text.includes(targetOdd.toFixed(2)) || text.includes(targetOdd.toFixed(2).replace('.', ','))) {
             hasSelectedCurrent = true;
-            const statusEl = document.getElementById('dock-status-msg');
-            if (statusEl) {
-                statusEl.innerHTML = `✅ <span style="color: #34d399;">Seleccionat! Passant al següent partit...</span>`;
-            }
-            if (!isLastLeg) {
-                setTimeout(goToNextLeg, 1200);
-            }
+            setTimeout(fastHopToNextLeg, 200);
         }
     });
 
-    // Cicle d'execució lleuger i segur: SENSE cap MutationObserver per evitar bucles infinits
-    setTimeout(createOverlayWidget, 400);
+    // Iniciar HUD a l'instant
+    renderTurboHud();
 
-    // 4 intents espaiats (0% de consum de CPU)
-    setTimeout(attemptSelectCurrentLeg, 1000);
-    setTimeout(attemptSelectCurrentLeg, 2200);
-    setTimeout(attemptSelectCurrentLeg, 3500);
-    setTimeout(attemptSelectCurrentLeg, 5000);
+    // Polling d'alta freqüència (cada 150ms durant un màxim de 2 segons)
+    let checks = 0;
+    const turboInterval = setInterval(() => {
+        checks++;
+        if (hasSelectedCurrent || checks > 15) {
+            clearInterval(turboInterval);
+            if (!hasSelectedCurrent) {
+                const status = document.getElementById('turbo-hud-status');
+                if (status) {
+                    status.innerHTML = `⚠️ <span style="color: #fde047;">Clica la quota del partit o prem 'Saltar Partit'</span>`;
+                }
+            }
+            return;
+        }
+        turboRun();
+    }, 150);
 
 })();
