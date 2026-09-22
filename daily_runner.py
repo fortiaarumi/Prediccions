@@ -75,86 +75,90 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
     Obté la jornada immediata següent i la data del primer partit, FILTRANT STRICTAMENT
     per lliga regular (ignorant copes) i partits futurs que superin la darrera jornada finalitzada.
     """
-    comp = comp_id.upper()
-    base_url = FLASHSCORE_COMPETITIONS.get(comp)
-    if not base_url:
+    try:
+        comp = comp_id.upper()
+        base_url = FLASHSCORE_COMPETITIONS.get(comp)
+        if not base_url:
+            return None
+
+        # 1. Obtenir la darrera jornada jugada a SQLite per no predir el passat
+        _db = db if db else DatabaseManager()
+        with _db.get_connection() as conn:
+            c = conn.cursor()
+            max_finished = c.execute(
+                "SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status = 'FINISHED'",
+                (comp,)
+            ).fetchone()[0] or 0
+
+        cmd = ['curl', '-s', f'{base_url}/partidos/']
+        res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
+
+        blocks = res.stdout.split('~')
+        current_round = None
+        round_matches = []
+        now = datetime.now()
+
+        for b in blocks:
+            if 'ER÷' in b:
+                m_round = re.search(r'ER÷([^¬~]+)', b)
+                if m_round:
+                    current_round = m_round.group(1).strip()
+
+            # Filtrar partits de Copa (Copa del Rey, EFL Cup, FA Cup, etc.)
+            if current_round:
+                cr_lower = current_round.lower()
+                if any(cup in cr_lower for cup in ['copa', 'cup', 'fa cup', 'trophy', 'supercopa', 'playoff']):
+                    continue
+
+            if 'AA÷' in b and 'AD÷' in b:
+                # Comprovar que sigui una Jornada regular: "Jornada N", "Round N", "Matchday N"
+                m_num = re.search(r'(?:Jornada|Round|Matchday)\s*(\d+)', current_round or '', re.IGNORECASE)
+                if not m_num:
+                    continue
+
+                jornada_num = int(m_num.group(1))
+                # Només acceptar jornades posteriors o iguals a la darrera finalitzada
+                if jornada_num < max_finished:
+                    continue
+
+                fields = {}
+                for token in re.split(r'[\xac\r\n\t]+', b):
+                    if '÷' in token or '\xf7' in token:
+                        parts = re.split(r'[\xf7÷]', token, maxsplit=1)
+                        if len(parts) == 2:
+                            fields[parts[0]] = parts[1]
+
+                ts_str = fields.get('AD', '')
+                if ts_str.isdigit():
+                    match_dt = datetime.fromtimestamp(int(ts_str))
+                    # Només partits que encara s'hagin de jugar
+                    if match_dt > now - timedelta(hours=3):
+                        round_matches.append({
+                            "jornada": jornada_num,
+                            "match_code": fields.get('AA'),
+                            "home": fields.get('AE'),
+                            "away": fields.get('AF'),
+                            "datetime": match_dt
+                        })
+
+        if not round_matches:
+            return None
+
+        # Ordenar cronològicament
+        round_matches.sort(key=lambda x: x["datetime"])
+        first_match = round_matches[0]
+        active_jornada = first_match["jornada"]
+        earliest_matches = [m for m in round_matches if m["jornada"] == active_jornada]
+
+        return {
+            "competition_id": comp,
+            "jornada": active_jornada,
+            "first_match_dt": earliest_matches[0]["datetime"],
+            "matches_count": len(earliest_matches)
+        }
+    except Exception as e:
+        print(f"   [!] Error analitzant calendari Flashscore per a {comp_id}: {e}")
         return None
-
-    # 1. Obtenir la darrera jornada jugada a SQLite per no predir el passat
-    _db = db if db else DatabaseManager()
-    with _db.get_connection() as conn:
-        c = conn.cursor()
-        max_finished = c.execute(
-            "SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status = 'FINISHED'",
-            (comp,)
-        ).fetchone()[0] or 0
-
-    cmd = ['curl', '-s', f'{base_url}/partidos/']
-    res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
-
-    blocks = res.stdout.split('~')
-    current_round = None
-    round_matches = []
-    now = datetime.now()
-
-    for b in blocks:
-        if 'ER÷' in b:
-            m_round = re.search(r'ER÷([^¬~]+)', b)
-            if m_round:
-                current_round = m_round.group(1).strip()
-
-        # Filtrar partits de Copa (Copa del Rey, EFL Cup, FA Cup, etc.)
-        if current_round:
-            cr_lower = current_round.lower()
-            if any(cup in cr_lower for cup in ['copa', 'cup', 'fa cup', 'trophy', 'supercopa', 'playoff']):
-                continue
-
-        if 'AA÷' in b and 'AD÷' in b:
-            # Comprovar que sigui una Jornada regular: "Jornada N", "Round N", "Matchday N"
-            m_num = re.search(r'(?:Jornada|Round|Matchday)\s*(\d+)', current_round or '', re.IGNORECASE)
-            if not m_num:
-                continue
-
-            jornada_num = int(m_num.group(1))
-            # Només acceptar jornades posteriors o iguals a la darrera finalitzada
-            if jornada_num < max_finished:
-                continue
-
-            fields = {}
-            for token in re.split(r'[\xac\r\n\t]+', b):
-                if '÷' in token or '\xf7' in token:
-                    parts = re.split(r'[\xf7÷]', token, maxsplit=1)
-                    if len(parts) == 2:
-                        fields[parts[0]] = parts[1]
-
-            ts_str = fields.get('AD', '')
-            if ts_str.isdigit():
-                match_dt = datetime.fromtimestamp(int(ts_str))
-                # Només partits que encara s'hagin de jugar
-                if match_dt > now - timedelta(hours=3):
-                    round_matches.append({
-                        "jornada": jornada_num,
-                        "match_code": fields.get('AA'),
-                        "home": fields.get('AE'),
-                        "away": fields.get('AF'),
-                        "datetime": match_dt
-                    })
-
-    if not round_matches:
-        return None
-
-    # Ordenar cronològicament
-    round_matches.sort(key=lambda x: x["datetime"])
-    first_match = round_matches[0]
-    active_jornada = first_match["jornada"]
-    earliest_matches = [m for m in round_matches if m["jornada"] == active_jornada]
-
-    return {
-        "competition_id": comp,
-        "jornada": active_jornada,
-        "first_match_dt": earliest_matches[0]["datetime"],
-        "matches_count": len(earliest_matches)
-    }
 
 def run_daily_autonomous_check(force: bool = False):
     print("\n" + "=" * 80)
@@ -329,29 +333,32 @@ def run_daily_autonomous_check(force: bool = False):
 
     # Enviament d'avis per correu només quan hi ha nova jornada a disputar
     if leagues_to_predict:
-        email_sender = EmailSender()
-        active_j_str = ", ".join(f"{c} J{round_infos[c]['jornada']}" for c in leagues_to_predict)
-        sim_summary = tracker.get_simulation_summary()
-        import os
-        web_url = os.getenv("VERCEL_WEB_URL", "https://prediccions.vercel.app")
+        try:
+            email_sender = EmailSender()
+            active_j_str = ", ".join(f"{c} J{round_infos[c]['jornada']}" for c in leagues_to_predict)
+            sim_summary = tracker.get_simulation_summary()
+            import os
+            web_url = os.getenv("VERCEL_WEB_URL", "https://prediccions.vercel.app")
 
-        # Enviament de l'alerta web interactiva
-        email_sender.send_web_alert(
-            jornada_info=active_j_str,
-            web_url=web_url,
-            simulation_summary=sim_summary
-        )
-
-        # Si també s'han generat PDFs, enviar-los com a còpia adjunta
-        if generated_pdfs:
-            print("\n[*] Enviant també informes PDF adjunts per correu...")
-            main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
-            res = email_sender.send_reports(
-                pdf_paths=generated_pdfs,
-                jornada=main_j,
+            # Enviament de l'alerta web interactiva
+            email_sender.send_web_alert(
+                jornada_info=active_j_str,
+                web_url=web_url,
                 simulation_summary=sim_summary
             )
-            print(f"   [Èxit enviament correu]: {res}")
+
+            # Si també s'han generat PDFs, enviar-los com a còpia adjunta
+            if generated_pdfs:
+                print("\n[*] Enviant també informes PDF adjunts per correu...")
+                main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
+                res = email_sender.send_reports(
+                    pdf_paths=generated_pdfs,
+                    jornada=main_j,
+                    simulation_summary=sim_summary
+                )
+                print(f"   [Èxit enviament correu]: {res}")
+        except Exception as e:
+            print(f"   [!] Avís: No s'ha pogut trametre el correu electrònic: {e}")
 
     save_state(state)
     print("\n" + "=" * 80)
@@ -360,4 +367,10 @@ def run_daily_autonomous_check(force: bool = False):
 
 if __name__ == "__main__":
     force_run = "--force" in sys.argv
-    run_daily_autonomous_check(force=force_run)
+    try:
+        run_daily_autonomous_check(force=force_run)
+    except Exception as e:
+        import traceback
+        print(f"\n❌ [ERROR CRÍTIC EN EL PIPELINE DIARI]: {e}", file=sys.stderr)
+        traceback.print_exc()
+        sys.exit(1)

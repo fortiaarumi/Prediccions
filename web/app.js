@@ -12,7 +12,7 @@
  */
 
 let appData = null;
-let currentTab = 'rankings';
+let currentTab = 'novetats';
 let currentLeague = 'ALL';
 let currentSearch = '';
 let activeModalComboKey = null;
