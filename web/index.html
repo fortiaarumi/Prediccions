@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=3.1.0">
+  <link rel="stylesheet" href="style.css?v=3.2.0">
 </head>
 <body>
   <!-- Header / Navigation Bar -->
@@ -184,6 +184,84 @@
       <!-- KPI Hero Cards -->
       <div class="kpi-grid" id="bankroll-kpi-grid">
         <!-- Generat per JS -->
+      </div>
+
+      <!-- Panell de Simulació d'Imports i Unitats -->
+      <div class="bankroll-sim-card">
+        <div class="sim-card-header">
+          <div class="sim-card-info">
+            <span class="sim-badge-tag">⚡ SIMULADOR D'UNITATS & IMPORTS PERSONALITZATS</span>
+            <h2 class="sim-title">Què hagués passat si haguessis jugat altres imports?</h2>
+            <p class="sim-subtitle">Modifica la quantitat d'aposta per unitat segons el perfil i clica a <strong>Aplicar a totes les jornades</strong> per projectar els guanys o pèrdues de tot l'historial. També pots desplegar qualsevol jornada a la secció inferior per personalitzar imports específics.</p>
+          </div>
+          <div class="sim-actions-group">
+            <button class="btn-sim-primary" id="btn-apply-all-stakes" title="Aplica aquests 3 imports a totes les combinades de totes les jornades">
+              <span>⚡ Aplicar a totes les jornades</span>
+            </button>
+            <button class="btn-sim-secondary" id="btn-reset-default-stakes" title="Restablir les unitats recomanades originals (25€ / 10€ / 5€)">
+              <span>🔄 Restablir per defecte</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="sim-units-grid">
+          <div class="sim-unit-card">
+            <div class="sim-unit-head">
+              <span class="sim-icon">🛡️</span>
+              <div>
+                <div class="sim-unit-title">Combinades Segures</div>
+                <div class="sim-unit-desc">Quotes 1.80 - 3.50 · 2 per jornada</div>
+              </div>
+            </div>
+            <div class="sim-input-wrapper">
+              <label for="sim-unit-safe">Import unitat:</label>
+              <div class="sim-input-box">
+                <input type="number" id="sim-unit-safe" min="0" step="1" value="25" />
+                <span class="currency-symbol">€</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sim-unit-card">
+            <div class="sim-unit-head">
+              <span class="sim-icon">⚖️</span>
+              <div>
+                <div class="sim-unit-title">Semi-Arriscades</div>
+                <div class="sim-unit-desc">Quotes ~8.00 - 10.00 · 2 per jornada</div>
+              </div>
+            </div>
+            <div class="sim-input-wrapper">
+              <label for="sim-unit-semi">Import unitat:</label>
+              <div class="sim-input-box">
+                <input type="number" id="sim-unit-semi" min="0" step="1" value="10" />
+                <span class="currency-symbol">€</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sim-unit-card">
+            <div class="sim-unit-head">
+              <span class="sim-icon">🚀</span>
+              <div>
+                <div class="sim-unit-title">Combinades Arriscades</div>
+                <div class="sim-unit-desc">Quotes ≥ 15.00 - 35.00 · 2 per jornada</div>
+              </div>
+            </div>
+            <div class="sim-input-wrapper">
+              <label for="sim-unit-risky">Import unitat:</label>
+              <div class="sim-input-box">
+                <input type="number" id="sim-unit-risky" min="0" step="1" value="5" />
+                <span class="currency-symbol">€</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sim-status-banner" id="sim-status-banner" style="display: none;">
+          <span class="sim-banner-icon">🎯</span>
+          <span id="sim-status-banner-text">Simulació activa amb imports personalitzats.</span>
+          <button type="button" class="sim-banner-reset" id="btn-banner-reset">Tornar als valors per defecte</button>
+        </div>
       </div>
 
       <!-- Breakdown per Perfil d'Aposta -->
@@ -389,6 +467,6 @@
     </div>
   </footer>
 
-  <script src="app.js?v=3.2.0"></script>
+  <script src="app.js?v=3.3.0"></script>
 </body>
 </html>

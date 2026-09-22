@@ -587,99 +587,509 @@ function renderCombos() {
 }
 
 // -----------------------------------------------------------------------------
-// 5. RECOMPTE DE DINERS ("QUÈ HAGUÉS PASSAT SI...")
+// 5. RECOMPTE DE DINERS ("QUÈ HAGUÉS PASSAT SI...") · SIMULADOR INTERACTIU
 // -----------------------------------------------------------------------------
-function renderBankroll() {
-  const bData = appData.bankroll_simulation;
-  if (!bData) return;
 
-  const kpis = bData.kpis || {};
+const bankrollSimState = {
+  globalUnits: {
+    safe: 25.0,
+    semi: 10.0,
+    risky: 5.0
+  },
+  comboOverrides: {}, // comboId -> { stake?: number, simStatus?: 'REAL'|'WON'|'LOST'|'PENDING' }
+  loadedFromStorage: false
+};
 
-  // KPI Grid
-  const kpiGrid = document.getElementById('bankroll-kpi-grid');
-  if (kpiGrid) {
-    const isProfit = (kpis.net_pnl || 0) >= 0;
-    const pnlSign = isProfit ? '+' : '';
-    const roiSign = (kpis.roi_pct || 0) >= 0 ? '+' : '';
+function loadBankrollSimState() {
+  if (bankrollSimState.loadedFromStorage) return;
+  try {
+    const raw = localStorage.getItem('prediccions_bankroll_sim');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.globalUnits) {
+        bankrollSimState.globalUnits = {
+          safe: parseFloat(parsed.globalUnits.safe) || 25.0,
+          semi: parseFloat(parsed.globalUnits.semi) || 10.0,
+          risky: parseFloat(parsed.globalUnits.risky) || 5.0
+        };
+      }
+      if (parsed.comboOverrides && typeof parsed.comboOverrides === 'object') {
+        bankrollSimState.comboOverrides = parsed.comboOverrides;
+      }
+    }
+  } catch (err) {
+    console.warn("No s'ha pogut carregar l'estat del simulador de bankroll des de localStorage:", err);
+  }
+  bankrollSimState.loadedFromStorage = true;
+}
 
-    kpiGrid.innerHTML = `
-      <div class="kpi-card">
-        <div class="kpi-icon">💳</div>
-        <div class="kpi-label">Total Invertit</div>
-        <div class="kpi-value">${(kpis.total_invested || 0).toFixed(2)} €</div>
-        <div class="kpi-sub">${kpis.total_bets || 0} apostes concloses</div>
-      </div>
+function saveBankrollSimState() {
+  try {
+    localStorage.setItem('prediccions_bankroll_sim', JSON.stringify({
+      globalUnits: bankrollSimState.globalUnits,
+      comboOverrides: bankrollSimState.comboOverrides
+    }));
+  } catch (err) {
+    console.warn("No s'ha pogut guardar l'estat del simulador a localStorage:", err);
+  }
+}
 
-      <div class="kpi-card">
-        <div class="kpi-icon">💵</div>
-        <div class="kpi-label">Retorn Brut</div>
-        <div class="kpi-value">${(kpis.total_payout || 0).toFixed(2)} €</div>
-        <div class="kpi-sub">Pagaments totals rebuts</div>
-      </div>
+function getComboCategory(combo) {
+  const prof = ((combo && combo.profile) || '').toUpperCase();
+  if (prof.includes('SAFE') || prof.includes('SEGURA')) return 'safe';
+  if (prof.includes('SEMI')) return 'semi';
+  return 'risky';
+}
 
-      <div class="kpi-card highlight ${isProfit ? '' : 'loss'}">
-        <div class="kpi-icon">📈</div>
-        <div class="kpi-label">Balanç Net (PnL)</div>
-        <div class="kpi-value ${isProfit ? 'positive' : 'negative'}">${pnlSign}${(kpis.net_pnl || 0).toFixed(2)} €</div>
-        <div class="kpi-sub">Guany net real d'avui</div>
-      </div>
+function getComboEffectiveStake(combo) {
+  const override = bankrollSimState.comboOverrides[combo.id];
+  if (override && typeof override.stake === 'number' && !isNaN(override.stake)) {
+    return Math.max(0, override.stake);
+  }
+  const cat = getComboCategory(combo);
+  const globalUnit = bankrollSimState.globalUnits[cat];
+  if (typeof globalUnit === 'number' && !isNaN(globalUnit)) {
+    return Math.max(0, globalUnit);
+  }
+  return parseFloat(combo.stake) || 10.0;
+}
 
-      <div class="kpi-card">
-        <div class="kpi-icon">🎯</div>
-        <div class="kpi-label">Rendibilitat (ROI)</div>
-        <div class="kpi-value ${isProfit ? 'positive' : 'negative'}">${roiSign}${(kpis.roi_pct || 0).toFixed(1)}%</div>
-        <div class="kpi-sub">Retorn sobre capital</div>
-      </div>
+function getComboUserStatus(combo) {
+  const override = bankrollSimState.comboOverrides[combo.id];
+  if (override && override.simStatus) {
+    return override.simStatus;
+  }
+  return 'REAL';
+}
 
-      <div class="kpi-card">
-        <div class="kpi-icon">🏆</div>
-        <div class="kpi-label">Taxa d'Encert</div>
-        <div class="kpi-value" style="color: var(--accent-cyan);">${(kpis.win_rate_pct || 0).toFixed(1)}%</div>
-        <div class="kpi-sub">${kpis.won_bets || 0}W / ${kpis.lost_bets || 0}L (${kpis.pending_bets || 0} pendents)</div>
-      </div>
-    `;
+function getComboEffectiveStatus(combo) {
+  const userStatus = getComboUserStatus(combo);
+  if (userStatus && userStatus !== 'REAL') {
+    return userStatus;
+  }
+  return combo.status || 'PENDING';
+}
+
+function calculateComboMetrics(combo) {
+  const stake = getComboEffectiveStake(combo);
+  const status = getComboEffectiveStatus(combo);
+  const odd = parseFloat(combo.combined_odd) || 1.0;
+
+  let payout = 0;
+  let profit = 0;
+  let isEvaluated = false;
+
+  if (status === 'WON') {
+    payout = stake * odd;
+    profit = payout - stake;
+    isEvaluated = true;
+  } else if (status === 'LOST') {
+    payout = 0;
+    profit = -stake;
+    isEvaluated = true;
+  } else {
+    // PENDING
+    payout = 0;
+    profit = 0;
+    isEvaluated = false;
   }
 
-  // Breakdown per Perfil
-  const profilesGrid = document.getElementById('profiles-breakdown-grid');
-  if (profilesGrid && bData.by_profile) {
-    const profs = bData.by_profile;
-    const cards = [
-      { key: 'safe', label: 'Combinades Segures', icon: '🛡️', stake: '25.00 €', data: profs.safe },
-      { key: 'semi', label: 'Combinades Semi-Arriscades', icon: '⚖️', stake: '10.00 €', data: profs.semi },
-      { key: 'risky', label: 'Combinades Arriscades', icon: '🚀', stake: '5.00 €', data: profs.risky }
-    ];
+  const potentialPayout = stake * odd;
+  const potentialProfit = potentialPayout - stake;
 
-    profilesGrid.innerHTML = cards.map(c => {
-      const d = c.data || {};
-      const isProf = (d.net_pnl || 0) >= 0;
-      return `
-        <div class="profile-card">
-          <div class="profile-card-header">
-            <div class="profile-card-title">${c.icon} ${c.label}</div>
-            <span class="profile-unit-badge">Unitat: ${c.stake}</span>
+  return {
+    comboId: combo.id,
+    category: getComboCategory(combo),
+    stake,
+    status,
+    odd,
+    payout,
+    profit,
+    isEvaluated,
+    potentialPayout,
+    potentialProfit
+  };
+}
+
+function calculateBankrollSimulation() {
+  const bData = appData && appData.bankroll_simulation;
+  if (!bData) return null;
+
+  const rounds = bData.rounds_history || [];
+
+  let totalEvaluatedStake = 0;
+  let totalEvaluatedPayout = 0;
+  let totalNetProfit = 0;
+  let totalPendingStake = 0;
+  let totalPotentialProfit = 0;
+
+  let wonBets = 0;
+  let lostBets = 0;
+  let pendingBets = 0;
+
+  const profilesCalc = {
+    safe: { unit: bankrollSimState.globalUnits.safe, invested: 0, pendingStake: 0, payout: 0, netPnl: 0, won: 0, lost: 0, pending: 0 },
+    semi: { unit: bankrollSimState.globalUnits.semi, invested: 0, pendingStake: 0, payout: 0, netPnl: 0, won: 0, lost: 0, pending: 0 },
+    risky: { unit: bankrollSimState.globalUnits.risky, invested: 0, pendingStake: 0, payout: 0, netPnl: 0, won: 0, lost: 0, pending: 0 }
+  };
+
+  const roundsCalc = rounds.map((r, rIdx) => {
+    let rEvalStake = 0;
+    let rTotalStake = 0;
+    let rPayout = 0;
+    let rProfit = 0;
+    let rWon = 0;
+    let rLost = 0;
+    let rPending = 0;
+
+    const combosCalc = (r.combos || []).map(cb => {
+      const cm = calculateComboMetrics(cb);
+      rTotalStake += cm.stake;
+
+      const pProf = profilesCalc[cm.category];
+      if (cm.isEvaluated) {
+        rEvalStake += cm.stake;
+        rPayout += cm.payout;
+        rProfit += cm.profit;
+
+        totalEvaluatedStake += cm.stake;
+        totalEvaluatedPayout += cm.payout;
+        totalNetProfit += cm.profit;
+
+        if (cm.status === 'WON') {
+          rWon++;
+          wonBets++;
+          if (pProf) pProf.won++;
+        } else {
+          rLost++;
+          lostBets++;
+          if (pProf) pProf.lost++;
+        }
+
+        if (pProf) {
+          pProf.invested += cm.stake;
+          pProf.payout += cm.payout;
+          pProf.netPnl += cm.profit;
+        }
+      } else {
+        rPending++;
+        pendingBets++;
+        totalPendingStake += cm.stake;
+        totalPotentialProfit += cm.potentialProfit;
+        if (pProf) {
+          pProf.pending++;
+          pProf.pendingStake += cm.stake;
+        }
+      }
+      return cm;
+    });
+
+    let statusSummary = 'PENDING';
+    if (rPending === 0) {
+      statusSummary = rProfit >= 0 ? 'WON' : 'LOST';
+    } else if (rWon > 0 || rLost > 0) {
+      statusSummary = rProfit >= 0 ? 'EN CURS (+)' : 'EN CURS (-)';
+    }
+
+    return {
+      roundIndex: rIdx,
+      competitionId: r.competition_id,
+      jornada: r.jornada,
+      evaluatedStake: rEvalStake,
+      totalStake: rTotalStake,
+      payout: rPayout,
+      netProfit: rProfit,
+      wonCount: rWon,
+      lostCount: rLost,
+      pendingCount: rPending,
+      statusSummary,
+      combosCalc
+    };
+  });
+
+  const totalClosed = wonBets + lostBets;
+  const roiPct = totalEvaluatedStake > 0 ? (totalNetProfit / totalEvaluatedStake * 100.0) : 0.0;
+  const winRatePct = totalClosed > 0 ? (wonBets / totalClosed * 100.0) : 0.0;
+
+  // Check if simulation differs from defaults
+  const isCustomUnits = (
+    bankrollSimState.globalUnits.safe !== 25.0 ||
+    bankrollSimState.globalUnits.semi !== 10.0 ||
+    bankrollSimState.globalUnits.risky !== 5.0
+  );
+  const isCustomCombos = Object.keys(bankrollSimState.comboOverrides).length > 0;
+  const isCustomized = isCustomUnits || isCustomCombos;
+
+  return {
+    kpis: {
+      totalInvested: totalEvaluatedStake,
+      totalPayout: totalEvaluatedPayout,
+      netPnl: totalNetProfit,
+      roiPct,
+      winRatePct,
+      totalBets: totalClosed,
+      wonBets,
+      lostBets,
+      pendingBets,
+      totalPendingStake,
+      totalPotentialProfit
+    },
+    byProfile: profilesCalc,
+    roundsCalc,
+    isCustomized
+  };
+}
+
+function renderBankrollKpiGrid(kpis) {
+  const isProfit = kpis.netPnl >= 0;
+  const pnlSign = isProfit ? '+' : '';
+  const roiSign = kpis.roiPct >= 0 ? '+' : '';
+
+  const closedSubtitle = kpis.totalBets > 0
+    ? `${kpis.totalBets} concloses · ${kpis.totalPendingStake.toFixed(2)} € en joc`
+    : `0 tancades (${kpis.totalPendingStake.toFixed(2)} € pendents en joc)`;
+
+  return `
+    <div class="kpi-card">
+      <div class="kpi-icon">💳</div>
+      <div class="kpi-label">Total Invertit</div>
+      <div class="kpi-value" id="kpi-val-invested">${kpis.totalInvested.toFixed(2)} €</div>
+      <div class="kpi-sub" id="kpi-sub-invested">${closedSubtitle}</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon">💵</div>
+      <div class="kpi-label">Retorn Brut</div>
+      <div class="kpi-value" id="kpi-val-payout">${kpis.totalPayout.toFixed(2)} €</div>
+      <div class="kpi-sub">Pagaments totals rebuts</div>
+    </div>
+
+    <div class="kpi-card highlight ${isProfit ? '' : 'loss'}">
+      <div class="kpi-icon">📈</div>
+      <div class="kpi-label">Balanç Net (PnL)</div>
+      <div class="kpi-value ${isProfit ? 'positive' : 'negative'}" id="kpi-val-pnl">${pnlSign}${kpis.netPnl.toFixed(2)} €</div>
+      <div class="kpi-sub">${kpis.totalBets > 0 ? "Rendiment net consolidat" : "Cap aposta finalitzada encara"}</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon">🎯</div>
+      <div class="kpi-label">Rendibilitat (ROI)</div>
+      <div class="kpi-value ${isProfit ? 'positive' : 'negative'}" id="kpi-val-roi">${roiSign}${kpis.roiPct.toFixed(1)}%</div>
+      <div class="kpi-sub">Retorn sobre capital tancat</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon">🏆</div>
+      <div class="kpi-label">Taxa d'Encert</div>
+      <div class="kpi-value" style="color: var(--accent-cyan);" id="kpi-val-winrate">${kpis.winRatePct.toFixed(1)}%</div>
+      <div class="kpi-sub" id="kpi-sub-winrate">${kpis.wonBets}W / ${kpis.lostBets}L (${kpis.pendingBets} pendents)</div>
+    </div>
+  `;
+}
+
+function renderBankrollProfilesGrid(byProfile) {
+  const cards = [
+    { key: 'safe', label: 'Combinades Segures', icon: '🛡️', d: byProfile.safe },
+    { key: 'semi', label: 'Combinades Semi-Arriscades', icon: '⚖️', d: byProfile.semi },
+    { key: 'risky', label: 'Combinades Arriscades', icon: '🚀', d: byProfile.risky }
+  ];
+
+  return cards.map(c => {
+    const d = c.d || {};
+    const isProf = (d.netPnl || 0) >= 0;
+    const totalClosed = (d.won || 0) + (d.lost || 0);
+    const winRate = totalClosed > 0 ? (d.won / totalClosed * 100.0) : 0.0;
+    const unitStake = typeof d.unit === 'number' ? d.unit.toFixed(2) : '0.00';
+
+    return `
+      <div class="profile-card">
+        <div class="profile-card-header">
+          <div class="profile-card-title">${c.icon} ${c.label}</div>
+          <span class="profile-unit-badge" id="profile-badge-unit-${c.key}">Unitat activa: <strong>${unitStake} €</strong></span>
+        </div>
+
+        <div class="profile-stats-row">
+          <div>
+            <div class="stat-item-label">Invertit (Tancat)</div>
+            <div class="stat-item-val" id="profile-stat-invested-${c.key}">${(d.invested || 0).toFixed(2)} €</div>
           </div>
-
-          <div class="profile-stats-row">
-            <div>
-              <div class="stat-item-label">Invertit</div>
-              <div class="stat-item-val">${(d.total_invested || 0).toFixed(2)} €</div>
+          <div>
+            <div class="stat-item-label">Balanç Net</div>
+            <div class="stat-item-val" id="profile-stat-pnl-${c.key}" style="color: ${isProf ? 'var(--accent-emerald)' : 'var(--accent-rose)'};">
+              ${isProf ? '+' : ''}${(d.netPnl || 0).toFixed(2)} €
             </div>
-            <div>
-              <div class="stat-item-label">Balanç Net</div>
-              <div class="stat-item-val" style="color: ${isProf ? 'var(--accent-emerald)' : 'var(--accent-rose)'};">${isProf ? '+' : ''}${(d.net_pnl || 0).toFixed(2)} €</div>
-            </div>
-            <div>
-              <div class="stat-item-label">Taxa Encert</div>
-              <div class="stat-item-val" style="color: var(--accent-cyan);">${(d.win_rate_pct || 0).toFixed(1)}%</div>
-            </div>
+          </div>
+          <div>
+            <div class="stat-item-label">Taxa Encert</div>
+            <div class="stat-item-val" id="profile-stat-winrate-${c.key}" style="color: var(--accent-cyan);">${winRate.toFixed(1)}%</div>
           </div>
         </div>
-      `;
-    }).join('');
+      </div>
+    `;
+  }).join('');
+}
+
+function renderLedgerRoundMetricsHtml(rc) {
+  const isProf = rc.netProfit >= 0;
+  const pnlSign = isProf ? '+' : '';
+  const displayStake = rc.evaluatedStake > 0 ? rc.evaluatedStake : rc.totalStake;
+  const stakeNote = rc.evaluatedStake === 0 && rc.pendingCount > 0 ? ' (en joc)' : '';
+
+  let statusClass = 'status-pending-tag';
+  if (rc.statusSummary === 'WON') statusClass = 'status-won-tag';
+  else if (rc.statusSummary === 'LOST') statusClass = 'status-lost-tag';
+
+  return `
+    <span>Apostat: <strong>${displayStake.toFixed(2)} €</strong>${stakeNote}</span>
+    <span style="color: ${isProf ? 'var(--accent-emerald)' : 'var(--accent-rose)'};">
+      Balanç: <strong>${pnlSign}${rc.netProfit.toFixed(2)} €</strong>
+    </span>
+    <span class="${statusClass}">${rc.statusSummary}</span>
+    <span style="font-size: 11px; color: var(--text-muted);">▼</span>
+  `;
+}
+
+function renderLedgerComboBadgeHtml(cm) {
+  if (cm.status === 'WON') {
+    return `<span class="status-won-tag">GUANYADA (+${cm.profit.toFixed(2)} € · Retorn: ${cm.payout.toFixed(2)} €)</span>`;
+  } else if (cm.status === 'LOST') {
+    return `<span class="status-lost-tag">PERDUDA (-${cm.stake.toFixed(2)} €)</span>`;
+  } else {
+    return `<span class="status-pending-tag">PENDENT (Potencial: +${cm.potentialProfit.toFixed(2)} €)</span>`;
+  }
+}
+
+// Actualització ultra-ràpida del DOM sense destruir inputs ni perdre el cursor
+function updateBankrollDom(calc) {
+  if (!calc) return;
+
+  // 1. KPIs
+  const kpiInvested = document.getElementById('kpi-val-invested');
+  if (kpiInvested) kpiInvested.textContent = `${calc.kpis.totalInvested.toFixed(2)} €`;
+
+  const kpiSubInvested = document.getElementById('kpi-sub-invested');
+  if (kpiSubInvested) {
+    kpiSubInvested.textContent = calc.kpis.totalBets > 0
+      ? `${calc.kpis.totalBets} concloses · ${calc.kpis.totalPendingStake.toFixed(2)} € en joc`
+      : `0 tancades (${calc.kpis.totalPendingStake.toFixed(2)} € pendents en joc)`;
   }
 
-  // Historial Jornada a Jornada (Ledger)
+  const kpiPayout = document.getElementById('kpi-val-payout');
+  if (kpiPayout) kpiPayout.textContent = `${calc.kpis.totalPayout.toFixed(2)} €`;
+
+  const kpiPnl = document.getElementById('kpi-val-pnl');
+  if (kpiPnl) {
+    const isProf = calc.kpis.netPnl >= 0;
+    kpiPnl.textContent = `${isProf ? '+' : ''}${calc.kpis.netPnl.toFixed(2)} €`;
+    kpiPnl.className = `kpi-value ${isProf ? 'positive' : 'negative'}`;
+  }
+
+  const kpiRoi = document.getElementById('kpi-val-roi');
+  if (kpiRoi) {
+    const isProf = calc.kpis.roiPct >= 0;
+    kpiRoi.textContent = `${isProf ? '+' : ''}${calc.kpis.roiPct.toFixed(1)}%`;
+    kpiRoi.className = `kpi-value ${isProf ? 'positive' : 'negative'}`;
+  }
+
+  const kpiWinrate = document.getElementById('kpi-val-winrate');
+  if (kpiWinrate) kpiWinrate.textContent = `${calc.kpis.winRatePct.toFixed(1)}%`;
+
+  const kpiSubWinrate = document.getElementById('kpi-sub-winrate');
+  if (kpiSubWinrate) kpiSubWinrate.textContent = `${calc.kpis.wonBets}W / ${calc.kpis.lostBets}L (${calc.kpis.pendingBets} pendents)`;
+
+  // 2. Profiles
+  ['safe', 'semi', 'risky'].forEach(k => {
+    const prof = calc.byProfile[k];
+    if (!prof) return;
+
+    const unitBadge = document.getElementById(`profile-badge-unit-${k}`);
+    if (unitBadge) unitBadge.innerHTML = `Unitat activa: <strong>${prof.unit.toFixed(2)} €</strong>`;
+
+    const invEl = document.getElementById(`profile-stat-invested-${k}`);
+    if (invEl) invEl.textContent = `${prof.invested.toFixed(2)} €`;
+
+    const pnlEl = document.getElementById(`profile-stat-pnl-${k}`);
+    if (pnlEl) {
+      const isP = prof.netPnl >= 0;
+      pnlEl.textContent = `${isP ? '+' : ''}${prof.netPnl.toFixed(2)} €`;
+      pnlEl.style.color = isP ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+    }
+
+    const wrEl = document.getElementById(`profile-stat-winrate-${k}`);
+    if (wrEl) {
+      const totalC = prof.won + prof.lost;
+      const rate = totalC > 0 ? (prof.won / totalC * 100.0) : 0.0;
+      wrEl.textContent = `${rate.toFixed(1)}%`;
+    }
+  });
+
+  // 3. Round headers and combo badges
+  calc.roundsCalc.forEach(rc => {
+    const rMetrics = document.getElementById(`ledger-round-metrics-${rc.roundIndex}`);
+    if (rMetrics) {
+      rMetrics.innerHTML = renderLedgerRoundMetricsHtml(rc);
+    }
+
+    rc.combosCalc.forEach(cm => {
+      const badgeEl = document.getElementById(`combo-badge-${cm.comboId}`);
+      if (badgeEl) {
+        badgeEl.innerHTML = renderLedgerComboBadgeHtml(cm);
+      }
+    });
+  });
+
+  // 4. Banner de simulació personalitzada
+  const banner = document.getElementById('sim-status-banner');
+  const bannerText = document.getElementById('sim-status-banner-text');
+  if (banner && bannerText) {
+    if (calc.isCustomized) {
+      banner.style.display = 'flex';
+      bannerText.innerHTML = `<strong>Simulació activa amb imports personalitzats:</strong> Balanç projectat: <strong>${calc.kpis.netPnl >= 0 ? '+' : ''}${calc.kpis.netPnl.toFixed(2)} €</strong> (${calc.kpis.roiPct >= 0 ? '+' : ''}${calc.kpis.roiPct.toFixed(1)}% ROI).`;
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+}
+
+function renderBankroll() {
+  const bData = appData && appData.bankroll_simulation;
+  if (!bData) return;
+
+  loadBankrollSimState();
+
+  // 1. Sincronitzar inputs de la barra superior del simulador
+  const inputSafe = document.getElementById('sim-unit-safe');
+  const inputSemi = document.getElementById('sim-unit-semi');
+  const inputRisky = document.getElementById('sim-unit-risky');
+  if (inputSafe) inputSafe.value = bankrollSimState.globalUnits.safe;
+  if (inputSemi) inputSemi.value = bankrollSimState.globalUnits.semi;
+  if (inputRisky) inputRisky.value = bankrollSimState.globalUnits.risky;
+
+  // 2. Executar càlcul inicial
+  const calc = calculateBankrollSimulation();
+  if (!calc) return;
+
+  // 3. Renderitzar KPI Hero Grid
+  const kpiGrid = document.getElementById('bankroll-kpi-grid');
+  if (kpiGrid) {
+    kpiGrid.innerHTML = renderBankrollKpiGrid(calc.kpis);
+  }
+
+  // 4. Renderitzar Breakdown per Perfil
+  const profilesGrid = document.getElementById('profiles-breakdown-grid');
+  if (profilesGrid) {
+    profilesGrid.innerHTML = renderBankrollProfilesGrid(calc.byProfile);
+  }
+
+  // 5. Preservar quins acordinons estaven oberts
+  const openAccordionIndices = new Set();
+  document.querySelectorAll('.ledger-round-details.open').forEach(el => {
+    const id = el.id;
+    const match = id && id.match(/ledger-details-(\d+)/);
+    if (match) openAccordionIndices.add(parseInt(match[1], 10));
+  });
+
+  // 6. Renderitzar Historial Detallat Jornada a Jornada (Ledger)
   const ledgerList = document.getElementById('ledger-rounds-list');
   if (ledgerList) {
     const rounds = bData.rounds_history || [];
@@ -688,45 +1098,124 @@ function renderBankroll() {
       return;
     }
 
-    ledgerList.innerHTML = rounds.map((r, idx) => {
-      const isProf = r.net_profit >= 0;
+    ledgerList.innerHTML = calc.roundsCalc.map(rc => {
+      const origRound = rounds[rc.roundIndex];
+      const isOpen = openAccordionIndices.has(rc.roundIndex);
+
+      // Calcular imports actuals de la jornada per als inputs del xip ràpid
+      const roundSafeStake = (origRound.combos || []).find(c => getComboCategory(c) === 'safe');
+      const roundSemiStake = (origRound.combos || []).find(c => getComboCategory(c) === 'semi');
+      const roundRiskyStake = (origRound.combos || []).find(c => getComboCategory(c) === 'risky');
+
+      const curSafe = roundSafeStake ? getComboEffectiveStake(roundSafeStake) : bankrollSimState.globalUnits.safe;
+      const curSemi = roundSemiStake ? getComboEffectiveStake(roundSemiStake) : bankrollSimState.globalUnits.semi;
+      const curRisky = roundRiskyStake ? getComboEffectiveStake(roundRiskyStake) : bankrollSimState.globalUnits.risky;
+
       return `
-        <div class="ledger-round-card">
-          <div class="ledger-round-header" onclick="toggleLedgerDetails(${idx})">
+        <div class="ledger-round-card" id="ledger-round-card-${rc.roundIndex}">
+          <div class="ledger-round-header" onclick="toggleLedgerDetails(${rc.roundIndex})">
             <div class="ledger-round-title">
               <span>⚽</span>
-              <span>${r.competition_id} · Jornada ${r.jornada}</span>
+              <span>${rc.competitionId} · Jornada ${rc.jornada}</span>
             </div>
-            <div class="ledger-round-metrics">
-              <span>Apostat: <strong>${r.total_stake.toFixed(2)} €</strong></span>
-              <span style="color: ${isProf ? 'var(--accent-emerald)' : 'var(--accent-rose)'};">
-                Balanç: <strong>${isProf ? '+' : ''}${r.net_profit.toFixed(2)} €</strong>
-              </span>
-              <span class="${r.status_summary === 'WON' ? 'status-won-tag' : 'status-lost-tag'}">${r.status_summary}</span>
-              <span style="font-size: 11px; color: var(--text-muted);">▼</span>
+            <div class="ledger-round-metrics" id="ledger-round-metrics-${rc.roundIndex}">
+              ${renderLedgerRoundMetricsHtml(rc)}
             </div>
           </div>
 
-          <div class="ledger-round-details" id="ledger-details-${idx}">
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
-              ${(r.combos || []).map(cb => {
-                let badge = '<span class="status-pending-tag">PENDENT</span>';
-                if (cb.status === 'WON') badge = '<span class="status-won-tag">GUANYADA (+' + cb.profit.toFixed(2) + ' €)</span>';
-                else if (cb.status === 'LOST') badge = '<span class="status-lost-tag">PERDUDA (-' + cb.stake.toFixed(2) + ' €)</span>';
+          <div class="ledger-round-details ${isOpen ? 'open' : ''}" id="ledger-details-${rc.roundIndex}">
+            <!-- Barra d'ajust ràpid d'aquesta jornada -->
+            <div class="round-customizer-toolbar">
+              <div class="round-customizer-info">
+                <span class="round-customizer-tag">🎯 PERSONALITZAR AQUESTA JORNADA (${rc.competitionId} J${rc.jornada})</span>
+                <span class="round-customizer-desc">Ajusta els imports exclusivament per a aquesta jornada i simula què hagués passat:</span>
+              </div>
+              <div class="round-customizer-controls">
+                <div class="round-input-chip">
+                  <span>🛡️ Segura:</span>
+                  <input type="number" id="round-input-safe-${rc.roundIndex}" value="${curSafe}" min="0" step="1" />
+                  <span>€</span>
+                </div>
+                <div class="round-input-chip">
+                  <span>⚖️ Semi:</span>
+                  <input type="number" id="round-input-semi-${rc.roundIndex}" value="${curSemi}" min="0" step="1" />
+                  <span>€</span>
+                </div>
+                <div class="round-input-chip">
+                  <span>🚀 Arriscada:</span>
+                  <input type="number" id="round-input-risky-${rc.roundIndex}" value="${curRisky}" min="0" step="1" />
+                  <span>€</span>
+                </div>
+                <button type="button" class="btn-round-apply" onclick="applyRoundUnits(${rc.roundIndex})" title="Aplica aquests imports només a aquesta jornada">
+                  ⚡ Aplicar a la Jornada
+                </button>
+              </div>
+            </div>
+
+            <!-- Llista de combinades de la jornada -->
+            <div class="round-combos-ledger-list">
+              ${(origRound.combos || []).map(cb => {
+                const cm = rc.combosCalc.find(c => c.comboId === cb.id) || calculateComboMetrics(cb);
+                const cat = cm.category;
+                const pillClass = cat === 'safe' ? 'pill-safe' : (cat === 'semi' ? 'pill-semi' : 'pill-risky');
+                const catLabel = cat === 'safe' ? '🛡️ Segura' : (cat === 'semi' ? '⚖️ Semi-Arriscada' : '🚀 Arriscada');
+                const userStatus = getComboUserStatus(cb);
 
                 return `
-                  <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 8px; padding: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                      <strong>${cb.profile}</strong>
-                      <div>Cuota: @${cb.combined_odd.toFixed(2)} · Stake: ${cb.stake.toFixed(2)} € · ${badge}</div>
+                  <div class="ledger-combo-card" id="combo-card-${cb.id}">
+                    <div class="ledger-combo-header">
+                      <div class="ledger-combo-main-info">
+                        <span class="combo-profile-pill ${pillClass}">${catLabel} (${cb.profile})</span>
+                        <span class="combo-odd-tag">Cuota @${cm.odd.toFixed(2)}</span>
+                      </div>
+
+                      <div class="ledger-combo-inputs-bar">
+                        <div class="combo-stake-field">
+                          <label for="stake-input-${cb.id}">Aposta:</label>
+                          <div class="combo-num-input-wrap">
+                            <input type="number"
+                                   id="stake-input-${cb.id}"
+                                   class="combo-stake-input"
+                                   value="${cm.stake}"
+                                   min="0"
+                                   step="1"
+                                   oninput="onComboStakeChange('${cb.id}', this.value)" />
+                            <span>€</span>
+                          </div>
+                        </div>
+
+                        <div class="combo-sim-field">
+                          <label for="sim-select-${cb.id}">Simular:</label>
+                          <select id="sim-select-${cb.id}"
+                                  class="combo-sim-select"
+                                  onchange="onComboStatusChange('${cb.id}', this.value)">
+                            <option value="REAL" ${userStatus === 'REAL' ? 'selected' : ''}>Real (${cb.status})</option>
+                            <option value="WON" ${userStatus === 'WON' ? 'selected' : ''}>🟢 Guanyada</option>
+                            <option value="LOST" ${userStatus === 'LOST' ? 'selected' : ''}>🔴 Perduda</option>
+                            <option value="PENDING" ${userStatus === 'PENDING' ? 'selected' : ''}>🟡 Pendent</option>
+                          </select>
+                        </div>
+
+                        <div class="combo-badge-container" id="combo-badge-${cb.id}">
+                          ${renderLedgerComboBadgeHtml(cm)}
+                        </div>
+                      </div>
                     </div>
-                    <ul style="list-style: none; padding-left: 0; font-size: 12px; color: var(--text-secondary);">
-                      ${(cb.legs || []).map(l => `
-                        <li style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between;">
-                          <span>${l.matchup}: <strong>${l.selection_name}</strong></span>
-                          <span>${l.actual_result || 'Pendent'}</span>
-                        </li>
-                      `).join('')}
+
+                    <!-- Legs de la combinada -->
+                    <ul class="combo-legs-mini-list">
+                      ${(cb.legs || []).map(l => {
+                        let resClass = 'res-pending';
+                        if (l.actual_result === 'ENCERTADA') resClass = 'res-won';
+                        else if (l.actual_result === 'FALLADA') resClass = 'res-lost';
+
+                        return `
+                          <li class="combo-leg-mini-item">
+                            <span class="leg-mini-matchup">${l.matchup}: <strong>${l.selection_name}</strong> (@${l.bookie_odd ? l.bookie_odd.toFixed(2) : '-'})</span>
+                            <span class="leg-mini-result ${resClass}">${l.actual_result || 'Pendent'}</span>
+                          </li>
+                        `;
+                      }).join('')}
                     </ul>
                   </div>
                 `;
@@ -736,6 +1225,169 @@ function renderBankroll() {
         </div>
       `;
     }).join('');
+  }
+
+  // 7. Enllaçar botons del panell superior (només un cop)
+  const btnApplyAll = document.getElementById('btn-apply-all-stakes');
+  if (btnApplyAll && !btnApplyAll.dataset.bound) {
+    btnApplyAll.dataset.bound = 'true';
+    btnApplyAll.addEventListener('click', applyAllStakes);
+  }
+
+  const btnReset = document.getElementById('btn-reset-default-stakes');
+  if (btnReset && !btnReset.dataset.bound) {
+    btnReset.dataset.bound = 'true';
+    btnReset.addEventListener('click', resetDefaultStakes);
+  }
+
+  const btnBannerReset = document.getElementById('btn-banner-reset');
+  if (btnBannerReset && !btnBannerReset.dataset.bound) {
+    btnBannerReset.dataset.bound = 'true';
+    btnBannerReset.addEventListener('click', resetDefaultStakes);
+  }
+
+  // 8. Actualitzar banner d'estat
+  const banner = document.getElementById('sim-status-banner');
+  const bannerText = document.getElementById('sim-status-banner-text');
+  if (banner && bannerText) {
+    if (calc.isCustomized) {
+      banner.style.display = 'flex';
+      bannerText.innerHTML = `<strong>Simulació activa amb imports personalitzats:</strong> Balanç projectat: <strong>${calc.kpis.netPnl >= 0 ? '+' : ''}${calc.kpis.netPnl.toFixed(2)} €</strong> (${calc.kpis.roiPct >= 0 ? '+' : ''}${calc.kpis.roiPct.toFixed(1)}% ROI).`;
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+}
+
+// Handler per canviar l'aposta d'una combinada individual
+window.onComboStakeChange = function(comboId, val) {
+  const numericVal = parseFloat(val);
+  const stake = !isNaN(numericVal) && numericVal >= 0 ? numericVal : 0;
+
+  if (!bankrollSimState.comboOverrides[comboId]) {
+    bankrollSimState.comboOverrides[comboId] = {};
+  }
+  bankrollSimState.comboOverrides[comboId].stake = stake;
+
+  saveBankrollSimState();
+  const calc = calculateBankrollSimulation();
+  updateBankrollDom(calc);
+};
+
+// Handler per canviar l'estat d'una combinada (Real / Guanyada / Perduda / Pendent)
+window.onComboStatusChange = function(comboId, status) {
+  if (!bankrollSimState.comboOverrides[comboId]) {
+    bankrollSimState.comboOverrides[comboId] = {};
+  }
+  bankrollSimState.comboOverrides[comboId].simStatus = status;
+
+  saveBankrollSimState();
+  const calc = calculateBankrollSimulation();
+  updateBankrollDom(calc);
+};
+
+// Handler per aplicar imports específics a tota una jornada concreta
+window.applyRoundUnits = function(roundIdx) {
+  const bData = appData && appData.bankroll_simulation;
+  if (!bData || !bData.rounds_history || !bData.rounds_history[roundIdx]) return;
+
+  const round = bData.rounds_history[roundIdx];
+  const inputSafe = document.getElementById(`round-input-safe-${roundIdx}`);
+  const inputSemi = document.getElementById(`round-input-semi-${roundIdx}`);
+  const inputRisky = document.getElementById(`round-input-risky-${roundIdx}`);
+
+  const valSafe = Math.max(0, parseFloat(inputSafe ? inputSafe.value : 25) || 0);
+  const valSemi = Math.max(0, parseFloat(inputSemi ? inputSemi.value : 10) || 0);
+  const valRisky = Math.max(0, parseFloat(inputRisky ? inputRisky.value : 5) || 0);
+
+  (round.combos || []).forEach(cb => {
+    const cat = getComboCategory(cb);
+    let chosenVal = valRisky;
+    if (cat === 'safe') chosenVal = valSafe;
+    else if (cat === 'semi') chosenVal = valSemi;
+
+    if (!bankrollSimState.comboOverrides[cb.id]) {
+      bankrollSimState.comboOverrides[cb.id] = {};
+    }
+    bankrollSimState.comboOverrides[cb.id].stake = chosenVal;
+
+    // Actualitzar l'input de la combinada directament al DOM
+    const comboInput = document.getElementById(`stake-input-${cb.id}`);
+    if (comboInput) comboInput.value = chosenVal;
+  });
+
+  saveBankrollSimState();
+  const calc = calculateBankrollSimulation();
+  updateBankrollDom(calc);
+
+  // Animació visual breu de confirmació a la targeta de la jornada
+  const card = document.getElementById(`ledger-round-card-${roundIdx}`);
+  if (card) {
+    card.style.outline = '2px solid var(--accent-amber)';
+    setTimeout(() => { card.style.outline = 'none'; }, 800);
+  }
+};
+
+// Handler global: Aplicar imports base a TOTES les jornades
+function applyAllStakes() {
+  const inputSafe = document.getElementById('sim-unit-safe');
+  const inputSemi = document.getElementById('sim-unit-semi');
+  const inputRisky = document.getElementById('sim-unit-risky');
+
+  const valSafe = Math.max(0, parseFloat(inputSafe ? inputSafe.value : 25) || 0);
+  const valSemi = Math.max(0, parseFloat(inputSemi ? inputSemi.value : 10) || 0);
+  const valRisky = Math.max(0, parseFloat(inputRisky ? inputRisky.value : 5) || 0);
+
+  bankrollSimState.globalUnits = {
+    safe: valSafe,
+    semi: valSemi,
+    risky: valRisky
+  };
+
+  // Netejar sobreescriptures individuals de stake perquè adoptin la unitat global
+  Object.keys(bankrollSimState.comboOverrides).forEach(id => {
+    delete bankrollSimState.comboOverrides[id].stake;
+    if (Object.keys(bankrollSimState.comboOverrides[id]).length === 0) {
+      delete bankrollSimState.comboOverrides[id];
+    }
+  });
+
+  saveBankrollSimState();
+  renderBankroll();
+
+  // Animació / feedback visual
+  const btn = document.getElementById('btn-apply-all-stakes');
+  if (btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<span>✅ Aplicat a totes les jornades!</span>`;
+    btn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+    }, 1600);
+  }
+}
+
+// Handler global: Restablir imports originals (25€ / 10€ / 5€)
+function resetDefaultStakes() {
+  bankrollSimState.globalUnits = {
+    safe: 25.0,
+    semi: 10.0,
+    risky: 5.0
+  };
+  bankrollSimState.comboOverrides = {};
+
+  try {
+    localStorage.removeItem('prediccions_bankroll_sim');
+  } catch (e) {}
+
+  renderBankroll();
+
+  const btn = document.getElementById('btn-reset-default-stakes');
+  if (btn) {
+    const orig = btn.innerHTML;
+    btn.innerHTML = `<span>✅ Valors restablerts!</span>`;
+    setTimeout(() => { btn.innerHTML = orig; }, 1400);
   }
 }
 
