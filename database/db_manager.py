@@ -220,7 +220,7 @@ class DatabaseManager:
                     ranks = (14.0, 14.0, 14.0, 1440.0)
 
                 cursor.execute(
-                    """INSERT OR REPLACE INTO team_ratings 
+                    """INSERT OR IGNORE INTO team_ratings 
                        (team_id, general_rank, off_rank, def_rank, elo_rating, rest_days, updated_at) 
                        VALUES (?, ?, ?, ?, ?, 7.0, datetime('now'))""",
                     (t_id, ranks[0], ranks[1], ranks[2], ranks[3])

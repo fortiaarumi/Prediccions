@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-09-22T15:23:00.036161",
-    "formatted_date": "22/09/2026 a les 15:23",
+    "generated_at": "2026-09-22T15:47:47.253723",
+    "formatted_date": "22/09/2026 a les 15:47",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -56,7 +56,7 @@
         "team_id": "FCB",
         "name": "FC Barcelona",
         "short_name": "Barcelona",
-        "elo_rating": 1960.0,
+        "elo_rating": 1989.3,
         "off_rank": 1.0,
         "def_rank": 4.0,
         "played": 7,
@@ -82,23 +82,23 @@
         "team_id": "RMA",
         "name": "Real Madrid",
         "short_name": "R. Madrid",
-        "elo_rating": 1950.0,
+        "elo_rating": 1939.1,
         "off_rank": 2.0,
-        "def_rank": 9.0,
-        "played": 8,
-        "won": 6,
+        "def_rank": 8.0,
+        "played": 7,
+        "won": 5,
         "drawn": 0,
         "lost": 2,
-        "gf": 21,
-        "ga": 10,
-        "gd": 11,
-        "points": 18,
+        "gf": 18,
+        "ga": 8,
+        "gd": 10,
+        "points": 15,
         "form": [
           "W",
           "L",
           "W",
           "W",
-          "W"
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -108,7 +108,7 @@
         "team_id": "ATM",
         "name": "Atlético de Madrid",
         "short_name": "At. Madrid",
-        "elo_rating": 1860.0,
+        "elo_rating": 1875.2,
         "off_rank": 3.0,
         "def_rank": 5.0,
         "played": 7,
@@ -121,9 +121,9 @@
         "points": 16,
         "form": [
           "W",
+          "L",
           "W",
           "W",
-          "D",
           "W"
         ],
         "avg_cards": 2.2,
@@ -131,36 +131,10 @@
       },
       {
         "rank": 4,
-        "team_id": "ATH",
-        "name": "Athletic Club",
-        "short_name": "Athletic",
-        "elo_rating": 1740.0,
-        "off_rank": 14.0,
-        "def_rank": 3.0,
-        "played": 6,
-        "won": 2,
-        "drawn": 2,
-        "lost": 2,
-        "gf": 7,
-        "ga": 6,
-        "gd": 1,
-        "points": 8,
-        "form": [
-          "D",
-          "D",
-          "L",
-          "L",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 5,
         "team_id": "BET",
         "name": "Real Betis",
         "short_name": "Betis",
-        "elo_rating": 1740.0,
+        "elo_rating": 1749.8,
         "off_rank": 13.0,
         "def_rank": 6.0,
         "played": 7,
@@ -172,11 +146,37 @@
         "gd": 2,
         "points": 16,
         "form": [
+          "L",
+          "W",
+          "W",
+          "W",
+          "D"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 5,
+        "team_id": "ATH",
+        "name": "Athletic Club",
+        "short_name": "Athletic",
+        "elo_rating": 1735.9,
+        "off_rank": 15.0,
+        "def_rank": 3.0,
+        "played": 6,
+        "won": 2,
+        "drawn": 2,
+        "lost": 2,
+        "gf": 7,
+        "ga": 6,
+        "gd": 1,
+        "points": 8,
+        "form": [
+          "L",
+          "W",
           "W",
           "D",
-          "W",
-          "W",
-          "L"
+          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -186,21 +186,21 @@
         "team_id": "RSO",
         "name": "Real Sociedad",
         "short_name": "R. Sociedad",
-        "elo_rating": 1740.0,
-        "off_rank": 15.0,
-        "def_rank": 11.0,
-        "played": 8,
+        "elo_rating": 1716.9,
+        "off_rank": 14.0,
+        "def_rank": 14.0,
+        "played": 7,
         "won": 3,
-        "drawn": 2,
+        "drawn": 1,
         "lost": 3,
         "gf": 9,
         "ga": 13,
         "gd": -4,
-        "points": 11,
+        "points": 10,
         "form": [
-          "L",
           "W",
-          "L",
+          "D",
+          "W",
           "L",
           "W"
         ],
@@ -212,9 +212,9 @@
         "team_id": "VIL",
         "name": "Villarreal CF",
         "short_name": "Villarreal",
-        "elo_rating": 1740.0,
+        "elo_rating": 1710.5,
         "off_rank": 4.0,
-        "def_rank": 14.0,
+        "def_rank": 12.0,
         "played": 7,
         "won": 2,
         "drawn": 2,
@@ -224,34 +224,112 @@
         "gd": 1,
         "points": 8,
         "form": [
-          "D",
+          "L",
+          "L",
+          "L",
           "W",
-          "W",
-          "D",
-          "L"
+          "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
         "rank": 8,
+        "team_id": "SEV",
+        "name": "Sevilla FC",
+        "short_name": "Sevilla",
+        "elo_rating": 1628.1,
+        "off_rank": 9.0,
+        "def_rank": 10.0,
+        "played": 7,
+        "won": 4,
+        "drawn": 1,
+        "lost": 2,
+        "gf": 10,
+        "ga": 9,
+        "gd": 1,
+        "points": 13,
+        "form": [
+          "L",
+          "D",
+          "W",
+          "W",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 9,
         "team_id": "ALA",
         "name": "Deportivo Alavés",
         "short_name": "Alavés",
-        "elo_rating": 1590.0,
-        "off_rank": 10.0,
-        "def_rank": 2.0,
-        "played": 8,
+        "elo_rating": 1616.0,
+        "off_rank": 5.0,
+        "def_rank": 1.0,
+        "played": 7,
         "won": 3,
+        "drawn": 2,
+        "lost": 2,
+        "gf": 11,
+        "ga": 6,
+        "gd": 5,
+        "points": 11,
+        "form": [
+          "W",
+          "W",
+          "L",
+          "L",
+          "D"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 10,
+        "team_id": "RAY",
+        "name": "Rayo Vallecano",
+        "short_name": "Rayo",
+        "elo_rating": 1590.1,
+        "off_rank": 6.0,
+        "def_rank": 18.0,
+        "played": 7,
+        "won": 2,
         "drawn": 2,
         "lost": 3,
         "gf": 11,
-        "ga": 7,
-        "gd": 4,
-        "points": 11,
+        "ga": 16,
+        "gd": -5,
+        "points": 8,
         "form": [
           "L",
+          "W",
           "L",
+          "W",
+          "D"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 11,
+        "team_id": "CEL",
+        "name": "RC Celta de Vigo",
+        "short_name": "Celta",
+        "elo_rating": 1583.6,
+        "off_rank": 16.0,
+        "def_rank": 2.0,
+        "played": 7,
+        "won": 1,
+        "drawn": 4,
+        "lost": 2,
+        "gf": 8,
+        "ga": 6,
+        "gd": 2,
+        "points": 7,
+        "form": [
+          "L",
+          "D",
           "D",
           "D",
           "W"
@@ -260,51 +338,25 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 9,
-        "team_id": "CEL",
-        "name": "RC Celta de Vigo",
-        "short_name": "Celta",
-        "elo_rating": 1590.0,
-        "off_rank": 16.0,
-        "def_rank": 1.0,
-        "played": 8,
-        "won": 1,
-        "drawn": 5,
-        "lost": 2,
-        "gf": 8,
-        "ga": 6,
-        "gd": 2,
-        "points": 8,
-        "form": [
-          "D",
-          "W",
-          "D",
-          "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 10,
+        "rank": 12,
         "team_id": "ESP",
         "name": "RCD Espanyol",
         "short_name": "Espanyol",
-        "elo_rating": 1590.0,
-        "off_rank": 11.0,
-        "def_rank": 13.0,
-        "played": 9,
+        "elo_rating": 1576.2,
+        "off_rank": 10.0,
+        "def_rank": 11.0,
+        "played": 7,
         "won": 2,
         "drawn": 1,
-        "lost": 6,
-        "gf": 12,
-        "ga": 15,
-        "gd": -3,
+        "lost": 4,
+        "gf": 10,
+        "ga": 10,
+        "gd": 0,
         "points": 7,
         "form": [
+          "L",
+          "D",
           "W",
-          "L",
-          "L",
           "L",
           "L"
         ],
@@ -312,12 +364,12 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 11,
+        "rank": 13,
         "team_id": "GET",
         "name": "Getafe CF",
         "short_name": "Getafe",
-        "elo_rating": 1590.0,
-        "off_rank": 19.0,
+        "elo_rating": 1564.0,
+        "off_rank": 18.0,
         "def_rank": 7.0,
         "played": 7,
         "won": 2,
@@ -329,22 +381,22 @@
         "points": 8,
         "form": [
           "L",
+          "D",
+          "D",
           "L",
-          "W",
-          "W",
-          "L"
+          "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
-        "rank": 12,
+        "rank": 14,
         "team_id": "OSA",
         "name": "CA Osasuna",
         "short_name": "Osasuna",
-        "elo_rating": 1590.0,
+        "elo_rating": 1562.5,
         "off_rank": 17.0,
-        "def_rank": 16.0,
+        "def_rank": 15.0,
         "played": 7,
         "won": 2,
         "drawn": 2,
@@ -354,63 +406,11 @@
         "gd": -7,
         "points": 8,
         "form": [
-          "L",
-          "D",
-          "D",
-          "W",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 13,
-        "team_id": "RAY",
-        "name": "Rayo Vallecano",
-        "short_name": "Rayo",
-        "elo_rating": 1590.0,
-        "off_rank": 6.0,
-        "def_rank": 18.0,
-        "played": 8,
-        "won": 3,
-        "drawn": 2,
-        "lost": 3,
-        "gf": 13,
-        "ga": 17,
-        "gd": -4,
-        "points": 11,
-        "form": [
-          "W",
-          "W",
-          "D",
-          "D",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 14,
-        "team_id": "SEV",
-        "name": "Sevilla FC",
-        "short_name": "Sevilla",
-        "elo_rating": 1590.0,
-        "off_rank": 8.0,
-        "def_rank": 10.0,
-        "played": 7,
-        "won": 4,
-        "drawn": 1,
-        "lost": 2,
-        "gf": 10,
-        "ga": 9,
-        "gd": 1,
-        "points": 13,
-        "form": [
-          "W",
           "W",
           "L",
-          "W",
-          "L"
+          "L",
+          "L",
+          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -420,22 +420,22 @@
         "team_id": "VAL",
         "name": "Valencia CF",
         "short_name": "Valencia",
-        "elo_rating": 1590.0,
-        "off_rank": 18.0,
-        "def_rank": 12.0,
-        "played": 8,
-        "won": 2,
+        "elo_rating": 1551.9,
+        "off_rank": 19.0,
+        "def_rank": 16.0,
+        "played": 7,
+        "won": 1,
         "drawn": 1,
         "lost": 5,
-        "gf": 5,
+        "gf": 4,
         "ga": 13,
-        "gd": -8,
-        "points": 7,
+        "gd": -9,
+        "points": 4,
         "form": [
+          "L",
+          "L",
+          "L",
           "W",
-          "L",
-          "D",
-          "L",
           "L"
         ],
         "avg_cards": 2.2,
@@ -446,7 +446,7 @@
         "team_id": "LEV",
         "name": "Levante UD",
         "short_name": "Levante",
-        "elo_rating": 1520.0,
+        "elo_rating": 1529.7,
         "off_rank": 12.0,
         "def_rank": 17.0,
         "played": 6,
@@ -458,61 +458,9 @@
         "gd": -4,
         "points": 5,
         "form": [
-          "L",
-          "L",
-          "L",
-          "D",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 17,
-        "team_id": "DEP",
-        "name": "RC Deportivo de La Coruña",
-        "short_name": "Deportivo",
-        "elo_rating": 1440.0,
-        "off_rank": 9.0,
-        "def_rank": 8.0,
-        "played": 7,
-        "won": 2,
-        "drawn": 4,
-        "lost": 1,
-        "gf": 10,
-        "ga": 8,
-        "gd": 2,
-        "points": 10,
-        "form": [
-          "L",
-          "D",
-          "D",
-          "D",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 18,
-        "team_id": "ELC",
-        "name": "Elche CF",
-        "short_name": "Elche",
-        "elo_rating": 1440.0,
-        "off_rank": 5.0,
-        "def_rank": 19.0,
-        "played": 9,
-        "won": 2,
-        "drawn": 2,
-        "lost": 5,
-        "gf": 16,
-        "ga": 21,
-        "gd": -5,
-        "points": 8,
-        "form": [
           "D",
           "W",
-          "W",
+          "D",
           "L",
           "L"
         ],
@@ -520,13 +468,13 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 19,
+        "rank": 17,
         "team_id": "MAL",
         "name": "Málaga CF",
         "short_name": "Málaga",
-        "elo_rating": 1440.0,
+        "elo_rating": 1503.2,
         "off_rank": 20.0,
-        "def_rank": 15.0,
+        "def_rank": 13.0,
         "played": 7,
         "won": 0,
         "drawn": 3,
@@ -537,10 +485,62 @@
         "points": 3,
         "form": [
           "L",
+          "D",
+          "D",
+          "L",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 18,
+        "team_id": "DEP",
+        "name": "RC Deportivo de La Coruña",
+        "short_name": "Deportivo",
+        "elo_rating": 1483.3,
+        "off_rank": 11.0,
+        "def_rank": 9.0,
+        "played": 7,
+        "won": 2,
+        "drawn": 4,
+        "lost": 1,
+        "gf": 10,
+        "ga": 8,
+        "gd": 2,
+        "points": 10,
+        "form": [
+          "W",
+          "W",
+          "D",
+          "L",
+          "D"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 19,
+        "team_id": "ELC",
+        "name": "Elche CF",
+        "short_name": "Elche",
+        "elo_rating": 1459.1,
+        "off_rank": 7.0,
+        "def_rank": 19.0,
+        "played": 7,
+        "won": 1,
+        "drawn": 2,
+        "lost": 4,
+        "gf": 11,
+        "ga": 17,
+        "gd": -6,
+        "points": 5,
+        "form": [
           "L",
           "L",
           "D",
-          "L"
+          "L",
+          "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -550,8 +550,8 @@
         "team_id": "RDS",
         "name": "Racing de Santander",
         "short_name": "Racing",
-        "elo_rating": 1440.0,
-        "off_rank": 7.0,
+        "elo_rating": 1441.5,
+        "off_rank": 8.0,
         "def_rank": 20.0,
         "played": 7,
         "won": 2,
@@ -562,11 +562,11 @@
         "gd": -10,
         "points": 7,
         "form": [
-          "D",
+          "W",
           "L",
+          "W",
           "L",
-          "L",
-          "W"
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -575,62 +575,10 @@
     "PREMIER": [
       {
         "rank": 1,
-        "team_id": "ARS",
-        "name": "Arsenal",
-        "short_name": "Arsenal",
-        "elo_rating": 1980.0,
-        "off_rank": 6.0,
-        "def_rank": 3.0,
-        "played": 5,
-        "won": 4,
-        "drawn": 0,
-        "lost": 1,
-        "gf": 8,
-        "ga": 4,
-        "gd": 4,
-        "points": 12,
-        "form": [
-          "W",
-          "W",
-          "L",
-          "W",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 2,
-        "team_id": "LIV",
-        "name": "Liverpool",
-        "short_name": "Liverpool",
-        "elo_rating": 1980.0,
-        "off_rank": 8.0,
-        "def_rank": 4.0,
-        "played": 5,
-        "won": 2,
-        "drawn": 3,
-        "lost": 0,
-        "gf": 7,
-        "ga": 4,
-        "gd": 3,
-        "points": 9,
-        "form": [
-          "W",
-          "D",
-          "W",
-          "D",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 3,
         "team_id": "MCI",
         "name": "Manchester City",
         "short_name": "Man. City",
-        "elo_rating": 1980.0,
+        "elo_rating": 1991.4,
         "off_rank": 2.0,
         "def_rank": 7.0,
         "played": 5,
@@ -652,27 +600,79 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 4,
-        "team_id": "AVL",
-        "name": "Aston Villa",
-        "short_name": "Aston Villa",
-        "elo_rating": 1820.0,
-        "off_rank": 17.0,
-        "def_rank": 14.0,
+        "rank": 2,
+        "team_id": "LIV",
+        "name": "Liverpool",
+        "short_name": "Liverpool",
+        "elo_rating": 1965.3,
+        "off_rank": 8.0,
+        "def_rank": 3.0,
         "played": 5,
-        "won": 1,
-        "drawn": 1,
-        "lost": 3,
-        "gf": 4,
-        "ga": 9,
-        "gd": -5,
-        "points": 4,
+        "won": 2,
+        "drawn": 3,
+        "lost": 0,
+        "gf": 7,
+        "ga": 4,
+        "gd": 3,
+        "points": 9,
         "form": [
           "D",
-          "L",
+          "D",
           "W",
-          "L",
+          "D",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 3,
+        "team_id": "ARS",
+        "name": "Arsenal",
+        "short_name": "Arsenal",
+        "elo_rating": 1961.3,
+        "off_rank": 6.0,
+        "def_rank": 4.0,
+        "played": 5,
+        "won": 4,
+        "drawn": 0,
+        "lost": 1,
+        "gf": 8,
+        "ga": 4,
+        "gd": 4,
+        "points": 12,
+        "form": [
+          "W",
+          "W",
+          "W",
+          "W",
           "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 4,
+        "team_id": "NEW",
+        "name": "Newcastle United",
+        "short_name": "Newcastle",
+        "elo_rating": 1801.9,
+        "off_rank": 5.0,
+        "def_rank": 14.0,
+        "played": 5,
+        "won": 2,
+        "drawn": 2,
+        "lost": 1,
+        "gf": 9,
+        "ga": 9,
+        "gd": 0,
+        "points": 8,
+        "form": [
+          "D",
+          "W",
+          "D",
+          "L",
+          "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -682,7 +682,7 @@
         "team_id": "CHE",
         "name": "Chelsea",
         "short_name": "Chelsea",
-        "elo_rating": 1820.0,
+        "elo_rating": 1788.9,
         "off_rank": 3.0,
         "def_rank": 20.0,
         "played": 5,
@@ -694,36 +694,36 @@
         "gd": -2,
         "points": 7,
         "form": [
+          "W",
+          "W",
           "L",
           "D",
-          "L",
-          "W",
-          "W"
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
         "rank": 6,
-        "team_id": "NEW",
-        "name": "Newcastle United",
-        "short_name": "Newcastle",
-        "elo_rating": 1820.0,
-        "off_rank": 5.0,
+        "team_id": "AVL",
+        "name": "Aston Villa",
+        "short_name": "Aston Villa",
+        "elo_rating": 1769.8,
+        "off_rank": 17.0,
         "def_rank": 15.0,
         "played": 5,
-        "won": 2,
-        "drawn": 2,
-        "lost": 1,
-        "gf": 9,
+        "won": 1,
+        "drawn": 1,
+        "lost": 3,
+        "gf": 4,
         "ga": 9,
-        "gd": 0,
-        "points": 8,
+        "gd": -5,
+        "points": 4,
         "form": [
+          "L",
+          "L",
           "D",
           "L",
-          "W",
-          "D",
           "W"
         ],
         "avg_cards": 2.2,
@@ -731,36 +731,10 @@
       },
       {
         "rank": 7,
-        "team_id": "TOT",
-        "name": "Tottenham Hotspur",
-        "short_name": "Tottenham",
-        "elo_rating": 1820.0,
-        "off_rank": 19.0,
-        "def_rank": 10.0,
-        "played": 5,
-        "won": 0,
-        "drawn": 2,
-        "lost": 3,
-        "gf": 2,
-        "ga": 8,
-        "gd": -6,
-        "points": 2,
-        "form": [
-          "D",
-          "D",
-          "L",
-          "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 8,
         "team_id": "BHA",
         "name": "Brighton & Hove Albion",
         "short_name": "Brighton",
-        "elo_rating": 1680.0,
+        "elo_rating": 1749.8,
         "off_rank": 1.0,
         "def_rank": 8.0,
         "played": 5,
@@ -772,10 +746,36 @@
         "gd": 11,
         "points": 10,
         "form": [
+          "W",
+          "L",
           "D",
           "W",
-          "W",
-          "W",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 8,
+        "team_id": "TOT",
+        "name": "Tottenham Hotspur",
+        "short_name": "Tottenham",
+        "elo_rating": 1745.3,
+        "off_rank": 19.0,
+        "def_rank": 10.0,
+        "played": 5,
+        "won": 0,
+        "drawn": 2,
+        "lost": 3,
+        "gf": 2,
+        "ga": 8,
+        "gd": -6,
+        "points": 2,
+        "form": [
+          "L",
+          "L",
+          "D",
+          "D",
           "L"
         ],
         "avg_cards": 2.2,
@@ -786,7 +786,7 @@
         "team_id": "BOU",
         "name": "AFC Bournemouth",
         "short_name": "Bournemouth",
-        "elo_rating": 1680.0,
+        "elo_rating": 1671.2,
         "off_rank": 11.0,
         "def_rank": 11.0,
         "played": 5,
@@ -798,11 +798,11 @@
         "gd": -2,
         "points": 3,
         "form": [
+          "L",
           "D",
           "D",
-          "L",
-          "L",
-          "D"
+          "D",
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -812,7 +812,7 @@
         "team_id": "FUL",
         "name": "Fulham",
         "short_name": "Fulham",
-        "elo_rating": 1680.0,
+        "elo_rating": 1643.9,
         "off_rank": 16.0,
         "def_rank": 12.0,
         "played": 5,
@@ -825,10 +825,10 @@
         "points": 2,
         "form": [
           "L",
-          "D",
-          "D",
           "L",
-          "L"
+          "L",
+          "D",
+          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -838,7 +838,7 @@
         "team_id": "BRE",
         "name": "Brentford",
         "short_name": "Brentford",
-        "elo_rating": 1580.0,
+        "elo_rating": 1642.0,
         "off_rank": 4.0,
         "def_rank": 5.0,
         "played": 5,
@@ -850,48 +850,22 @@
         "gd": 6,
         "points": 9,
         "form": [
+          "W",
           "D",
           "D",
-          "W",
-          "W",
-          "D"
+          "D",
+          "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
         "rank": 12,
-        "team_id": "CRY",
-        "name": "Crystal Palace",
-        "short_name": "Crystal Palace",
-        "elo_rating": 1580.0,
-        "off_rank": 12.0,
-        "def_rank": 18.0,
-        "played": 5,
-        "won": 1,
-        "drawn": 1,
-        "lost": 3,
-        "gf": 6,
-        "ga": 11,
-        "gd": -5,
-        "points": 4,
-        "form": [
-          "W",
-          "L",
-          "D",
-          "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 13,
         "team_id": "EVE",
         "name": "Everton",
         "short_name": "Everton",
-        "elo_rating": 1580.0,
-        "off_rank": 13.0,
+        "elo_rating": 1607.0,
+        "off_rank": 12.0,
         "def_rank": 1.0,
         "played": 5,
         "won": 2,
@@ -902,17 +876,17 @@
         "gd": 3,
         "points": 9,
         "form": [
+          "W",
           "D",
           "D",
-          "W",
-          "W",
-          "D"
+          "D",
+          "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
-        "rank": 14,
+        "rank": 13,
         "team_id": "NFO",
         "name": "Nottingham Forest",
         "short_name": "Nottm Forest",
@@ -928,9 +902,35 @@
         "gd": -1,
         "points": 5,
         "form": [
+          "L",
+          "D",
           "D",
           "W",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 14,
+        "team_id": "CRY",
+        "name": "Crystal Palace",
+        "short_name": "Crystal Palace",
+        "elo_rating": 1561.4,
+        "off_rank": 13.0,
+        "def_rank": 18.0,
+        "played": 5,
+        "won": 1,
+        "drawn": 1,
+        "lost": 3,
+        "gf": 6,
+        "ga": 11,
+        "gd": -5,
+        "points": 4,
+        "form": [
           "L",
+          "L",
+          "W",
           "L",
           "D"
         ],
@@ -942,7 +942,7 @@
         "team_id": "LEE",
         "name": "Leeds Utd",
         "short_name": "Leeds Utd",
-        "elo_rating": 1556.5,
+        "elo_rating": 1549.4,
         "off_rank": 9.0,
         "def_rank": 2.0,
         "played": 5,
@@ -954,8 +954,8 @@
         "gd": 4,
         "points": 9,
         "form": [
-          "D",
           "W",
+          "D",
           "D",
           "W",
           "D"
@@ -968,7 +968,7 @@
         "team_id": "HUL",
         "name": "Hull",
         "short_name": "Hull",
-        "elo_rating": 1539.3,
+        "elo_rating": 1528.8,
         "off_rank": 14.0,
         "def_rank": 6.0,
         "played": 5,
@@ -980,11 +980,11 @@
         "gd": 2,
         "points": 8,
         "form": [
-          "D",
-          "D",
-          "L",
           "W",
-          "W"
+          "W",
+          "D",
+          "D",
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -994,7 +994,7 @@
         "team_id": "MAN",
         "name": "Manchester Utd",
         "short_name": "Manchester Utd",
-        "elo_rating": 1512.6,
+        "elo_rating": 1504.2,
         "off_rank": 7.0,
         "def_rank": 13.0,
         "played": 5,
@@ -1006,11 +1006,11 @@
         "gd": 0,
         "points": 5,
         "form": [
+          "L",
+          "W",
           "D",
           "L",
-          "D",
-          "L",
-          "W"
+          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -1020,7 +1020,7 @@
         "team_id": "SUN",
         "name": "Sunderland",
         "short_name": "Sunderland",
-        "elo_rating": 1504.8,
+        "elo_rating": 1496.7,
         "off_rank": 15.0,
         "def_rank": 16.0,
         "played": 5,
@@ -1032,11 +1032,11 @@
         "gd": -4,
         "points": 4,
         "form": [
+          "L",
+          "W",
           "D",
           "L",
-          "L",
-          "L",
-          "W"
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -1046,7 +1046,7 @@
         "team_id": "IPS",
         "name": "Ipswich Town",
         "short_name": "Ipswich",
-        "elo_rating": 1490.0,
+        "elo_rating": 1485.6,
         "off_rank": 10.0,
         "def_rank": 19.0,
         "played": 5,
@@ -1058,8 +1058,8 @@
         "gd": -4,
         "points": 6,
         "form": [
-          "L",
           "W",
+          "L",
           "L",
           "W",
           "L"
@@ -1072,7 +1072,7 @@
         "team_id": "COV",
         "name": "Coventry",
         "short_name": "Coventry",
-        "elo_rating": 1483.5,
+        "elo_rating": 1476.3,
         "off_rank": 20.0,
         "def_rank": 17.0,
         "played": 5,
@@ -1086,9 +1086,9 @@
         "form": [
           "L",
           "L",
-          "W",
           "L",
-          "L"
+          "L",
+          "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -1097,11 +1097,89 @@
     "HYPERMOTION": [
       {
         "rank": 1,
+        "team_id": "CAS",
+        "name": "CD Castellón",
+        "short_name": "Castellón",
+        "elo_rating": 1591.6,
+        "off_rank": 1.0,
+        "def_rank": 1.0,
+        "played": 6,
+        "won": 5,
+        "drawn": 1,
+        "lost": 0,
+        "gf": 12,
+        "ga": 2,
+        "gd": 10,
+        "points": 16,
+        "form": [
+          "D",
+          "W",
+          "W",
+          "W",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 2,
+        "team_id": "EIB",
+        "name": "SD Eibar",
+        "short_name": "Eibar",
+        "elo_rating": 1583.3,
+        "off_rank": 2.0,
+        "def_rank": 3.0,
+        "played": 6,
+        "won": 5,
+        "drawn": 0,
+        "lost": 1,
+        "gf": 12,
+        "ga": 4,
+        "gd": 8,
+        "points": 15,
+        "form": [
+          "W",
+          "W",
+          "W",
+          "W",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 3,
+        "team_id": "ALM",
+        "name": "UD Almería",
+        "short_name": "Almería",
+        "elo_rating": 1560.9,
+        "off_rank": 4.0,
+        "def_rank": 4.0,
+        "played": 6,
+        "won": 4,
+        "drawn": 0,
+        "lost": 2,
+        "gf": 10,
+        "ga": 4,
+        "gd": 6,
+        "points": 12,
+        "form": [
+          "L",
+          "L",
+          "W",
+          "W",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 4,
         "team_id": "GIR",
         "name": "Girona",
         "short_name": "Girona",
-        "elo_rating": 1526.0,
-        "off_rank": 1.0,
+        "elo_rating": 1548.5,
+        "off_rank": 3.0,
         "def_rank": 11.0,
         "played": 6,
         "won": 3,
@@ -1113,87 +1191,9 @@
         "points": 10,
         "form": [
           "L",
-          "D",
-          "W",
-          "L",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 2,
-        "team_id": "ALM",
-        "name": "UD Almería",
-        "short_name": "Almería",
-        "elo_rating": 1520.0,
-        "off_rank": 4.0,
-        "def_rank": 3.0,
-        "played": 6,
-        "won": 4,
-        "drawn": 0,
-        "lost": 2,
-        "gf": 10,
-        "ga": 4,
-        "gd": 6,
-        "points": 12,
-        "form": [
-          "W",
           "W",
           "W",
           "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 3,
-        "team_id": "CAD",
-        "name": "Cádiz CF",
-        "short_name": "Cádiz",
-        "elo_rating": 1520.0,
-        "off_rank": 15.0,
-        "def_rank": 16.0,
-        "played": 6,
-        "won": 0,
-        "drawn": 3,
-        "lost": 3,
-        "gf": 6,
-        "ga": 9,
-        "gd": -3,
-        "points": 3,
-        "form": [
-          "L",
-          "D",
-          "L",
-          "D",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 4,
-        "team_id": "EIB",
-        "name": "SD Eibar",
-        "short_name": "Eibar",
-        "elo_rating": 1520.0,
-        "off_rank": 2.0,
-        "def_rank": 4.0,
-        "played": 6,
-        "won": 5,
-        "drawn": 0,
-        "lost": 1,
-        "gf": 12,
-        "ga": 4,
-        "gd": 8,
-        "points": 15,
-        "form": [
-          "W",
-          "L",
-          "W",
-          "W",
           "W"
         ],
         "avg_cards": 2.2,
@@ -1201,24 +1201,24 @@
       },
       {
         "rank": 5,
-        "team_id": "GRA",
-        "name": "Granada CF",
-        "short_name": "Granada",
-        "elo_rating": 1520.0,
-        "off_rank": 8.0,
-        "def_rank": 12.0,
+        "team_id": "BUR",
+        "name": "Burgos CF",
+        "short_name": "Burgos",
+        "elo_rating": 1543.2,
+        "off_rank": 5.0,
+        "def_rank": 9.0,
         "played": 6,
-        "won": 2,
+        "won": 3,
         "drawn": 2,
-        "lost": 2,
-        "gf": 8,
-        "ga": 8,
-        "gd": 0,
-        "points": 8,
+        "lost": 1,
+        "gf": 10,
+        "ga": 7,
+        "gd": 3,
+        "points": 11,
         "form": [
-          "D",
-          "D",
           "L",
+          "D",
+          "D",
           "W",
           "W"
         ],
@@ -1227,36 +1227,10 @@
       },
       {
         "rank": 6,
-        "team_id": "ROV",
-        "name": "Real Oviedo",
-        "short_name": "Oviedo",
-        "elo_rating": 1520.0,
-        "off_rank": 17.0,
-        "def_rank": 5.0,
-        "played": 6,
-        "won": 2,
-        "drawn": 2,
-        "lost": 2,
-        "gf": 5,
-        "ga": 4,
-        "gd": 1,
-        "points": 8,
-        "form": [
-          "W",
-          "D",
-          "L",
-          "L",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 7,
         "team_id": "SAB",
         "name": "Sabadell",
         "short_name": "Sabadell",
-        "elo_rating": 1515.7,
+        "elo_rating": 1538.5,
         "off_rank": 12.0,
         "def_rank": 6.0,
         "played": 6,
@@ -1268,22 +1242,22 @@
         "gd": 2,
         "points": 11,
         "form": [
-          "L",
           "D",
           "W",
-          "D",
+          "W",
+          "L",
           "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
-        "rank": 8,
+        "rank": 7,
         "team_id": "LEG",
         "name": "Leganés",
         "short_name": "Leganés",
-        "elo_rating": 1513.9,
-        "off_rank": 16.0,
+        "elo_rating": 1537.8,
+        "off_rank": 15.0,
         "def_rank": 7.0,
         "played": 6,
         "won": 3,
@@ -1294,21 +1268,73 @@
         "gd": 1,
         "points": 11,
         "form": [
-          "L",
+          "W",
+          "W",
           "D",
-          "W",
-          "W",
+          "L",
           "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
+        "rank": 8,
+        "team_id": "TEN",
+        "name": "CD Tenerife",
+        "short_name": "Tenerife",
+        "elo_rating": 1528.7,
+        "off_rank": 13.0,
+        "def_rank": 12.0,
+        "played": 6,
+        "won": 3,
+        "drawn": 1,
+        "lost": 2,
+        "gf": 7,
+        "ga": 8,
+        "gd": -1,
+        "points": 10,
+        "form": [
+          "W",
+          "L",
+          "D",
+          "W",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
         "rank": 9,
+        "team_id": "RSB",
+        "name": "Real Sociedad B",
+        "short_name": "Real Sociedad B",
+        "elo_rating": 1525.5,
+        "off_rank": 8.0,
+        "def_rank": 10.0,
+        "played": 6,
+        "won": 2,
+        "drawn": 2,
+        "lost": 2,
+        "gf": 8,
+        "ga": 7,
+        "gd": 1,
+        "points": 8,
+        "form": [
+          "W",
+          "D",
+          "D",
+          "W",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 10,
         "team_id": "LAS",
         "name": "Las Palmas",
         "short_name": "Las Palmas",
-        "elo_rating": 1502.0,
+        "elo_rating": 1524.7,
         "off_rank": 9.0,
         "def_rank": 13.0,
         "played": 6,
@@ -1321,8 +1347,8 @@
         "points": 10,
         "form": [
           "W",
-          "W",
           "L",
+          "D",
           "W",
           "L"
         ],
@@ -1330,51 +1356,25 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 10,
-        "team_id": "RSB",
-        "name": "Real Sociedad B",
-        "short_name": "Real Sociedad B",
-        "elo_rating": 1498.0,
-        "off_rank": 10.0,
-        "def_rank": 9.0,
+        "rank": 11,
+        "team_id": "ROV",
+        "name": "Real Oviedo",
+        "short_name": "Oviedo",
+        "elo_rating": 1524.6,
+        "off_rank": 17.0,
+        "def_rank": 5.0,
         "played": 6,
         "won": 2,
         "drawn": 2,
         "lost": 2,
-        "gf": 8,
-        "ga": 7,
+        "gf": 5,
+        "ga": 4,
         "gd": 1,
         "points": 8,
         "form": [
-          "W",
-          "L",
           "L",
           "W",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 11,
-        "team_id": "CDV",
-        "name": "Celta de Vigo B",
-        "short_name": "Celta de Vigo B",
-        "elo_rating": 1477.0,
-        "off_rank": 13.0,
-        "def_rank": 17.0,
-        "played": 6,
-        "won": 2,
-        "drawn": 1,
-        "lost": 3,
-        "gf": 7,
-        "ga": 10,
-        "gd": -3,
-        "points": 7,
-        "form": [
-          "L",
           "D",
-          "L",
           "W",
           "L"
         ],
@@ -1383,192 +1383,36 @@
       },
       {
         "rank": 12,
-        "team_id": "REA",
-        "name": "Real Sporting",
-        "short_name": "Real Sporting",
-        "elo_rating": 1468.8,
-        "off_rank": 18.0,
-        "def_rank": 8.0,
-        "played": 12,
-        "won": 4,
-        "drawn": 3,
-        "lost": 5,
+        "team_id": "GRA",
+        "name": "Granada CF",
+        "short_name": "Granada",
+        "elo_rating": 1519.3,
+        "off_rank": 10.0,
+        "def_rank": 14.0,
+        "played": 6,
+        "won": 2,
+        "drawn": 2,
+        "lost": 2,
         "gf": 8,
-        "ga": 12,
-        "gd": -4,
-        "points": 15,
+        "ga": 8,
+        "gd": 0,
+        "points": 8,
         "form": [
-          "D",
+          "W",
+          "W",
           "L",
-          "W",
-          "W",
-          "D"
+          "D",
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
         "rank": 13,
-        "team_id": "AND",
-        "name": "Andorra",
-        "short_name": "Andorra",
-        "elo_rating": 1443.7,
-        "off_rank": 6.0,
-        "def_rank": 19.0,
-        "played": 6,
-        "won": 1,
-        "drawn": 0,
-        "lost": 5,
-        "gf": 9,
-        "ga": 13,
-        "gd": -4,
-        "points": 3,
-        "form": [
-          "L",
-          "W",
-          "L",
-          "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 14,
-        "team_id": "ALB",
-        "name": "Albacete Balompié",
-        "short_name": "Albacete",
-        "elo_rating": 1440.0,
-        "off_rank": 19.0,
-        "def_rank": 18.0,
-        "played": 6,
-        "won": 0,
-        "drawn": 1,
-        "lost": 5,
-        "gf": 4,
-        "ga": 10,
-        "gd": -6,
-        "points": 1,
-        "form": [
-          "D",
-          "L",
-          "L",
-          "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 15,
-        "team_id": "BUR",
-        "name": "Burgos CF",
-        "short_name": "Burgos",
-        "elo_rating": 1440.0,
-        "off_rank": 5.0,
-        "def_rank": 10.0,
-        "played": 6,
-        "won": 3,
-        "drawn": 2,
-        "lost": 1,
-        "gf": 10,
-        "ga": 7,
-        "gd": 3,
-        "points": 11,
-        "form": [
-          "W",
-          "W",
-          "W",
-          "L",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 16,
-        "team_id": "CAS",
-        "name": "CD Castellón",
-        "short_name": "Castellón",
-        "elo_rating": 1440.0,
-        "off_rank": 3.0,
-        "def_rank": 1.0,
-        "played": 6,
-        "won": 5,
-        "drawn": 1,
-        "lost": 0,
-        "gf": 12,
-        "ga": 2,
-        "gd": 10,
-        "points": 16,
-        "form": [
-          "W",
-          "W",
-          "W",
-          "D",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 17,
-        "team_id": "COR",
-        "name": "Córdoba CF",
-        "short_name": "Córdoba",
-        "elo_rating": 1440.0,
-        "off_rank": 7.0,
-        "def_rank": 20.0,
-        "played": 6,
-        "won": 2,
-        "drawn": 0,
-        "lost": 4,
-        "gf": 9,
-        "ga": 13,
-        "gd": -4,
-        "points": 6,
-        "form": [
-          "L",
-          "L",
-          "W",
-          "W",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 18,
-        "team_id": "ELD",
-        "name": "CD Eldense",
-        "short_name": "Eldense",
-        "elo_rating": 1440.0,
-        "off_rank": 20.0,
-        "def_rank": 14.0,
-        "played": 6,
-        "won": 1,
-        "drawn": 2,
-        "lost": 3,
-        "gf": 4,
-        "ga": 8,
-        "gd": -4,
-        "points": 5,
-        "form": [
-          "W",
-          "L",
-          "L",
-          "D",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 19,
         "team_id": "MAL",
         "name": "Málaga CF",
         "short_name": "Málaga",
-        "elo_rating": 1440.0,
+        "elo_rating": 1503.2,
         "off_rank": 11.0,
         "def_rank": 2.0,
         "played": 6,
@@ -1580,9 +1424,113 @@
         "gd": 6,
         "points": 13,
         "form": [
+          "L",
           "W",
+          "D",
           "W",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 14,
+        "team_id": "CDV",
+        "name": "Celta de Vigo B",
+        "short_name": "Celta de Vigo B",
+        "elo_rating": 1498.9,
+        "off_rank": 14.0,
+        "def_rank": 17.0,
+        "played": 6,
+        "won": 2,
+        "drawn": 1,
+        "lost": 3,
+        "gf": 7,
+        "ga": 10,
+        "gd": -3,
+        "points": 7,
+        "form": [
           "W",
+          "L",
+          "W",
+          "L",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 15,
+        "team_id": "ELD",
+        "name": "CD Eldense",
+        "short_name": "Eldense",
+        "elo_rating": 1492.0,
+        "off_rank": 19.0,
+        "def_rank": 15.0,
+        "played": 6,
+        "won": 1,
+        "drawn": 2,
+        "lost": 3,
+        "gf": 4,
+        "ga": 8,
+        "gd": -4,
+        "points": 5,
+        "form": [
+          "D",
+          "L",
+          "D",
+          "W",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 16,
+        "team_id": "REA",
+        "name": "Real Sporting",
+        "short_name": "Real Sporting",
+        "elo_rating": 1490.8,
+        "off_rank": 18.0,
+        "def_rank": 8.0,
+        "played": 12,
+        "won": 4,
+        "drawn": 3,
+        "lost": 5,
+        "gf": 8,
+        "ga": 12,
+        "gd": -4,
+        "points": 15,
+        "form": [
+          "W",
+          "L",
+          "L",
+          "W",
+          "D"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 17,
+        "team_id": "COR",
+        "name": "Córdoba CF",
+        "short_name": "Córdoba",
+        "elo_rating": 1486.8,
+        "off_rank": 6.0,
+        "def_rank": 19.0,
+        "played": 6,
+        "won": 2,
+        "drawn": 0,
+        "lost": 4,
+        "gf": 9,
+        "ga": 13,
+        "gd": -4,
+        "points": 6,
+        "form": [
+          "W",
+          "L",
+          "L",
           "L",
           "W"
         ],
@@ -1590,26 +1538,78 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 20,
-        "team_id": "TEN",
-        "name": "CD Tenerife",
-        "short_name": "Tenerife",
-        "elo_rating": 1440.0,
-        "off_rank": 14.0,
-        "def_rank": 15.0,
+        "rank": 18,
+        "team_id": "CAD",
+        "name": "Cádiz CF",
+        "short_name": "Cádiz",
+        "elo_rating": 1484.8,
+        "off_rank": 16.0,
+        "def_rank": 16.0,
         "played": 6,
-        "won": 3,
-        "drawn": 1,
-        "lost": 2,
-        "gf": 7,
-        "ga": 8,
-        "gd": -1,
-        "points": 10,
+        "won": 0,
+        "drawn": 3,
+        "lost": 3,
+        "gf": 6,
+        "ga": 9,
+        "gd": -3,
+        "points": 3,
         "form": [
-          "W",
-          "W",
+          "D",
+          "D",
           "L",
-          "W",
+          "L",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 19,
+        "team_id": "ALB",
+        "name": "Albacete Balompié",
+        "short_name": "Albacete",
+        "elo_rating": 1463.7,
+        "off_rank": 20.0,
+        "def_rank": 18.0,
+        "played": 6,
+        "won": 0,
+        "drawn": 1,
+        "lost": 5,
+        "gf": 4,
+        "ga": 10,
+        "gd": -6,
+        "points": 1,
+        "form": [
+          "L",
+          "L",
+          "L",
+          "D",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 20,
+        "team_id": "AND",
+        "name": "Andorra",
+        "short_name": "Andorra",
+        "elo_rating": 1462.9,
+        "off_rank": 7.0,
+        "def_rank": 20.0,
+        "played": 6,
+        "won": 1,
+        "drawn": 0,
+        "lost": 5,
+        "gf": 9,
+        "ga": 13,
+        "gd": -4,
+        "points": 3,
+        "form": [
+          "L",
+          "L",
+          "L",
+          "L",
           "L"
         ],
         "avg_cards": 2.2,
@@ -1620,7 +1620,7 @@
         "team_id": "AD ",
         "name": "AD Ceuta",
         "short_name": "AD Ceuta",
-        "elo_rating": 1407.7,
+        "elo_rating": 1430.5,
         "off_rank": 21.0,
         "def_rank": 21.0,
         "played": 6,
@@ -1634,9 +1634,9 @@
         "form": [
           "L",
           "L",
-          "D",
           "L",
-          "L"
+          "L",
+          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -1657,13 +1657,13 @@
             "id": "MAL",
             "name": "Málaga CF",
             "short_name": "Málaga",
-            "elo": 1440.0
+            "elo": 1503.2
           },
           "away_team": {
             "id": "ESP",
             "name": "RCD Espanyol",
             "short_name": "Espanyol",
-            "elo": 1590.0
+            "elo": 1576.2
           },
           "date": "09.10.2026 21:00",
           "verdict": "X2 (Favorit Visitant / Risc d'Empat)",
@@ -1756,13 +1756,13 @@
             "id": "RAY",
             "name": "Rayo Vallecano",
             "short_name": "Rayo",
-            "elo": 1590.0
+            "elo": 1590.1
           },
           "away_team": {
             "id": "ATH",
             "name": "Athletic Club",
             "short_name": "Athletic",
-            "elo": 1740.0
+            "elo": 1735.9
           },
           "date": "10.10.2026 14:00",
           "verdict": "Victòria Visitant (Athletic Club)",
@@ -1879,13 +1879,13 @@
             "id": "ALA",
             "name": "Deportivo Alavés",
             "short_name": "Alavés",
-            "elo": 1590.0
+            "elo": 1616.0
           },
           "away_team": {
             "id": "ATM",
             "name": "Atlético de Madrid",
             "short_name": "At. Madrid",
-            "elo": 1860.0
+            "elo": 1875.2
           },
           "date": "10.10.2026 16:15",
           "verdict": "Victòria Visitant (Atlético de Madrid)",
@@ -1978,13 +1978,13 @@
             "id": "FCB",
             "name": "FC Barcelona",
             "short_name": "Barcelona",
-            "elo": 1960.0
+            "elo": 1989.3
           },
           "away_team": {
             "id": "GET",
             "name": "Getafe CF",
             "short_name": "Getafe",
-            "elo": 1590.0
+            "elo": 1564.0
           },
           "date": "10.10.2026 18:30",
           "verdict": "Victòria Local (FC Barcelona)",
@@ -2113,13 +2113,13 @@
             "id": "RMA",
             "name": "Real Madrid",
             "short_name": "R. Madrid",
-            "elo": 1950.0
+            "elo": 1939.1
           },
           "away_team": {
             "id": "VIL",
             "name": "Villarreal CF",
             "short_name": "Villarreal",
-            "elo": 1740.0
+            "elo": 1710.5
           },
           "date": "10.10.2026 21:00",
           "verdict": "Victòria Local (Real Madrid)",
@@ -2260,13 +2260,13 @@
             "id": "ELC",
             "name": "Elche CF",
             "short_name": "Elche",
-            "elo": 1440.0
+            "elo": 1459.1
           },
           "away_team": {
             "id": "CEL",
             "name": "RC Celta de Vigo",
             "short_name": "Celta",
-            "elo": 1590.0
+            "elo": 1583.6
           },
           "date": "11.10.2026 14:00",
           "verdict": "X2 (Favorit Visitant / Risc d'Empat)",
@@ -2347,13 +2347,13 @@
             "id": "RSO",
             "name": "Real Sociedad",
             "short_name": "R. Sociedad",
-            "elo": 1740.0
+            "elo": 1716.9
           },
           "away_team": {
             "id": "DEP",
             "name": "RC Deportivo de La Coruña",
             "short_name": "Deportivo",
-            "elo": 1440.0
+            "elo": 1483.3
           },
           "date": "11.10.2026 16:15",
           "verdict": "Victòria Local (Real Sociedad)",
@@ -2458,13 +2458,13 @@
             "id": "BET",
             "name": "Real Betis",
             "short_name": "Betis",
-            "elo": 1740.0
+            "elo": 1749.8
           },
           "away_team": {
             "id": "OSA",
             "name": "CA Osasuna",
             "short_name": "Osasuna",
-            "elo": 1590.0
+            "elo": 1562.5
           },
           "date": "11.10.2026 18:30",
           "verdict": "Victòria Local (Real Betis)",
@@ -2569,13 +2569,13 @@
             "id": "RDS",
             "name": "Racing de Santander",
             "short_name": "Racing",
-            "elo": 1440.0
+            "elo": 1441.5
           },
           "away_team": {
             "id": "VAL",
             "name": "Valencia CF",
             "short_name": "Valencia",
-            "elo": 1590.0
+            "elo": 1551.9
           },
           "date": "11.10.2026 21:00",
           "verdict": "X2 (Favorit Visitant / Risc d'Empat)",
@@ -2598,8 +2598,8 @@
           },
           "odds_1x2": {
             "1": 2.0,
-            "X": 3.5,
-            "2": 3.25
+            "X": 3.55,
+            "2": 3.3
           },
           "odds_ou25": {
             "over": null,
@@ -2612,11 +2612,11 @@
           "value_bets": [
             {
               "model_prob": 41.4,
-              "bookie_odd": 3.25,
+              "bookie_odd": 3.3,
               "fair_odd": 2.42,
-              "implied_prob": 30.8,
-              "ev_pct": 34.5,
-              "kelly_pct": 3.8,
+              "implied_prob": 30.3,
+              "ev_pct": 36.6,
+              "kelly_pct": 4.0,
               "is_value": true,
               "rating": "🔥 EXCEL·LENT (+15% EV)",
               "name": "2 - Victòria Visitant (Valencia CF)",
@@ -2624,11 +2624,11 @@
             },
             {
               "model_prob": 52.2,
-              "bookie_odd": 2.55,
+              "bookie_odd": 2.6,
               "fair_odd": 1.91,
-              "implied_prob": 39.2,
-              "ev_pct": 33.2,
-              "kelly_pct": 5.3,
+              "implied_prob": 38.5,
+              "ev_pct": 35.8,
+              "kelly_pct": 5.6,
               "is_value": true,
               "rating": "🔥 EXCEL·LENT (+15% EV)",
               "name": "Valencia CF marca més d'1.5 gols",
@@ -2696,11 +2696,11 @@
             },
             {
               "model_prob": 29.4,
-              "bookie_odd": 3.5,
+              "bookie_odd": 3.55,
               "fair_odd": 3.4,
-              "implied_prob": 28.6,
-              "ev_pct": 2.9,
-              "kelly_pct": 0.3,
+              "implied_prob": 28.2,
+              "ev_pct": 4.4,
+              "kelly_pct": 0.4,
               "is_value": true,
               "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
               "name": "X - Empat",
@@ -2716,13 +2716,13 @@
             "id": "LEV",
             "name": "Levante UD",
             "short_name": "Levante",
-            "elo": 1520.0
+            "elo": 1529.7
           },
           "away_team": {
             "id": "SEV",
             "name": "Sevilla FC",
             "short_name": "Sevilla",
-            "elo": 1590.0
+            "elo": 1628.1
           },
           "date": "12.10.2026 21:00",
           "verdict": "Victòria Local (Levante UD)",
@@ -2870,13 +2870,13 @@
             "id": "ARS",
             "name": "Arsenal",
             "short_name": "Arsenal",
-            "elo": 1980.0
+            "elo": 1961.3
           },
           "away_team": {
             "id": "LEE",
             "name": "Leeds Utd",
             "short_name": "Leeds Utd",
-            "elo": 1556.5
+            "elo": 1549.4
           },
           "date": "10.10.2026 13:30",
           "verdict": "Victòria Local (Arsenal)",
@@ -3017,13 +3017,13 @@
             "id": "AVL",
             "name": "Aston Villa",
             "short_name": "Aston Villa",
-            "elo": 1820.0
+            "elo": 1769.8
           },
           "away_team": {
             "id": "BRE",
             "name": "Brentford",
             "short_name": "Brentford",
-            "elo": 1580.0
+            "elo": 1642.0
           },
           "date": "10.10.2026 16:00",
           "verdict": "Victòria Local (Aston Villa)",
@@ -3164,13 +3164,13 @@
             "id": "CHE",
             "name": "Chelsea",
             "short_name": "Chelsea",
-            "elo": 1820.0
+            "elo": 1788.9
           },
           "away_team": {
             "id": "BOU",
             "name": "AFC Bournemouth",
             "short_name": "Bournemouth",
-            "elo": 1680.0
+            "elo": 1671.2
           },
           "date": "10.10.2026 16:00",
           "verdict": "Victòria Local (Chelsea)",
@@ -3287,13 +3287,13 @@
             "id": "IPS",
             "name": "Ipswich Town",
             "short_name": "Ipswich",
-            "elo": 1490.0
+            "elo": 1485.6
           },
           "away_team": {
             "id": "FUL",
             "name": "Fulham",
             "short_name": "Fulham",
-            "elo": 1680.0
+            "elo": 1643.9
           },
           "date": "10.10.2026 16:00",
           "verdict": "Victòria Visitant (Fulham)",
@@ -3398,13 +3398,13 @@
             "id": "SUN",
             "name": "Sunderland",
             "short_name": "Sunderland",
-            "elo": 1504.8
+            "elo": 1496.7
           },
           "away_team": {
             "id": "BHA",
             "name": "Brighton & Hove Albion",
             "short_name": "Brighton",
-            "elo": 1680.0
+            "elo": 1749.8
           },
           "date": "10.10.2026 16:00",
           "verdict": "Victòria Visitant (Brighton & Hove Albion)",
@@ -3509,13 +3509,13 @@
             "id": "MAN",
             "name": "Manchester Utd",
             "short_name": "Manchester Utd",
-            "elo": 1512.6
+            "elo": 1504.2
           },
           "away_team": {
             "id": "TOT",
             "name": "Tottenham Hotspur",
             "short_name": "Tottenham",
-            "elo": 1820.0
+            "elo": 1745.3
           },
           "date": "10.10.2026 18:30",
           "verdict": "Victòria Visitant (Tottenham Hotspur)",
@@ -3656,7 +3656,7 @@
             "id": "CRY",
             "name": "Crystal Palace",
             "short_name": "Crystal Palace",
-            "elo": 1580.0
+            "elo": 1561.4
           },
           "away_team": {
             "id": "NFO",
@@ -3767,13 +3767,13 @@
             "id": "HUL",
             "name": "Hull",
             "short_name": "Hull",
-            "elo": 1539.3
+            "elo": 1528.8
           },
           "away_team": {
             "id": "EVE",
             "name": "Everton",
             "short_name": "Everton",
-            "elo": 1580.0
+            "elo": 1607.0
           },
           "date": "11.10.2026 15:00",
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -3866,13 +3866,13 @@
             "id": "LIV",
             "name": "Liverpool",
             "short_name": "Liverpool",
-            "elo": 1980.0
+            "elo": 1965.3
           },
           "away_team": {
             "id": "MCI",
             "name": "Manchester City",
             "short_name": "Man. City",
-            "elo": 1980.0
+            "elo": 1991.4
           },
           "date": "11.10.2026 17:30",
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -4001,13 +4001,13 @@
             "id": "COV",
             "name": "Coventry",
             "short_name": "Coventry",
-            "elo": 1483.5
+            "elo": 1476.3
           },
           "away_team": {
             "id": "NEW",
             "name": "Newcastle United",
             "short_name": "Newcastle",
-            "elo": 1820.0
+            "elo": 1801.9
           },
           "date": "12.10.2026 21:00",
           "verdict": "Victòria Visitant (Newcastle United)",
@@ -4124,13 +4124,13 @@
             "id": "EVE",
             "name": "Everton",
             "short_name": "Everton",
-            "elo": 1580.0
+            "elo": 1607.0
           },
           "away_team": {
             "id": "CHE",
             "name": "Chelsea",
             "short_name": "Chelsea",
-            "elo": 1820.0
+            "elo": 1788.9
           },
           "date": "17.10.2026 13:30",
           "verdict": "Victòria Visitant (Chelsea)",
@@ -4278,13 +4278,13 @@
             "id": "GIR",
             "name": "Girona",
             "short_name": "Girona",
-            "elo": 1526.0
+            "elo": 1548.5
           },
           "away_team": {
             "id": "ALB",
             "name": "Albacete Balompié",
             "short_name": "Albacete",
-            "elo": 1440.0
+            "elo": 1463.7
           },
           "date": "25.09.2026 20:30",
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -4425,13 +4425,13 @@
             "id": "AD ",
             "name": "AD Ceuta",
             "short_name": "AD Ceuta",
-            "elo": 1407.7
+            "elo": 1430.5
           },
           "away_team": {
             "id": "RSB",
             "name": "Real Sociedad B",
             "short_name": "Real Sociedad B",
-            "elo": 1498.0
+            "elo": 1525.5
           },
           "date": "26.09.2026 14:00",
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -4572,13 +4572,13 @@
             "id": "GRA",
             "name": "Granada CF",
             "short_name": "Granada",
-            "elo": 1520.0
+            "elo": 1519.3
           },
           "away_team": {
             "id": "AND",
             "name": "Andorra",
             "short_name": "Andorra",
-            "elo": 1443.7
+            "elo": 1462.9
           },
           "date": "26.09.2026 16:15",
           "verdict": "Victòria Local (Granada CF)",
@@ -4719,13 +4719,13 @@
             "id": "CDV",
             "name": "Celta de Vigo B",
             "short_name": "Celta de Vigo B",
-            "elo": 1477.0
+            "elo": 1498.9
           },
           "away_team": {
             "id": "SAB",
             "name": "Sabadell",
             "short_name": "Sabadell",
-            "elo": 1515.7
+            "elo": 1538.5
           },
           "date": "26.09.2026 18:30",
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -4866,13 +4866,13 @@
             "id": "TEN",
             "name": "CD Tenerife",
             "short_name": "Tenerife",
-            "elo": 1440.0
+            "elo": 1528.7
           },
           "away_team": {
             "id": "CAD",
             "name": "Cádiz CF",
             "short_name": "Cádiz",
-            "elo": 1520.0
+            "elo": 1484.8
           },
           "date": "26.09.2026 18:30",
           "verdict": "Victòria Visitant (Cádiz CF)",
@@ -5001,13 +5001,13 @@
             "id": "REA",
             "name": "Real Sporting",
             "short_name": "Real Sporting",
-            "elo": 1468.8
+            "elo": 1490.8
           },
           "away_team": {
             "id": "COR",
             "name": "Córdoba CF",
             "short_name": "Córdoba",
-            "elo": 1440.0
+            "elo": 1486.8
           },
           "date": "27.09.2026 14:00",
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -5051,13 +5051,13 @@
             "id": "MAL",
             "name": "Málaga CF",
             "short_name": "Málaga",
-            "elo": 1440.0
+            "elo": 1503.2
           },
           "away_team": {
             "id": "ALM",
             "name": "UD Almería",
             "short_name": "Almería",
-            "elo": 1520.0
+            "elo": 1560.9
           },
           "date": "27.09.2026 16:15",
           "verdict": "Victòria Visitant (UD Almería)",
@@ -5101,13 +5101,13 @@
             "id": "BUR",
             "name": "Burgos CF",
             "short_name": "Burgos",
-            "elo": 1440.0
+            "elo": 1543.2
           },
           "away_team": {
             "id": "ELD",
             "name": "CD Eldense",
             "short_name": "Eldense",
-            "elo": 1440.0
+            "elo": 1492.0
           },
           "date": "27.09.2026 18:30",
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -5176,13 +5176,13 @@
             "id": "EIB",
             "name": "SD Eibar",
             "short_name": "Eibar",
-            "elo": 1520.0
+            "elo": 1583.3
           },
           "away_team": {
             "id": "LAS",
             "name": "Las Palmas",
             "short_name": "Las Palmas",
-            "elo": 1502.0
+            "elo": 1524.7
           },
           "date": "27.09.2026 18:30",
           "verdict": "Victòria Local (SD Eibar)",
@@ -5323,13 +5323,13 @@
             "id": "ROV",
             "name": "Real Oviedo",
             "short_name": "Oviedo",
-            "elo": 1520.0
+            "elo": 1524.6
           },
           "away_team": {
             "id": "REA",
             "name": "Real Sporting",
             "short_name": "Real Sporting",
-            "elo": 1468.8
+            "elo": 1490.8
           },
           "date": "27.09.2026 21:00",
           "verdict": "Victòria Local (Real Oviedo)",
@@ -5470,13 +5470,13 @@
             "id": "LEG",
             "name": "Leganés",
             "short_name": "Leganés",
-            "elo": 1513.9
+            "elo": 1537.8
           },
           "away_team": {
             "id": "CAS",
             "name": "CD Castellón",
             "short_name": "Castellón",
-            "elo": 1440.0
+            "elo": 1591.6
           },
           "date": "28.09.2026 20:30",
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -6496,6 +6496,20 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "Racing de Santander vs Valencia CF",
+      "date": "11.10.2026 21:00",
+      "selection": "2 - Victòria Visitant (Valencia CF)",
+      "category": "1X2",
+      "bookie_odd": 3.3,
+      "model_prob": 41.4,
+      "fair_odd": 2.42,
+      "edge_pct": 36.6,
+      "kelly_stake": 4.0,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
       "competition_id": "HYPERMOTION",
       "competition_name": "LaLiga Hypermotion",
       "matchup": "SD Eibar vs Las Palmas",
@@ -6515,6 +6529,20 @@
       "matchup": "Málaga CF vs RCD Espanyol",
       "date": "09.10.2026 21:00",
       "selection": "RCD Espanyol marca més d'1.5 gols",
+      "category": "Gols",
+      "bookie_odd": 2.6,
+      "model_prob": 52.2,
+      "fair_odd": 1.91,
+      "edge_pct": 35.8,
+      "kelly_stake": 5.6,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "Racing de Santander vs Valencia CF",
+      "date": "11.10.2026 21:00",
+      "selection": "Valencia CF marca més d'1.5 gols",
       "category": "Gols",
       "bookie_odd": 2.6,
       "model_prob": 52.2,
@@ -6605,34 +6633,6 @@
       "fair_odd": 1.28,
       "edge_pct": 34.7,
       "kelly_stake": 12.0,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Racing de Santander vs Valencia CF",
-      "date": "11.10.2026 21:00",
-      "selection": "2 - Victòria Visitant (Valencia CF)",
-      "category": "1X2",
-      "bookie_odd": 3.25,
-      "model_prob": 41.4,
-      "fair_odd": 2.42,
-      "edge_pct": 34.5,
-      "kelly_stake": 3.8,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Racing de Santander vs Valencia CF",
-      "date": "11.10.2026 21:00",
-      "selection": "Valencia CF marca més d'1.5 gols",
-      "category": "Gols",
-      "bookie_odd": 2.55,
-      "model_prob": 52.2,
-      "fair_odd": 1.91,
-      "edge_pct": 33.2,
-      "kelly_stake": 5.3,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -7966,6 +7966,20 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "Racing de Santander vs Valencia CF",
+      "date": "11.10.2026 21:00",
+      "selection": "X - Empat",
+      "category": "1X2",
+      "bookie_odd": 3.55,
+      "model_prob": 29.4,
+      "fair_odd": 3.4,
+      "edge_pct": 4.4,
+      "kelly_stake": 0.4,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
       "competition_id": "PREMIER",
       "competition_name": "Premier League",
       "matchup": "Everton vs Chelsea",
@@ -8089,20 +8103,6 @@
       "fair_odd": 1.35,
       "edge_pct": 3.1,
       "kelly_stake": 2.0,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Racing de Santander vs Valencia CF",
-      "date": "11.10.2026 21:00",
-      "selection": "X - Empat",
-      "category": "1X2",
-      "bookie_odd": 3.5,
-      "model_prob": 29.4,
-      "fair_odd": 3.4,
-      "edge_pct": 2.9,
-      "kelly_stake": 0.3,
       "winamax_url": "https://www.winamax.es"
     },
     {

@@ -20,7 +20,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 import os
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
@@ -90,12 +90,24 @@ class WebDataExporter:
         with self.db.get_connection() as conn:
             c = conn.cursor()
             c.execute("""
-                SELECT home_team_id, away_team_id, home_goals, away_goals, date_time
+                SELECT home_team_id, away_team_id, home_goals, away_goals, date_time, jornada
                 FROM matches
                 WHERE competition_id = ? AND status = 'FINISHED'
-                ORDER BY date_time ASC
             """, (competition_id,))
             matches = [dict(r) for r in c.fetchall()]
+
+        # Ordenar estrictament per ordre cronològic real (no alfabètic de text DD.MM.YYYY)
+        def parse_match_date(m):
+            dt_str = m.get("date_time") or ""
+            try:
+                return datetime.strptime(dt_str.strip(), "%d.%m.%Y %H:%M")
+            except Exception:
+                try:
+                    return datetime.strptime(dt_str.strip(), "%Y-%m-%d %H:%M")
+                except Exception:
+                    return datetime(2026, 1, 1) + timedelta(days=int(m.get("jornada") or 0))
+
+        matches.sort(key=parse_match_date)
 
         # Estructures per equip
         stats = {}
