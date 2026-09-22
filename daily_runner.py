@@ -48,21 +48,27 @@ from engine.combo_tracker import ComboTracker
 from engine.pdf_report_generator import PDFReportGenerator
 from notifier.email_sender import EmailSender
 
-COMPETITIONS = ["LALIGA", "PREMIER", "HYPERMOTION"]
+COMPETITIONS = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"]
 
 def load_state() -> Dict[str, Any]:
+    state = {
+        comp: {"last_predicted_jornada": 0, "last_predicted_date": "", "last_scraped_jornada": 0}
+        for comp in COMPETITIONS
+    }
+    state["updated_at"] = ""
+
     if STATE_FILE.exists():
         try:
             with open(STATE_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                saved = json.load(f)
+                for k, v in saved.items():
+                    if k in state and isinstance(v, dict):
+                        state[k].update(v)
+                    elif k == "updated_at":
+                        state[k] = v
         except Exception:
             pass
-    return {
-        "LALIGA": {"last_predicted_jornada": 0, "last_predicted_date": "", "last_scraped_jornada": 0},
-        "PREMIER": {"last_predicted_jornada": 0, "last_predicted_date": "", "last_scraped_jornada": 0},
-        "HYPERMOTION": {"last_predicted_jornada": 0, "last_predicted_date": "", "last_scraped_jornada": 0},
-        "updated_at": ""
-    }
+    return state
 
 def save_state(state: Dict[str, Any]):
     STATE_FILE.parent.mkdir(parents=True, exist_ok=True)

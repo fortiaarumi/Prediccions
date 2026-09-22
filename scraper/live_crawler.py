@@ -29,6 +29,7 @@ FLASHSCORE_COMPETITIONS = {
     "LALIGA": "https://www.flashscore.es/futbol/espana/laliga-ea-sports",
     "PREMIER": "https://www.flashscore.es/futbol/inglaterra/premier-league",
     "HYPERMOTION": "https://www.flashscore.es/futbol/espana/laliga-hypermotion",
+    "CHAMPIONSHIP": "https://www.flashscore.es/futbol/inglaterra/championship",
 }
 
 class LiveCrawler:
@@ -135,7 +136,8 @@ class LiveCrawler:
 
         db = DatabaseManager()
         db.seed_initial_data()
-        rank_engine = RankEngine(league_teams_count=22 if comp_id == "HYPERMOTION" else 20)
+        teams_count = 24 if comp_id == "CHAMPIONSHIP" else (22 if comp_id == "HYPERMOTION" else 20)
+        rank_engine = RankEngine(league_teams_count=teams_count)
         scraper = MatchScraper(headless=self.headless)
 
         print(f"\n[*] Processant els {len(fixtures)} partits de la Jornada {jornada} ({comp_id})...")

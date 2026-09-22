@@ -61,6 +61,7 @@ class JornadaResolver:
             "LALIGA": "https://www.flashscore.es/futbol/espana/laliga-ea-sports/partidos/",
             "PREMIER": "https://www.flashscore.es/futbol/inglaterra/premier-league/partidos/",
             "HYPERMOTION": "https://www.flashscore.es/futbol/espana/laliga-hypermotion/partidos/",
+            "CHAMPIONSHIP": "https://www.flashscore.es/futbol/inglaterra/championship/partidos/",
         }
         target_url = urls.get(comp_id, urls["LALIGA"])
 

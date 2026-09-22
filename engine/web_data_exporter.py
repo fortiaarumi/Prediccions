@@ -66,6 +66,15 @@ COMPETITIONS_META = [
         "flashscore_code": "laliga2",
         "winamax_sport_id": 1,
         "winamax_cat_id": 2,
+    },
+    {
+        "id": "CHAMPIONSHIP",
+        "name": "EFL Championship",
+        "country": "Anglaterra (2a)",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "flashscore_code": "championship",
+        "winamax_sport_id": 1,
+        "winamax_cat_id": 1,
     }
 ]
 

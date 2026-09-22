@@ -28,7 +28,7 @@ from engine.pdf_report_generator import PDFReportGenerator
 
 def cmd_scrape_jornada(jornada: int, league: str = "LALIGA"):
     crawler = LiveCrawler(headless=True)
-    comps = ["LALIGA", "PREMIER", "HYPERMOTION"] if league.upper() == "ALL" else [league.upper()]
+    comps = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"] if league.upper() == "ALL" else [league.upper()]
     for c in comps:
         crawler.run_live_pipeline(jornada, competition_id=c)
 
@@ -36,7 +36,7 @@ def cmd_predict_jornada(jornada: int, league: str = "LALIGA"):
     db = DatabaseManager()
     db.seed_initial_data()
     predictor = JornadaPredictor(db=db)
-    comps = ["LALIGA", "PREMIER", "HYPERMOTION"] if league.upper() == "ALL" else [league.upper()]
+    comps = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"] if league.upper() == "ALL" else [league.upper()]
     for c in comps:
         predictor.predict_jornada(jornada=jornada, competition_id=c)
 
@@ -116,7 +116,7 @@ def main():
     parser = argparse.ArgumentParser(description="Sistema Oficial de Prediccions de LaLiga + Winamax Odds")
     parser.add_argument("--scrape-jornada", type=int, help="Descobreix els enllaços, corre l'scraper i actualitza rànquings")
     parser.add_argument("--predict-jornada", type=int, help="Prediu tots els partits de la Jornada N i genera informe PDF")
-    parser.add_argument("--league", type=str, default="LALIGA", help="Competició: LALIGA, PREMIER, HYPERMOTION o ALL (per defecte LALIGA)")
+    parser.add_argument("--league", type=str, default="LALIGA", help="Competició: LALIGA, PREMIER, HYPERMOTION, CHAMPIONSHIP o ALL (per defecte LALIGA)")
     parser.add_argument("--predict-match", nargs=2, metavar=("HOME", "AWAY"), help="Prediu un partit individual amb cuotes Winamax i genera PDF")
     parser.add_argument("--date", type=str, help="Data del partit (YYYY-MM-DD)")
     parser.add_argument("--referee", type=str, default=None, help="Nom o ID de l'àrbitre (opcional: si s'omet, es resol automàticament)")

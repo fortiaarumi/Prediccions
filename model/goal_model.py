@@ -22,6 +22,13 @@ class GoalModel:
         self.league_avg_home_goals = 1.42
         self.league_avg_away_goals = 1.12
 
+        self.league_profiles = {
+            "LALIGA": {"home_avg": 1.42, "away_avg": 1.12, "teams": 20},
+            "PREMIER": {"home_avg": 1.55, "away_avg": 1.25, "teams": 20},
+            "HYPERMOTION": {"home_avg": 1.35, "away_avg": 0.98, "teams": 22},
+            "CHAMPIONSHIP": {"home_avg": 1.48, "away_avg": 1.18, "teams": 24},
+        }
+
     def estimate_lambdas(
         self,
         home_team: Dict[str, Any],
@@ -30,22 +37,34 @@ class GoalModel:
         away_rest_factor: float = 1.0
     ) -> Tuple[float, float]:
         """
-        Calcula lambda_home i lambda_away combinant el rànquing d'equips i l'xG mòbil.
+        Calcula lambda_home i lambda_away combinant el rànquing d'equips i l'xG mòbil,
+        adaptant la calibració segons la competició i nombre d'equips.
         """
-        home_off = float(home_team.get("off_rank", 10.0))
-        home_def = float(home_team.get("def_rank", 10.0))
-        away_off = float(away_team.get("off_rank", 10.0))
-        away_def = float(away_team.get("def_rank", 10.0))
+        comp_id = (home_team.get("competition_id") or away_team.get("competition_id") or "LALIGA").upper()
+        prof = self.league_profiles.get(comp_id, {
+            "home_avg": self.league_avg_home_goals,
+            "away_avg": self.league_avg_away_goals,
+            "teams": 20
+        })
+
+        teams_count = float(home_team.get("teams_count") or prof["teams"])
+        half_count = max(1.0, teams_count / 2.0)
+        base_rank = teams_count + 1.0
+
+        home_off = float(home_team.get("off_rank", half_count))
+        home_def = float(home_team.get("def_rank", half_count))
+        away_off = float(away_team.get("off_rank", half_count))
+        away_def = float(away_team.get("def_rank", half_count))
 
         # 1. Força d'atac i feblesa defensiva teòrica
-        off_strength_home = max(0.4, (21.0 - home_off) / 10.5)
-        def_weakness_away = max(0.4, away_def / 10.5)
+        off_strength_home = max(0.4, (base_rank - home_off) / half_count)
+        def_weakness_away = max(0.4, away_def / half_count)
 
-        off_strength_away = max(0.4, (21.0 - away_off) / 10.5)
-        def_weakness_home = max(0.4, home_def / 10.5)
+        off_strength_away = max(0.4, (base_rank - away_off) / half_count)
+        def_weakness_home = max(0.4, home_def / half_count)
 
-        lambda_rank_home = self.league_avg_home_goals * off_strength_home * def_weakness_away
-        lambda_rank_away = self.league_avg_away_goals * off_strength_away * def_weakness_home
+        lambda_rank_home = prof["home_avg"] * off_strength_home * def_weakness_away
+        lambda_rank_away = prof["away_avg"] * off_strength_away * def_weakness_home
 
         # 2. xG mòbil si està disponible (rolling xG)
         home_xg_for = float(home_team.get("rolling_xg_for", lambda_rank_home))

@@ -148,7 +148,8 @@ class PDFReportGenerator:
         comp_names = {
             "LALIGA": "LaLiga EA Sports",
             "PREMIER": "Premier League",
-            "HYPERMOTION": "LaLiga Hypermotion"
+            "HYPERMOTION": "LaLiga Hypermotion",
+            "CHAMPIONSHIP": "EFL Championship"
         }
         comp_name = comp_names.get(comp_id, comp_id)
 
@@ -914,7 +915,7 @@ class PDFReportGenerator:
         pdf.set_xy(18, 26)
         pdf.set_font(font, "", 8.5)
         pdf.set_text_color(148, 163, 184)
-        pdf.cell(120, 6, "LaLiga EA Sports + Premier League + LaLiga Hypermotion | Winamax Espanya", align="L")
+        pdf.cell(120, 6, "LaLiga EA Sports + Premier + Hypermotion + Championship | Winamax Espanya", align="L")
 
         # Badge VIP
         pdf.set_xy(145, 19)
@@ -1031,7 +1032,7 @@ class PDFReportGenerator:
         if safe_combo and safe_combo.get("legs"):
             pdf.section_title(
                 "2. MEGA-COMBINADA MULTI-LLIGA DE MÀXIMA SEGURETAT (CUOTA 2 - 3)",
-                "Seleccions amb major certesa matemàtica (>= 88-90% model) creuant LaLiga, Premier i Hypermotion"
+                "Seleccions amb major certesa matemàtica (>= 88-90% model) creuant LaLiga, Premier, Hypermotion i Championship"
             )
 
             y_s = pdf.get_y()
@@ -1101,7 +1102,7 @@ class PDFReportGenerator:
         if risky_combo and risky_combo.get("legs"):
             pdf.section_title(
                 "3. MEGA-COMBINADA MULTI-LLIGA DE CUOTA ALTA (OBJECTIU >= 30.0)",
-                "Multiplicador agressiu d'alt valor matemàtic (+EV%) creuant les 3 grans competicions"
+                "Multiplicador agressiu d'alt valor matemàtic (+EV%) creuant les grans competicions"
             )
 
             y_r = pdf.get_y()
@@ -1167,7 +1168,7 @@ class PDFReportGenerator:
         if highlight_matches:
             pdf.section_title(
                 "4. RADAR EUROPEU: PARTITS MÉS IMPORTANTS DEL CAP DE SETMANA",
-                "Anàlisi dels enfrontaments de major impacte a LaLiga, Premier League i Hypermotion"
+                "Anàlisi dels enfrontaments de major impacte a LaLiga, Premier League, Hypermotion i Championship"
             )
 
             for m in highlight_matches[:4]:

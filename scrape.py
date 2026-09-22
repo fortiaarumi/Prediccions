@@ -43,6 +43,10 @@ LEAGUE_ALIASES = {
     "HYPERMOTION": "HYPERMOTION",
     "SEGONA": "HYPERMOTION",
     "2A": "HYPERMOTION",
+    "CHAMPIONSHIP": "CHAMPIONSHIP",
+    "CHAMP": "CHAMPIONSHIP",
+    "EFL": "CHAMPIONSHIP",
+    "CHAMPIONS": "CHAMPIONSHIP",
     "ALL": "ALL",
     "TOTES": "ALL",
 }
@@ -157,7 +161,7 @@ def show_matches(jornada: int, league: str = "LALIGA"):
 
 def run_scraping(jornada: int, league: str = "LALIGA"):
     comp_target = resolve_league(league)
-    comps = ["LALIGA", "PREMIER", "HYPERMOTION"] if comp_target == "ALL" else [comp_target]
+    comps = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"] if comp_target == "ALL" else [comp_target]
 
     crawler = LiveCrawler(headless=True)
     for c in comps:

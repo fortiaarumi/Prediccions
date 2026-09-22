@@ -155,7 +155,7 @@ class EmailSender:
                 <div style="background-color: #0F172A; padding: 24px; text-align: left; border-bottom: 3px solid #6366F1;">
                     <span style="background-color: #6366F1; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase;">Informe Oficial</span>
                     <h1 style="color: #FFFFFF; margin: 10px 0 4px 0; font-size: 20px;">Prediccions de Futbol · Jornada {jornada}</h1>
-                    <p style="color: #94A3B8; margin: 0; font-size: 13px;">LaLiga EA Sports + Premier League + LaLiga Hypermotion + Mega-Combinada Multi-Lliga</p>
+                    <p style="color: #94A3B8; margin: 0; font-size: 13px;">LaLiga EA Sports + Premier + Hypermotion + Championship + Multi-Lliga</p>
                 </div>
 
                 <!-- Body Content -->
@@ -220,7 +220,7 @@ class EmailSender:
         sender_name = self.config.get("sender_name", "Prediccions de Futbol")
 
         pdf_names = [p.name for p in pdf_paths if p.exists()]
-        subject = f"⚽ Informes Prediccions Jornada {jornada} (LaLiga, Premier, Hypermotion & Multi-Lliga)"
+        subject = f"⚽ Informes Prediccions Jornada {jornada} (LaLiga, Premier, Hypermotion, Championship & Multi-Lliga)"
 
         msg = MIMEMultipart("mixed")
         msg["Subject"] = subject

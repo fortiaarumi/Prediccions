@@ -431,7 +431,7 @@ function renderCombos() {
   if (!container || !appData.combos) return;
 
   window.combosRegistry = {};
-  const leagueKeys = ['LALIGA', 'PREMIER', 'HYPERMOTION', 'MULTI'];
+  const leagueKeys = ['LALIGA', 'PREMIER', 'HYPERMOTION', 'CHAMPIONSHIP', 'MULTI'];
   let html = '';
 
   leagueKeys.forEach(lKey => {
@@ -452,6 +452,7 @@ function renderCombos() {
     if (lKey === 'LALIGA') leagueTitle = '🇪🇸 LaLiga EA Sports';
     else if (lKey === 'PREMIER') leagueTitle = '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League';
     else if (lKey === 'HYPERMOTION') leagueTitle = '🇪🇸 LaLiga Hypermotion';
+    else if (lKey === 'CHAMPIONSHIP') leagueTitle = '🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship';
     else if (lKey === 'MULTI') leagueTitle = '🌍 Mega-Combinades Multi-Lliga';
 
     html += `

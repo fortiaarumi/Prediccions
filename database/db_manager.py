@@ -42,6 +42,9 @@ class DatabaseManager:
             cursor.execute(
                 "INSERT OR REPLACE INTO competitions (id, name, type, weight) VALUES ('HYPERMOTION', 'LaLiga Hypermotion', 'LEAGUE', 0.85)"
             )
+            cursor.execute(
+                "INSERT OR REPLACE INTO competitions (id, name, type, weight) VALUES ('CHAMPIONSHIP', 'EFL Championship', 'LEAGUE', 0.85)"
+            )
 
             # 2. Els 20 Equips Oficials de Primera Divisió
             teams_laliga = [
@@ -112,7 +115,32 @@ class DatabaseManager:
                 ("CAR", "FC Cartagena", "Cartagena", "FC Cartagena,Cartagena,CAR", "Cartagonova", "Cartagena"),
             ]
 
-            all_teams = teams_laliga + teams_premier + teams_hypermotion
+            # 5. Equips d'EFL Championship (2a Divisió Anglesa)
+            teams_championship = [
+                ("BIR", "Birmingham City", "Birmingham", "Birmingham City,Birmingham,BIR", "St Andrew's", "Birmingham"),
+                ("BLA", "Blackburn Rovers", "Blackburn", "Blackburn Rovers,Blackburn,BLA", "Ewood Park", "Blackburn"),
+                ("BOL", "Bolton Wanderers", "Bolton", "Bolton Wanderers,Bolton,BOL", "Toughsheet Community Stadium", "Bolton"),
+                ("BRC", "Bristol City", "Bristol City", "Bristol City,Bristol,BRC", "Ashton Gate", "Bristol"),
+                ("BNL", "Burnley", "Burnley", "Burnley,Burnley FC,BNL", "Turf Moor", "Burnley"),
+                ("CDF", "Cardiff City", "Cardiff", "Cardiff City,Cardiff,CDF", "Cardiff City Stadium", "Cardiff"),
+                ("CHA", "Charlton Athletic", "Charlton", "Charlton Athletic,Charlton,CHA", "The Valley", "London"),
+                ("DER", "Derby County", "Derby", "Derby County,Derby,DER", "Pride Park", "Derby"),
+                ("LIN", "Lincoln City", "Lincoln", "Lincoln City,Lincoln,LIN", "Sincil Bank", "Lincoln"),
+                ("MID", "Middlesbrough", "Middlesbrough", "Middlesbrough,Boro,MID", "Riverside Stadium", "Middlesbrough"),
+                ("MIL", "Millwall", "Millwall", "Millwall,Millwall FC,MIL", "The Den", "London"),
+                ("NOR", "Norwich City", "Norwich", "Norwich City,Norwich,NOR,The Canaries", "Carrow Road", "Norwich"),
+                ("POR", "Portsmouth", "Portsmouth", "Portsmouth,Portsmouth FC,Pompey,POR", "Fratton Park", "Portsmouth"),
+                ("PNE", "Preston North End", "Preston", "Preston North End,Preston,PNE", "Deepdale", "Preston"),
+                ("QPR", "Queens Park Rangers", "QPR", "Queens Park Rangers,QPR", "Loftus Road", "London"),
+                ("SHU", "Sheffield United", "Sheffield Utd", "Sheffield United,Sheffield Utd,Sheff Utd,SHU", "Bramall Lane", "Sheffield"),
+                ("STK", "Stoke City", "Stoke", "Stoke City,Stoke,STK", "Bet365 Stadium", "Stoke-on-Trent"),
+                ("SWA", "Swansea City", "Swansea", "Swansea City,Swansea,SWA", "Swansea.com Stadium", "Swansea"),
+                ("WAT", "Watford", "Watford", "Watford,Watford FC,WAT,The Hornets", "Vicarage Road", "Watford"),
+                ("WBA", "West Bromwich Albion", "West Brom", "West Bromwich Albion,West Brom,WBA", "The Hawthorns", "West Bromwich"),
+                ("WRE", "Wrexham", "Wrexham", "Wrexham,Wrexham AFC,WRE", "Racecourse Ground", "Wrexham"),
+            ]
+
+            all_teams = teams_laliga + teams_premier + teams_hypermotion + teams_championship
             cursor.executemany(
                 "INSERT OR REPLACE INTO teams (id, name, short_name, aliases, stadium, city) VALUES (?, ?, ?, ?, ?, ?)",
                 all_teams
@@ -216,6 +244,13 @@ class DatabaseManager:
                 # Hypermotion ratings
                 elif t_id in ["GRA", "ALM", "CAD", "ZAR", "EIB", "ROV", "SPG", "LEV"]:
                     ranks = (5.0, 5.0, 5.0, 1520.0)
+                # Championship ratings
+                elif t_id in ["BNL", "SHU", "WBA", "NOR", "MID", "WAT"]:
+                    ranks = (4.0, 4.0, 4.0, 1560.0)
+                elif t_id in ["BLA", "BRC", "SWA", "STK", "QPR", "MIL", "PNE", "DER", "BIR", "WRE", "CDF"]:
+                    ranks = (12.0, 12.0, 12.0, 1470.0)
+                elif t_id in ["POR", "BOL", "CHA", "LIN"]:
+                    ranks = (20.0, 20.0, 20.0, 1400.0)
                 else: # RDS, DEP, MAL, ELC, CAS, BUR, ALB, HUE, COR, MIR, ELD, RFE, TEN, CAR
                     ranks = (14.0, 14.0, 14.0, 1440.0)
 
@@ -410,6 +445,67 @@ class DatabaseManager:
             "cartagena": "CAR",
             "fc cartagena": "CAR",
             "car": "CAR",
+
+            # EFL Championship
+            "birmingham": "BIR",
+            "birmingham city": "BIR",
+            "bir": "BIR",
+            "blackburn": "BLA",
+            "blackburn rovers": "BLA",
+            "bla": "BLA",
+            "bolton": "BOL",
+            "bolton wanderers": "BOL",
+            "bol": "BOL",
+            "bristol city": "BRC",
+            "bristol": "BRC",
+            "brc": "BRC",
+            "burnley": "BNL",
+            "bnl": "BNL",
+            "cardiff": "CDF",
+            "cardiff city": "CDF",
+            "cdf": "CDF",
+            "charlton": "CHA",
+            "charlton athletic": "CHA",
+            "cha": "CHA",
+            "derby": "DER",
+            "derby county": "DER",
+            "der": "DER",
+            "lincoln": "LIN",
+            "lincoln city": "LIN",
+            "lin": "LIN",
+            "middlesbrough": "MID",
+            "mid": "MID",
+            "millwall": "MIL",
+            "mil": "MIL",
+            "norwich": "NOR",
+            "norwich city": "NOR",
+            "nor": "NOR",
+            "portsmouth": "POR",
+            "pompey": "POR",
+            "por": "POR",
+            "preston": "PNE",
+            "preston north end": "PNE",
+            "pne": "PNE",
+            "qpr": "QPR",
+            "queens park rangers": "QPR",
+            "sheffield united": "SHU",
+            "sheffield utd": "SHU",
+            "sheff utd": "SHU",
+            "shu": "SHU",
+            "stoke": "STK",
+            "stoke city": "STK",
+            "stk": "STK",
+            "swansea": "SWA",
+            "swansea city": "SWA",
+            "swa": "SWA",
+            "watford": "WAT",
+            "wat": "WAT",
+            "west brom": "WBA",
+            "west bromwich": "WBA",
+            "west bromwich albion": "WBA",
+            "wba": "WBA",
+            "wrexham": "WRE",
+            "wre": "WRE",
         }
 
         if q_norm in exact_mappings:
@@ -527,7 +623,7 @@ class DatabaseManager:
 
         clean = query_name.strip()
         comp = competition_id.upper()
-        if comp == "PREMIER":
+        if comp in ["PREMIER", "CHAMPIONSHIP"]:
             y_avg, r_avg, f_avg, strict = 3.80, 0.12, 21.0, 1.00
         elif comp == "HYPERMOTION":
             y_avg, r_avg, f_avg, strict = 5.20, 0.30, 26.5, 1.15

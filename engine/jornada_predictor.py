@@ -32,6 +32,7 @@ COMPETITION_NAMES = {
     "LALIGA": "LaLiga EA Sports",
     "PREMIER": "Premier League",
     "HYPERMOTION": "LaLiga Hypermotion",
+    "CHAMPIONSHIP": "EFL Championship",
 }
 
 class JornadaPredictor:

@@ -23,12 +23,14 @@ WINAMAX_TOURNAMENTS = {
     "LALIGA": "32",
     "PREMIER": "1",
     "HYPERMOTION": "32",
+    "CHAMPIONSHIP": "1",
 }
 
 WINAMAX_TOURNAMENT_IDS = {
     "LALIGA": 36,
     "PREMIER": 1,
     "HYPERMOTION": 37,
+    "CHAMPIONSHIP": 2,
 }
 
 class WinamaxScraper:
@@ -98,8 +100,16 @@ class WinamaxScraper:
             "mirandes": "mirandes", "eldense": "eldense", "ferrol": "ferrol",
             "tenerife": "tenerife", "cartagena": "cartagena", "girona": "girona",
             "sabadell": "sabadell", "ceuta": "ceuta", "palmas": "palmas",
-            "leganes": "leganes", "andorra": "andorra", "valladolid": "valladolid",
-            "mallorca": "mallorca", "fortuna": "celta"
+            "mallorca": "mallorca", "fortuna": "celta",
+            # EFL Championship
+            "birmingham": "birmingham", "blackburn": "blackburn", "bolton": "bolton",
+            "bristol": "bristol", "burnley": "burnley", "cardiff": "cardiff",
+            "charlton": "charlton", "derby": "derby", "lincoln": "lincoln",
+            "middlesbrough": "middlesbrough", "millwall": "millwall", "norwich": "norwich",
+            "portsmouth": "portsmouth", "preston": "preston", "qpr": "qpr",
+            "sheffield": "sheffield", "sheff": "sheffield", "stoke": "stoke",
+            "swansea": "swansea", "watford": "watford", "west brom": "bromwich",
+            "wrexham": "wrexham"
         }
 
         def get_keyword(name_str: str) -> str:
