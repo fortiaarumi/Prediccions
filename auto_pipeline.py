@@ -24,7 +24,7 @@ import sys
 import io
 import argparse
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # Suport de caràcters UTF-8 a la consola de Windows
 if hasattr(sys.stdout, 'buffer'):

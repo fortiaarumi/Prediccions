@@ -166,7 +166,7 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
         print(f"   [!] Error analitzant calendari Flashscore per a {comp_id}: {e}")
         return None
 
-def run_daily_autonomous_check(force: bool = False):
+def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False):
     print("\n" + "=" * 80)
     print(f"   🤖 EXECUTOR AUTÒNOM DIARI DE PREDICCIONS · {datetime.now().strftime('%d/%m/%Y %H:%M')}")
     print("=" * 80)
@@ -353,9 +353,9 @@ def run_daily_autonomous_check(force: bool = False):
                 simulation_summary=sim_summary
             )
 
-            # Si també s'han generat PDFs, enviar-los com a còpia adjunta
-            if generated_pdfs:
-                print("\n[*] Enviant també informes PDF adjunts per correu...")
+            # Si també s'han generat PDFs i s'ha activat explícitament, enviar-los com a còpia adjunta
+            if generated_pdfs and send_pdf_email:
+                print("\n[*] Enviant també informes PDF adjunts per correu (--send-pdf activat)...")
                 main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
                 res = email_sender.send_reports(
                     pdf_paths=generated_pdfs,
@@ -363,6 +363,8 @@ def run_daily_autonomous_check(force: bool = False):
                     simulation_summary=sim_summary
                 )
                 print(f"   [Èxit enviament correu]: {res}")
+            elif generated_pdfs and not send_pdf_email:
+                print("\n[*] FASE 5b: PDFs generats però NO enviats per correu (usa --send-pdf per activar-ho).")
         except Exception as e:
             print(f"   [!] Avís: No s'ha pogut trametre el correu electrònic: {e}")
 
@@ -373,8 +375,9 @@ def run_daily_autonomous_check(force: bool = False):
 
 if __name__ == "__main__":
     force_run = "--force" in sys.argv
+    send_pdf = "--send-pdf" in sys.argv
     try:
-        run_daily_autonomous_check(force=force_run)
+        run_daily_autonomous_check(force=force_run, send_pdf_email=send_pdf)
     except Exception as e:
         import traceback
         print(f"\n❌ [ERROR CRÍTIC EN EL PIPELINE DIARI]: {e}", file=sys.stderr)
