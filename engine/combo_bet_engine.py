@@ -21,7 +21,7 @@ Genera dos perfils clau d'apostes combinades per jornada:
 """
 
 import itertools
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 class ComboBetEngine:
     def __init__(self):
