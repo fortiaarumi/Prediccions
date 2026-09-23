@@ -36,6 +36,38 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: 3.5. Validar imports dels mòduls Python
+        run: |
+          python -c "
+          import sys
+          modules = [
+              'database.db_manager',
+              'engine.combo_bet_engine',
+              'engine.combo_tracker',
+              'engine.jornada_predictor',
+              'engine.match_predictor',
+              'engine.pdf_report_generator',
+              'engine.value_bet_engine',
+              'engine.web_data_exporter',
+              'notifier.email_sender',
+              'scraper.jornada_resolver',
+              'scraper.live_crawler',
+              'scraper.winamax_scraper',
+          ]
+          failed = []
+          for mod in modules:
+              try:
+                  __import__(mod)
+                  print(f'  OK: {mod}')
+              except Exception as e:
+                  print(f'  ERROR: {mod} -> {e}', file=sys.stderr)
+                  failed.append(mod)
+          if failed:
+              print(f'\\n[FAIL] {len(failed)} modul(s) amb errors: {failed}', file=sys.stderr)
+              sys.exit(1)
+          print('\\n[OK] Tots els moduls s importen correctament.')
+          "
+
       - name: 4. Executar Màquina d'Estats Diària
         env:
           GMAIL_SENDER_EMAIL: ${{ secrets.GMAIL_SENDER_EMAIL }}
