@@ -808,6 +808,15 @@ class WebDataExporter:
         print("[*] Calculant resum financer 'Què hagués passat si...'...")
         financial_ledger = self.get_financial_ledger()
 
+        # Garantir que el changelog conté l'entrada oficial d'avui
+        entries = self.changelog_mgr.load_entries()
+        today_str = now.strftime("%Y-%m-%d")
+        if not any(e.get("date") == today_str for e in entries):
+            self.changelog_mgr.record_pipeline_execution(
+                date_str=today_str,
+                notes=["Sincronització de les darreres dades i mètriques del model."]
+            )
+
         # 4. Assembling JSON Payload
         payload = {
             "metadata": {

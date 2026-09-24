@@ -147,6 +147,7 @@ class LiveCrawler:
 
         ingested_count = 0
         skipped_count = 0
+        newly_ingested_matches = []
 
         for fix in fixtures:
             home = fix["home"]
@@ -218,6 +219,34 @@ class LiveCrawler:
                     cursor.execute("UPDATE team_ratings SET elo_rating = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?", (a_data["elo_rating"] + d_elo_a, away_id))
                     conn.commit()
 
+                    ref_name = data.get("referee") or "Oficial CTA/PGMOL"
+                    newly_ingested_matches.append({
+                        "match_id": match_id,
+                        "competition_id": comp_id,
+                        "jornada": jornada,
+                        "home_team": home,
+                        "away_team": away,
+                        "home_team_id": home_id,
+                        "away_team_id": away_id,
+                        "home_goals": int(h_goals),
+                        "away_goals": int(a_goals),
+                        "score": f"{int(h_goals)} - {int(a_goals)}",
+                        "home_xg": data.get("home_xg"),
+                        "away_xg": data.get("away_xg"),
+                        "home_yellow_cards": data.get("home_yellow_cards", 0),
+                        "away_yellow_cards": data.get("away_yellow_cards", 0),
+                        "home_red_cards": data.get("home_red_cards", 0),
+                        "away_red_cards": data.get("away_red_cards", 0),
+                        "home_corners": data.get("home_corners", 0),
+                        "away_corners": data.get("away_corners", 0),
+                        "referee": ref_name,
+                        "elo_change_home": round(d_elo_h, 1),
+                        "elo_change_away": round(d_elo_a, 1),
+                        "new_elo_home": round(h_data["elo_rating"] + d_elo_h, 1),
+                        "new_elo_away": round(a_data["elo_rating"] + d_elo_a, 1),
+                        "date": fix["date"] or data.get("date")
+                    })
+
                     print(f"   [NOU RESULTAT INGESTAT] {h_goals}-{a_goals} (xG: {data.get('home_xg')} - {data.get('away_xg')}) | Elo: {home_id} ({d_elo_h:+.1f}) / {away_id} ({d_elo_a:+.1f})")
                 else:
                     print(f"   [PENDENT] Partit encara no jugat. Registrat a SQLite com a programat.")
@@ -226,6 +255,7 @@ class LiveCrawler:
         print("\n" + "=" * 75)
         print(f"   [ÈXIT] Resum Jornada {jornada} ({comp_id}): {ingested_count} nous partits processats, {skipped_count} partits preservats sense tocar.")
         print("=" * 75 + "\n")
+        return newly_ingested_matches
 
 if __name__ == "__main__":
     import argparse

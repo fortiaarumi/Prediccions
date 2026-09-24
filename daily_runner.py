@@ -46,6 +46,7 @@ from engine.jornada_predictor import JornadaPredictor
 from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
 from engine.pdf_report_generator import PDFReportGenerator
+from engine.changelog_manager import ChangelogManager
 from notifier.email_sender import EmailSender
 
 COMPETITIONS = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"]
@@ -183,32 +184,53 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
     # FASE 1: DESCARREGAR RESULTATS DE JORNADES COMPLETADES I ACTUALITZAR ELO
     # -----------------------------------------------------------------
     print("\n[*] FASE 1: Comprovació de marcadors de jornades acabades...")
-    any_scraped = False
+    all_newly_ingested_matches: List[Dict[str, Any]] = []
+    all_evaluated_combos: List[Dict[str, Any]] = []
+    all_new_combos: List[Dict[str, Any]] = []
+
     for comp in COMPETITIONS:
         last_scraped = state[comp].get("last_scraped_jornada", 0)
-        # Consultar si hi ha jornades amb partits jugats pendents d'actualitzar
+
+        # 1. Comprovar partits SCHEDULED a SQLite que ja haurien d'estar jugats
         conn = db.get_connection()
         c = conn.cursor()
-        max_j_row = c.execute("SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status = 'FINISHED'", (comp,)).fetchone()
+        scheduled_j = [
+            r[0] for r in c.execute(
+                "SELECT DISTINCT jornada FROM matches WHERE competition_id = ? AND status = 'SCHEDULED'",
+                (comp,)
+            ).fetchall()
+        ]
         conn.close()
 
-        latest_finished_j = max_j_row[0] if max_j_row and max_j_row[0] else 0
-        if latest_finished_j > last_scraped:
-            print(f"   • {comp}: S'han detectat nous resultats finalitzats a la Jornada {latest_finished_j}. Ingestant...")
-            try:
-                crawler.run_live_pipeline(jornada=latest_finished_j, competition_id=comp)
-                state[comp]["last_scraped_jornada"] = latest_finished_j
-                any_scraped = True
-            except Exception as e:
-                print(f"   [!] Error actualitzant {comp} J{latest_finished_j}: {e}")
+        jornadas_to_check = set(scheduled_j)
+        jornadas_to_check.add(last_scraped + 1)
 
-    if any_scraped:
-        print("[*] Avaluant combinades pendents amb els nous resultats...")
-        evals = tracker.evaluate_all_pending_combos()
-        sim_summary = tracker.get_simulation_summary()
-        print(f"    • Balanç actual: {sim_summary['net_profit']:+.2f} € (ROI: {sim_summary['roi_pct']:+.1f}%)")
-    else:
-        print("   • No hi ha cap jornada nova pendent d'actualitzar.")
+        for j_cand in sorted(list(jornadas_to_check)):
+            if j_cand <= 0:
+                continue
+            try:
+                fixtures = crawler.crawl_jornada_fixtures_from_web(j_cand, competition_id=comp)
+                has_played = any(f.get("score_h") is not None for f in fixtures)
+                if has_played:
+                    print(f"   • {comp}: S'han detectat nous resultats a la Jornada {j_cand}. Ingestant partits i actualitzant Elo...")
+                    new_m = crawler.run_live_pipeline(jornada=j_cand, competition_id=comp)
+                    if new_m:
+                        all_newly_ingested_matches.extend(new_m)
+
+                    # Si tots els partits estan finalitzats, actualitzar estat
+                    if fixtures and all(f.get("score_h") is not None for f in fixtures):
+                        if j_cand > state[comp]["last_scraped_jornada"]:
+                            state[comp]["last_scraped_jornada"] = j_cand
+            except Exception as e:
+                print(f"   [!] Error comprovant {comp} J{j_cand}: {e}")
+
+    # Avaluar combinades pendents amb els nous resultats
+    print("[*] Avaluant combinades pendents amb els nous resultats...")
+    evals = tracker.evaluate_all_pending_combos()
+    if evals:
+        all_evaluated_combos.extend(evals)
+    sim_summary = tracker.get_simulation_summary()
+    print(f"    • Balanç actual: {sim_summary['net_profit']:+.2f} € (ROI: {sim_summary['roi_pct']:+.1f}%)")
 
     # -----------------------------------------------------------------
     # FASE 2: DETECCIÓ D'INICI DE NOVA JORNADA I FINESTRA D'ÀRBITRES
@@ -237,12 +259,10 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
 
         # Finestra d'or per a les designacions arbitrals:
         # Entre 0 i 30 hores abans del primer partit (o partits que comencen avui)
-        # Així el CTA i PGMOL ja han fet públiques el 100% de les designacions oficials.
         if 0 <= hours_to_start <= 30.0 or force:
             print(f"   • {comp} J{j}: 🔥 COMENÇA AVIAT! (Primer partit: {first_dt.strftime('%d/%m %H:%M')}, en {hours_to_start:.1f}h). Àrbitres oficials assignats.")
             leagues_to_predict.append(comp)
         elif hours_to_start < 0:
-            # La jornada ja ha començat; si no s'havia predit, predir partits restants
             print(f"   • {comp} J{j}: En curs (primer partit començat a les {first_dt.strftime('%d/%m %H:%M')}).")
             leagues_to_predict.append(comp)
         else:
@@ -278,6 +298,19 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
                     generated_pdfs.append(Path(res["pdf_path"]))
                 all_predicted_matches.extend(res.get("predicted_matches", []))
 
+                # Registrar noves combinades generades
+                if res.get("combo_bets"):
+                    cb = res["combo_bets"]
+                    for sc in cb.get("safe", []):
+                        if sc and sc.get("legs"):
+                            all_new_combos.append({"competition_id": comp, "jornada": j, "profile": sc.get("profile", "SAFE"), "odd": sc.get("combined_odd", 1.0)})
+                    for sm in cb.get("semi", []):
+                        if sm and sm.get("legs"):
+                            all_new_combos.append({"competition_id": comp, "jornada": j, "profile": sm.get("profile", "SEMI"), "odd": sm.get("combined_odd", 1.0)})
+                    for rc in cb.get("risky", []):
+                        if rc and rc.get("legs"):
+                            all_new_combos.append({"competition_id": comp, "jornada": j, "profile": rc.get("profile", "RISKY"), "odd": rc.get("combined_odd", 1.0)})
+
                 # Actualitzar estat d'aquesta lliga
                 state[comp]["last_predicted_jornada"] = j
                 state[comp]["last_predicted_date"] = now.strftime("%Y-%m-%d")
@@ -299,12 +332,15 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
             for idx, sc in enumerate(multileague_combos.get("safe", []), 1):
                 if sc and sc.get("legs"):
                     db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SAFE_{idx}", 25.0, sc)
+                    all_new_combos.append({"competition_id": "MULTI", "jornada": main_j, "profile": f"SAFE_{idx}", "odd": sc.get("combined_odd", 1.0)})
             for idx, sm in enumerate(multileague_combos.get("semi", []), 1):
                 if sm and sm.get("legs"):
                     db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SEMI_{idx}", 10.0, sm)
+                    all_new_combos.append({"competition_id": "MULTI", "jornada": main_j, "profile": f"SEMI_{idx}", "odd": sm.get("combined_odd", 1.0)})
             for idx, rc in enumerate(multileague_combos.get("risky", []), 1):
                 if rc and rc.get("legs"):
                     db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"RISKY_{idx}", 5.0, rc)
+                    all_new_combos.append({"competition_id": "MULTI", "jornada": main_j, "profile": f"RISKY_{idx}", "odd": rc.get("combined_odd", 1.0)})
 
             highlight_matches = sorted(
                 all_predicted_matches,
@@ -328,8 +364,26 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
     # -----------------------------------------------------------------
     # FASE 5: EXPORTACIÓ PER A LA WEB I SECCIÓ DE NOVETATS (SEMPRE S'EXECUTA)
     # -----------------------------------------------------------------
-    print("\n[*] FASE 5: Actualitzant la plataforma web a 'web/data/data.json'...")
+    print("\n[*] FASE 5: Actualitzant la secció de novetats i plataforma web a 'web/data/data.json'...")
     try:
+        # Recompte d'àrbitres oficials assignats
+        conn = db.get_connection()
+        c = conn.cursor()
+        ref_count_row = c.execute("SELECT COUNT(DISTINCT referee_id) FROM matches WHERE referee_id IS NOT NULL AND status = 'SCHEDULED'").fetchone()
+        total_ref_count = ref_count_row[0] if ref_count_row else 0
+        conn.close()
+
+        # Registrar la novetat diària al changelog abans d'exportar
+        changelog_mgr = ChangelogManager()
+        changelog_mgr.record_pipeline_execution(
+            date_str=now.strftime("%Y-%m-%d"),
+            ingested_matches=all_newly_ingested_matches,
+            evaluated_combos=all_evaluated_combos,
+            new_combos=all_new_combos,
+            referee_count=total_ref_count,
+            competitions_checked=COMPETITIONS
+        )
+
         from engine.web_data_exporter import WebDataExporter
         exporter = WebDataExporter(db=db)
         exported_path = exporter.export_all()

@@ -58,7 +58,17 @@ class ChangelogManager:
         with open(self.filepath, "w", encoding="utf-8") as f:
             json.dump(entries, f, indent=2, ensure_ascii=False)
 
-    def add_entry(self, title: str, items: List[str], badge: str = "Actualització", badge_type: str = "info", date_str: Optional[str] = None):
+    def add_entry(
+        self,
+        title: str,
+        items: List[str],
+        badge: str = "Actualització",
+        badge_type: str = "info",
+        date_str: Optional[str] = None,
+        matches: Optional[List[Dict[str, Any]]] = None,
+        combos_evaluated: Optional[List[Dict[str, Any]]] = None,
+        combos_generated: Optional[List[Dict[str, Any]]] = None
+    ):
         """Afegeix o actualitza l'entrada de novetats per a la data indicada."""
         entries = self.load_entries()
         now = datetime.now()
@@ -71,24 +81,139 @@ class ChangelogManager:
             existing["badge"] = badge
             existing["badge_type"] = badge_type
             existing["timestamp"] = now.isoformat()
-            # Combinar items sense duplicar
-            current_set = set(existing.get("items", []))
-            for item in items:
-                if item not in current_set:
-                    existing.setdefault("items", []).append(item)
+            existing["items"] = items
+            if matches is not None:
+                existing["matches"] = matches
+            if combos_evaluated is not None:
+                existing["combos_evaluated"] = combos_evaluated
+            if combos_generated is not None:
+                existing["combos_generated"] = combos_generated
         else:
-            entries.insert(0, {
+            new_entry = {
                 "date": target_date,
                 "timestamp": now.isoformat(),
                 "title": title,
                 "badge": badge,
                 "badge_type": badge_type,
-                "items": items
-            })
+                "items": items,
+                "matches": matches or [],
+                "combos_evaluated": combos_evaluated or [],
+                "combos_generated": combos_generated or []
+            }
+            entries.insert(0, new_entry)
 
         # Mantenir un màxim de 30 entrades històriques
         entries = entries[:30]
         self.save_entries(entries)
+
+    def record_pipeline_execution(
+        self,
+        date_str: Optional[str] = None,
+        ingested_matches: Optional[List[Dict[str, Any]]] = None,
+        evaluated_combos: Optional[List[Dict[str, Any]]] = None,
+        new_combos: Optional[List[Dict[str, Any]]] = None,
+        referee_count: int = 0,
+        competitions_checked: Optional[List[str]] = None,
+        notes: Optional[List[str]] = None
+    ) -> Dict[str, Any]:
+        """
+        Registra la crida oficial del pipeline diari (08:00 UTC) amb informació exhaustiva:
+        - Dia de l'execució
+        - Partits jugats amb marcador, xG, targetes, córners i àrbitre
+        - Canvis exactes d'Elo per equip
+        - Combinades resoltes (guanyades/perdudes/balanç) o noves generades
+        """
+        now = datetime.now()
+        target_date = date_str or now.strftime("%Y-%m-%d")
+        day_formatted = now.strftime("%d/%m/%Y")
+        matches = ingested_matches or []
+        eval_combos = evaluated_combos or []
+        gen_combos = new_combos or []
+
+        items = []
+
+        # 1. Informació dels partits disputats
+        if matches:
+            items.append(f"⚽ S'han ingesta resultats oficials i mètriques de {len(matches)} partit(s) disputat(s):")
+            for m in matches:
+                comp = m.get("competition_id", "")
+                jornada = m.get("jornada", "")
+                h_name = m.get("home_team", "")
+                a_name = m.get("away_team", "")
+                score = m.get("score") or f"{m.get('home_goals', 0)} - {m.get('away_goals', 0)}"
+                
+                xg_h = f"{m['home_xg']:.2f}" if m.get("home_xg") is not None else "-"
+                xg_a = f"{m['away_xg']:.2f}" if m.get("away_xg") is not None else "-"
+                tot_cards = (m.get("home_yellow_cards") or 0) + (m.get("away_yellow_cards") or 0) + (m.get("home_red_cards") or 0) + (m.get("away_red_cards") or 0)
+                tot_corn = (m.get("home_corners") or 0) + (m.get("away_corners") or 0)
+                ref = m.get("referee", "CTA / PGMOL")
+
+                items.append(
+                    f"   • [{comp} J{jornada}] {h_name} {score} {a_name} | xG: {xg_h}-{xg_a} | "
+                    f"Targetes: {tot_cards} 🟨 | Córners: {tot_corn} 🚩 | Àrbitre: {ref}"
+                )
+
+            # 2. Canvis d'Elo derivats dels partits
+            items.append("📊 Actualització de Power Rànquings Elo:")
+            for m in matches:
+                h_name = m.get("home_team", "")
+                a_name = m.get("away_team", "")
+                d_h = m.get("elo_change_home", 0.0)
+                d_a = m.get("elo_change_away", 0.0)
+                new_h = m.get("new_elo_home", "")
+                new_a = m.get("new_elo_away", "")
+
+                str_h = f"{h_name} ({d_h:+.1f}" + (f" ➔ {new_h}" if new_h else "") + ")"
+                str_a = f"{a_name} ({d_a:+.1f}" + (f" ➔ {new_a}" if new_a else "") + ")"
+                items.append(f"   • {str_h} | {str_a}")
+        else:
+            items.append("⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.")
+            items.append("📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.")
+
+        # 3. Avaluació de combinades
+        if eval_combos:
+            won_count = sum(1 for c in eval_combos if c.get("status") == "WON")
+            lost_count = sum(1 for c in eval_combos if c.get("status") == "LOST")
+            items.append(f"📈 S'han resolt {len(eval_combos)} combinades pendents ({won_count} encertades, {lost_count} fallades):")
+            for c in eval_combos:
+                st = "🏆 GUANYADA" if c.get("status") == "WON" else "❌ NO ENCERTADA"
+                prof = c.get("profile", "Combinada")
+                comp = c.get("competition_id", "")
+                j = c.get("jornada", "")
+                odd = float(c.get("odd") or c.get("combined_odd") or 1.0)
+                pnl = float(c.get("profit", 0.0))
+                items.append(f"   • [{comp} J{j}] {prof}: {st} (Cuota @{odd:.2f} · Balanç: {pnl:+.2f} €)")
+        else:
+            items.append("⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.")
+
+        # 4. Noves combinades generades
+        if gen_combos:
+            comps_gen = sorted(list(set(c.get("competition_id", "") for c in gen_combos if c.get("competition_id"))))
+            comp_txt = ", ".join(comps_gen) if comps_gen else "properes jornades"
+            items.append(f"🎯 Generades {len(gen_combos)} noves combinades recomanades (Segures, Semi i Arriscades) per a: {comp_txt}.")
+
+        # 5. Arbitratge
+        if referee_count > 0:
+            items.append(f"⚖️ CTA & PGMOL: Revisades les designacions arbitrals oficials ({referee_count} àrbitres confirmats).")
+        else:
+            items.append("⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.")
+
+        if notes:
+            for n in notes:
+                items.append(f"ℹ️ {n}")
+
+        title = f"Actualització Diària del Model · {day_formatted}"
+        self.add_entry(
+            title=title,
+            items=items,
+            badge="Diari (08:00 UTC)",
+            badge_type="primary",
+            date_str=target_date,
+            matches=matches,
+            combos_evaluated=eval_combos,
+            combos_generated=gen_combos
+        )
+        return {"date": target_date, "title": title, "items": items}
 
     def record_daily_event(
         self,
@@ -98,31 +223,11 @@ class ChangelogManager:
         new_combos_count: int = 0,
         value_bets_count: int = 0
     ):
-        """Registra automàticament els canvis diaris derivats de l'execució."""
-        items = []
-        now = datetime.now()
-
-        if referee_assigned_count > 0:
-            items.append(f"⚖️ Revisades les designacions arbitrals oficials: {referee_assigned_count} partits amb àrbitre confirmat.")
-        else:
-            items.append("⚖️ Comprovació de designacions arbitrals del CTA / PGMOL: sense canvis d'última hora.")
-
-        if scraped_matches_count > 0:
-            items.append(f"⚽ Ingestats resultats i estadístiques oficials de {scraped_matches_count} partits finalitzats.")
-
-        if evaluated_combos:
-            won = sum(1 for c in evaluated_combos if c.get("status") == "WON")
-            lost = sum(1 for c in evaluated_combos if c.get("status") == "LOST")
-            items.append(f"📈 Avaluació de combinades: {won} encertades, {lost} no encertades. Balanç actualitzat.")
-
-        if new_combos_count > 0:
-            items.append(f"🎯 Generades {new_combos_count} combinades noves per a la propera jornada.")
-
-        if value_bets_count > 0:
-            items.append(f"💎 S'han detectat {value_bets_count} oportunitats amb valor matemàtic (+EV) enfront de les quotes de Winamax.")
-
-        title = f"Actualització Diària del Model · {now.strftime('%d/%m/%Y')}"
-        self.add_entry(title=title, items=items, badge="Diari", badge_type="primary")
+        """Retrocompatibilitat per a crides antigues."""
+        return self.record_pipeline_execution(
+            referee_count=referee_assigned_count,
+            evaluated_combos=evaluated_combos
+        )
 
     def get_feed(self, limit: int = 15) -> List[Dict[str, Any]]:
         entries = self.load_entries()

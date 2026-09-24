@@ -130,6 +130,7 @@ async function loadData() {
 function renderAll() {
   if (!appData) return;
 
+  loadBankrollSimState();
   renderHeaderMeta();
   renderPowerRankings();
   renderPredictions();
@@ -430,6 +431,26 @@ function renderCombos() {
   const container = document.getElementById('combos-container');
   if (!container || !appData.combos) return;
 
+  loadBankrollSimState();
+
+  const uSafe = bankrollSimState.globalUnits.safe;
+  const uSemi = bankrollSimState.globalUnits.semi;
+  const uRisky = bankrollSimState.globalUnits.risky;
+
+  const safeFmt = uSafe % 1 === 0 ? `${uSafe}€` : `${uSafe.toFixed(2)}€`;
+  const semiFmt = uSemi % 1 === 0 ? `${uSemi}€` : `${uSemi.toFixed(2)}€`;
+  const riskyFmt = uRisky % 1 === 0 ? `${uRisky}€` : `${uRisky.toFixed(2)}€`;
+
+  // Actualitzar dinàmicament el subtítol i el badge de la capçalera de combinades
+  const subtitleEl = document.getElementById('combos-section-subtitle');
+  if (subtitleEl) {
+    subtitleEl.innerHTML = `Estratègia diversificada de bankroll: 2 Segures (${safeFmt} · Cuota 2-3.5), 2 Semi-Arriscades (${semiFmt} · Cuota ~10.0) i 2 Arriscades (${riskyFmt} · Cuota &ge;30.0).`;
+  }
+  const badgeEl = document.getElementById('combos-policy-badge');
+  if (badgeEl) {
+    badgeEl.innerHTML = `<span>Inversió per jornada: <strong>${safeFmt}</strong> Segura · <strong>${semiFmt}</strong> Semi · <strong>${riskyFmt}</strong> Arriscada</span>`;
+  }
+
   window.combosRegistry = {};
   const leagueKeys = ['LALIGA', 'PREMIER', 'HYPERMOTION', 'CHAMPIONSHIP', 'MULTI'];
   let html = '';
@@ -465,8 +486,14 @@ function renderCombos() {
         <div class="combos-grid">
           ${allCards.map((c, cardIdx) => {
             const comboKey = `${lKey}_${c.type}_${cardIdx}`;
+            const effectiveStake = getComboEffectiveStake(c);
+            const boostedOdd = c.boosted_odd || c.combined_odd || 1.0;
+            const effectivePayout = effectiveStake * boostedOdd;
+
             window.combosRegistry[comboKey] = {
               ...c,
+              stake: effectiveStake,
+              potential_payout: effectivePayout,
               leagueKey: lKey,
               leagueTitle: leagueTitle
             };
@@ -483,7 +510,6 @@ function renderCombos() {
             }
 
             const boosterPct = c.booster_pct || 0;
-            const boostedOdd = c.boosted_odd || c.combined_odd;
             const hasBooster = boosterPct > 0;
             const boosterBadge = hasBooster ? `<span class="booster-pill">🚀 +${boosterPct}% Booster</span>` : '';
             const probConjunta = c.combined_prob_pct != null ? c.combined_prob_pct.toFixed(1) : '-';
@@ -553,13 +579,13 @@ function renderCombos() {
 
                 <div class="combo-footer">
                   <div class="stake-info">
-                    Inversió: <strong>${c.stake.toFixed(2)} €</strong>
+                    Inversió: <strong>${effectiveStake.toFixed(2)} €</strong>
                   </div>
                   <div style="font-family: var(--font-mono); font-size: 11.5px; color: var(--accent-emerald);">
                     Prob. Conjunta: <strong>${probConjunta}%</strong>
                   </div>
                   <div class="payout-info">
-                    Retorn: +${c.potential_payout.toFixed(2)} €
+                    Retorn: +${effectivePayout.toFixed(2)} €
                   </div>
                 </div>
 
@@ -1247,6 +1273,31 @@ function renderBankroll() {
     btnBannerReset.addEventListener('click', resetDefaultStakes);
   }
 
+  // Enllaçar inputs d'unitats globals perquè actualitzin reactivament el simulador i les combinades
+  ['sim-unit-safe', 'sim-unit-semi', 'sim-unit-risky'].forEach(id => {
+    const inp = document.getElementById(id);
+    if (inp && !inp.dataset.bound) {
+      inp.dataset.bound = 'true';
+      const handleLiveInput = () => {
+        const valSafe = Math.max(0, parseFloat(document.getElementById('sim-unit-safe')?.value || 25) || 0);
+        const valSemi = Math.max(0, parseFloat(document.getElementById('sim-unit-semi')?.value || 10) || 0);
+        const valRisky = Math.max(0, parseFloat(document.getElementById('sim-unit-risky')?.value || 5) || 0);
+
+        bankrollSimState.globalUnits = {
+          safe: valSafe,
+          semi: valSemi,
+          risky: valRisky
+        };
+        saveBankrollSimState();
+        const curCalc = calculateBankrollSimulation();
+        updateBankrollDom(curCalc);
+        renderCombos();
+      };
+      inp.addEventListener('input', handleLiveInput);
+      inp.addEventListener('change', handleLiveInput);
+    }
+  });
+
   // 8. Actualitzar banner d'estat
   const banner = document.getElementById('sim-status-banner');
   const bannerText = document.getElementById('sim-status-banner-text');
@@ -1273,6 +1324,7 @@ window.onComboStakeChange = function(comboId, val) {
   saveBankrollSimState();
   const calc = calculateBankrollSimulation();
   updateBankrollDom(calc);
+  renderCombos();
 };
 
 // Handler per canviar l'estat d'una combinada (Real / Guanyada / Perduda / Pendent)
@@ -1320,6 +1372,7 @@ window.applyRoundUnits = function(roundIdx) {
   saveBankrollSimState();
   const calc = calculateBankrollSimulation();
   updateBankrollDom(calc);
+  renderCombos();
 
   // Animació visual breu de confirmació a la targeta de la jornada
   const card = document.getElementById(`ledger-round-card-${roundIdx}`);
@@ -1355,6 +1408,7 @@ function applyAllStakes() {
 
   saveBankrollSimState();
   renderBankroll();
+  renderCombos();
 
   // Animació / feedback visual
   const btn = document.getElementById('btn-apply-all-stakes');
@@ -1383,6 +1437,7 @@ function resetDefaultStakes() {
   } catch (e) {}
 
   renderBankroll();
+  renderCombos();
 
   const btn = document.getElementById('btn-reset-default-stakes');
   if (btn) {
@@ -1429,6 +1484,78 @@ function renderChangelog() {
         const badgeLabel = entry.badge || 'Actualització';
         const badgeClass = entry.badge_type === 'primary' ? 'timeline-badge-primary' : 'timeline-badge-info';
 
+        const matchesList = entry.matches || [];
+        const combosList = entry.combos_evaluated || [];
+
+        let matchesHtml = '';
+        if (matchesList.length > 0) {
+          matchesHtml = `
+            <div class="timeline-section-title">⚽ Partits Ingestats amb Detall (${matchesList.length})</div>
+            <div class="timeline-matches-grid">
+              ${matchesList.map(m => {
+                const hGoals = m.home_goals != null ? m.home_goals : '-';
+                const aGoals = m.away_goals != null ? m.away_goals : '-';
+                const xgH = m.home_xg != null ? Number(m.home_xg).toFixed(2) : '-';
+                const xgA = m.away_xg != null ? Number(m.away_xg).toFixed(2) : '-';
+                const cards = (m.home_yellow_cards || 0) + (m.away_yellow_cards || 0) + (m.home_red_cards || 0) + (m.away_red_cards || 0);
+                const corners = (m.home_corners || 0) + (m.away_corners || 0);
+                const eloDiffH = m.elo_change_home != null ? m.elo_change_home : 0;
+                const eloDiffA = m.elo_change_away != null ? m.elo_change_away : 0;
+
+                return `
+                  <div class="timeline-match-card">
+                    <div class="tm-top">
+                      <span class="tm-league-badge">${m.competition_id || ''} · J${m.jornada || ''}</span>
+                      <span>${m.date || ''}</span>
+                    </div>
+                    <div class="tm-score-row">
+                      <span class="tm-team home" title="${m.home_team}">${m.home_team}</span>
+                      <span class="tm-score-badge">${m.score || `${hGoals} - ${aGoals}`}</span>
+                      <span class="tm-team away" title="${m.away_team}">${m.away_team}</span>
+                    </div>
+                    <div class="tm-stats-row">
+                      <span class="tm-stat-pill">📊 xG: ${xgH} - ${xgA}</span>
+                      <span class="tm-stat-pill">🟨 ${cards}</span>
+                      <span class="tm-stat-pill">🚩 ${corners}</span>
+                      <span class="tm-stat-pill">⚖️ ${m.referee || 'CTA/PGMOL'}</span>
+                    </div>
+                    <div class="tm-elo-row">
+                      <span class="tm-elo-pill ${eloDiffH >= 0 ? 'tm-elo-pos' : 'tm-elo-neg'}">
+                        ${m.home_team}: ${eloDiffH >= 0 ? '+' : ''}${eloDiffH} ${m.new_elo_home ? `(${m.new_elo_home})` : ''}
+                      </span>
+                      <span class="tm-elo-pill ${eloDiffA >= 0 ? 'tm-elo-pos' : 'tm-elo-neg'}">
+                        ${m.away_team}: ${eloDiffA >= 0 ? '+' : ''}${eloDiffA} ${m.new_elo_away ? `(${m.new_elo_away})` : ''}
+                      </span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        }
+
+        let combosHtml = '';
+        if (combosList.length > 0) {
+          combosHtml = `
+            <div class="timeline-section-title">📈 Combinades Avaluades (${combosList.length})</div>
+            <div class="timeline-combos-grid">
+              ${combosList.map(c => {
+                const isWon = c.status === 'WON';
+                const pnl = c.profit != null ? c.profit : (isWon ? (c.payout - c.stake) : -c.stake);
+                const pnlSign = pnl >= 0 ? '+' : '';
+                return `
+                  <div class="timeline-combo-pill ${isWon ? 'won' : 'lost'}">
+                    <span>${isWon ? '🏆' : '❌'}</span>
+                    <strong>[${c.competition_id || ''} J${c.jornada || ''}] ${c.profile || 'Combinada'}</strong>
+                    <span>@${c.odd ? Number(c.odd).toFixed(2) : '-'}</span>
+                    <span>(${pnlSign}${Number(pnl).toFixed(2)} €)</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        }
+
         return `
           <div class="timeline-entry ${idx === 0 ? 'latest-entry' : ''}">
             <div class="timeline-marker">
@@ -1442,6 +1569,8 @@ function renderChangelog() {
                 </div>
                 <div class="timeline-date">📅 ${dateFormatted}</div>
               </div>
+              ${matchesHtml}
+              ${combosHtml}
               <ul class="timeline-items-list">
                 ${(entry.items || []).map(item => `
                   <li class="timeline-item">
