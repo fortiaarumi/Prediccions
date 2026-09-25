@@ -1230,35 +1230,59 @@ function quickTrackBetFromCard(encoded) {
 }
 
 function trackComboBet(comboKey) {
-  if (!appData || !appData.combos) return;
-  let found = null;
-  let compKey = '';
-  for (const [ck, clist] of Object.entries(appData.combos)) {
-    const c = (clist || []).find(item => item.id === comboKey || `${ck}_${item.id}` === comboKey);
-    if (c) {
-      found = c;
-      compKey = ck;
-      break;
+  let found = (window.combosRegistry && window.combosRegistry[comboKey]) || null;
+  let compKey = (found && (found.leagueKey || found.competition_id)) || '';
+
+  if (!found && appData && appData.combos) {
+    for (const [ck, clist] of Object.entries(appData.combos)) {
+      const allC = [
+        ...(clist.safe || []),
+        ...(clist.semi || []),
+        ...(clist.risky || [])
+      ];
+      const c = allC.find(item => item.id === comboKey || `${ck}_${item.id}` === comboKey);
+      if (c) {
+        found = c;
+        compKey = ck;
+        break;
+      }
     }
   }
+
   if (!found) {
-    showToast("No s'ha pogut trobar la combinada.", 'error');
+    showToast("No s'ha pogut trobar la combinada seleccionada.", 'error');
     return;
   }
 
   const boostedOdd = found.boosted_odd || found.combined_odd || 2.0;
-  const stake = getComboEffectiveStake(found);
+  const stake = typeof getComboEffectiveStake === 'function' ? getComboEffectiveStake(found) : (parseFloat(found.stake) || 10.0);
+
+  const legsSummary = (found.legs || []).map(l => {
+    const teamShort = l.matchup ? l.matchup.split(' vs ')[0] : '';
+    return `${teamShort ? teamShort + ': ' : ''}${l.selection_name}`;
+  }).join(' · ');
 
   PersonalBets.add({
-    matchup: `Combinada ${found.profile} (${(found.legs || []).length} partits)`,
-    selection: (found.legs || []).map(l => l.selection_name).join(' + '),
-    odd: boostedOdd,
-    stake: stake,
+    matchup: `Combinada ${found.profile || 'Recomanada'} (${(found.legs || []).length} partits)`,
+    selection: legsSummary || (found.legs || []).map(l => l.selection_name).join(' + ') || 'Combinada',
+    odd: parseFloat(boostedOdd) || 2.0,
+    stake: parseFloat(stake) || 10.0,
     category: 'Combinada',
     competition_id: compKey || 'MULTI',
     status: 'PENDING'
   });
 }
+
+// Expose handlers globally on window for inline onclick handlers
+window.trackComboBet = trackComboBet;
+window.quickTrackBetFromCard = quickTrackBetFromCard;
+window.trackMatchForecast = trackMatchForecast;
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.openAddBetModal = openAddBetModal;
+window.closeAddBetModal = closeAddBetModal;
+window.PersonalBets = PersonalBets;
+window.UserAuth = UserAuth;
 
 function trackMatchForecast(matchId) {
   if (!appData || !appData.predictions) return;
