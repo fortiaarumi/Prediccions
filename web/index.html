@@ -36,6 +36,9 @@
         <div class="timestamp-badge" id="last-updated-badge">
           Carregant dades...
         </div>
+        <div class="user-auth-widget" id="user-auth-widget">
+          <!-- Generat dinàmicament per JS: Botó Entrar o Perfil Usuari -->
+        </div>
       </div>
     </div>
 
@@ -173,19 +176,77 @@
       </div>
     </section>
 
-    <!-- SECTION 5: RECOMPTE DE DINERS ("QUÈ HAGUÉS PASSAT SI...") -->
+    <!-- SECTION 5: RECOMPTE DE DINERS (PERSONAL & APP GLOBAL) -->
     <section class="tab-content" id="section-bankroll" role="tabpanel">
-      <div class="section-hero">
-        <div>
-          <h1 class="section-title">💰 Recompte de Diners · Simulador Financer</h1>
-          <p class="section-subtitle">Seguiment matemàtic d'alta precisió: Quants diners tindríem avui si des del primer report haguéssim posat 25€ a la Segura, 10€ a la Semi i 5€ a l'Arriscada?</p>
+      <!-- 5.1 EL MEU RECOMPTE PERSONAL -->
+      <div class="personal-bankroll-block">
+        <div class="section-hero personal-bankroll-hero">
+          <div>
+            <div class="hero-user-tag" id="personal-user-badge">
+              <span class="user-avatar-dot">👤</span>
+              <span id="hero-user-name">Carregant usuari...</span>
+            </div>
+            <h1 class="section-title">💰 El Teu Recompte Personal d'Apostes</h1>
+            <p class="section-subtitle">Registra les teves apostes de valor, combinades o apostes manuals i fes un seguiment estricte del teu capital, ROI i taxa d'encerts.</p>
+          </div>
+          <div class="personal-bankroll-actions">
+            <button class="btn-primary-action" id="btn-open-add-bet">
+              <span>➕ Nova Aposta Personalitzada</span>
+            </button>
+            <button class="btn-secondary-action" id="btn-clear-my-bets" title="Eliminar totes les teves apostes guardades">
+              <span>🗑️ Buidar Registre</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Personal KPI Grid -->
+        <div class="kpi-grid personal-kpi-grid" id="personal-kpi-grid">
+          <!-- Generat per JS -->
+        </div>
+
+        <!-- Personal Bets List Panel -->
+        <div class="personal-bets-panel">
+          <div class="personal-bets-header">
+            <div class="personal-filter-pills" id="personal-status-filter">
+              <button class="personal-pill-btn active" data-status="ALL">Totes (<span id="count-all">0</span>)</button>
+              <button class="personal-pill-btn" data-status="PENDING">Pendents (<span id="count-pending">0</span>)</button>
+              <button class="personal-pill-btn" data-status="WON">Guanyades (<span id="count-won">0</span>)</button>
+              <button class="personal-pill-btn" data-status="LOST">Perdudes (<span id="count-lost">0</span>)</button>
+            </div>
+            <div class="personal-helper-text">
+              💡 Pots afegir apostes directament des de la pestanya <strong>Apostes de Valor (+EV%)</strong> o <strong>Combinades</strong> clicant a <em>"Afegir al meu compte"</em>.
+            </div>
+          </div>
+
+          <div class="personal-bets-list" id="personal-bets-list">
+            <!-- Generat per JS -->
+          </div>
         </div>
       </div>
 
-      <!-- KPI Hero Cards -->
-      <div class="kpi-grid" id="bankroll-kpi-grid">
-        <!-- Generat per JS -->
+      <!-- SEPARADOR ELEGANT MODEL GLOBAL -->
+      <div class="bankroll-section-divider">
+        <span class="divider-line"></span>
+        <div class="divider-badge-box">
+          <span class="divider-icon">🌐</span>
+          <span class="divider-title">ESTADÍSTIQUES GENERALS DE LA APP (MODEL GLOBAL)</span>
+        </div>
+        <span class="divider-line"></span>
       </div>
+
+      <!-- 5.2 ESTADÍSTIQUES GENERALS DE LA APP (SIMULADOR DEL MODEL) -->
+      <div class="global-bankroll-block">
+        <div class="section-hero">
+          <div>
+            <h2 class="section-title">📊 Rendiment Global del Model · Simulador Financer</h2>
+            <p class="section-subtitle">Seguiment matemàtic d'alta precisió: Quants diners tindríem avui si des del primer report haguéssim posat 25€ a la Segura, 10€ a la Semi i 5€ a l'Arriscada?</p>
+          </div>
+        </div>
+
+        <!-- KPI Hero Cards (Global Model) -->
+        <div class="kpi-grid" id="bankroll-kpi-grid">
+          <!-- Generat per JS -->
+        </div>
 
       <!-- Panell de Simulació d'Imports i Unitats -->
       <div class="bankroll-sim-card">
@@ -454,6 +515,152 @@
       </div>
     </div>
   </div>
+
+  <!-- MODAL INICI DE SESSIÓ / CONVIDAT -->
+  <div id="modal-auth" class="modal-backdrop" aria-hidden="true" role="dialog">
+    <div class="modal-dialog auth-dialog">
+      <div class="modal-header">
+        <div>
+          <div class="modal-subtitle">Prediccions AI · Accés d'Usuari</div>
+          <h2 class="modal-title" id="auth-modal-title">Iniciar Sessió / Convidat</h2>
+        </div>
+        <button class="modal-close-btn" id="auth-modal-close" aria-label="Tancar">&times;</button>
+      </div>
+
+      <div class="modal-body auth-body">
+        <p class="auth-intro">
+          Guarda el teu registre personal d'apostes, calcula el teu benefici net i fes seguiment del teu ROI de manera privada i segura al teu navegador.
+        </p>
+
+        <!-- Formulari d'Usuari i Contrasenya -->
+        <form id="auth-form" class="auth-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="auth-username">Nom d'usuari:</label>
+            <input type="text" id="auth-username" class="form-input" placeholder="El teu nom o àlies" autocomplete="username" required />
+          </div>
+
+          <div class="form-group">
+            <label for="auth-password">Contrasenya:</label>
+            <input type="password" id="auth-password" class="form-input" placeholder="••••••••" autocomplete="current-password" required />
+            <span class="form-hint">Si és el primer cop que entres amb aquest usuari, es crearà el compte automàticament.</span>
+          </div>
+
+          <div class="auth-error-msg" id="auth-error-msg" style="display: none;"></div>
+
+          <button type="submit" class="btn-primary-action auth-submit-btn" id="btn-auth-submit">
+            <span>🔐 Entrar / Crear Compte</span>
+          </button>
+        </form>
+
+        <div class="auth-separator">
+          <span>O BÉ</span>
+        </div>
+
+        <!-- Mode Convidat (1 Clic) -->
+        <div class="guest-card">
+          <div class="guest-card-info">
+            <span class="guest-icon">⚡</span>
+            <div>
+              <strong>Mode Convidat (Sense contrasenya)</strong>
+              <p>Entra a l'instant amb 1 sol clic. Les teves apostes es guardaran automàticament en aquest dispositiu.</p>
+            </div>
+          </div>
+          <button type="button" class="btn-guest-action" id="btn-enter-guest">
+            <span>👤 Entrar com a Convidat</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL AFEGIR APOSTA PERSONALITZADA / SEGUIR -->
+  <div id="modal-add-bet" class="modal-backdrop" aria-hidden="true" role="dialog">
+    <div class="modal-dialog add-bet-dialog">
+      <div class="modal-header">
+        <div>
+          <div class="modal-subtitle">El Teu Recompte Personal</div>
+          <h2 class="modal-title" id="add-bet-modal-title">➕ Afegir Aposta al Registre</h2>
+        </div>
+        <button class="modal-close-btn" id="add-bet-modal-close" aria-label="Tancar">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="add-bet-form" class="add-bet-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="bet-matchup">Partit o Esdeveniment:</label>
+            <input type="text" id="bet-matchup" class="form-input" placeholder="ex: Girona FC vs Albacete Balompié" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="bet-competition">Competició:</label>
+              <select id="bet-competition" class="form-input">
+                <option value="HYPERMOTION">🇪🇸 LaLiga Hypermotion</option>
+                <option value="LALIGA">🇪🇸 LaLiga EA Sports</option>
+                <option value="PREMIER">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+                <option value="CHAMPIONSHIP">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship</option>
+                <option value="MULTI">🌍 Multi-Lliga</option>
+                <option value="OTHER">⚽ Altra Lliga / Copa</option>
+              </select>
+            </div>
+
+            <div class="form-group flex-1">
+              <label for="bet-category">Tipus / Categoria:</label>
+              <select id="bet-category" class="form-input">
+                <option value="Valor (+EV)">💎 Aposta de Valor (+EV)</option>
+                <option value="Combinada">🎯 Combinada</option>
+                <option value="1X2">⚽ 1X2 / Resultat</option>
+                <option value="Gols / BTTS">🥅 Gols / Ambdós Marquen</option>
+                <option value="Córners">🚩 Córners</option>
+                <option value="Targetes">🟨 Targetes</option>
+                <option value="Personalitzada">🎲 Personalitzada</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bet-selection">Selecció / Pronòstic:</label>
+            <input type="text" id="bet-selection" class="form-input" placeholder="ex: Albacete marca més d'1.5 gols / 1X" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="bet-odd">Quota (Cuota decimal):</label>
+              <div class="input-with-addon">
+                <span class="input-addon">@</span>
+                <input type="number" id="bet-odd" class="form-input" step="0.01" min="1.01" value="2.00" required />
+              </div>
+            </div>
+
+            <div class="form-group flex-1">
+              <label for="bet-stake">Import apostat (€):</label>
+              <div class="input-with-addon">
+                <input type="number" id="bet-stake" class="form-input" step="1" min="0.5" value="10" required />
+                <span class="input-addon-right">€</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bet-status">Estat inicial:</label>
+            <select id="bet-status" class="form-input">
+              <option value="PENDING">⏳ Pendent de jugar</option>
+              <option value="WON">✅ Ja Guanyada</option>
+              <option value="LOST">❌ Ja Perduda</option>
+            </select>
+          </div>
+
+          <div class="modal-footer" style="padding: 16px 0 0 0; margin-top: 10px;">
+            <button type="button" class="btn-secondary" id="btn-cancel-add-bet">Cancel·lar</button>
+            <button type="submit" class="btn-primary-action" id="btn-save-bet">💾 Guardar Aposta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <!-- Footer -->
   <footer class="app-footer">

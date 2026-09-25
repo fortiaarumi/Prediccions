@@ -415,6 +415,20 @@ class WebDataExporter:
                 "fouls_avg": round(float(ref_data.get("fouls_avg", 24.5)), 1)
             }
 
+            corners = pred.get("corners", {})
+            c_home = round(float(corners.get("expected_home_corners", 5.0)), 1)
+            c_away = round(float(corners.get("expected_away_corners", 4.0)), 1)
+            c_total = round(float(corners.get("expected_total_corners", round(c_home + c_away, 1))), 1)
+            prob_c_85 = _to_pct(corners.get("prob_over_corners", {}).get("over_8_5", 55.0))
+            prob_c_95 = _to_pct(corners.get("prob_over_corners", {}).get("over_9_5", 45.0))
+
+            card_preds = pred.get("cards", {})
+            cd_home = round(float(card_preds.get("expected_home_cards", 2.3)), 1)
+            cd_away = round(float(card_preds.get("expected_away_cards", 2.4)), 1)
+            cd_total = round(float(card_preds.get("expected_total_cards", round(cd_home + cd_away, 1))), 1)
+            prob_cd_35 = _to_pct(card_preds.get("prob_over_cards", {}).get("over_3_5", 70.0))
+            prob_cd_45 = _to_pct(card_preds.get("prob_over_cards", {}).get("over_4_5", 50.0))
+
             predicted_list.append({
                 "match_id": f"{competition_id}_J{active_jornada}_{h_id}_{a_id}",
                 "competition_id": competition_id,
@@ -443,6 +457,16 @@ class WebDataExporter:
                 "prob_under_25": _to_pct(prob_ou.get("under_2_5", prob_ou.get("under")), 50.0),
                 "prob_btts_yes": _to_pct(prob_btts.get("yes"), 50.0),
                 "prob_btts_no": _to_pct(prob_btts.get("no"), 50.0),
+                "corners_home": c_home,
+                "corners_away": c_away,
+                "corners_total": c_total,
+                "prob_over_corners_85": prob_c_85,
+                "prob_over_corners_95": prob_c_95,
+                "cards_home": cd_home,
+                "cards_away": cd_away,
+                "cards_total": cd_total,
+                "prob_over_cards_35": prob_cd_35,
+                "prob_over_cards_45": prob_cd_45,
                 "referee": ref_info,
                 "odds_1x2": {
                     "1": o_1x2.get("1"),

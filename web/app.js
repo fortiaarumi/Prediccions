@@ -69,6 +69,8 @@ function initEventListeners() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeQuickAssistant();
+      closeAuthModal();
+      closeAddBetModal();
     }
   });
 
@@ -88,6 +90,90 @@ function initEventListeners() {
       }
     });
   }
+
+  // Auth Modal Listeners
+  const btnAuthClose = document.getElementById('auth-modal-close');
+  if (btnAuthClose) btnAuthClose.onclick = closeAuthModal;
+  const modalAuth = document.getElementById('modal-auth');
+  if (modalAuth) {
+    modalAuth.onclick = (e) => { if (e.target === modalAuth) closeAuthModal(); };
+  }
+  const btnEnterGuest = document.getElementById('btn-enter-guest');
+  if (btnEnterGuest) {
+    btnEnterGuest.onclick = () => {
+      UserAuth.loginAsGuest();
+      closeAuthModal();
+    };
+  }
+  const authForm = document.getElementById('auth-form');
+  if (authForm) {
+    authForm.onsubmit = (e) => {
+      e.preventDefault();
+      const u = document.getElementById('auth-username').value;
+      const p = document.getElementById('auth-password').value;
+      const errEl = document.getElementById('auth-error-msg');
+      try {
+        UserAuth.login(u, p);
+        closeAuthModal();
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = err.message;
+          errEl.style.display = 'block';
+        }
+      }
+    };
+  }
+
+  // Add Bet Modal Listeners
+  const btnOpenAddBet = document.getElementById('btn-open-add-bet');
+  if (btnOpenAddBet) btnOpenAddBet.onclick = () => openAddBetModal();
+  const btnAddBetClose = document.getElementById('add-bet-modal-close');
+  if (btnAddBetClose) btnAddBetClose.onclick = closeAddBetModal;
+  const btnCancelAddBet = document.getElementById('btn-cancel-add-bet');
+  if (btnCancelAddBet) btnCancelAddBet.onclick = closeAddBetModal;
+  const modalAddBet = document.getElementById('modal-add-bet');
+  if (modalAddBet) {
+    modalAddBet.onclick = (e) => { if (e.target === modalAddBet) closeAddBetModal(); };
+  }
+  const addBetForm = document.getElementById('add-bet-form');
+  if (addBetForm) {
+    addBetForm.onsubmit = (e) => {
+      e.preventDefault();
+      const matchup = document.getElementById('bet-matchup').value;
+      const comp = document.getElementById('bet-competition').value;
+      const cat = document.getElementById('bet-category').value;
+      const sel = document.getElementById('bet-selection').value;
+      const odd = parseFloat(document.getElementById('bet-odd').value) || 2.0;
+      const stake = parseFloat(document.getElementById('bet-stake').value) || 10.0;
+      const status = document.getElementById('bet-status').value || 'PENDING';
+
+      PersonalBets.add({
+        matchup,
+        competition_id: comp,
+        category: cat,
+        selection: sel,
+        odd,
+        stake,
+        status
+      });
+      closeAddBetModal();
+    };
+  }
+
+  // Clear Personal Bets
+  const btnClearBets = document.getElementById('btn-clear-my-bets');
+  if (btnClearBets) btnClearBets.onclick = () => PersonalBets.clearAll();
+
+  // Status Filter Pills for Personal Bets
+  const pFilterBtns = document.querySelectorAll('.personal-pill-btn');
+  pFilterBtns.forEach(btn => {
+    btn.onclick = () => {
+      pFilterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      PersonalBets.currentFilter = btn.getAttribute('data-status');
+      PersonalBets.render();
+    };
+  });
 }
 
 function switchTab(tabId) {
@@ -108,6 +194,10 @@ function switchTab(tabId) {
   const activeSec = document.getElementById(`section-${tabId}`);
   if (activeSec) {
     activeSec.classList.add('active');
+  }
+
+  if (tabId === 'bankroll') {
+    PersonalBets.render();
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -131,6 +221,8 @@ function renderAll() {
   if (!appData) return;
 
   loadBankrollSimState();
+  UserAuth.updateUI();
+  PersonalBets.render();
   renderHeaderMeta();
   renderPowerRankings();
   renderPredictions();
@@ -331,7 +423,7 @@ function renderPredictions() {
           </div>
         </div>
 
-        <!-- Advanced Metrics Grid -->
+        <!-- Advanced Metrics Grid (Fila 1: xG, Marcador Top, +2.5 Gols) -->
         <div class="match-stats-grid">
           <div>
             <div class="stat-item-label">xG Esperat</div>
@@ -347,9 +439,36 @@ function renderPredictions() {
           </div>
         </div>
 
+        <!-- Fila 2 (Sol·licitada): Córners esperats per equip, Ambdós Marquen BTTS, Targetes per equip +3.5 -->
+        <div class="match-stats-grid secondary-stats-row">
+          <div>
+            <div class="stat-item-label">🚩 Córners (H - A)</div>
+            <div class="stat-item-val" style="color: var(--accent-cyan); font-size: 13px;">
+              ${m.corners_home != null ? m.corners_home : '5.0'} - ${m.corners_away != null ? m.corners_away : '4.5'}
+              <span class="stat-item-sub">(${m.corners_total != null ? m.corners_total : '9.5'})</span>
+            </div>
+          </div>
+          <div>
+            <div class="stat-item-label">⚽ Ambdós Marquen (BTTS)</div>
+            <div class="stat-item-val" style="color: ${(m.prob_btts_yes != null ? m.prob_btts_yes : 50) >= 50 ? 'var(--accent-emerald)' : 'var(--accent-amber)'}; font-size: 13px;">
+              ${m.prob_btts_yes != null ? m.prob_btts_yes : '50.0'}%
+            </div>
+          </div>
+          <div>
+            <div class="stat-item-label">🟨 Targetes (H - A)</div>
+            <div class="stat-item-val" style="color: var(--accent-amber); font-size: 13px;">
+              ${m.cards_home != null ? m.cards_home : '2.5'} - ${m.cards_away != null ? m.cards_away : '2.5'}
+              <span class="stat-item-sub">(+3.5: ${m.prob_over_cards_35 != null ? m.prob_over_cards_35 : '75.0'}%)</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Verdict & Referee -->
         <div class="verdict-pill">
           <span>🎯 Pronòstic: <strong>${m.verdict}</strong></span>
+          <button class="btn-mini-track" onclick="trackMatchForecast('${m.match_id}')" title="Afegir aquest pronòstic al teu recompte personal">
+            ➕ Seguir
+          </button>
         </div>
 
         <div class="referee-tag">
@@ -416,9 +535,21 @@ function renderValueBets() {
           </div>
         </div>
 
-        <a href="${b.winamax_url || 'https://www.winamax.es'}" target="_blank" rel="noopener noreferrer" class="btn-winamax">
-          Apostar a Winamax España ↗
-        </a>
+        <div class="value-card-actions">
+          <button class="btn-track-bet-card" onclick="quickTrackBetFromCard('${encodeURIComponent(JSON.stringify({
+            matchup: b.matchup,
+            selection: b.selection,
+            odd: b.bookie_odd,
+            stake: 10,
+            category: 'Valor (+EV)',
+            competition_id: b.competition_id
+          }))}')">
+            ➕ Afegir al meu compte
+          </button>
+          <a href="${b.winamax_url || 'https://www.winamax.es'}" target="_blank" rel="noopener noreferrer" class="btn-winamax">
+            Apostar a Winamax España ↗
+          </a>
+        </div>
       </div>
     `;
   }).join('');
@@ -591,6 +722,9 @@ function renderCombos() {
 
                 <div class="combo-actions-wrapper">
                   <div class="combo-btn-row">
+                    <button type="button" class="btn-track-combo" onclick="trackComboBet('${comboKey}')" title="Afegir aquesta combinada al teu compte">
+                      ➕ Apostar al meu compte
+                    </button>
                     <button type="button" class="btn-assistant" onclick="openQuickAssistant('${comboKey}')" title="Obre assistent interactiu pas a pas (Mòbil i PC)">
                       📲 Assistent Ràpid
                     </button>
@@ -611,6 +745,544 @@ function renderCombos() {
   });
 
   container.innerHTML = html || `<p style="text-align: center; padding: 40px; color: var(--text-muted);">No hi ha combinades disponibles per al filtre actual.</p>`;
+}
+
+// =============================================================================
+// GESTIÓ D'USUARIS I AUTENTICACIÓ (UserAuth)
+// =============================================================================
+const UserAuth = {
+  SESSION_KEY: 'prediccions_user_session',
+  USERS_KEY: 'prediccions_user_accounts',
+
+  getCurrentUser() {
+    try {
+      const raw = localStorage.getItem(this.SESSION_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {
+      console.warn("Error llegint sessió:", e);
+    }
+    return {
+      username: 'Convidat',
+      isGuest: true,
+      isAuthenticated: true,
+      avatar: '👤'
+    };
+  },
+
+  setCurrentUser(userObj) {
+    try {
+      localStorage.setItem(this.SESSION_KEY, JSON.stringify(userObj));
+    } catch (e) {
+      console.warn("Error desant sessió:", e);
+    }
+    this.updateUI();
+    PersonalBets.render();
+  },
+
+  getAllUsers() {
+    try {
+      const raw = localStorage.getItem(this.USERS_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  },
+
+  saveUsers(users) {
+    try {
+      localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+    } catch (e) {}
+  },
+
+  login(username, password) {
+    const cleanUser = (username || '').trim();
+    if (!cleanUser) throw new Error("Has d'introduir un nom d'usuari.");
+    if (!password || password.length < 3) throw new Error("La contrasenya ha de tenir com a mínim 3 caràcters.");
+
+    const users = this.getAllUsers();
+    if (!users[cleanUser]) {
+      users[cleanUser] = {
+        password: btoa(password),
+        createdAt: new Date().toISOString()
+      };
+      this.saveUsers(users);
+      showToast(`🎉 Compte creat amb èxit per a ${cleanUser}!`, 'success');
+    } else {
+      if (users[cleanUser].password !== btoa(password)) {
+        throw new Error("Contrasenya incorrecta per a aquest usuari.");
+      }
+      showToast(`👋 Benvingut de nou, ${cleanUser}!`, 'success');
+    }
+
+    this.setCurrentUser({
+      username: cleanUser,
+      isGuest: false,
+      isAuthenticated: true,
+      avatar: cleanUser[0].toUpperCase()
+    });
+  },
+
+  loginAsGuest() {
+    this.setCurrentUser({
+      username: 'Convidat',
+      isGuest: true,
+      isAuthenticated: true,
+      avatar: '👤'
+    });
+    showToast("⚡ Has entrat en mode Convidat.", 'info');
+  },
+
+  logout() {
+    this.setCurrentUser({
+      username: 'Convidat',
+      isGuest: true,
+      isAuthenticated: true,
+      avatar: '👤'
+    });
+    showToast("🚪 Sessió tancada. Ara ets en mode Convidat.", 'info');
+  },
+
+  updateUI() {
+    const user = this.getCurrentUser();
+    const widget = document.getElementById('user-auth-widget');
+    const heroName = document.getElementById('hero-user-name');
+
+    if (heroName) {
+      heroName.textContent = user.isGuest ? "Convidat (Mode Local)" : `${user.username} (El Teu Compte)`;
+    }
+
+    if (widget) {
+      if (user.isGuest) {
+        widget.innerHTML = `
+          <button class="btn-auth-header" id="btn-header-auth" title="Iniciar sessió o canviar usuari">
+            <span class="auth-icon">👤</span>
+            <span class="auth-name">Convidat</span>
+            <span class="auth-action-lbl">Entrar</span>
+          </button>
+        `;
+      } else {
+        widget.innerHTML = `
+          <div class="user-header-pill">
+            <span class="user-avatar-mini">${user.avatar}</span>
+            <span class="user-name-mini">${user.username}</span>
+            <button class="btn-logout-mini" id="btn-header-logout" title="Tancar sessió">✕</button>
+          </div>
+        `;
+      }
+
+      const btnAuth = document.getElementById('btn-header-auth');
+      if (btnAuth) btnAuth.onclick = openAuthModal;
+      const btnLogout = document.getElementById('btn-header-logout');
+      if (btnLogout) btnLogout.onclick = () => UserAuth.logout();
+    }
+  }
+};
+
+// =============================================================================
+// GESTIÓ D'APOSTES PERSONALS (PersonalBets)
+// =============================================================================
+const PersonalBets = {
+  currentFilter: 'ALL',
+
+  getStorageKey() {
+    const user = UserAuth.getCurrentUser();
+    const uname = (user.username || 'guest').toLowerCase().replace(/[^a-z0-9]/g, '_');
+    return `prediccions_bets_${uname}`;
+  },
+
+  getAll() {
+    try {
+      const raw = localStorage.getItem(this.getStorageKey());
+      if (raw) return JSON.parse(raw);
+    } catch (e) {
+      console.warn("Error carregant apostes:", e);
+    }
+    return [];
+  },
+
+  saveAll(bets) {
+    try {
+      localStorage.setItem(this.getStorageKey(), JSON.stringify(bets));
+    } catch (e) {
+      console.warn("Error desant apostes:", e);
+    }
+    this.render();
+  },
+
+  add(bet) {
+    const bets = this.getAll();
+    const newBet = {
+      id: 'bet_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+      date: new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' +
+            new Date().toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' }),
+      matchup: bet.matchup || 'Partit Sense Nom',
+      competition_id: bet.competition_id || 'HYPERMOTION',
+      category: bet.category || 'Personalitzada',
+      selection: bet.selection || 'Selecció',
+      odd: parseFloat(bet.odd) || 2.0,
+      stake: parseFloat(bet.stake) || 10.0,
+      status: bet.status || 'PENDING',
+      notes: bet.notes || ''
+    };
+    bets.unshift(newBet);
+    this.saveAll(bets);
+    showToast(`✅ Aposta afegida al teu recompte personal: ${newBet.selection} (@${newBet.odd.toFixed(2)})`, 'success');
+    return newBet;
+  },
+
+  updateStatus(betId, newStatus) {
+    const bets = this.getAll();
+    const target = bets.find(b => b.id === betId);
+    if (target) {
+      target.status = newStatus;
+      this.saveAll(bets);
+      const icon = newStatus === 'WON' ? '✅' : newStatus === 'LOST' ? '❌' : '⏳';
+      const label = newStatus === 'WON' ? 'Guanyada' : newStatus === 'LOST' ? 'Perduda' : 'Pendent';
+      showToast(`${icon} Aposta marcada com a ${label}`, 'info');
+    }
+  },
+
+  delete(betId) {
+    let bets = this.getAll();
+    bets = bets.filter(b => b.id !== betId);
+    this.saveAll(bets);
+    showToast("🗑️ Aposta eliminada del teu registre.", 'info');
+  },
+
+  clearAll() {
+    if (confirm("Estàs segur que vols buidar TOT el teu registre d'apostes personal?")) {
+      this.saveAll([]);
+      showToast("🗑️ S'ha buidat tot el teu registre.", 'info');
+    }
+  },
+
+  calculateKPIs() {
+    const bets = this.getAll();
+    let totalInvested = 0;
+    let closedStake = 0;
+    let totalPayout = 0;
+    let pendingStake = 0;
+    let won = 0;
+    let lost = 0;
+    let pending = 0;
+
+    bets.forEach(b => {
+      const stake = parseFloat(b.stake) || 0;
+      const odd = parseFloat(b.odd) || 1.0;
+
+      if (b.status === 'WON') {
+        won++;
+        closedStake += stake;
+        totalPayout += stake * odd;
+      } else if (b.status === 'LOST') {
+        lost++;
+        closedStake += stake;
+      } else {
+        pending++;
+        pendingStake += stake;
+      }
+      totalInvested += stake;
+    });
+
+    const netPnl = totalPayout - closedStake;
+    const closedCount = won + lost;
+    const roiPct = closedStake > 0 ? (netPnl / closedStake * 100.0) : 0.0;
+    const winRatePct = closedCount > 0 ? (won / closedCount * 100.0) : 0.0;
+
+    return {
+      totalInvested,
+      closedStake,
+      totalPayout,
+      netPnl,
+      pendingStake,
+      roiPct,
+      winRatePct,
+      won,
+      lost,
+      pending,
+      totalCount: bets.length
+    };
+  },
+
+  render() {
+    const kpis = this.calculateKPIs();
+    const kpiContainer = document.getElementById('personal-kpi-grid');
+    const listContainer = document.getElementById('personal-bets-list');
+
+    const elAll = document.getElementById('count-all');
+    const elPending = document.getElementById('count-pending');
+    const elWon = document.getElementById('count-won');
+    const elLost = document.getElementById('count-lost');
+    if (elAll) elAll.textContent = kpis.totalCount;
+    if (elPending) elPending.textContent = kpis.pending;
+    if (elWon) elWon.textContent = kpis.won;
+    if (elLost) elLost.textContent = kpis.lost;
+
+    if (kpiContainer) {
+      const isProfit = kpis.netPnl >= 0;
+      const pnlSign = isProfit ? '+' : '';
+      const roiSign = kpis.roiPct >= 0 ? '+' : '';
+
+      kpiContainer.innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-icon">💳</div>
+          <div class="kpi-label">Capital Apostat</div>
+          <div class="kpi-value">${kpis.totalInvested.toFixed(2)} €</div>
+          <div class="kpi-sub">${kpis.closedStake.toFixed(2)} € resolts · ${kpis.pendingStake.toFixed(2)} € en joc</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">💵</div>
+          <div class="kpi-label">Retorn Brut Cobrat</div>
+          <div class="kpi-value">${kpis.totalPayout.toFixed(2)} €</div>
+          <div class="kpi-sub">${kpis.won} apostes encertades</div>
+        </div>
+
+        <div class="kpi-card highlight ${isProfit ? '' : 'loss'}">
+          <div class="kpi-icon">📈</div>
+          <div class="kpi-label">El Teu Balanç Net (PnL)</div>
+          <div class="kpi-value ${isProfit ? 'positive' : 'negative'}">${pnlSign}${kpis.netPnl.toFixed(2)} €</div>
+          <div class="kpi-sub">${kpis.won + kpis.lost > 0 ? "Rendiment net consolidat" : "Cap aposta resolta encara"}</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">🎯</div>
+          <div class="kpi-label">El Teu ROI</div>
+          <div class="kpi-value ${isProfit ? 'positive' : 'negative'}">${roiSign}${kpis.roiPct.toFixed(1)}%</div>
+          <div class="kpi-sub">Retorn sobre capital resolt</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">🏆</div>
+          <div class="kpi-label">Taxa d'Encert</div>
+          <div class="kpi-value" style="color: var(--accent-cyan);">${kpis.winRatePct.toFixed(1)}%</div>
+          <div class="kpi-sub">${kpis.won}W / ${kpis.lost}L (${kpis.pending} pendents)</div>
+        </div>
+      `;
+    }
+
+    if (listContainer) {
+      let bets = this.getAll();
+      if (this.currentFilter !== 'ALL') {
+        bets = bets.filter(b => b.status === this.currentFilter);
+      }
+
+      if (bets.length === 0) {
+        listContainer.innerHTML = `
+          <div class="personal-empty-state">
+            <span class="empty-icon">📭</span>
+            <h3>No hi ha cap aposta en aquest filtre</h3>
+            <p>Afegeix una aposta fàcilment des d'<strong>Apostes de Valor (+EV%)</strong>, des de les <strong>Combinades</strong>, o clica el botó superior <em>"➕ Nova Aposta Personalitzada"</em>.</p>
+            <button class="btn-primary-action" onclick="openAddBetModal()" style="margin-top: 14px;">
+              <span>➕ Afegir Aposta Ara</span>
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = bets.map(b => {
+        const isWon = b.status === 'WON';
+        const isLost = b.status === 'LOST';
+        const isPending = b.status === 'PENDING';
+
+        const payout = isWon ? (b.stake * b.odd) : 0;
+        const netProfit = isWon ? (payout - b.stake) : isLost ? (-b.stake) : 0;
+        const profitSign = netProfit > 0 ? '+' : '';
+
+        let statusBadge = '<span class="status-badge-bet pending">⏳ PENDENT</span>';
+        if (isWon) statusBadge = '<span class="status-badge-bet won">✅ GUANYADA</span>';
+        if (isLost) statusBadge = '<span class="status-badge-bet lost">❌ PERDUDA</span>';
+
+        return `
+          <div class="personal-bet-card ${b.status.toLowerCase()}">
+            <div class="bet-card-main">
+              <div class="bet-card-meta">
+                <span class="bet-date">🕒 ${b.date}</span>
+                <span class="bet-category-pill">${b.category}</span>
+                <span class="bet-comp-pill">${b.competition_id}</span>
+              </div>
+              <div class="bet-card-matchup">${b.matchup}</div>
+              <div class="bet-card-selection">👉 <strong>${b.selection}</strong></div>
+            </div>
+
+            <div class="bet-card-financials">
+              <div class="bet-fin-item">
+                <span class="fin-label">Quota</span>
+                <span class="fin-val font-mono">@${b.odd.toFixed(2)}</span>
+              </div>
+              <div class="bet-fin-item">
+                <span class="fin-label">Apostat</span>
+                <span class="fin-val font-mono">${b.stake.toFixed(2)} €</span>
+              </div>
+              <div class="bet-fin-item">
+                <span class="fin-label">Balanç Net</span>
+                <span class="fin-val font-mono ${netProfit > 0 ? 'color-emerald' : netProfit < 0 ? 'color-rose' : 'color-muted'}">
+                  ${isPending ? `(Pot: +${((b.stake * b.odd) - b.stake).toFixed(2)} €)` : `${profitSign}${netProfit.toFixed(2)} €`}
+                </span>
+              </div>
+              <div class="bet-fin-item">
+                <span class="fin-label">Estat</span>
+                ${statusBadge}
+              </div>
+            </div>
+
+            <div class="bet-card-actions">
+              <div class="quick-status-group">
+                <button class="btn-status-toggle ${isWon ? 'active won' : ''}" onclick="PersonalBets.updateStatus('${b.id}', 'WON')" title="Marcar com a Guanyada">
+                  ✅ Guanyada
+                </button>
+                <button class="btn-status-toggle ${isLost ? 'active lost' : ''}" onclick="PersonalBets.updateStatus('${b.id}', 'LOST')" title="Marcar com a Perduda">
+                  ❌ Perduda
+                </button>
+                <button class="btn-status-toggle ${isPending ? 'active pending' : ''}" onclick="PersonalBets.updateStatus('${b.id}', 'PENDING')" title="Tornar a Pendent">
+                  ⏳ Pendent
+                </button>
+              </div>
+              <button class="btn-delete-bet" onclick="PersonalBets.delete('${b.id}')" title="Eliminar aposta">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+};
+
+// =============================================================================
+// MODALS I UTILITATS D'APOSTES
+// =============================================================================
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const toast = document.createElement('div');
+  toast.className = `toast-item toast-${type}`;
+  toast.innerHTML = `<span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('visible');
+  }, 10);
+  setTimeout(() => {
+    toast.classList.remove('visible');
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+
+function openAuthModal() {
+  const modal = document.getElementById('modal-auth');
+  if (modal) {
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    const uInput = document.getElementById('auth-username');
+    if (uInput) setTimeout(() => uInput.focus(), 100);
+  }
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById('modal-auth');
+  if (modal) {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    const err = document.getElementById('auth-error-msg');
+    if (err) err.style.display = 'none';
+  }
+}
+
+function openAddBetModal(prefill = null) {
+  const modal = document.getElementById('modal-add-bet');
+  if (!modal) return;
+  if (prefill) {
+    if (prefill.matchup) document.getElementById('bet-matchup').value = prefill.matchup;
+    if (prefill.selection) document.getElementById('bet-selection').value = prefill.selection;
+    if (prefill.odd) document.getElementById('bet-odd').value = prefill.odd;
+    if (prefill.stake) document.getElementById('bet-stake').value = prefill.stake;
+    if (prefill.category) document.getElementById('bet-category').value = prefill.category;
+    if (prefill.competition_id) document.getElementById('bet-competition').value = prefill.competition_id;
+  }
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+function closeAddBetModal() {
+  const modal = document.getElementById('modal-add-bet');
+  if (modal) {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+}
+
+function quickTrackBetFromCard(encoded) {
+  try {
+    const bet = JSON.parse(decodeURIComponent(encoded));
+    PersonalBets.add({
+      matchup: bet.matchup,
+      selection: bet.selection,
+      odd: bet.odd,
+      stake: 10,
+      category: bet.category || 'Valor (+EV)',
+      competition_id: bet.competition_id,
+      status: 'PENDING'
+    });
+  } catch (e) {
+    console.error("Error afegint aposta:", e);
+  }
+}
+
+function trackComboBet(comboKey) {
+  if (!appData || !appData.combos) return;
+  let found = null;
+  let compKey = '';
+  for (const [ck, clist] of Object.entries(appData.combos)) {
+    const c = (clist || []).find(item => item.id === comboKey || `${ck}_${item.id}` === comboKey);
+    if (c) {
+      found = c;
+      compKey = ck;
+      break;
+    }
+  }
+  if (!found) {
+    showToast("No s'ha pogut trobar la combinada.", 'error');
+    return;
+  }
+
+  const boostedOdd = found.boosted_odd || found.combined_odd || 2.0;
+  const stake = getComboEffectiveStake(found);
+
+  PersonalBets.add({
+    matchup: `Combinada ${found.profile} (${(found.legs || []).length} partits)`,
+    selection: (found.legs || []).map(l => l.selection_name).join(' + '),
+    odd: boostedOdd,
+    stake: stake,
+    category: 'Combinada',
+    competition_id: compKey || 'MULTI',
+    status: 'PENDING'
+  });
+}
+
+function trackMatchForecast(matchId) {
+  if (!appData || !appData.predictions) return;
+  let foundMatch = null;
+  for (const [cid, cData] of Object.entries(appData.predictions)) {
+    const m = (cData.matches || []).find(item => item.match_id === matchId);
+    if (m) {
+      foundMatch = m;
+      break;
+    }
+  }
+  if (!foundMatch) {
+    openAddBetModal();
+    return;
+  }
+
+  openAddBetModal({
+    matchup: `${foundMatch.home_team.name} vs ${foundMatch.away_team.name}`,
+    selection: `Pronòstic: ${foundMatch.verdict}`,
+    odd: foundMatch.odds_1x2 ? (foundMatch.odds_1x2['1'] || 2.0) : 2.0,
+    stake: 10,
+    category: '1X2',
+    competition_id: foundMatch.competition_id
+  });
 }
 
 // -----------------------------------------------------------------------------
