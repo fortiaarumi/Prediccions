@@ -230,7 +230,7 @@ class WebDataExporter:
 
         return result
 
-    def get_upcoming_predictions(self, competition_id: str, max_matches: int = 11) -> Dict[str, Any]:
+    def get_upcoming_predictions(self, competition_id: str, max_matches: int = 11, existing_match_odds: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Recupera els partits pendents de la propera jornada i genera les prediccions completes."""
         # Buscar partits SCHEDULED
         with self.db.get_connection() as conn:
@@ -265,9 +265,14 @@ class WebDataExporter:
                         "date_time": f.get("date", "Pendent"),
                         "status": "SCHEDULED",
                         "home_name": h_name,
+                        "url": f.get("url", "")
                     })
 
         predicted_list = []
+        referee_updates = []
+        comp_meta = next((m for m in COMPETITIONS_META if m["id"] == competition_id), {})
+        comp_name = comp_meta.get("name", competition_id)
+
         for r in rows[:max_matches]:
             h_id = r["home_team_id"]
             a_id = r["away_team_id"]
@@ -276,16 +281,22 @@ class WebDataExporter:
             match_date = r.get("date_time", "Pendent")
 
             # Resolució àrbitre
-            if competition_id == "LALIGA":
-                ref_res = self.referee_resolver.resolve_referee(
-                    home_name=home_data["name"],
-                    away_name=away_data["name"],
-                    match_date=match_date
-                )
-                ref_data = ref_res["ref_data"]
-            else:
-                ref_data = self.db.get_referee("REF_DEFAULT")
-                ref_res = {"name": "Àrbitre Oficial", "is_generic": True, "ref_data": ref_data}
+            m_code = None
+            raw_url = r.get("url", "")
+            if raw_url and "partido" in raw_url:
+                m_code_parts = [p for p in raw_url.split("/") if p and p != "#"]
+                if "partido" in m_code_parts:
+                    idx_p = m_code_parts.index("partido")
+                    if idx_p + 1 < len(m_code_parts):
+                        m_code = m_code_parts[idx_p + 1]
+
+            ref_res = self.referee_resolver.resolve_referee(
+                home_name=home_data["name"],
+                away_name=away_data["name"],
+                match_date=match_date,
+                match_code=m_code
+            )
+            ref_data = ref_res.get("ref_data") or self.db.get_referee("REF_DEFAULT")
 
             # Predicció
             pred = self.predictor.predict_single_match(
@@ -300,7 +311,17 @@ class WebDataExporter:
 
             # Cuotes Winamax
             odds = self.winamax.get_match_odds(home_data["name"], away_data["name"], competition_id=competition_id)
+            if (not odds.get("matched")) and existing_match_odds:
+                m_key = f"{h_id}_{a_id}"
+                if m_key in existing_match_odds:
+                    odds = existing_match_odds[m_key]
+
             bet_analysis = self.value_engine.analyze_match_betting(pred, odds)
+            if (not bet_analysis.get("value_bets")) and existing_match_odds:
+                m_key = f"{h_id}_{a_id}"
+                if m_key in existing_match_odds and existing_match_odds[m_key].get("cached_value_bets"):
+                    bet_analysis["value_bets"] = existing_match_odds[m_key]["cached_value_bets"]
+
             pred["odds"] = odds
             pred["bet_analysis"] = bet_analysis
 
@@ -309,6 +330,58 @@ class WebDataExporter:
             prob_1x2 = goals.get("prob_1X2", {})
             prob_ou = goals.get("over_under", {})
             prob_btts = goals.get("btts", {})
+            cards = pred.get("cards", {})
+
+            # Càlcul d'impacte arbitral si hi ha àrbitre oficial assignat
+            if not ref_res.get("is_generic", True) and ref_data.get("id") != "REF_DEFAULT":
+                pred_base = self.predictor.predict_single_match(
+                    home_team=home_data,
+                    away_team=away_data,
+                    referee=self.db.get_referee("REF_DEFAULT"),
+                    match_context={"date": match_date}
+                )
+                p_base_goals = pred_base.get("goals", {}).get("prob_1X2", {})
+                p_base_cards = pred_base.get("cards", {})
+
+                c_before = round(float(p_base_cards.get("prob_over_cards", {}).get("over_4_5", 50.0)), 1)
+                c_after = round(float(cards.get("prob_over_cards", {}).get("over_4_5", 50.0)), 1)
+
+                r_before = round(float(p_base_cards.get("prob_red_card", 18.0)), 1)
+                r_after = round(float(cards.get("prob_red_card", 18.0)), 1)
+
+                h_before = round(float(p_base_goals.get("1", 33.3)), 1)
+                h_after = round(float(prob_1x2.get("1", 33.3)), 1)
+
+                f_before = 24.5
+                f_after = round(float(ref_data.get("fouls_avg", 25.0)), 1)
+
+                strictness = round(float(ref_data.get("strictness_index", 1.0)), 2)
+                y_avg = round(float(ref_data.get("yellow_cards_avg", ref_data.get("yellow_avg", 4.5))), 1)
+                r_avg = round(float(ref_data.get("red_cards_avg", ref_data.get("red_avg", 0.25))), 2)
+
+                referee_updates.append({
+                    "match_id": f"{competition_id}_J{active_jornada}_{h_id}_{a_id}",
+                    "matchup": f"{home_data['name']} vs {away_data['name']}",
+                    "competition_id": competition_id,
+                    "competition_name": comp_name,
+                    "jornada": active_jornada,
+                    "date": match_date,
+                    "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+                    "new_referee": ref_res["name"],
+                    "ref_stats": {
+                        "yellow_avg": y_avg,
+                        "red_avg": r_avg,
+                        "fouls_avg": f_after,
+                        "strictness_index": strictness
+                    },
+                    "changes": {
+                        "cards_over_45": {"before": c_before, "after": c_after, "delta": round(c_after - c_before, 1)},
+                        "red_card_prob": {"before": r_before, "after": r_after, "delta": round(r_after - r_before, 1)},
+                        "fouls_exp": {"before": f_before, "after": f_after, "delta": round(f_after - f_before, 1)},
+                        "home_win_prob": {"before": h_before, "after": h_after, "delta": round(h_after - h_before, 1)},
+                        "summary": f"Designació oficial de {ref_res['name']} (índex severitat {strictness}). Mitjana històrica de {y_avg} grogues i {r_avg} vermelles per partit."
+                    }
+                })
             scores = goals.get("top_scorelines", [])
             if scores and isinstance(scores[0], dict):
                 top_score = scores[0].get("score", "1-1")
@@ -391,7 +464,8 @@ class WebDataExporter:
         return {
             "jornada": active_jornada,
             "competition_id": competition_id,
-            "matches": predicted_list
+            "matches": predicted_list,
+            "referee_updates": referee_updates
         }
 
     def get_full_combos_suite(self, predicted_matches: List[Dict[str, Any]], competition_id: str, jornada: int) -> Dict[str, Any]:
@@ -732,6 +806,34 @@ class WebDataExporter:
 
         active_comps_meta = []
 
+        # Carregar dades prèvies de la web per protecció contra caigudes de Winamax o execució cloud
+        previous_data = {}
+        existing_match_odds = {}
+        if WEB_DATA_FILE.exists():
+            try:
+                with open(WEB_DATA_FILE, "r", encoding="utf-8") as f:
+                    previous_data = json.load(f)
+                for c_id, c_obj in previous_data.get("predictions", {}).items():
+                    for pm in c_obj.get("matches", []):
+                        hid = pm.get("home_team", {}).get("id")
+                        aid = pm.get("away_team", {}).get("id")
+                        if hid and aid:
+                            key = f"{hid}_{aid}"
+                            o_1x2 = pm.get("odds_1x2")
+                            if o_1x2 and o_1x2.get("1") is not None:
+                                existing_match_odds[key] = {
+                                    "matched": True,
+                                    "1X2": o_1x2,
+                                    "over_under_2_5": pm.get("odds_ou25", {}),
+                                    "btts": pm.get("odds_btts", {}),
+                                    "match_url": pm.get("winamax_url", "https://www.winamax.es"),
+                                    "cached_value_bets": pm.get("value_bets", [])
+                                }
+            except Exception as e:
+                print(f"   [!] Error llegint memòria cau prèvia de {WEB_DATA_FILE}: {e}")
+
+        all_referee_updates = []
+
         # 1. Processar cada lliga
         for meta in COMPETITIONS_META:
             cid = meta["id"]
@@ -743,7 +845,10 @@ class WebDataExporter:
             power_rankings[cid] = pr
 
             # B) Prediccions
-            pred_data = self.get_upcoming_predictions(cid)
+            pred_data = self.get_upcoming_predictions(cid, existing_match_odds=existing_match_odds)
+            if pred_data.get("referee_updates"):
+                all_referee_updates.extend(pred_data["referee_updates"])
+
             predictions[cid] = {
                 "jornada": pred_data["jornada"],
                 "competition_id": cid,
@@ -801,6 +906,11 @@ class WebDataExporter:
         multi_combos = self.get_full_combos_suite(all_predicted_matches_flat, "MULTI", max(c["active_jornada"] for c in active_comps_meta))
         combos["MULTI"] = multi_combos
 
+        # Protecció de Value bets si el scraper de Winamax ha estat bloquejat al núvol
+        if len(all_value_bets) == 0 and previous_data.get("value_bets"):
+            print(f"   🛡️ PROTECCIÓ: Preservant {len(previous_data['value_bets'])} apostes de valor de la memòria cau prèvia (bloqueig IP cloud detectat).")
+            all_value_bets = previous_data["value_bets"]
+
         # Ordenar Value bets pel millor edge %
         all_value_bets.sort(key=lambda x: (float(x.get("edge_pct")) if x.get("edge_pct") is not None else -999.0), reverse=True)
 
@@ -808,14 +918,14 @@ class WebDataExporter:
         print("[*] Calculant resum financer 'Què hagués passat si...'...")
         financial_ledger = self.get_financial_ledger()
 
-        # Garantir que el changelog conté l'entrada oficial d'avui
-        entries = self.changelog_mgr.load_entries()
+        # Garantir que el changelog conté l'entrada oficial d'avui amb àrbitres detallats
         today_str = now.strftime("%Y-%m-%d")
-        if not any(e.get("date") == today_str for e in entries):
-            self.changelog_mgr.record_pipeline_execution(
-                date_str=today_str,
-                notes=["Sincronització de les darreres dades i mètriques del model."]
-            )
+        self.changelog_mgr.record_pipeline_execution(
+            date_str=today_str,
+            referee_count=len(all_referee_updates),
+            referee_updates=all_referee_updates,
+            notes=["Sincronització de les darreres dades i mètriques del model."]
+        )
 
         # 4. Assembling JSON Payload
         payload = {

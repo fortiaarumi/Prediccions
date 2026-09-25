@@ -1,5 +1,229 @@
 [
   {
+    "date": "2026-09-25",
+    "timestamp": "2026-09-25T16:43:43.896041",
+    "title": "Actualització Diària del Model · 25/09/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 5 partit(s):",
+      "   • [LaLiga Hypermotion J7] Girona FC vs Albacete Balompié: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Saúl Ais Reig'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 65.4% (+12.0%) | Vermella: 22.1% ➔ 24.4% (+2.3%) | Victòria Local: 45.9% ➔ 45.9% (+0.0%)",
+      "   • [LaLiga Hypermotion J7] AD Ceuta vs Real Sociedad B: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Miranda D.'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 47.5% ➔ 47.5% (+0.0%)",
+      "   • [LaLiga Hypermotion J7] Granada CF vs FC Andorra: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Gordillo J. M.'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 61.2% (+14.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 91.4% ➔ 91.4% (+0.0%)",
+      "   • [LaLiga Hypermotion J7] Celta de Vigo B vs CE Sabadell: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Etayo G.'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)",
+      "   • [LaLiga Hypermotion J7] CD Tenerife vs Cádiz CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Rivera Olmedo O.'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 61.2% (+14.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 6.7% ➔ 6.7% (+0.0%)",
+      "ℹ️ Sincronització de les darreres dades i mètriques del model."
+    ],
+    "matches": [],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": [
+      {
+        "match_id": "HYPERMOTION_J7_GIR_ALB",
+        "matchup": "Girona FC vs Albacete Balompié",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 7,
+        "date": "25.09.2026 20:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Saúl Ais Reig",
+        "ref_stats": {
+          "yellow_avg": 5.1,
+          "red_avg": 0.28,
+          "fouls_avg": 26.0,
+          "strictness_index": 1.14
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 65.4,
+            "delta": 12.0
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 24.4,
+            "delta": 2.3
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.0,
+            "delta": 1.5
+          },
+          "home_win_prob": {
+            "before": 45.9,
+            "after": 45.9,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Saúl Ais Reig (índex severitat 1.14). Mitjana històrica de 5.1 grogues i 0.28 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J7_CEU_RSB",
+        "matchup": "AD Ceuta vs Real Sociedad B",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 7,
+        "date": "26.09.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Miranda D.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 66.7,
+            "delta": 13.3
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 47.5,
+            "after": 47.5,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Miranda D. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J7_GRA_AND",
+        "matchup": "Granada CF vs FC Andorra",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 7,
+        "date": "26.09.2026 16:15",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Gordillo J. M.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 61.2,
+            "delta": 14.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 91.4,
+            "after": 91.4,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Gordillo J. M. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J7_CDV_SAB",
+        "matchup": "Celta de Vigo B vs CE Sabadell",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 7,
+        "date": "26.09.2026 18:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Etayo G.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 66.7,
+            "delta": 13.3
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 46.6,
+            "after": 46.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Etayo G. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J7_TEN_CAD",
+        "matchup": "CD Tenerife vs Cádiz CF",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 7,
+        "date": "26.09.2026 18:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Rivera Olmedo O.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 61.2,
+            "delta": 14.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 6.7,
+            "after": 6.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Rivera Olmedo O. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      }
+    ]
+  },
+  {
     "date": "2026-09-24",
     "timestamp": "2026-09-24T16:14:33.786453",
     "title": "Actualització Diària del Model · 24/09/2026",

@@ -94,25 +94,30 @@ class DatabaseManager:
                 ("SOU", "Southampton", "Southampton", "Southampton,Southampton FC,SOU,The Saints", "St Mary's Stadium", "Southampton"),
             ]
 
-            # 4. Equips de LaLiga Hypermotion (2a Divisió)
+            # 4. Equips de LaLiga Hypermotion (2a Divisió) - 22 Equips Oficials
             teams_hypermotion = [
-                ("ZAR", "Real Zaragoza", "Zaragoza", "Real Zaragoza,Zaragoza,ZAR", "La Romareda", "Zaragoza"),
-                ("ROV", "Real Oviedo", "Oviedo", "Real Oviedo,Oviedo,ROV", "Carlos Tartiere", "Oviedo"),
-                ("SPG", "Sporting de Gijón", "Sporting", "Sporting de Gijón,Sporting Gijón,Sporting,SPG", "El Molinón", "Gijón"),
-                ("EIB", "SD Eibar", "Eibar", "SD Eibar,Eibar,EIB", "Ipurua", "Eibar"),
-                ("CAS", "CD Castellón", "Castellón", "CD Castellón,Castellon,Castellón,CAS", "SkyFi Castalia", "Castelló"),
-                ("BUR", "Burgos CF", "Burgos", "Burgos CF,Burgos,BUR", "El Plantío", "Burgos"),
+                ("CEU", "AD Ceuta", "Ceuta", "AD Ceuta,Ceuta,AD ,CEU", "Alfonso Murube", "Ceuta"),
                 ("ALB", "Albacete Balompié", "Albacete", "Albacete Balompié,Albacete,ALB", "Carlos Belmonte", "Albacete"),
-                ("HUE", "SD Huesca", "Huesca", "SD Huesca,Huesca,HUE", "El Alcoraz", "Huesca"),
-                ("GRA", "Granada CF", "Granada", "Granada CF,Granada,GRA", "Los Cármenes", "Granada"),
                 ("ALM", "UD Almería", "Almería", "UD Almería,Almeria,Almería,ALM", "Power Horse Stadium", "Almería"),
+                ("AND", "FC Andorra", "Andorra", "FC Andorra,Andorra,AND", "Estadi Nacional", "Andorra la Vella"),
+                ("BUR", "Burgos CF", "Burgos", "Burgos CF,Burgos,BUR", "El Plantío", "Burgos"),
+                ("CAS", "CD Castellón", "Castellón", "CD Castellón,Castellon,Castellón,CAS", "SkyFi Castalia", "Castelló"),
+                ("CDV", "Celta de Vigo B", "Celta B", "Celta de Vigo B,Celta Fortuna,Celta B,CDV", "Barreiro", "Vigo"),
                 ("CAD", "Cádiz CF", "Cádiz", "Cádiz CF,Cadiz,Cádiz,CAD", "Nuevo Mirandilla", "Cádiz"),
                 ("COR", "Córdoba CF", "Córdoba", "Córdoba CF,Cordoba,Córdoba,COR", "El Arcángel", "Córdoba"),
-                ("MIR", "CD Mirandés", "Mirandés", "CD Mirandés,Mirandes,Mirandés,MIR", "Anduva", "Miranda de Ebro"),
+                ("EIB", "SD Eibar", "Eibar", "SD Eibar,Eibar,EIB", "Ipurua", "Eibar"),
                 ("ELD", "CD Eldense", "Eldense", "CD Eldense,Eldense,ELD", "Pepico Amat", "Elda"),
-                ("RFE", "Racing de Ferrol", "R. Ferrol", "Racing de Ferrol,Racing Ferrol,RFE", "A Malata", "Ferrol"),
+                ("GIR", "Girona FC", "Girona", "Girona FC,Girona,GIR", "Montilivi", "Girona"),
+                ("GRA", "Granada CF", "Granada", "Granada CF,Granada,GRA", "Los Cármenes", "Granada"),
+                ("LAS", "UD Las Palmas", "Las Palmas", "UD Las Palmas,Las Palmas,LAS", "Gran Canaria", "Las Palmas"),
+                ("LEG", "CD Leganés", "Leganés", "CD Leganés,Leganés,Leganes,LEG", "Butarque", "Leganés"),
+                ("MLL", "RCD Mallorca", "Mallorca", "RCD Mallorca,Mallorca,MLL", "Son Moix", "Palma"),
+                ("ROV", "Real Oviedo", "Oviedo", "Real Oviedo,Oviedo,ROV", "Carlos Tartiere", "Oviedo"),
+                ("RSB", "Real Sociedad B", "R. Sociedad B", "Real Sociedad B,Sanse,RSB", "Zubieta", "Donostia"),
+                ("SPG", "Real Sporting", "Sporting", "Real Sporting,Sporting de Gijón,Sporting Gijón,Sporting,SPG,REA", "El Molinón", "Gijón"),
+                ("VLL", "Real Valladolid", "Valladolid", "Real Valladolid,Valladolid,VLL", "José Zorrilla", "Valladolid"),
+                ("SAB", "CE Sabadell", "Sabadell", "CE Sabadell,Sabadell,SAB", "Nova Creu Alta", "Sabadell"),
                 ("TEN", "CD Tenerife", "Tenerife", "CD Tenerife,Tenerife,TEN", "Heliodoro Rodríguez López", "Santa Cruz de Tenerife"),
-                ("CAR", "FC Cartagena", "Cartagena", "FC Cartagena,Cartagena,CAR", "Cartagonova", "Cartagena"),
             ]
 
             # 5. Equips d'EFL Championship (2a Divisió Anglesa)
@@ -391,60 +396,78 @@ class DatabaseManager:
             "southampton fc": "SOU",
             "sou": "SOU",
 
-            # LaLiga Hypermotion (2a Divisió)
-            "zaragoza": "ZAR",
-            "real zaragoza": "ZAR",
-            "zar": "ZAR",
-            "oviedo": "ROV",
-            "real oviedo": "ROV",
-            "rov": "ROV",
-            "sporting de gijon": "SPG",
-            "sporting gijon": "SPG",
-            "sporting": "SPG",
-            "spg": "SPG",
-            "eibar": "EIB",
-            "sd eibar": "EIB",
-            "eib": "EIB",
-            "castellon": "CAS",
-            "cd castellon": "CAS",
-            "cas": "CAS",
-            "burgos": "BUR",
-            "burgos cf": "BUR",
-            "bur": "BUR",
+            # LaLiga Hypermotion (2a Divisió) - 22 Equips
+            "ceuta": "CEU",
+            "ad ceuta": "CEU",
+            "ad": "CEU",
+            "ceu": "CEU",
             "albacete": "ALB",
             "albacete balompie": "ALB",
             "alb": "ALB",
-            "huesca": "HUE",
-            "sd huesca": "HUE",
-            "hue": "HUE",
-            "granada": "GRA",
-            "granada cf": "GRA",
-            "gra": "GRA",
             "almeria": "ALM",
             "ud almeria": "ALM",
             "alm": "ALM",
+            "andorra": "AND",
+            "fc andorra": "AND",
+            "and": "AND",
+            "burgos": "BUR",
+            "burgos cf": "BUR",
+            "bur": "BUR",
+            "castellon": "CAS",
+            "cd castellon": "CAS",
+            "cas": "CAS",
+            "celta b": "CDV",
+            "celta de vigo b": "CDV",
+            "celta fortuna": "CDV",
+            "cdv": "CDV",
             "cadiz": "CAD",
             "cadiz cf": "CAD",
             "cad": "CAD",
             "cordoba": "COR",
             "cordoba cf": "COR",
             "cor": "COR",
-            "mirandes": "MIR",
-            "cd mirandes": "MIR",
-            "mir": "MIR",
+            "eibar": "EIB",
+            "sd eibar": "EIB",
+            "eib": "EIB",
             "eldense": "ELD",
             "cd eldense": "ELD",
             "eld": "ELD",
-            "racing de ferrol": "RFE",
-            "racing ferrol": "RFE",
-            "r. ferrol": "RFE",
-            "rfe": "RFE",
+            "girona": "GIR",
+            "girona fc": "GIR",
+            "gir": "GIR",
+            "granada": "GRA",
+            "granada cf": "GRA",
+            "gra": "GRA",
+            "las palmas": "LAS",
+            "ud las palmas": "LAS",
+            "las": "LAS",
+            "leganes": "LEG",
+            "cd leganes": "LEG",
+            "leg": "LEG",
+            "mallorca": "MLL",
+            "rcd mallorca": "MLL",
+            "mll": "MLL",
+            "oviedo": "ROV",
+            "real oviedo": "ROV",
+            "rov": "ROV",
+            "real sociedad b": "RSB",
+            "sanse": "RSB",
+            "rsb": "RSB",
+            "sporting": "SPG",
+            "real sporting": "SPG",
+            "sporting de gijon": "SPG",
+            "sporting gijon": "SPG",
+            "spg": "SPG",
+            "rea": "SPG",
+            "valladolid": "VLL",
+            "real valladolid": "VLL",
+            "vll": "VLL",
+            "sabadell": "SAB",
+            "ce sabadell": "SAB",
+            "sab": "SAB",
             "tenerife": "TEN",
             "cd tenerife": "TEN",
             "ten": "TEN",
-            "cartagena": "CAR",
-            "fc cartagena": "CAR",
-            "car": "CAR",
 
             # EFL Championship
             "birmingham": "BIR",
@@ -536,14 +559,27 @@ class DatabaseManager:
         if existing_id:
             return existing_id
 
-        t_id = default_id or "".join([w[0] for w in team_name.split() if w.isalnum()])[:3].upper()
-        if len(t_id) < 3:
-            t_id = (team_name[:3]).upper()
+        base_id = default_id or "".join([w[0] for w in team_name.split() if w.isalnum()])[:3].upper()
+        if len(base_id) < 3:
+            base_id = (team_name[:3]).upper()
 
+        t_id = base_id
         with self.get_connection() as conn:
             cursor = conn.cursor()
+            # Assegurar que no col·lideixi amb un equip diferent
+            counter = 1
+            while True:
+                cursor.execute("SELECT name FROM teams WHERE id = ?", (t_id,))
+                row = cursor.fetchone()
+                if not row:
+                    break
+                if row["name"].lower() == team_name.lower():
+                    return t_id
+                t_id = f"{base_id[:2]}{counter}"
+                counter += 1
+
             cursor.execute(
-                "INSERT OR IGNORE INTO teams (id, name, short_name, aliases) VALUES (?, ?, ?, ?)",
+                "INSERT INTO teams (id, name, short_name, aliases) VALUES (?, ?, ?, ?)",
                 (t_id, team_name, team_name, team_name)
             )
             cursor.execute(

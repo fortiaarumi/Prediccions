@@ -17,7 +17,10 @@ import re
 import time
 import json
 import subprocess
+from pathlib import Path
 from typing import Dict, Any, Optional
+
+CACHE_DIR = Path(__file__).parent.parent / "data"
 
 WINAMAX_TOURNAMENTS = {
     "LALIGA": "32",
@@ -38,6 +41,7 @@ class WinamaxScraper:
         self.headless = headless
         self._tournament_cache: Dict[str, Dict[str, Any]] = {}
         self._match_cache: Dict[str, Dict[str, Any]] = {}
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     def get_match_odds(self, home_team: str, away_team: str, competition_id: str = "LALIGA") -> Dict[str, Any]:
         """
@@ -100,7 +104,7 @@ class WinamaxScraper:
             "mirandes": "mirandes", "eldense": "eldense", "ferrol": "ferrol",
             "tenerife": "tenerife", "cartagena": "cartagena", "girona": "girona",
             "sabadell": "sabadell", "ceuta": "ceuta", "palmas": "palmas",
-            "mallorca": "mallorca", "fortuna": "celta",
+            "mallorca": "mallorca", "fortuna": "celta", "valladolid": "valladolid",
             # EFL Championship
             "birmingham": "birmingham", "blackburn": "blackburn", "bolton": "bolton",
             "bristol": "bristol", "burnley": "burnley", "cardiff": "cardiff",
@@ -123,11 +127,12 @@ class WinamaxScraper:
         a_key = get_keyword(away_team)
 
         # 1. Carregar l'índex del torneig de Winamax mitjançant HTTP directe (amb memòria cau per no saturar)
+        cache_file = CACHE_DIR / f"winamax_cache_tid_{tid}.json"
         try:
             if tid in self._tournament_cache:
                 state = self._tournament_cache[tid]
             else:
-                cmd = ['curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', base_tournament_url]
+                cmd = ['curl.exe' if os.name == 'nt' else 'curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', base_tournament_url]
                 res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
                 
                 start = res.stdout.find('var PRELOADED_STATE = ')
@@ -137,8 +142,23 @@ class WinamaxScraper:
                 if start != -1:
                     state_str = res.stdout[start + len('var PRELOADED_STATE = '):] if 'var PRELOADED_STATE = ' in res.stdout[start:start+30] else res.stdout[start + len('PRELOADED_STATE = '):]
                     state, _ = json.JSONDecoder().raw_decode(state_str)
+                    if state and state.get("matches"):
+                        try:
+                            with open(cache_file, "w", encoding="utf-8") as cf:
+                                json.dump(state, cf)
+                        except Exception:
+                            pass
                 else:
                     state = {}
+
+                # Fallback al fitxer de cau si no s'ha obtingut resposta (ex: bloqueig cloud / GitHub Actions)
+                if (not state or not state.get("matches")) and cache_file.exists():
+                    try:
+                        with open(cache_file, "r", encoding="utf-8") as cf:
+                            state = json.load(cf)
+                    except Exception:
+                        pass
+
                 self._tournament_cache[tid] = state
 
             matches = state.get("matches") or {}

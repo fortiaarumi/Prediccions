@@ -67,7 +67,8 @@ class ChangelogManager:
         date_str: Optional[str] = None,
         matches: Optional[List[Dict[str, Any]]] = None,
         combos_evaluated: Optional[List[Dict[str, Any]]] = None,
-        combos_generated: Optional[List[Dict[str, Any]]] = None
+        combos_generated: Optional[List[Dict[str, Any]]] = None,
+        referee_updates: Optional[List[Dict[str, Any]]] = None
     ):
         """Afegeix o actualitza l'entrada de novetats per a la data indicada."""
         entries = self.load_entries()
@@ -88,6 +89,8 @@ class ChangelogManager:
                 existing["combos_evaluated"] = combos_evaluated
             if combos_generated is not None:
                 existing["combos_generated"] = combos_generated
+            if referee_updates is not None:
+                existing["referee_updates"] = referee_updates
         else:
             new_entry = {
                 "date": target_date,
@@ -98,7 +101,8 @@ class ChangelogManager:
                 "items": items,
                 "matches": matches or [],
                 "combos_evaluated": combos_evaluated or [],
-                "combos_generated": combos_generated or []
+                "combos_generated": combos_generated or [],
+                "referee_updates": referee_updates or []
             }
             entries.insert(0, new_entry)
 
@@ -113,6 +117,7 @@ class ChangelogManager:
         evaluated_combos: Optional[List[Dict[str, Any]]] = None,
         new_combos: Optional[List[Dict[str, Any]]] = None,
         referee_count: int = 0,
+        referee_updates: Optional[List[Dict[str, Any]]] = None,
         competitions_checked: Optional[List[str]] = None,
         notes: Optional[List[str]] = None
     ) -> Dict[str, Any]:
@@ -192,8 +197,39 @@ class ChangelogManager:
             comp_txt = ", ".join(comps_gen) if comps_gen else "properes jornades"
             items.append(f"🎯 Generades {len(gen_combos)} noves combinades recomanades (Segures, Semi i Arriscades) per a: {comp_txt}.")
 
-        # 5. Arbitratge
-        if referee_count > 0:
+        # 5. Arbitratge amb detall de partit i deltes
+        if referee_updates:
+            items.append(f"⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en {len(referee_updates)} partit(s):")
+            for ref_u in referee_updates:
+                m_title = ref_u.get("matchup", "Partit")
+                c_name = ref_u.get("competition_name", ref_u.get("competition_id", ""))
+                j_num = ref_u.get("jornada", "")
+                p_ref = ref_u.get("prev_referee", "Pendent CTA")
+                n_ref = ref_u.get("new_referee", "")
+                ch = ref_u.get("changes", {})
+                
+                cards_delta = ch.get("cards_over_45", {})
+                red_delta = ch.get("red_card_prob", {})
+                home_delta = ch.get("home_win_prob", {})
+                
+                delta_str_parts = []
+                if cards_delta:
+                    d_c = cards_delta.get('delta', 0.0)
+                    sign = '+' if d_c >= 0 else ''
+                    delta_str_parts.append(f"Targetes >4.5: {cards_delta.get('before', 50)}% ➔ {cards_delta.get('after', 50)}% ({sign}{d_c:.1f}%)")
+                if red_delta:
+                    d_r = red_delta.get('delta', 0.0)
+                    sign = '+' if d_r >= 0 else ''
+                    delta_str_parts.append(f"Vermella: {red_delta.get('before', 20)}% ➔ {red_delta.get('after', 20)}% ({sign}{d_r:.1f}%)")
+                if home_delta:
+                    d_h = home_delta.get('delta', 0.0)
+                    sign = '+' if d_h >= 0 else ''
+                    delta_str_parts.append(f"Victòria Local: {home_delta.get('before', 33)}% ➔ {home_delta.get('after', 33)}% ({sign}{d_h:.1f}%)")
+                
+                items.append(f"   • [{c_name} J{j_num}] {m_title}: De '{p_ref}' ➔ '{n_ref}'")
+                if delta_str_parts:
+                    items.append(f"     └ Impacte model: {' | '.join(delta_str_parts)}")
+        elif referee_count > 0:
             items.append(f"⚖️ CTA & PGMOL: Revisades les designacions arbitrals oficials ({referee_count} àrbitres confirmats).")
         else:
             items.append("⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.")
@@ -211,7 +247,8 @@ class ChangelogManager:
             date_str=target_date,
             matches=matches,
             combos_evaluated=eval_combos,
-            combos_generated=gen_combos
+            combos_generated=gen_combos,
+            referee_updates=referee_updates
         )
         return {"date": target_date, "title": title, "items": items}
 

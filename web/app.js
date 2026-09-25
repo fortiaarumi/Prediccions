@@ -1556,6 +1556,78 @@ function renderChangelog() {
           `;
         }
 
+        const refUpdates = entry.referee_updates || [];
+        let refereesHtml = '';
+        if (refUpdates.length > 0) {
+          refereesHtml = `
+            <div class="timeline-section-title">⚖️ Designacions Arbitrals Confirmades (${refUpdates.length})</div>
+            <div class="timeline-referees-grid">
+              ${refUpdates.map(ru => {
+                const cName = ru.competition_name || ru.competition_id || '';
+                const jNum = ru.jornada ? ` · J${ru.jornada}` : '';
+                const pRef = ru.prev_referee || 'Pendent CTA';
+                const nRef = ru.new_referee || 'Oficial';
+                const ch = ru.changes || {};
+                const cOver = ch.cards_over_45 || {};
+                const rProb = ch.red_card_prob || {};
+                const fExp = ch.fouls_exp || {};
+                const hProb = ch.home_win_prob || {};
+                const note = ch.summary || '';
+
+                const dCards = cOver.delta != null ? (cOver.delta >= 0 ? `+${cOver.delta.toFixed(1)}% 📈` : `${cOver.delta.toFixed(1)}% 📉`) : '-';
+                const dRed = rProb.delta != null ? (rProb.delta >= 0 ? `+${rProb.delta.toFixed(1)}% 📈` : `${rProb.delta.toFixed(1)}% 📉`) : '-';
+                const dHome = hProb.delta != null ? (hProb.delta >= 0 ? `+${hProb.delta.toFixed(1)}% 📈` : `${hProb.delta.toFixed(1)}% 📉`) : '-';
+
+                return `
+                  <div class="timeline-referee-card">
+                    <div class="tr-top">
+                      <span class="tr-badge">⚖️ ${cName}${jNum}</span>
+                      <span>${ru.date || ''}</span>
+                    </div>
+                    <div class="tr-matchup">${ru.matchup || 'Partit'}</div>
+                    <div class="tr-ref-row">
+                      <span class="tr-ref-old">${pRef}</span>
+                      <span class="tr-ref-arrow">➔</span>
+                      <span class="tr-ref-new">${nRef}</span>
+                    </div>
+                    <div class="tr-metrics-grid">
+                      <div class="tr-metric-box">
+                        <div class="tr-metric-label">Targetes &gt; 4.5</div>
+                        <div class="tr-metric-val ${cOver.delta >= 0 ? 'up' : 'down'}">
+                          <span>${cOver.before || 50}% ➔ ${cOver.after || 50}%</span>
+                          <span>${dCards}</span>
+                        </div>
+                      </div>
+                      <div class="tr-metric-box">
+                        <div class="tr-metric-label">Expulsió / Vermella</div>
+                        <div class="tr-metric-val ${rProb.delta >= 0 ? 'up' : 'down'}">
+                          <span>${rProb.before || 20}% ➔ ${rProb.after || 20}%</span>
+                          <span>${dRed}</span>
+                        </div>
+                      </div>
+                      <div class="tr-metric-box">
+                        <div class="tr-metric-label">Faltes Esperades</div>
+                        <div class="tr-metric-val">
+                          <span>${fExp.before || 24.5} ➔ ${fExp.after || 26.0}</span>
+                          <span style="color: var(--accent-amber);">${fExp.delta >= 0 ? '+' : ''}${fExp.delta || 0}</span>
+                        </div>
+                      </div>
+                      <div class="tr-metric-box">
+                        <div class="tr-metric-label">Biaix Victòria Local</div>
+                        <div class="tr-metric-val ${hProb.delta >= 0 ? 'up' : 'down'}">
+                          <span>${hProb.before || 33}% ➔ ${hProb.after || 33}%</span>
+                          <span>${dHome}</span>
+                        </div>
+                      </div>
+                    </div>
+                    ${note ? `<div class="tr-note">${note}</div>` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        }
+
         return `
           <div class="timeline-entry ${idx === 0 ? 'latest-entry' : ''}">
             <div class="timeline-marker">
@@ -1570,6 +1642,7 @@ function renderChangelog() {
                 <div class="timeline-date">📅 ${dateFormatted}</div>
               </div>
               ${matchesHtml}
+              ${refereesHtml}
               ${combosHtml}
               <ul class="timeline-items-list">
                 ${(entry.items || []).map(item => `

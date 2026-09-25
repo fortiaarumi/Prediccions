@@ -2037,6 +2037,124 @@ body {
   color: var(--accent-rose);
 }
 
+/* Timeline Referees Grid */
+.timeline-referees-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  margin: 10px 0 16px 0;
+}
+
+.timeline-referee-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: var(--transition);
+}
+
+.timeline-referee-card:hover {
+  border-color: rgba(245, 158, 11, 0.65);
+  background: rgba(15, 23, 42, 0.92);
+}
+
+.tr-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.tr-badge {
+  color: var(--accent-amber);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tr-matchup {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.tr-ref-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.tr-ref-old {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.tr-ref-arrow {
+  color: var(--accent-amber);
+  font-weight: 800;
+}
+
+.tr-ref-new {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.tr-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tr-metric-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.tr-metric-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.tr-metric-val {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+
+.tr-metric-val.up {
+  color: var(--accent-rose);
+}
+
+.tr-metric-val.down {
+  color: var(--accent-cyan);
+}
+
+.tr-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  border-left: 2px solid var(--accent-amber);
+  padding-left: 8px;
+}
+
 /* Leg status pills */
 .leg-pill {
   font-size: 11px;
