@@ -414,8 +414,8 @@ class WebDataExporter:
             prob_btts = goals.get("btts", {})
             cards = pred.get("cards", {})
 
-            # Càlcul d'impacte arbitral si hi ha àrbitre oficial assignat
-            if not ref_res.get("is_generic", True) and ref_data.get("id") != "REF_DEFAULT":
+            # Càlcul d'impacte arbitral si hi ha àrbitre oficial assignat (només per partits NO disputats)
+            if not is_finished and not ref_res.get("is_generic", True) and ref_data.get("id") != "REF_DEFAULT":
                 pred_base = self.predictor.predict_single_match(
                     home_team=home_data,
                     away_team=away_data,
@@ -984,7 +984,7 @@ class WebDataExporter:
             "all_combos": combos
         }
 
-    def export_all(self) -> Path:
+    def export_all(self, ingested_matches=None, evaluated_combos=None, new_combos=None) -> Path:
         """Executa la canalització completa i genera 'web/data/data.json'."""
         print("\n" + "=" * 75)
         print("   🌐 EXPORTANT DADES PER A L'APP WEB (VERCEL) · data.json")
@@ -1029,6 +1029,7 @@ class WebDataExporter:
                 print(f"   [!] Error llegint memòria cau prèvia de {WEB_DATA_FILE}: {e}")
 
         all_referee_updates = []
+        seen_referee_match_ids: set = set()  # Per deduplicar dins de la mateixa execució
 
         # 1. Processar cada lliga
         for meta in COMPETITIONS_META:
@@ -1043,7 +1044,11 @@ class WebDataExporter:
             # B) Prediccions
             pred_data = self.get_upcoming_predictions(cid, existing_match_odds=existing_match_odds)
             if pred_data.get("referee_updates"):
-                all_referee_updates.extend(pred_data["referee_updates"])
+                for ru in pred_data["referee_updates"]:
+                    mid = ru.get("match_id")
+                    if mid and mid not in seen_referee_match_ids:
+                        seen_referee_match_ids.add(mid)
+                        all_referee_updates.append(ru)
 
             predictions[cid] = {
                 "jornada": pred_data["jornada"],
@@ -1122,11 +1127,21 @@ class WebDataExporter:
 
         # Garantir que el changelog conté l'entrada oficial d'avui amb àrbitres detallats
         today_str = now.strftime("%Y-%m-%d")
+        # Filtrar les designacions arbitrals que ja s'havien reportat en dies anteriors
+        # (si el CTA va publicar els àrbitres ahir, ja van sortir a Novetats i no s'han de repetir)
+        already_reported_ids = self.changelog_mgr.get_already_reported_referee_match_ids(today_str)
+        new_referee_updates = [
+            ru for ru in all_referee_updates
+            if ru.get("match_id") not in already_reported_ids
+        ]
         self.changelog_mgr.record_pipeline_execution(
             date_str=today_str,
-            referee_count=len(all_referee_updates),
-            referee_updates=all_referee_updates,
-            notes=["Sincronització de les darreres dades i mètriques del model."]
+            ingested_matches=ingested_matches or [],
+            evaluated_combos=evaluated_combos or [],
+            new_combos=new_combos or [],
+            referee_count=len(new_referee_updates),
+            referee_updates=new_referee_updates if new_referee_updates else None,
+            notes=["Sincronització de les darreres dades i mètriques del model."] if not new_referee_updates else None
         )
 
         # 4. Assembling JSON Payload

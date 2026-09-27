@@ -46,7 +46,6 @@ from engine.jornada_predictor import JornadaPredictor
 from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
 from engine.pdf_report_generator import PDFReportGenerator
-from engine.changelog_manager import ChangelogManager
 from notifier.email_sender import EmailSender
 
 COMPETITIONS = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"]
@@ -366,27 +365,13 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
     # -----------------------------------------------------------------
     print("\n[*] FASE 5: Actualitzant la secció de novetats i plataforma web a 'web/data/data.json'...")
     try:
-        # Recompte d'àrbitres oficials assignats
-        conn = db.get_connection()
-        c = conn.cursor()
-        ref_count_row = c.execute("SELECT COUNT(DISTINCT referee_id) FROM matches WHERE referee_id IS NOT NULL AND status = 'SCHEDULED'").fetchone()
-        total_ref_count = ref_count_row[0] if ref_count_row else 0
-        conn.close()
-
-        # Registrar la novetat diària al changelog abans d'exportar
-        changelog_mgr = ChangelogManager()
-        changelog_mgr.record_pipeline_execution(
-            date_str=now.strftime("%Y-%m-%d"),
-            ingested_matches=all_newly_ingested_matches,
-            evaluated_combos=all_evaluated_combos,
-            new_combos=all_new_combos,
-            referee_count=total_ref_count,
-            competitions_checked=COMPETITIONS
-        )
-
         from engine.web_data_exporter import WebDataExporter
         exporter = WebDataExporter(db=db)
-        exported_path = exporter.export_all()
+        exported_path = exporter.export_all(
+            ingested_matches=all_newly_ingested_matches,
+            evaluated_combos=all_evaluated_combos,
+            new_combos=all_new_combos
+        )
         print(f"   [+] Web actualitzada amb èxit: {exported_path}")
     except Exception as e:
         print(f"   [!] Error actualitzant dades de la web: {e}")

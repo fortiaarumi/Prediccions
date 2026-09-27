@@ -270,6 +270,25 @@ class ChangelogManager:
         entries = self.load_entries()
         return entries[:limit]
 
+    def get_already_reported_referee_match_ids(self, today_str: Optional[str] = None) -> set:
+        """
+        Retorna un conjunt (set) amb els match_id de totes les designacions arbitrals
+        ja reportades en entrades ANTERIORS a avui. Serveix per evitar reportar
+        dos cops el mateix àrbitre d'un mateix partit en dies consecutius.
+        """
+        if today_str is None:
+            today_str = datetime.now().strftime("%Y-%m-%d")
+        entries = self.load_entries()
+        reported_ids: set = set()
+        for entry in entries:
+            if entry.get("date") == today_str:
+                continue  # Ignorar l'entrada d'avui
+            for ref_u in entry.get("referee_updates", []):
+                mid = ref_u.get("match_id")
+                if mid:
+                    reported_ids.add(mid)
+        return reported_ids
+
 if __name__ == "__main__":
     mgr = ChangelogManager()
     print(f"Changelog inicialitzat amb {len(mgr.load_entries())} entrades.")
