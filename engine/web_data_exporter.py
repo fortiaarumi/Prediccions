@@ -38,6 +38,7 @@ from engine.value_bet_engine import ValueBetEngine
 from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
 from engine.changelog_manager import ChangelogManager
+from model.rank_engine import RankEngine
 
 COMPETITIONS_META = [
     {
@@ -88,6 +89,7 @@ class WebDataExporter:
         self.combo_engine = ComboBetEngine()
         self.tracker = ComboTracker(db=self.db)
         self.changelog_mgr = ChangelogManager()
+        self.rank_engine = RankEngine(k_factor=32.0, league_teams_count=22.0)
 
     def get_power_rankings(self, competition_id: str) -> List[Dict[str, Any]]:
         """Calcula el rànquing Elo complet amb taula clàssica de classificació i forma recent."""
@@ -984,6 +986,86 @@ class WebDataExporter:
             "all_combos": combos
         }
 
+    def get_active_jornada_finished_matches(self) -> List[Dict[str, Any]]:
+        """
+        Recupera tots els partits finalitzats de la jornada activa de cada competició
+        que tinguin partits disputats (per exemple els 5 partits de Hypermotion J7 ja jugats)
+        amb tots els seus detalls (xG, targetes, córners, àrbitre) i canvis d'Elo calculats.
+        """
+        finished_matches = []
+        try:
+            with self.db.get_connection() as conn:
+                c = conn.cursor()
+                for meta in COMPETITIONS_META:
+                    comp = meta["id"]
+                    c.execute("""
+                        SELECT MAX(jornada) FROM matches 
+                        WHERE competition_id = ? AND (status = 'SCHEDULED' OR status = 'FINISHED')
+                    """, (comp,))
+                    row_j = c.fetchone()
+                    active_j = row_j[0] if row_j else None
+                    if not active_j:
+                        continue
+
+                    c.execute("""
+                        SELECT m.id, m.competition_id, m.jornada, m.date_time,
+                               m.home_team_id, ht.name as home_name,
+                               m.away_team_id, at.name as away_name,
+                               m.home_goals, m.away_goals, m.home_xg, m.away_xg,
+                               m.home_yellow_cards, m.away_yellow_cards, m.home_red_cards, m.away_red_cards,
+                               m.home_corners, m.away_corners, r.name as referee_name
+                        FROM matches m
+                        JOIN teams ht ON m.home_team_id = ht.id
+                        JOIN teams at ON m.away_team_id = at.id
+                        LEFT JOIN referees r ON m.referee_id = r.id
+                        WHERE m.competition_id = ? AND m.jornada = ? AND m.status = 'FINISHED'
+                        ORDER BY m.date_time ASC
+                    """, (comp, active_j))
+                    rows = c.fetchall()
+
+                    c.execute("""
+                        SELECT COUNT(*) FROM matches 
+                        WHERE competition_id = ? AND jornada = ? AND status = 'SCHEDULED'
+                    """, (comp, active_j))
+                    has_scheduled = (c.fetchone()[0] or 0) > 0
+
+                    # Incloure partits si la jornada té partits en curs/pendents
+                    if rows and has_scheduled:
+                        for r in rows:
+                            h_data = self.db.get_team_rating(r["home_team_id"])
+                            a_data = self.db.get_team_rating(r["away_team_id"])
+                            h_elo = h_data["elo_rating"]
+                            a_elo = a_data["elo_rating"]
+                            dh, da = self.rank_engine.calculate_elo_change(h_elo, a_elo, r["home_goals"], r["away_goals"])
+
+                            finished_matches.append({
+                                "match_id": r["id"],
+                                "competition_id": r["competition_id"],
+                                "jornada": r["jornada"],
+                                "home_team": r["home_name"],
+                                "away_team": r["away_name"],
+                                "home_goals": r["home_goals"],
+                                "away_goals": r["away_goals"],
+                                "score": f"{r['home_goals']} - {r['away_goals']}",
+                                "home_xg": round(float(r["home_xg"]), 2) if r["home_xg"] is not None else None,
+                                "away_xg": round(float(r["away_xg"]), 2) if r["away_xg"] is not None else None,
+                                "home_yellow_cards": r["home_yellow_cards"] or 0,
+                                "away_yellow_cards": r["away_yellow_cards"] or 0,
+                                "home_red_cards": r["home_red_cards"] or 0,
+                                "away_red_cards": r["away_red_cards"] or 0,
+                                "home_corners": r["home_corners"] or 0,
+                                "away_corners": r["away_corners"] or 0,
+                                "referee": r["referee_name"] or "CTA / PGMOL",
+                                "elo_change_home": round(dh, 1),
+                                "elo_change_away": round(da, 1),
+                                "new_elo_home": round(h_elo + dh, 1),
+                                "new_elo_away": round(a_elo + da, 1),
+                                "date": r["date_time"]
+                            })
+        except Exception as e:
+            print(f"   [!] Error recuperant partits jugats de la jornada activa: {e}")
+        return finished_matches
+
     def export_all(self, ingested_matches=None, evaluated_combos=None, new_combos=None) -> Path:
         """Executa la canalització completa i genera 'web/data/data.json'."""
         print("\n" + "=" * 75)
@@ -1132,16 +1214,23 @@ class WebDataExporter:
         already_reported_ids = self.changelog_mgr.get_already_reported_referee_match_ids(today_str)
         new_referee_updates = [
             ru for ru in all_referee_updates
-            if ru.get("match_id") not in already_reported_ids
+            if ru.get("match_id") not in already_reported_ids and not ru.get("is_finished")
         ]
+
+        # Si no s'han passat partits recents directament (ex. execució local o pipeline posterior),
+        # recuperar els partits finalitzats de la jornada activa de cap de setmana en curs per informar el resum diari
+        effective_matches = ingested_matches or []
+        if not effective_matches:
+            effective_matches = self.get_active_jornada_finished_matches()
+
         self.changelog_mgr.record_pipeline_execution(
             date_str=today_str,
-            ingested_matches=ingested_matches or [],
+            ingested_matches=effective_matches,
             evaluated_combos=evaluated_combos or [],
             new_combos=new_combos or [],
             referee_count=len(new_referee_updates),
             referee_updates=new_referee_updates if new_referee_updates else None,
-            notes=["Sincronització de les darreres dades i mètriques del model."] if not new_referee_updates else None
+            notes=["Sincronització de les darreres dades i mètriques del model."] if not new_referee_updates and not effective_matches else None
         )
 
         # 4. Assembling JSON Payload

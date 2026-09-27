@@ -624,9 +624,6 @@ function renderPredictions() {
         <!-- Verdict & Referee -->
         <div class="verdict-pill">
           <span>🎯 Pronòstic: <strong>${m.verdict}</strong></span>
-          <button class="btn-mini-track" onclick="trackMatchForecast('${m.match_id}')" title="Afegir aquest pronòstic al teu recompte personal">
-            ➕ Seguir
-          </button>
         </div>
 
         <div class="referee-tag">
@@ -1124,6 +1121,89 @@ const PersonalBets = {
     this.render();
   },
 
+  syncWithLiveData() {
+    try {
+      const raw = localStorage.getItem(this.getStorageKey());
+      if (!raw) return;
+      let bets = JSON.parse(raw);
+      if (!Array.isArray(bets) || bets.length === 0) return;
+
+      if (!appData || !appData.combos) return;
+
+      // Crear mapa i llista de totes les combinades disponibles a appData
+      const combosList = [];
+      Object.entries(appData.combos).forEach(([ck, clist]) => {
+        ['safe', 'semi', 'risky'].forEach(tier => {
+          (clist[tier] || []).forEach((c, idx) => {
+            combosList.push({ ...c, leagueKey: ck, tier: tier, comboKey: `${ck}_${tier}_${idx}` });
+          });
+        });
+      });
+
+      let changed = false;
+
+      bets.forEach(b => {
+        const isCombo = b.category === 'Combinada' || (b.matchup && b.matchup.toLowerCase().includes('combinada'));
+        if (!isCombo) return;
+
+        // Intentar trobar la combinada corresponent
+        let match = null;
+        if (b.combo_id) {
+          match = combosList.find(c => c.id === b.combo_id || `${c.leagueKey}_${c.id}` === b.combo_id || c.comboKey === b.combo_id);
+        }
+        if (!match && b.matchup) {
+          // Cercar per perfil (SAFE_1, SAFE_2, SEMI_1, etc.) i competició
+          const profMatch = b.matchup.match(/(SAFE_\d|SEMI_\d|RISKY_\d)/i);
+          if (profMatch) {
+            const prof = profMatch[1].toUpperCase();
+            match = combosList.find(c => (c.profile || '').toUpperCase() === prof && (!b.competition_id || b.competition_id === 'MULTI' || c.leagueKey === b.competition_id));
+            if (!match) {
+              match = combosList.find(c => (c.profile || '').toUpperCase() === prof);
+            }
+          }
+        }
+        if (!match && b.selection) {
+          // Cercar per coincidència d'algun equip o selecció
+          match = combosList.find(c => {
+            return (c.legs || []).some(l => b.selection.includes(l.selection_name) || (l.matchup && b.selection.includes(l.matchup.split(' vs ')[0])));
+          });
+        }
+
+        if (match) {
+          if (!b.combo_id) { b.combo_id = match.id || match.comboKey; changed = true; }
+          if (!b.profile) { b.profile = match.profile; changed = true; }
+          if (match.legs && match.legs.length > 0) {
+            b.legs = JSON.parse(JSON.stringify(match.legs));
+            changed = true;
+
+            // Recalcular l'estat automàticament a partir dels resultats de les cames
+            const totalLegs = b.legs.length;
+            const wonLegs = b.legs.filter(l => l.status === 'WON').length;
+            const lostLegs = b.legs.filter(l => l.status === 'LOST').length;
+
+            let autoStatus = 'PENDING';
+            if (lostLegs > 0) autoStatus = 'LOST';
+            else if (totalLegs > 0 && wonLegs === totalLegs) autoStatus = 'WON';
+
+            if (b.status !== autoStatus) {
+              b.status = autoStatus;
+              b.auto_evaluated = true;
+              changed = true;
+            } else {
+              b.auto_evaluated = true;
+            }
+          }
+        }
+      });
+
+      if (changed) {
+        localStorage.setItem(this.getStorageKey(), JSON.stringify(bets));
+      }
+    } catch (e) {
+      console.warn("Error sincronitzant apostes amb dades en directe:", e);
+    }
+  },
+
   add(bet) {
     const bets = this.getAll();
     const newBet = {
@@ -1137,7 +1217,11 @@ const PersonalBets = {
       odd: parseFloat(bet.odd) || 2.0,
       stake: parseFloat(bet.stake) || 10.0,
       status: bet.status || 'PENDING',
-      notes: bet.notes || ''
+      notes: bet.notes || '',
+      combo_id: bet.combo_id || null,
+      profile: bet.profile || null,
+      legs: bet.legs ? JSON.parse(JSON.stringify(bet.legs)) : null,
+      auto_evaluated: bet.auto_evaluated || false
     };
     bets.unshift(newBet);
     this.saveAll(bets);
@@ -1150,6 +1234,7 @@ const PersonalBets = {
     const target = bets.find(b => b.id === betId);
     if (target) {
       target.status = newStatus;
+      target.auto_evaluated = false; // El canvi manual té prioritat si l'usuari ho força
       this.saveAll(bets);
       const icon = newStatus === 'WON' ? '✅' : newStatus === 'LOST' ? '❌' : '⏳';
       const label = newStatus === 'WON' ? 'Guanyada' : newStatus === 'LOST' ? 'Perduda' : 'Pendent';
@@ -1220,6 +1305,7 @@ const PersonalBets = {
   },
 
   render() {
+    this.syncWithLiveData();
     const kpis = this.calculateKPIs();
     const kpiContainer = document.getElementById('personal-kpi-grid');
     const listContainer = document.getElementById('personal-bets-list');
@@ -1306,8 +1392,78 @@ const PersonalBets = {
         const profitSign = netProfit > 0 ? '+' : '';
 
         let statusBadge = '<span class="status-badge-bet pending">⏳ PENDENT</span>';
-        if (isWon) statusBadge = '<span class="status-badge-bet won">✅ GUANYADA</span>';
-        if (isLost) statusBadge = '<span class="status-badge-bet lost">❌ PERDUDA</span>';
+        if (isWon) statusBadge = `<span class="status-badge-bet won">✅ GUANYADA${b.auto_evaluated ? ' <small style="font-size:10px; opacity:0.8;">(Auto)</small>' : ''}</span>`;
+        if (isLost) statusBadge = `<span class="status-badge-bet lost">❌ PERDUDA${b.auto_evaluated ? ' <small style="font-size:10px; opacity:0.8;">(Auto)</small>' : ''}</span>`;
+        if (isPending && b.auto_evaluated) statusBadge = '<span class="status-badge-bet pending">⏳ EN CURS <small style="font-size:10px; opacity:0.8;">(Auto)</small></span>';
+
+        let comboProgressHtml = '';
+        if (b.category === 'Combinada' && b.legs && b.legs.length > 0) {
+          const legs = b.legs;
+          const totalLegs = legs.length;
+          const wonLegs = legs.filter(l => l.status === 'WON').length;
+          const lostLegs = legs.filter(l => l.status === 'LOST').length;
+          const pendingLegs = legs.filter(l => l.status === 'PENDING' || !l.status).length;
+
+          let progressSummary = `${wonLegs}/${totalLegs} encertats`;
+          if (pendingLegs > 0) progressSummary += ` · ${pendingLegs} pendents`;
+          if (lostLegs > 0) progressSummary += ` (${lostLegs} fallat${lostLegs > 1 ? 's' : ''})`;
+
+          let statusAccent = 'var(--accent-amber)';
+          if (lostLegs > 0) statusAccent = 'var(--accent-rose)';
+          else if (totalLegs > 0 && wonLegs === totalLegs) statusAccent = 'var(--accent-emerald)';
+
+          comboProgressHtml = `
+            <div class="combo-progress-bar-container" style="margin: 12px 0 6px 0; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 8px;">
+              <div class="combo-progress-label-row" style="margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                <span class="combo-progress-title" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">⚡ Progrés en directe</span>
+                <span class="combo-progress-stats" style="font-size: 11px; color: ${statusAccent};"><strong>${progressSummary}</strong></span>
+              </div>
+              <div class="combo-progress-bar" style="height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.08); overflow: hidden; display: flex; gap: 2px;">
+                ${legs.map((l, lIdx) => {
+                  let segCls = 'seg-pending';
+                  let segTitle = `Partit ${lIdx + 1} (${l.matchup}): Pendent`;
+                  if (l.status === 'WON') {
+                    segCls = 'seg-won';
+                    segTitle = `Partit ${lIdx + 1} (${l.matchup}): Encertat! (${l.actual_result || ''})`;
+                  } else if (l.status === 'LOST') {
+                    segCls = 'seg-lost';
+                    segTitle = `Partit ${lIdx + 1} (${l.matchup}): Fallat (${l.actual_result || ''})`;
+                  }
+                  return `<div class="combo-progress-segment ${segCls}" style="flex: 1;" title="${segTitle}"></div>`;
+                }).join('')}
+              </div>
+
+              <div class="personal-combo-legs" style="margin-top: 10px; display: flex; flex-direction: column; gap: 4px;">
+                ${legs.map(l => {
+                  let legIcon = '⏳';
+                  let legColor = 'var(--accent-amber)';
+                  let legBg = 'rgba(245, 158, 11, 0.06)';
+                  if (l.status === 'WON') {
+                    legIcon = '✅';
+                    legColor = 'var(--accent-emerald)';
+                    legBg = 'rgba(16, 185, 129, 0.08)';
+                  } else if (l.status === 'LOST') {
+                    legIcon = '❌';
+                    legColor = 'var(--accent-rose)';
+                    legBg = 'rgba(244, 63, 94, 0.08)';
+                  }
+                  const homeShort = l.matchup ? l.matchup.split(' vs ')[0] : '';
+                  return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; padding: 4px 8px; background: ${legBg}; border-radius: 4px; border-left: 2px solid ${legColor};">
+                      <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 82%;">
+                        <span style="color: ${legColor}; margin-right: 4px;">${legIcon}</span>
+                        <strong style="color: var(--text-primary);">${homeShort}:</strong>
+                        <span style="color: var(--text-secondary); margin-left: 3px;">${l.selection_name}</span>
+                        ${l.actual_result ? `<span style="color: ${legColor}; font-size: 10.5px; margin-left: 6px; font-weight: 500;">(${l.actual_result})</span>` : ''}
+                      </div>
+                      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--accent-cyan); white-space: nowrap; margin-left: 8px;">@${l.bookie_odd ? Number(l.bookie_odd).toFixed(2) : '-'}</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }
 
         return `
           <div class="personal-bet-card ${b.status.toLowerCase()}">
@@ -1316,9 +1472,11 @@ const PersonalBets = {
                 <span class="bet-date">🕒 ${b.date}</span>
                 <span class="bet-category-pill">${b.category}</span>
                 <span class="bet-comp-pill">${b.competition_id}</span>
+                ${b.auto_evaluated ? '<span class="bet-comp-pill" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">🤖 Auto-sync</span>' : ''}
               </div>
               <div class="bet-card-matchup">${b.matchup}</div>
               <div class="bet-card-selection">👉 <strong>${b.selection}</strong></div>
+              ${comboProgressHtml}
             </div>
 
             <div class="bet-card-financials">
@@ -1343,6 +1501,7 @@ const PersonalBets = {
             </div>
 
             <div class="bet-card-actions">
+              ${b.auto_evaluated ? '<div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px; text-align: right;">🤖 Sincronitzat pel model</div>' : ''}
               <div class="quick-status-group">
                 <button class="btn-status-toggle ${isWon ? 'active won' : ''}" onclick="PersonalBets.updateStatus('${b.id}', 'WON')" title="Marcar com a Guanyada">
                   ✅ Guanyada
@@ -1477,14 +1636,26 @@ function trackComboBet(comboKey) {
     return `${teamShort ? teamShort + ': ' : ''}${l.selection_name}`;
   }).join(' · ');
 
+  const legs = (found.legs || []).map(l => ({ ...l }));
+  const totalLegs = legs.length;
+  const wonLegs = legs.filter(l => l.status === 'WON').length;
+  const lostLegs = legs.filter(l => l.status === 'LOST').length;
+  let initStatus = 'PENDING';
+  if (lostLegs > 0) initStatus = 'LOST';
+  else if (totalLegs > 0 && wonLegs === totalLegs) initStatus = 'WON';
+
   PersonalBets.add({
-    matchup: `Combinada ${found.profile || 'Recomanada'} (${(found.legs || []).length} partits)`,
-    selection: legsSummary || (found.legs || []).map(l => l.selection_name).join(' + ') || 'Combinada',
+    combo_id: found.id || comboKey,
+    profile: found.profile || 'Recomanada',
+    matchup: `Combinada ${found.profile || 'Recomanada'} (${totalLegs} partits)`,
+    selection: legsSummary || legs.map(l => l.selection_name).join(' + ') || 'Combinada',
     odd: parseFloat(boostedOdd) || 2.0,
     stake: parseFloat(stake) || 10.0,
     category: 'Combinada',
     competition_id: compKey || 'MULTI',
-    status: 'PENDING'
+    status: initStatus,
+    legs: legs,
+    auto_evaluated: true
   });
 }
 
@@ -2373,14 +2544,35 @@ function renderChangelog() {
   const container = document.getElementById('changelog-feed');
   if (!container) return;
 
-  const entries = appData.changelog || [];
-  if (entries.length === 0) {
+  const allEntries = appData.changelog || [];
+  if (allEntries.length === 0) {
     container.innerHTML = `<p style="text-align: center; padding: 40px; color: var(--text-muted);">No hi ha novetats registrades.</p>`;
     return;
   }
 
+  // Filtrar estrictament els darrers 7 dies per no col·lapsar la pestanya de novetats
+  const latestDateStr = allEntries[0]?.date || new Date().toISOString().split('T')[0];
+  const refDate = new Date(latestDateStr);
+  const cutoffDate = new Date(refDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const cutoffDateStr = cutoffDate.toISOString().split('T')[0];
+
+  let entries = allEntries.filter(e => {
+    if (!e.date) return false;
+    return e.date >= cutoffDateStr;
+  });
+
+  if (entries.length === 0) {
+    entries = allEntries.slice(0, 3);
+  }
+
   const html = `
     <div class="timeline-container">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 20px; font-size: 12px; color: var(--accent-cyan);">
+          <span>📅</span> <strong>Finestra activa:</strong> Darrers 7 dies (${entries.length} actualitzacions)
+        </div>
+        <span style="font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono);">Historial antic arxivat per no sobrecarregar</span>
+      </div>
       ${entries.map((entry, idx) => {
         let dateFormatted = entry.date;
         try {
