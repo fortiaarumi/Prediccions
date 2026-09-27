@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-09-27",
-    "timestamp": "2026-09-27T14:15:29.809707",
+    "timestamp": "2026-09-27T13:41:25.908246",
     "title": "Actualització Diària del Model · 27/09/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -201,7 +201,7 @@
         "competition_id": "HYPERMOTION",
         "competition_name": "LaLiga Hypermotion",
         "jornada": 7,
-        "date": "27.09.2026 16:15",
+        "date": "27.09.2026 14:15",
         "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
         "new_referee": "Palencia D.",
         "ref_stats": {
@@ -240,7 +240,7 @@
         "competition_id": "HYPERMOTION",
         "competition_name": "LaLiga Hypermotion",
         "jornada": 7,
-        "date": "27.09.2026 18:30",
+        "date": "27.09.2026 16:30",
         "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
         "new_referee": "Dominguez A.",
         "ref_stats": {
@@ -279,7 +279,7 @@
         "competition_id": "HYPERMOTION",
         "competition_name": "LaLiga Hypermotion",
         "jornada": 7,
-        "date": "27.09.2026 18:30",
+        "date": "27.09.2026 16:30",
         "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
         "new_referee": "Salvador Lax Franco",
         "ref_stats": {
@@ -318,7 +318,7 @@
         "competition_id": "HYPERMOTION",
         "competition_name": "LaLiga Hypermotion",
         "jornada": 7,
-        "date": "27.09.2026 21:00",
+        "date": "27.09.2026 19:00",
         "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
         "new_referee": "Andrés Fuentes Molina",
         "ref_stats": {
