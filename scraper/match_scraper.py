@@ -30,7 +30,7 @@ class MatchScraper:
 
         if match_code:
             data = self.scrape_match_feed(match_code, url)
-            if data and data.get("home_goals") is not None:
+            if data:
                 return data
 
         # Fallback a Selenium si el mètode directe no ha retornat dades
