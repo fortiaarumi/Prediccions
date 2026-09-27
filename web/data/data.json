@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-09-27T14:04:12.945841",
-    "formatted_date": "27/09/2026 a les 14:04",
+    "generated_at": "2026-09-27T14:14:57.992558",
+    "formatted_date": "27/09/2026 a les 14:14",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -28,7 +28,7 @@
         "country": "Espanya (2a)",
         "flag": "🇪🇸",
         "active_jornada": 7,
-        "matches_count": 12
+        "matches_count": 11
       },
       {
         "id": "CHAMPIONSHIP",
@@ -43,7 +43,7 @@
   "changelog": [
     {
       "date": "2026-09-27",
-      "timestamp": "2026-09-27T14:04:41.704677",
+      "timestamp": "2026-09-27T14:15:29.809707",
       "title": "Actualització Diària del Model · 27/09/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -61,7 +61,7 @@
         "   • Celta de Vigo B (-0.2 ➔ 1465.8) | CE Sabadell (+0.2 ➔ 1511.0)",
         "   • CD Tenerife (-2.5 ➔ 1516.3) | Cádiz CF (+2.5 ➔ 1490.3)",
         "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-        "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
+        "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 5 partit(s):",
         "   • [LaLiga Hypermotion J7] Real Valladolid vs Córdoba CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Romero G.'",
         "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.9% ➔ 46.9% (+0.0%)",
         "   • [LaLiga Hypermotion J7] RCD Mallorca vs UD Almería: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Palencia D.'",
@@ -69,7 +69,9 @@
         "   • [LaLiga Hypermotion J7] Burgos CF vs CD Eldense: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Dominguez A.'",
         "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.9% ➔ 46.9% (+0.0%)",
         "   • [LaLiga Hypermotion J7] SD Eibar vs UD Las Palmas: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Salvador Lax Franco'",
-        "     └ Impacte model: Targetes >4.5: 46.7% ➔ 65.5% (+18.8%) | Vermella: 22.1% ➔ 28.8% (+6.7%) | Victòria Local: 91.4% ➔ 91.4% (+0.0%)"
+        "     └ Impacte model: Targetes >4.5: 46.7% ➔ 65.5% (+18.8%) | Vermella: 22.1% ➔ 28.8% (+6.7%) | Victòria Local: 91.4% ➔ 91.4% (+0.0%)",
+        "   • [LaLiga Hypermotion J7] Real Oviedo vs Real Sporting: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Andrés Fuentes Molina'",
+        "     └ Impacte model: Targetes >4.5: 53.4% ➔ 65.4% (+12.0%) | Vermella: 22.1% ➔ 24.4% (+2.3%) | Victòria Local: 44.7% ➔ 44.7% (+0.0%)"
       ],
       "matches": [
         {
@@ -350,6 +352,45 @@
               "delta": 0.0
             },
             "summary": "Designació oficial de Salvador Lax Franco (índex severitat 1.2). Mitjana històrica de 5.4 grogues i 0.34 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J7_ROV_SPG",
+          "matchup": "Real Oviedo vs Real Sporting",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 7,
+          "date": "27.09.2026 21:00",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Andrés Fuentes Molina",
+          "ref_stats": {
+            "yellow_avg": 5.1,
+            "red_avg": 0.28,
+            "fouls_avg": 26.0,
+            "strictness_index": 1.14
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 53.4,
+              "after": 65.4,
+              "delta": 12.0
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 24.4,
+              "delta": 2.3
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 26.0,
+              "delta": 1.5
+            },
+            "home_win_prob": {
+              "before": 44.7,
+              "after": 44.7,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Andrés Fuentes Molina (índex severitat 1.14). Mitjana històrica de 5.1 grogues i 0.28 vermelles per partit."
           }
         }
       ]
@@ -6105,105 +6146,6 @@
           "match_id": "HYPERMOTION_J7_CEU_RSB",
           "competition_id": "HYPERMOTION",
           "jornada": 7,
-          "status": "SCHEDULED",
-          "home_team": {
-            "id": "CEU",
-            "name": "AD Ceuta",
-            "short_name": "Ceuta",
-            "elo": 1408.7
-          },
-          "away_team": {
-            "id": "RSB",
-            "name": "Real Sociedad B",
-            "short_name": "R. Sociedad B",
-            "elo": 1479.3
-          },
-          "date": "26.09.2026 14:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
-          "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
-          "verdict": "1X (Favorit Local / Risc d'Empat)",
-          "prob_1": 46.6,
-          "prob_x": 28.6,
-          "prob_2": 24.8,
-          "xg_home": 1.48,
-          "xg_away": 1.02,
-          "most_likely_score": "1-1",
-          "prob_over_25": 45.7,
-          "prob_under_25": 54.3,
-          "prob_btts_yes": 50.7,
-          "prob_btts_no": 49.3,
-          "corners_home": 5.0,
-          "corners_away": 4.5,
-          "corners_total": 9.5,
-          "prob_over_corners_85": 60.8,
-          "prob_over_corners_95": 47.8,
-          "cards_home": 2.8,
-          "cards_away": 2.8,
-          "cards_total": 5.7,
-          "prob_over_cards_35": 81.6,
-          "prob_over_cards_45": 66.7,
-          "referee": {
-            "name": "Miranda D.",
-            "is_official": true,
-            "yellow_avg": 4.2,
-            "red_avg": 0.2,
-            "fouls_avg": 26.5
-          },
-          "odds_1x2": {
-            "1": 2.35,
-            "X": 3.55,
-            "2": 2.75
-          },
-          "odds_ou25": {
-            "over": null,
-            "under": null
-          },
-          "odds_btts": {
-            "yes": null,
-            "no": null
-          },
-          "value_bets": [
-            {
-              "model_prob": 46.6,
-              "bookie_odd": 2.35,
-              "fair_odd": 2.15,
-              "implied_prob": 42.6,
-              "ev_pct": 9.5,
-              "kelly_pct": 1.8,
-              "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-              "name": "1 - Victòria Local (AD Ceuta)",
-              "category": "1X2"
-            },
-            {
-              "model_prob": 28.6,
-              "bookie_odd": 3.55,
-              "fair_odd": 3.5,
-              "implied_prob": 28.2,
-              "ev_pct": 1.5,
-              "kelly_pct": 0.2,
-              "is_value": true,
-              "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-              "name": "X - Empat",
-              "category": "1X2"
-            }
-          ]
-        },
-        {
-          "match_id": "HYPERMOTION_J7_CEU_RSB",
-          "competition_id": "HYPERMOTION",
-          "jornada": 7,
           "status": "FINISHED",
           "home_team": {
             "id": "CEU",
@@ -6523,141 +6465,6 @@
           "is_exact_score": null,
           "xg_diff_home": null,
           "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
-          "verdict": "1X (Favorit Local / Risc d'Empat)",
-          "prob_1": 46.9,
-          "prob_x": 28.2,
-          "prob_2": 25.0,
-          "xg_home": 1.52,
-          "xg_away": 1.05,
-          "most_likely_score": "1-1",
-          "prob_over_25": 47.2,
-          "prob_under_25": 52.8,
-          "prob_btts_yes": 51.9,
-          "prob_btts_no": 48.1,
-          "corners_home": 5.0,
-          "corners_away": 4.5,
-          "corners_total": 9.5,
-          "prob_over_corners_85": 60.8,
-          "prob_over_corners_95": 47.8,
-          "cards_home": 2.8,
-          "cards_away": 2.8,
-          "cards_total": 5.7,
-          "prob_over_cards_35": 81.6,
-          "prob_over_cards_45": 66.7,
-          "referee": {
-            "name": "Romero G.",
-            "is_official": true,
-            "yellow_avg": 4.2,
-            "red_avg": 0.2,
-            "fouls_avg": 26.5
-          },
-          "odds_1x2": {
-            "1": 2.35,
-            "X": 3.3,
-            "2": 2.85
-          },
-          "odds_ou25": {
-            "over": null,
-            "under": null
-          },
-          "odds_btts": {
-            "yes": null,
-            "no": null
-          },
-          "value_bets": [
-            {
-              "model_prob": 35.9,
-              "bookie_odd": 3.65,
-              "fair_odd": 2.79,
-              "implied_prob": 27.4,
-              "ev_pct": 30.9,
-              "kelly_pct": 2.9,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "Més de 10.5 Córners",
-              "category": "Córners"
-            },
-            {
-              "model_prob": 47.8,
-              "bookie_odd": 2.55,
-              "fair_odd": 2.09,
-              "implied_prob": 39.2,
-              "ev_pct": 21.9,
-              "kelly_pct": 3.5,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "Més de 9.5 Córners",
-              "category": "Córners"
-            },
-            {
-              "model_prob": 45.4,
-              "bookie_odd": 2.65,
-              "fair_odd": 2.2,
-              "implied_prob": 37.7,
-              "ev_pct": 20.4,
-              "kelly_pct": 3.1,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "Córdoba CF marca més d'1.5 gols",
-              "category": "Gols"
-            },
-            {
-              "model_prob": 59.7,
-              "bookie_odd": 1.9,
-              "fair_odd": 1.67,
-              "implied_prob": 52.6,
-              "ev_pct": 13.5,
-              "kelly_pct": 3.8,
-              "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-              "name": "Més de 8.5 Córners",
-              "category": "Córners"
-            },
-            {
-              "model_prob": 46.9,
-              "bookie_odd": 2.35,
-              "fair_odd": 2.13,
-              "implied_prob": 42.6,
-              "ev_pct": 10.2,
-              "kelly_pct": 1.9,
-              "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-              "name": "1 - Victòria Local (Real Valladolid)",
-              "category": "1X2"
-            }
-          ]
-        },
-        {
-          "match_id": "HYPERMOTION_J7_VLL_COR",
-          "competition_id": "HYPERMOTION",
-          "jornada": 7,
-          "status": "SCHEDULED",
-          "home_team": {
-            "id": "VLL",
-            "name": "Real Valladolid",
-            "short_name": "Valladolid",
-            "elo": 1497.3
-          },
-          "away_team": {
-            "id": "COR",
-            "name": "Córdoba CF",
-            "short_name": "Córdoba",
-            "elo": 1463.0
-          },
-          "date": "27.09.2026 14:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
-          "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
           "real_corners_home": 0,
           "real_corners_away": 0,
           "real_cards_home": null,
@@ -6691,9 +6498,9 @@
             "fouls_avg": 26.5
           },
           "odds_1x2": {
-            "1": 2.35,
-            "X": 3.3,
-            "2": 2.85
+            "1": 4.2,
+            "X": 3.75,
+            "2": 1.76
           },
           "odds_ou25": {
             "over": null,
@@ -6705,235 +6512,88 @@
           },
           "value_bets": [
             {
-              "model_prob": 35.9,
-              "bookie_odd": 3.65,
-              "fair_odd": 2.79,
-              "implied_prob": 27.4,
-              "ev_pct": 30.9,
-              "kelly_pct": 2.9,
+              "model_prob": 26.2,
+              "bookie_odd": 9.0,
+              "fair_odd": 3.82,
+              "implied_prob": 11.1,
+              "ev_pct": 135.8,
+              "kelly_pct": 4.2,
               "is_value": true,
               "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "Més de 10.5 Córners",
-              "category": "Córners"
-            },
-            {
-              "model_prob": 47.8,
-              "bookie_odd": 2.55,
-              "fair_odd": 2.09,
-              "implied_prob": 39.2,
-              "ev_pct": 21.9,
-              "kelly_pct": 3.5,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "Més de 9.5 Córners",
-              "category": "Córners"
-            },
-            {
-              "model_prob": 45.4,
-              "bookie_odd": 2.65,
-              "fair_odd": 2.2,
-              "implied_prob": 37.7,
-              "ev_pct": 20.4,
-              "kelly_pct": 3.1,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "Córdoba CF marca més d'1.5 gols",
+              "name": "Menys d'1.5 Gols (Under 1.5)",
               "category": "Gols"
-            },
-            {
-              "model_prob": 59.7,
-              "bookie_odd": 1.9,
-              "fair_odd": 1.67,
-              "implied_prob": 52.6,
-              "ev_pct": 13.5,
-              "kelly_pct": 3.8,
-              "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-              "name": "Més de 8.5 Córners",
-              "category": "Córners"
             },
             {
               "model_prob": 46.9,
-              "bookie_odd": 2.35,
+              "bookie_odd": 4.2,
               "fair_odd": 2.13,
-              "implied_prob": 42.6,
-              "ev_pct": 10.2,
-              "kelly_pct": 1.9,
+              "implied_prob": 23.8,
+              "ev_pct": 97.0,
+              "kelly_pct": 7.6,
               "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
+              "rating": "🔥 EXCEL·LENT (+15% EV)",
               "name": "1 - Victòria Local (Real Valladolid)",
               "category": "1X2"
-            }
-          ]
-        },
-        {
-          "match_id": "HYPERMOTION_J7_MLL_ALM",
-          "competition_id": "HYPERMOTION",
-          "jornada": 7,
-          "status": "SCHEDULED",
-          "home_team": {
-            "id": "MLL",
-            "name": "RCD Mallorca",
-            "short_name": "Mallorca",
-            "elo": 1581.8
-          },
-          "away_team": {
-            "id": "ALM",
-            "name": "UD Almería",
-            "short_name": "Almería",
-            "elo": 1570.6
-          },
-          "date": "27.09.2026 16:15",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
-          "predicted_1x2": "2",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
-          "verdict": "Victòria Visitant (UD Almería)",
-          "prob_1": 6.7,
-          "prob_x": 16.3,
-          "prob_2": 77.0,
-          "xg_home": 0.62,
-          "xg_away": 2.46,
-          "most_likely_score": "0-2",
-          "prob_over_25": 59.3,
-          "prob_under_25": 40.7,
-          "prob_btts_yes": 43.0,
-          "prob_btts_no": 57.0,
-          "corners_home": 5.0,
-          "corners_away": 4.5,
-          "corners_total": 9.5,
-          "prob_over_corners_85": 60.8,
-          "prob_over_corners_95": 47.8,
-          "cards_home": 2.6,
-          "cards_away": 2.6,
-          "cards_total": 5.3,
-          "prob_over_cards_35": 77.5,
-          "prob_over_cards_45": 61.2,
-          "referee": {
-            "name": "Palencia D.",
-            "is_official": true,
-            "yellow_avg": 4.2,
-            "red_avg": 0.2,
-            "fouls_avg": 26.5
-          },
-          "odds_1x2": {
-            "1": 2.05,
-            "X": 3.35,
-            "2": 3.45
-          },
-          "odds_ou25": {
-            "over": null,
-            "under": null
-          },
-          "odds_btts": {
-            "yes": null,
-            "no": null
-          },
-          "value_bets": [
-            {
-              "model_prob": 77.0,
-              "bookie_odd": 3.45,
-              "fair_odd": 1.3,
-              "implied_prob": 29.0,
-              "ev_pct": 165.7,
-              "kelly_pct": 16.9,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "2 - Victòria Visitant (UD Almería)",
-              "category": "1X2"
             },
             {
-              "model_prob": 64.0,
-              "bookie_odd": 3.0,
-              "fair_odd": 1.56,
-              "implied_prob": 33.3,
-              "ev_pct": 91.9,
-              "kelly_pct": 11.5,
+              "model_prob": 48.1,
+              "bookie_odd": 3.6,
+              "fair_odd": 2.08,
+              "implied_prob": 27.8,
+              "ev_pct": 73.2,
+              "kelly_pct": 7.0,
               "is_value": true,
               "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "UD Almería marca més d'1.5 gols",
-              "category": "Gols"
-            },
-            {
-              "model_prob": 93.3,
-              "bookie_odd": 1.72,
-              "fair_odd": 1.07,
-              "implied_prob": 58.1,
-              "ev_pct": 60.5,
-              "kelly_pct": 21.0,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "X2 - Empat o UD Almería",
-              "category": "Doble Oportunitat"
-            },
-            {
-              "model_prob": 91.4,
-              "bookie_odd": 1.42,
-              "fair_odd": 1.09,
-              "implied_prob": 70.4,
-              "ev_pct": 29.8,
-              "kelly_pct": 17.7,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "UD Almería marca (+0.5 gols)",
-              "category": "Gols"
-            },
-            {
-              "model_prob": 36.8,
-              "bookie_odd": 3.3,
-              "fair_odd": 2.72,
-              "implied_prob": 30.3,
-              "ev_pct": 21.4,
-              "kelly_pct": 2.3,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "Més de 3.5 Gols (Over 3.5)",
-              "category": "Gols"
-            },
-            {
-              "model_prob": 59.3,
-              "bookie_odd": 1.94,
-              "fair_odd": 1.69,
-              "implied_prob": 51.5,
-              "ev_pct": 15.0,
-              "kelly_pct": 4.0,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "Més de 2.5 Gols (Over 2.5)",
-              "category": "Gols"
-            },
-            {
-              "model_prob": 57.0,
-              "bookie_odd": 1.96,
-              "fair_odd": 1.75,
-              "implied_prob": 51.0,
-              "ev_pct": 11.7,
-              "kelly_pct": 3.1,
-              "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
               "name": "Ambdós Equips Marquen (BTTS No)",
               "category": "BTTS"
             },
             {
-              "model_prob": 81.9,
-              "bookie_odd": 1.29,
-              "fair_odd": 1.22,
-              "implied_prob": 77.5,
-              "ev_pct": 5.7,
-              "kelly_pct": 4.9,
+              "model_prob": 52.8,
+              "bookie_odd": 2.95,
+              "fair_odd": 1.89,
+              "implied_prob": 33.9,
+              "ev_pct": 55.8,
+              "kelly_pct": 7.1,
+              "is_value": true,
+              "rating": "🔥 EXCEL·LENT (+15% EV)",
+              "name": "Menys de 2.5 Gols (Under 2.5)",
+              "category": "Gols"
+            },
+            {
+              "model_prob": 74.4,
+              "bookie_odd": 1.64,
+              "fair_odd": 1.34,
+              "implied_prob": 61.0,
+              "ev_pct": 22.0,
+              "kelly_pct": 8.6,
+              "is_value": true,
+              "rating": "🔥 EXCEL·LENT (+15% EV)",
+              "name": "Menys de 3.5 Gols (Under 3.5)",
+              "category": "Gols"
+            },
+            {
+              "model_prob": 52.2,
+              "bookie_odd": 2.1,
+              "fair_odd": 1.92,
+              "implied_prob": 47.6,
+              "ev_pct": 9.6,
+              "kelly_pct": 2.2,
               "is_value": true,
               "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-              "name": "Més d'1.5 Gols (Over 1.5)",
-              "category": "Gols"
+              "name": "Menys de 9.5 Córners",
+              "category": "Córners"
+            },
+            {
+              "model_prob": 28.2,
+              "bookie_odd": 3.75,
+              "fair_odd": 3.55,
+              "implied_prob": 26.7,
+              "ev_pct": 5.7,
+              "kelly_pct": 0.5,
+              "is_value": true,
+              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
+              "name": "X - Empat",
+              "category": "1X2"
             }
           ]
         },
@@ -7473,6 +7133,203 @@
               "category": "Gols"
             }
           ]
+        },
+        {
+          "match_id": "HYPERMOTION_J7_ROV_SPG",
+          "competition_id": "HYPERMOTION",
+          "jornada": 7,
+          "status": "SCHEDULED",
+          "home_team": {
+            "id": "ROV",
+            "name": "Real Oviedo",
+            "short_name": "Oviedo",
+            "elo": 1524.3
+          },
+          "away_team": {
+            "id": "SPG",
+            "name": "Real Sporting",
+            "short_name": "Sporting",
+            "elo": 1519.7
+          },
+          "date": "27.09.2026 21:00",
+          "home_goals": null,
+          "away_goals": null,
+          "final_score": null,
+          "actual_1x2": null,
+          "predicted_1x2": "1",
+          "is_hit_1x2": null,
+          "is_exact_score": null,
+          "xg_diff_home": null,
+          "xg_diff_away": null,
+          "real_corners_home": 0,
+          "real_corners_away": 0,
+          "real_cards_home": null,
+          "real_cards_away": null,
+          "verdict": "1X (Favorit Local / Risc d'Empat)",
+          "prob_1": 44.7,
+          "prob_x": 31.6,
+          "prob_2": 23.6,
+          "xg_home": 1.26,
+          "xg_away": 0.85,
+          "most_likely_score": "1-1",
+          "prob_over_25": 35.2,
+          "prob_under_25": 64.8,
+          "prob_btts_yes": 42.2,
+          "prob_btts_no": 57.8,
+          "corners_home": 5.0,
+          "corners_away": 4.5,
+          "corners_total": 9.5,
+          "prob_over_corners_85": 60.8,
+          "prob_over_corners_95": 47.8,
+          "cards_home": 2.8,
+          "cards_away": 2.8,
+          "cards_total": 5.6,
+          "prob_over_cards_35": 80.6,
+          "prob_over_cards_45": 65.4,
+          "referee": {
+            "name": "Andrés Fuentes Molina",
+            "is_official": true,
+            "yellow_avg": 4.2,
+            "red_avg": 0.2,
+            "fouls_avg": 26.0
+          },
+          "odds_1x2": {
+            "1": 2.05,
+            "X": 3.15,
+            "2": 3.65
+          },
+          "odds_ou25": {
+            "over": null,
+            "under": null
+          },
+          "odds_btts": {
+            "yes": null,
+            "no": null
+          },
+          "value_bets": [
+            {
+              "model_prob": 34.6,
+              "bookie_odd": 3.85,
+              "fair_odd": 2.89,
+              "implied_prob": 26.0,
+              "ev_pct": 33.2,
+              "kelly_pct": 2.9,
+              "is_value": true,
+              "rating": "🔥 EXCEL·LENT (+15% EV)",
+              "name": "Menys de 4.5 Targetes",
+              "category": "Targetes"
+            },
+            {
+              "model_prob": 50.2,
+              "bookie_odd": 2.4,
+              "fair_odd": 1.99,
+              "implied_prob": 41.7,
+              "ev_pct": 20.5,
+              "kelly_pct": 3.7,
+              "is_value": true,
+              "rating": "🔥 EXCEL·LENT (+15% EV)",
+              "name": "Real Oviedo marca més d'1.5 gols",
+              "category": "Gols"
+            },
+            {
+              "model_prob": 59.7,
+              "bookie_odd": 1.68,
+              "fair_odd": 1.67,
+              "implied_prob": 59.5,
+              "ev_pct": 0.4,
+              "kelly_pct": 0.1,
+              "is_value": true,
+              "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
+              "name": "Més de 8.5 Córners",
+              "category": "Córners"
+            },
+            {
+              "model_prob": 47.8,
+              "bookie_odd": 2.1,
+              "fair_odd": 2.09,
+              "implied_prob": 47.6,
+              "ev_pct": 0.4,
+              "kelly_pct": 0.1,
+              "is_value": true,
+              "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
+              "name": "Més de 9.5 Córners",
+              "category": "Córners"
+            }
+          ]
+        },
+        {
+          "match_id": "HYPERMOTION_J7_LEG_CAS",
+          "competition_id": "HYPERMOTION",
+          "jornada": 7,
+          "status": "SCHEDULED",
+          "home_team": {
+            "id": "LEG",
+            "name": "CD Leganés",
+            "short_name": "Leganés",
+            "elo": 1554.8
+          },
+          "away_team": {
+            "id": "CAS",
+            "name": "CD Castellón",
+            "short_name": "Castellón",
+            "elo": 1580.3
+          },
+          "date": "28.09.2026 20:30",
+          "home_goals": null,
+          "away_goals": null,
+          "final_score": null,
+          "actual_1x2": null,
+          "predicted_1x2": "1",
+          "is_hit_1x2": null,
+          "is_exact_score": null,
+          "xg_diff_home": null,
+          "xg_diff_away": null,
+          "real_corners_home": 0,
+          "real_corners_away": 0,
+          "real_cards_home": null,
+          "real_cards_away": null,
+          "verdict": "1X (Favorit Local / Risc d'Empat)",
+          "prob_1": 45.9,
+          "prob_x": 28.5,
+          "prob_2": 25.5,
+          "xg_home": 1.48,
+          "xg_away": 1.05,
+          "most_likely_score": "1-1",
+          "prob_over_25": 46.4,
+          "prob_under_25": 53.6,
+          "prob_btts_yes": 51.4,
+          "prob_btts_no": 48.6,
+          "corners_home": 5.0,
+          "corners_away": 4.5,
+          "corners_total": 9.5,
+          "prob_over_corners_85": 60.8,
+          "prob_over_corners_95": 47.8,
+          "cards_home": 2.4,
+          "cards_away": 2.4,
+          "cards_total": 4.9,
+          "prob_over_cards_35": 71.4,
+          "prob_over_cards_45": 53.4,
+          "referee": {
+            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
+            "is_official": false,
+            "yellow_avg": 4.2,
+            "red_avg": 0.2,
+            "fouls_avg": 25.0
+          },
+          "odds_1x2": {
+            "1": null,
+            "X": null,
+            "2": null
+          },
+          "odds_ou25": {
+            "over": null,
+            "under": null
+          },
+          "odds_btts": {
+            "yes": null,
+            "no": null
+          },
+          "value_bets": []
         }
       ]
     },
@@ -8949,20 +8806,6 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "RCD Mallorca vs UD Almería",
-      "date": "27.09.2026 16:15",
-      "selection": "2 - Victòria Visitant (UD Almería)",
-      "category": "1X2",
-      "bookie_odd": 3.45,
-      "model_prob": 77.0,
-      "fair_odd": 1.3,
-      "edge_pct": 165.7,
-      "kelly_stake": 16.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
       "competition_id": "LALIGA",
       "competition_name": "LaLiga EA Sports",
       "matchup": "Real Madrid vs Villarreal CF",
@@ -8974,6 +8817,20 @@
       "fair_odd": 3.11,
       "edge_pct": 149.6,
       "kelly_stake": 5.5,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "Menys d'1.5 Gols (Under 1.5)",
+      "category": "Gols",
+      "bookie_odd": 9.0,
+      "model_prob": 26.2,
+      "fair_odd": 3.82,
+      "edge_pct": 135.8,
+      "kelly_stake": 4.2,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -9049,15 +8906,15 @@
     {
       "competition_id": "HYPERMOTION",
       "competition_name": "LaLiga Hypermotion",
-      "matchup": "RCD Mallorca vs UD Almería",
-      "date": "27.09.2026 16:15",
-      "selection": "UD Almería marca més d'1.5 gols",
-      "category": "Gols",
-      "bookie_odd": 3.0,
-      "model_prob": 64.0,
-      "fair_odd": 1.56,
-      "edge_pct": 91.9,
-      "kelly_stake": 11.5,
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "1 - Victòria Local (Real Valladolid)",
+      "category": "1X2",
+      "bookie_odd": 4.2,
+      "model_prob": 46.9,
+      "fair_odd": 2.13,
+      "edge_pct": 97.0,
+      "kelly_stake": 7.6,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -9184,6 +9041,20 @@
       "fair_odd": 2.16,
       "edge_pct": 73.3,
       "kelly_stake": 6.7,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "Ambdós Equips Marquen (BTTS No)",
+      "category": "BTTS",
+      "bookie_odd": 3.6,
+      "model_prob": 48.1,
+      "fair_odd": 2.08,
+      "edge_pct": 73.2,
+      "kelly_stake": 7.0,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -9341,20 +9212,6 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "RCD Mallorca vs UD Almería",
-      "date": "27.09.2026 16:15",
-      "selection": "X2 - Empat o UD Almería",
-      "category": "Doble Oportunitat",
-      "bookie_odd": 1.72,
-      "model_prob": 93.3,
-      "fair_odd": 1.07,
-      "edge_pct": 60.5,
-      "kelly_stake": 21.0,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
       "matchup": "Bolton Wanderers vs Stoke City",
@@ -9394,6 +9251,20 @@
       "fair_odd": 1.51,
       "edge_pct": 58.6,
       "kelly_stake": 10.5,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "Menys de 2.5 Gols (Under 2.5)",
+      "category": "Gols",
+      "bookie_odd": 2.95,
+      "model_prob": 52.8,
+      "fair_odd": 1.89,
+      "edge_pct": 55.8,
+      "kelly_stake": 7.1,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -9845,6 +9716,20 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Oviedo vs Real Sporting",
+      "date": "27.09.2026 21:00",
+      "selection": "Menys de 4.5 Targetes",
+      "category": "Targetes",
+      "bookie_odd": 3.85,
+      "model_prob": 34.6,
+      "fair_odd": 2.89,
+      "edge_pct": 33.2,
+      "kelly_stake": 2.9,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
       "competition_id": "LALIGA",
       "competition_name": "LaLiga EA Sports",
       "matchup": "Rayo Vallecano vs Athletic Club",
@@ -9957,34 +9842,6 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Més de 10.5 Córners",
-      "category": "Córners",
-      "bookie_odd": 3.65,
-      "model_prob": 35.9,
-      "fair_odd": 2.79,
-      "edge_pct": 30.9,
-      "kelly_stake": 2.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Més de 10.5 Córners",
-      "category": "Córners",
-      "bookie_odd": 3.65,
-      "model_prob": 35.9,
-      "fair_odd": 2.79,
-      "edge_pct": 30.9,
-      "kelly_stake": 2.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
       "competition_id": "LALIGA",
       "competition_name": "LaLiga EA Sports",
       "matchup": "Elche CF vs RC Celta de Vigo",
@@ -10010,20 +9867,6 @@
       "fair_odd": 1.26,
       "edge_pct": 30.4,
       "kelly_stake": 11.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "RCD Mallorca vs UD Almería",
-      "date": "27.09.2026 16:15",
-      "selection": "UD Almería marca (+0.5 gols)",
-      "category": "Gols",
-      "bookie_odd": 1.42,
-      "model_prob": 91.4,
-      "fair_odd": 1.09,
-      "edge_pct": 29.8,
-      "kelly_stake": 17.7,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -10363,6 +10206,20 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "Menys de 3.5 Gols (Under 3.5)",
+      "category": "Gols",
+      "bookie_odd": 1.64,
+      "model_prob": 74.4,
+      "fair_odd": 1.34,
+      "edge_pct": 22.0,
+      "kelly_stake": 8.6,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
       "matchup": "Middlesbrough vs Wolverhampton Wanderers",
@@ -10391,34 +10248,6 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Més de 9.5 Córners",
-      "category": "Córners",
-      "bookie_odd": 2.55,
-      "model_prob": 47.8,
-      "fair_odd": 2.09,
-      "edge_pct": 21.9,
-      "kelly_stake": 3.5,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Més de 9.5 Córners",
-      "category": "Córners",
-      "bookie_odd": 2.55,
-      "model_prob": 47.8,
-      "fair_odd": 2.09,
-      "edge_pct": 21.9,
-      "kelly_stake": 3.5,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
       "competition_id": "PREMIER",
       "competition_name": "Premier League",
       "matchup": "Chelsea vs AFC Bournemouth",
@@ -10444,20 +10273,6 @@
       "fair_odd": 12.35,
       "edge_pct": 21.5,
       "kelly_stake": 0.4,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "RCD Mallorca vs UD Almería",
-      "date": "27.09.2026 16:15",
-      "selection": "Més de 3.5 Gols (Over 3.5)",
-      "category": "Gols",
-      "bookie_odd": 3.3,
-      "model_prob": 36.8,
-      "fair_odd": 2.72,
-      "edge_pct": 21.4,
-      "kelly_stake": 2.3,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -10519,29 +10334,15 @@
     {
       "competition_id": "HYPERMOTION",
       "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Córdoba CF marca més d'1.5 gols",
+      "matchup": "Real Oviedo vs Real Sporting",
+      "date": "27.09.2026 21:00",
+      "selection": "Real Oviedo marca més d'1.5 gols",
       "category": "Gols",
-      "bookie_odd": 2.65,
-      "model_prob": 45.4,
-      "fair_odd": 2.2,
-      "edge_pct": 20.4,
-      "kelly_stake": 3.1,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Córdoba CF marca més d'1.5 gols",
-      "category": "Gols",
-      "bookie_odd": 2.65,
-      "model_prob": 45.4,
-      "fair_odd": 2.2,
-      "edge_pct": 20.4,
-      "kelly_stake": 3.1,
+      "bookie_odd": 2.4,
+      "model_prob": 50.2,
+      "fair_odd": 1.99,
+      "edge_pct": 20.5,
+      "kelly_stake": 3.7,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -10839,20 +10640,6 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "RCD Mallorca vs UD Almería",
-      "date": "27.09.2026 16:15",
-      "selection": "Més de 2.5 Gols (Over 2.5)",
-      "category": "Gols",
-      "bookie_odd": 1.94,
-      "model_prob": 59.3,
-      "fair_odd": 1.69,
-      "edge_pct": 15.0,
-      "kelly_stake": 4.0,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
       "competition_id": "PREMIER",
       "competition_name": "Premier League",
       "matchup": "Chelsea vs AFC Bournemouth",
@@ -10909,34 +10696,6 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Més de 8.5 Córners",
-      "category": "Córners",
-      "bookie_odd": 1.9,
-      "model_prob": 59.7,
-      "fair_odd": 1.67,
-      "edge_pct": 13.5,
-      "kelly_stake": 3.8,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Més de 8.5 Córners",
-      "category": "Córners",
-      "bookie_odd": 1.9,
-      "model_prob": 59.7,
-      "fair_odd": 1.67,
-      "edge_pct": 13.5,
-      "kelly_stake": 3.8,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
       "matchup": "Watford vs Burnley",
@@ -10976,20 +10735,6 @@
       "fair_odd": 2.33,
       "edge_pct": 11.8,
       "kelly_stake": 1.8,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "RCD Mallorca vs UD Almería",
-      "date": "27.09.2026 16:15",
-      "selection": "Ambdós Equips Marquen (BTTS No)",
-      "category": "BTTS",
-      "bookie_odd": 1.96,
-      "model_prob": 57.0,
-      "fair_odd": 1.75,
-      "edge_pct": 11.7,
-      "kelly_stake": 3.1,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -11077,34 +10822,6 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "1 - Victòria Local (Real Valladolid)",
-      "category": "1X2",
-      "bookie_odd": 2.35,
-      "model_prob": 46.9,
-      "fair_odd": 2.13,
-      "edge_pct": 10.2,
-      "kelly_stake": 1.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "1 - Victòria Local (Real Valladolid)",
-      "category": "1X2",
-      "bookie_odd": 2.35,
-      "model_prob": 46.9,
-      "fair_odd": 2.13,
-      "edge_pct": 10.2,
-      "kelly_stake": 1.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
       "competition_id": "LALIGA",
       "competition_name": "LaLiga EA Sports",
       "matchup": "Real Sociedad vs RC Deportivo de La Coruña",
@@ -11189,6 +10906,20 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "Menys de 9.5 Córners",
+      "category": "Córners",
+      "bookie_odd": 2.1,
+      "model_prob": 52.2,
+      "fair_odd": 1.92,
+      "edge_pct": 9.6,
+      "kelly_stake": 2.2,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
       "competition_id": "PREMIER",
       "competition_name": "Premier League",
       "matchup": "Arsenal vs Leeds Utd",
@@ -11200,20 +10931,6 @@
       "fair_odd": 1.01,
       "edge_pct": 9.5,
       "kelly_stake": 23.6,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "AD Ceuta vs Real Sociedad B",
-      "date": "26.09.2026 14:00",
-      "selection": "1 - Victòria Local (AD Ceuta)",
-      "category": "1X2",
-      "bookie_odd": 2.35,
-      "model_prob": 46.6,
-      "fair_odd": 2.15,
-      "edge_pct": 9.5,
-      "kelly_stake": 1.8,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -11387,15 +11104,15 @@
     {
       "competition_id": "HYPERMOTION",
       "competition_name": "LaLiga Hypermotion",
-      "matchup": "RCD Mallorca vs UD Almería",
-      "date": "27.09.2026 16:15",
-      "selection": "Més d'1.5 Gols (Over 1.5)",
-      "category": "Gols",
-      "bookie_odd": 1.29,
-      "model_prob": 81.9,
-      "fair_odd": 1.22,
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "X - Empat",
+      "category": "1X2",
+      "bookie_odd": 3.75,
+      "model_prob": 28.2,
+      "fair_odd": 3.55,
       "edge_pct": 5.7,
-      "kelly_stake": 4.9,
+      "kelly_stake": 0.5,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -11875,20 +11592,6 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "AD Ceuta vs Real Sociedad B",
-      "date": "26.09.2026 14:00",
-      "selection": "X - Empat",
-      "category": "1X2",
-      "bookie_odd": 3.55,
-      "model_prob": 28.6,
-      "fair_odd": 3.5,
-      "edge_pct": 1.5,
-      "kelly_stake": 0.2,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
       "matchup": "Derby County vs Wrexham",
@@ -12011,6 +11714,34 @@
       "model_prob": 43.8,
       "fair_odd": 2.28,
       "edge_pct": 0.7,
+      "kelly_stake": 0.1,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Oviedo vs Real Sporting",
+      "date": "27.09.2026 21:00",
+      "selection": "Més de 8.5 Córners",
+      "category": "Córners",
+      "bookie_odd": 1.68,
+      "model_prob": 59.7,
+      "fair_odd": 1.67,
+      "edge_pct": 0.4,
+      "kelly_stake": 0.1,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Oviedo vs Real Sporting",
+      "date": "27.09.2026 21:00",
+      "selection": "Més de 9.5 Córners",
+      "category": "Córners",
+      "bookie_odd": 2.1,
+      "model_prob": 47.8,
+      "fair_odd": 2.09,
+      "edge_pct": 0.4,
       "kelly_stake": 0.1,
       "winamax_url": "https://www.winamax.es"
     },
@@ -13396,12 +13127,12 @@
           "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 3,
+            "won_count": 4,
             "lost_count": 1,
-            "pending_count": 6,
+            "pending_count": 5,
             "total_count": 10,
-            "progress_pct": 40.0,
-            "summary": "3/10 encertats · 6 pendents"
+            "progress_pct": 50.0,
+            "summary": "4/10 encertats · 5 pendents"
           },
           "legs": [
             {
@@ -13489,8 +13220,8 @@
               "model_prob": 78.1,
               "date": "26.09.2026 14:00",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72477432",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3 gols locals (Local ha marcat)"
             },
             {
               "matchup": "Burgos CF vs CD Eldense",
@@ -13532,12 +13263,12 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 4,
+            "won_count": 5,
             "lost_count": 0,
-            "pending_count": 6,
+            "pending_count": 5,
             "total_count": 10,
-            "progress_pct": 40.0,
-            "summary": "4/10 encertats · 6 pendents"
+            "progress_pct": 50.0,
+            "summary": "5/10 encertats · 5 pendents"
           },
           "legs": [
             {
@@ -13559,8 +13290,8 @@
               "model_prob": 75.7,
               "date": "26.09.2026 14:00",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72477432",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3-1 (1X encertat)"
             },
             {
               "matchup": "Granada CF vs FC Andorra",

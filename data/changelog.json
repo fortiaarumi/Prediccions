@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-09-27",
-    "timestamp": "2026-09-27T14:04:41.704677",
+    "timestamp": "2026-09-27T14:15:29.809707",
     "title": "Actualització Diària del Model · 27/09/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -19,7 +19,7 @@
       "   • Celta de Vigo B (-0.2 ➔ 1465.8) | CE Sabadell (+0.2 ➔ 1511.0)",
       "   • CD Tenerife (-2.5 ➔ 1516.3) | Cádiz CF (+2.5 ➔ 1490.3)",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 5 partit(s):",
       "   • [LaLiga Hypermotion J7] Real Valladolid vs Córdoba CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Romero G.'",
       "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.9% ➔ 46.9% (+0.0%)",
       "   • [LaLiga Hypermotion J7] RCD Mallorca vs UD Almería: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Palencia D.'",
@@ -27,7 +27,9 @@
       "   • [LaLiga Hypermotion J7] Burgos CF vs CD Eldense: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Dominguez A.'",
       "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.9% ➔ 46.9% (+0.0%)",
       "   • [LaLiga Hypermotion J7] SD Eibar vs UD Las Palmas: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Salvador Lax Franco'",
-      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 65.5% (+18.8%) | Vermella: 22.1% ➔ 28.8% (+6.7%) | Victòria Local: 91.4% ➔ 91.4% (+0.0%)"
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 65.5% (+18.8%) | Vermella: 22.1% ➔ 28.8% (+6.7%) | Victòria Local: 91.4% ➔ 91.4% (+0.0%)",
+      "   • [LaLiga Hypermotion J7] Real Oviedo vs Real Sporting: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Andrés Fuentes Molina'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 65.4% (+12.0%) | Vermella: 22.1% ➔ 24.4% (+2.3%) | Victòria Local: 44.7% ➔ 44.7% (+0.0%)"
     ],
     "matches": [
       {
@@ -308,6 +310,45 @@
             "delta": 0.0
           },
           "summary": "Designació oficial de Salvador Lax Franco (índex severitat 1.2). Mitjana històrica de 5.4 grogues i 0.34 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J7_ROV_SPG",
+        "matchup": "Real Oviedo vs Real Sporting",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 7,
+        "date": "27.09.2026 21:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Andrés Fuentes Molina",
+        "ref_stats": {
+          "yellow_avg": 5.1,
+          "red_avg": 0.28,
+          "fouls_avg": 26.0,
+          "strictness_index": 1.14
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 65.4,
+            "delta": 12.0
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 24.4,
+            "delta": 2.3
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.0,
+            "delta": 1.5
+          },
+          "home_win_prob": {
+            "before": 44.7,
+            "after": 44.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Andrés Fuentes Molina (índex severitat 1.14). Mitjana històrica de 5.1 grogues i 0.28 vermelles per partit."
         }
       }
     ]

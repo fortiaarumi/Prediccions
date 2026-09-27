@@ -669,7 +669,7 @@ class WebDataExporter:
                         with self.db.get_connection() as conn:
                             cursor = conn.cursor()
                             cursor.execute(
-                                "SELECT * FROM matches WHERE home_team_id = ? AND away_team_id = ? ORDER BY date_time DESC LIMIT 1",
+                                "SELECT * FROM matches WHERE home_team_id = ? AND away_team_id = ? ORDER BY CASE WHEN status = 'FINISHED' THEN 1 ELSE 2 END, date_time DESC LIMIT 1",
                                 (h_id, a_id)
                             )
                             row = cursor.fetchone()
