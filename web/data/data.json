@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-09-27T13:32:06.248967",
-    "formatted_date": "27/09/2026 a les 13:32",
+    "generated_at": "2026-09-27T13:36:55.228476",
+    "formatted_date": "27/09/2026 a les 13:36",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,7 +43,7 @@
   "changelog": [
     {
       "date": "2026-09-27",
-      "timestamp": "2026-09-27T13:33:13.615797",
+      "timestamp": "2026-09-27T13:38:12.745433",
       "title": "Actualització Diària del Model · 27/09/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -6426,8 +6426,8 @@
           },
           "odds_1x2": {
             "1": 2.3,
-            "X": 3.5,
-            "2": 2.75
+            "X": 3.4,
+            "2": 2.85
           },
           "odds_ou25": {
             "over": null,
@@ -6440,13 +6440,13 @@
           "value_bets": [
             {
               "model_prob": 45.4,
-              "bookie_odd": 2.5,
+              "bookie_odd": 2.55,
               "fair_odd": 2.2,
-              "implied_prob": 40.0,
-              "ev_pct": 13.6,
-              "kelly_pct": 2.3,
+              "implied_prob": 39.2,
+              "ev_pct": 15.8,
+              "kelly_pct": 2.6,
               "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
+              "rating": "🔥 EXCEL·LENT (+15% EV)",
               "name": "Córdoba CF marca més d'1.5 gols",
               "category": "Gols"
             },
@@ -6561,8 +6561,8 @@
           },
           "odds_1x2": {
             "1": 2.3,
-            "X": 3.5,
-            "2": 2.75
+            "X": 3.4,
+            "2": 2.85
           },
           "odds_ou25": {
             "over": null,
@@ -6575,13 +6575,13 @@
           "value_bets": [
             {
               "model_prob": 45.4,
-              "bookie_odd": 2.5,
+              "bookie_odd": 2.55,
               "fair_odd": 2.2,
-              "implied_prob": 40.0,
-              "ev_pct": 13.6,
-              "kelly_pct": 2.3,
+              "implied_prob": 39.2,
+              "ev_pct": 15.8,
+              "kelly_pct": 2.6,
               "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
+              "rating": "🔥 EXCEL·LENT (+15% EV)",
               "name": "Córdoba CF marca més d'1.5 gols",
               "category": "Gols"
             },
@@ -10596,6 +10596,34 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "Córdoba CF marca més d'1.5 gols",
+      "category": "Gols",
+      "bookie_odd": 2.55,
+      "model_prob": 45.4,
+      "fair_odd": 2.2,
+      "edge_pct": 15.8,
+      "kelly_stake": 2.6,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Valladolid vs Córdoba CF",
+      "date": "27.09.2026 14:00",
+      "selection": "Córdoba CF marca més d'1.5 gols",
+      "category": "Gols",
+      "bookie_odd": 2.55,
+      "model_prob": 45.4,
+      "fair_odd": 2.2,
+      "edge_pct": 15.8,
+      "kelly_stake": 2.6,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
       "competition_id": "LALIGA",
       "competition_name": "LaLiga EA Sports",
       "matchup": "Deportivo Alavés vs Atlético de Madrid",
@@ -10663,34 +10691,6 @@
       "fair_odd": 2.11,
       "edge_pct": 13.7,
       "kelly_stake": 2.5,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Córdoba CF marca més d'1.5 gols",
-      "category": "Gols",
-      "bookie_odd": 2.5,
-      "model_prob": 45.4,
-      "fair_odd": 2.2,
-      "edge_pct": 13.6,
-      "kelly_stake": 2.3,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Real Valladolid vs Córdoba CF",
-      "date": "27.09.2026 14:00",
-      "selection": "Córdoba CF marca més d'1.5 gols",
-      "category": "Gols",
-      "bookie_odd": 2.5,
-      "model_prob": 45.4,
-      "fair_odd": 2.2,
-      "edge_pct": 13.6,
-      "kelly_stake": 2.3,
       "winamax_url": "https://www.winamax.es"
     },
     {
