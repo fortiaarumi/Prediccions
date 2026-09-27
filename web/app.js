@@ -15,8 +15,24 @@ let appData = null;
 let currentTab = 'novetats';
 let currentLeague = 'ALL';
 let currentSearch = '';
+let currentMatchFilter = 'ALL';
 let activeModalComboKey = null;
 window.combosRegistry = {};
+
+// Memòria cau local resilient per a combinades (evita que desapareguin durant canvis de jornada o càrrega)
+window._cachedCombos = {};
+try {
+  const sc = localStorage.getItem('prediccions_valid_combos');
+  if (sc) window._cachedCombos = JSON.parse(sc);
+} catch (e) {}
+
+window.setMatchesFilter = function(status) {
+  currentMatchFilter = status;
+  document.querySelectorAll('.match-filter-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-match-filter') === status);
+  });
+  renderPredictions();
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   initEventListeners();
@@ -210,6 +226,22 @@ async function loadData() {
       throw new Error(`HTTP error ${res.status}`);
     }
     appData = await res.json();
+
+    // Sincronitzar combinades amb la memòria cau resilient
+    if (appData.combos) {
+      window._cachedCombos = window._cachedCombos || {};
+      for (const [k, v] of Object.entries(appData.combos)) {
+        if ((v.safe && v.safe.length > 0) || (v.semi && v.semi.length > 0) || (v.risky && v.risky.length > 0)) {
+          window._cachedCombos[k] = v;
+        } else if (window._cachedCombos[k]) {
+          appData.combos[k] = window._cachedCombos[k];
+        }
+      }
+      try {
+        localStorage.setItem('prediccions_valid_combos', JSON.stringify(window._cachedCombos));
+      } catch (e) {}
+    }
+
     renderAll();
   } catch (err) {
     console.error("Error carregant data.json:", err);
@@ -373,6 +405,25 @@ function renderPredictions() {
     );
   }
 
+  // Actualitzar comptadors a la barra de filtres
+  const totalCount = allMatches.length;
+  const finishedMatchesList = allMatches.filter(m => m.status === 'FINISHED');
+  const pendingMatchesList = allMatches.filter(m => m.status !== 'FINISHED');
+
+  const countAllEl = document.getElementById('count-matches-all');
+  if (countAllEl) countAllEl.textContent = totalCount;
+  const countPendEl = document.getElementById('count-matches-pending');
+  if (countPendEl) countPendEl.textContent = pendingMatchesList.length;
+  const countFinEl = document.getElementById('count-matches-finished');
+  if (countFinEl) countFinEl.textContent = finishedMatchesList.length;
+
+  // Filtrar per estat si s'ha seleccionat Pendents o Finalitzats
+  if (currentMatchFilter === 'SCHEDULED') {
+    allMatches = pendingMatchesList;
+  } else if (currentMatchFilter === 'FINISHED') {
+    allMatches = finishedMatchesList;
+  }
+
   if (allMatches.length === 0) {
     grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No hi ha partits que coincideixin amb el filtre seleccionat.</p>`;
     return;
@@ -390,6 +441,113 @@ function renderPredictions() {
     const ref = m.referee || { name: 'Pendent Oficial', yellow_avg: 4.2, fouls_avg: 24.5 };
     const refBadgeCls = ref.is_official ? 'color: #c084fc;' : 'color: var(--text-muted);';
 
+    // -------------------------------------------------------------------------
+    // A) TARGETA PER A PARTITS JA JUGATS (FINISHED) AMB COMPARATIVA DE RESULTAT
+    // -------------------------------------------------------------------------
+    if (m.status === 'FINISHED') {
+      const isHit = m.is_hit_1x2;
+      const hitCls = isHit ? 'hit' : 'miss';
+      const hitIcon = isHit ? '✅' : '❌';
+      const hitText = isHit
+        ? `Pronòstic encertat (${m.actual_1x2})`
+        : `Pronòstic fallat (Predit: ${m.predicted_1x2 || '-'} · Real: ${m.actual_1x2 || '-'})`;
+
+      const exactScoreBadge = m.is_exact_score
+        ? `<span class="exact-hit-pill">✨ Marcador Exacte!</span>`
+        : '';
+
+      const xgHDiff = m.xg_diff_home != null ? `${m.xg_diff_home >= 0 ? '+' : ''}${m.xg_diff_home}` : '-';
+      const xgADiff = m.xg_diff_away != null ? `${m.xg_diff_away >= 0 ? '+' : ''}${m.xg_diff_away}` : '-';
+
+      return `
+        <div class="match-card match-card-finished">
+          <div class="match-card-header">
+            <span class="match-league-tag">${m._compFlag || '⚽'} ${m._compName} · J${m.jornada}</span>
+            <span class="status-finished-pill">🏁 FINALITZAT · ${m.date || ''}</span>
+          </div>
+
+          <div class="matchup-row matchup-finished-row">
+            <div class="team-box">
+              <div class="team-name">${m.home_team.name}</div>
+              <div class="team-elo-sub">Elo: ${m.home_team.elo}</div>
+            </div>
+            
+            <div class="final-score-box">
+              <div class="final-score-val">${m.final_score || `${m.home_goals} - ${m.away_goals}`}</div>
+              <span class="final-score-lbl">Marcador Final</span>
+            </div>
+
+            <div class="team-box away">
+              <div class="team-name">${m.away_team.name}</div>
+              <div class="team-elo-sub">Elo: ${m.away_team.elo}</div>
+            </div>
+          </div>
+
+          <!-- Avaluació Pronòstic vs Realitat -->
+          <div class="prediction-evaluation-card ${hitCls}">
+            <div class="eval-header-line">
+              <span class="eval-title">${hitIcon} <strong>${hitText}</strong></span>
+              ${exactScoreBadge}
+            </div>
+            <div class="eval-body-line">
+              Pronòstic inicial del model: <strong>${m.verdict}</strong>
+            </div>
+          </div>
+
+          <!-- Diferències Marcador i xG -->
+          <div class="match-stats-grid finished-grid">
+            <div>
+              <div class="stat-item-label">Marcador Predit</div>
+              <div class="stat-item-val" style="color: var(--accent-cyan); font-size: 13.5px;">${m.most_likely_score || '-'}</div>
+            </div>
+            <div>
+              <div class="stat-item-label">xG Model vs Real</div>
+              <div class="stat-item-val" style="color: #ffffff; font-size: 12.5px;">
+                ${m.xg_home} - ${m.xg_away} ➔ <strong style="color: var(--accent-emerald);">${m.home_goals}-${m.away_goals}</strong>
+              </div>
+              <div class="stat-item-sub">Dif xG: ${xgHDiff} / ${xgADiff}</div>
+            </div>
+            <div>
+              <div class="stat-item-label">Prob. Model 1X2</div>
+              <div class="stat-item-val" style="color: var(--text-muted); font-size: 11px; font-family: var(--font-mono);">
+                1: ${p1}% · X: ${px}% · 2: ${p2}%
+              </div>
+            </div>
+          </div>
+
+          <!-- Mètriques reals vs predites (Córners, Targetes, BTTS) -->
+          <div class="match-stats-grid secondary-stats-row finished-secondary-row">
+            <div>
+              <div class="stat-item-label">🚩 Córners Reals</div>
+              <div class="stat-item-val" style="font-size: 12px; color: var(--accent-cyan);">
+                ${m.real_corners_home != null ? `${m.real_corners_home + m.real_corners_away} totals` : `Predits ~${m.corners_total}`}
+              </div>
+            </div>
+            <div>
+              <div class="stat-item-label">⚽ Ambdós Marquen</div>
+              <div class="stat-item-val" style="font-size: 12px; color: ${(m.home_goals > 0 && m.away_goals > 0) ? 'var(--accent-emerald)' : 'var(--text-muted)'};">
+                ${(m.home_goals > 0 && m.away_goals > 0) ? 'Sí (Han marcat ambdós)' : 'No'}
+              </div>
+            </div>
+            <div>
+              <div class="stat-item-label">🟨 Targetes Reals</div>
+              <div class="stat-item-val" style="font-size: 12px; color: var(--accent-amber);">
+                ${m.real_cards_home != null ? `${m.real_cards_home + m.real_cards_away} totals` : `Predites ~${m.cards_total}`}
+              </div>
+            </div>
+          </div>
+
+          <div class="referee-tag">
+            <span style="${refBadgeCls}">⚖️ ${ref.name}</span>
+            <span style="font-family: var(--font-mono);">${ref.yellow_avg ? `(${ref.yellow_avg} 🟨 · ${ref.fouls_avg} faltes)` : ''}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // B) TARGETA PER A PARTITS PENDENTS DE JUGAR (SCHEDULED)
+    // -------------------------------------------------------------------------
     return `
       <div class="match-card">
         <div class="match-card-header">
@@ -589,14 +747,28 @@ function renderCombos() {
   leagueKeys.forEach(lKey => {
     if (currentLeague !== 'ALL' && currentLeague !== lKey) return;
 
-    const leagueCombos = appData.combos[lKey];
+    let leagueCombos = appData.combos[lKey];
+    if (!leagueCombos || (!leagueCombos.safe?.length && !leagueCombos.semi?.length && !leagueCombos.risky?.length)) {
+      if (window._cachedCombos && window._cachedCombos[lKey]) {
+        leagueCombos = window._cachedCombos[lKey];
+      }
+    }
     if (!leagueCombos) return;
 
-    const allCards = [
+    let allCards = [
       ...(leagueCombos.safe || []).map(c => ({ ...c, type: 'safe' })),
       ...(leagueCombos.semi || []).map(c => ({ ...c, type: 'semi' })),
       ...(leagueCombos.risky || []).map(c => ({ ...c, type: 'risky' }))
     ];
+
+    if (allCards.length === 0 && window._cachedCombos && window._cachedCombos[lKey]) {
+      const cached = window._cachedCombos[lKey];
+      allCards = [
+        ...(cached.safe || []).map(c => ({ ...c, type: 'safe' })),
+        ...(cached.semi || []).map(c => ({ ...c, type: 'semi' })),
+        ...(cached.risky || []).map(c => ({ ...c, type: 'risky' }))
+      ];
+    }
 
     if (allCards.length === 0) return;
 
@@ -629,15 +801,33 @@ function renderCombos() {
               leagueTitle: leagueTitle
             };
 
+            const legs = c.legs || [];
+            const totalLegs = legs.length;
+            const wonLegs = legs.filter(l => l.status === 'WON').length;
+            const lostLegs = legs.filter(l => l.status === 'LOST').length;
+            const pendingLegs = legs.filter(l => l.status === 'PENDING' || !l.status).length;
+
+            let cardStatus = c.status || 'PENDING';
+            if (lostLegs > 0) cardStatus = 'LOST';
+            else if (totalLegs > 0 && wonLegs === totalLegs) cardStatus = 'WON';
+
             let oddCls = 'odd-safe';
             if (c.type === 'semi') oddCls = 'odd-semi';
             else if (c.type === 'risky') oddCls = 'odd-risky';
 
             let statusTag = '<span class="status-pending-tag" style="font-size: 10px; padding: 2px 6px;">⏳ EN CURS</span>';
-            if (c.status === 'WON') {
+            if (cardStatus === 'WON') {
               statusTag = '<span class="status-won-tag" style="font-size: 10px; padding: 2px 6px;">🏆 GUANYADA</span>';
-            } else if (c.status === 'LOST') {
+            } else if (cardStatus === 'LOST') {
               statusTag = '<span class="status-lost-tag" style="font-size: 10px; padding: 2px 6px;">❌ FALLADA</span>';
+            }
+
+            let progressSummary = `${wonLegs}/${totalLegs} encertats`;
+            if (pendingLegs > 0) {
+              progressSummary += ` · ${pendingLegs} pendents`;
+            }
+            if (lostLegs > 0) {
+              progressSummary += ` (${lostLegs} fallat${lostLegs > 1 ? 's' : ''})`;
             }
 
             const boosterPct = c.booster_pct || 0;
@@ -666,13 +856,38 @@ function renderCombos() {
                   </div>
                 </div>
 
+                <!-- Progrés en directe de la combinada -->
+                <div class="combo-progress-bar-container">
+                  <div class="combo-progress-label-row">
+                    <span class="combo-progress-title">Progrés en directe</span>
+                    <span class="combo-progress-stats"><strong>${progressSummary}</strong></span>
+                  </div>
+                  <div class="combo-progress-bar">
+                    ${legs.map((l, lIdx) => {
+                      let segCls = 'seg-pending';
+                      let segTitle = `Partit ${lIdx + 1} (${l.matchup}): Pendent`;
+                      if (l.status === 'WON') {
+                        segCls = 'seg-won';
+                        segTitle = `Partit ${lIdx + 1} (${l.matchup}): Encertat! (${l.actual_result || ''})`;
+                      } else if (l.status === 'LOST') {
+                        segCls = 'seg-lost';
+                        segTitle = `Partit ${lIdx + 1} (${l.matchup}): Fallat (${l.actual_result || ''})`;
+                      }
+                      return `<div class="combo-progress-segment ${segCls}" title="${segTitle}"></div>`;
+                    }).join('')}
+                  </div>
+                </div>
+
                 <ul class="combo-legs-list">
-                  ${(c.legs || []).map(l => {
-                    let legBadge = '<span class="leg-pill pill-pending">⏳ Pendent</span>';
+                  ${legs.map(l => {
+                    let legBadge = `<span class="leg-pill pill-pending">⏳ Pendent (${l.date || 'Properament'})</span>`;
+                    let legItemCls = 'leg-pending';
                     if (l.status === 'WON') {
                       legBadge = `<span class="leg-pill pill-won">✅ ${l.actual_result || 'Encertat'}</span>`;
+                      legItemCls = 'leg-won';
                     } else if (l.status === 'LOST') {
                       legBadge = `<span class="leg-pill pill-lost">❌ ${l.actual_result || 'Fallat'}</span>`;
+                      legItemCls = 'leg-lost';
                     }
 
                     let catIcon = '🏷️';
@@ -688,7 +903,7 @@ function renderCombos() {
                     const modelProb = l.model_prob != null ? l.model_prob.toFixed(1) : '-';
 
                     return `
-                      <li class="combo-leg-item">
+                      <li class="combo-leg-item ${legItemCls}">
                         <div class="leg-desc">
                           <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 2px;">
                             <span class="leg-matchup">${l.matchup}</span>
@@ -712,11 +927,11 @@ function renderCombos() {
                   <div class="stake-info">
                     Inversió: <strong>${effectiveStake.toFixed(2)} €</strong>
                   </div>
-                  <div style="font-family: var(--font-mono); font-size: 11.5px; color: var(--accent-emerald);">
-                    Prob. Conjunta: <strong>${probConjunta}%</strong>
+                  <div style="font-family: var(--font-mono); font-size: 11.5px; color: ${cardStatus === 'LOST' ? 'var(--accent-rose)' : 'var(--accent-emerald)'};">
+                    ${cardStatus === 'LOST' ? '❌ Fallada' : (cardStatus === 'WON' ? '🏆 Encertada!' : `⏳ En joc (${wonLegs}/${totalLegs})`)}
                   </div>
                   <div class="payout-info">
-                    Retorn: +${effectivePayout.toFixed(2)} €
+                    ${cardStatus === 'LOST' ? `<span style="color: var(--text-muted); text-decoration: line-through;">+${effectivePayout.toFixed(2)} €</span>` : `Retorn: +${effectivePayout.toFixed(2)} €`}
                   </div>
                 </div>
 

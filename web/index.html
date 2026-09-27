@@ -138,6 +138,18 @@
         <div class="round-status-pill" id="predictions-round-status"></div>
       </div>
 
+      <div class="matches-filter-bar" id="matches-filter-bar">
+        <button class="match-filter-pill active" data-match-filter="ALL" onclick="setMatchesFilter('ALL')">
+          Tots els Partits (<span id="count-matches-all">0</span>)
+        </button>
+        <button class="match-filter-pill" data-match-filter="SCHEDULED" onclick="setMatchesFilter('SCHEDULED')">
+          ⏳ Pendents (<span id="count-matches-pending">0</span>)
+        </button>
+        <button class="match-filter-pill" data-match-filter="FINISHED" onclick="setMatchesFilter('FINISHED')">
+          🏁 Finalitzats (<span id="count-matches-finished">0</span>)
+        </button>
+      </div>
+
       <div id="matches-grid" class="matches-grid">
         <!-- Targetes de partits generades dinàmicament per JS -->
       </div>

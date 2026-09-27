@@ -230,43 +230,117 @@ class WebDataExporter:
 
         return result
 
-    def get_upcoming_predictions(self, competition_id: str, max_matches: int = 11, existing_match_odds: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """Recupera els partits pendents de la propera jornada i genera les prediccions completes."""
-        # Buscar partits SCHEDULED
+    def get_active_jornada(self, competition_id: str) -> int:
+        """
+        Determina de forma intel·ligent i robusta quina és la jornada activa d'una lliga.
+        Una jornada segueix activa si:
+        1. Té combinades recomanades pendents d'avaluar (status = 'PENDING').
+        2. Té partits en curs (tant partits FINISHED recents com partits SCHEDULED pendents).
+        3. És la darrera jornada predita oficialment a pipeline_state.json i encara té partits per jugar.
+        Només avança a la jornada següent (J+1) quan la jornada actual s'ha completat al 100%.
+        """
+        comp = competition_id.upper()
+        # 1. Comprovar si hi ha combinades recomanades pendents a SQLite
         with self.db.get_connection() as conn:
-            max_f = conn.cursor().execute("SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status = 'FINISHED'", (competition_id,)).fetchone()[0] or 0
-        active_jornada = max_f + 1
+            cursor = conn.cursor()
+            pending_j = cursor.execute(
+                "SELECT MAX(jornada) FROM combo_recommendations WHERE competition_id = ? AND status = 'PENDING'",
+                (comp,)
+            ).fetchone()[0]
+            if pending_j:
+                return pending_j
 
+        # 2. Comprovar pipeline_state.json
+        state_file = ROOT / "data" / "pipeline_state.json"
+        if state_file.exists():
+            try:
+                with open(state_file, "r", encoding="utf-8") as f:
+                    st = json.load(f)
+                    cand_j = st.get(comp, {}).get("last_predicted_jornada")
+                    if cand_j:
+                        with self.db.get_connection() as conn:
+                            sched_cnt = conn.cursor().execute(
+                                "SELECT COUNT(*) FROM matches WHERE competition_id = ? AND jornada = ? AND status = 'SCHEDULED'",
+                                (comp, cand_j)
+                            ).fetchone()[0]
+                            if sched_cnt > 0:
+                                return cand_j
+            except Exception:
+                pass
+
+        # 3. Comprovar a matches quina jornada té partits SCHEDULED
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT jornada, 
+                       SUM(CASE WHEN status = 'FINISHED' THEN 1 ELSE 0 END) as f_cnt,
+                       SUM(CASE WHEN status = 'SCHEDULED' THEN 1 ELSE 0 END) as s_cnt
+                FROM matches 
+                WHERE competition_id = ?
+                GROUP BY jornada
+                HAVING s_cnt > 0
+                ORDER BY jornada ASC
+            """, (comp,))
+            rows = cursor.fetchall()
+            if rows:
+                for r in rows:
+                    if r["s_cnt"] >= 3 or (r["f_cnt"] > 0 and r["s_cnt"] > 0):
+                        return r["jornada"]
+                return rows[0]["jornada"]
+
+            # Fallback estàndard si tot està finalitzat
+            max_f = cursor.execute(
+                "SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status = 'FINISHED'",
+                (comp,)
+            ).fetchone()[0] or 0
+            return max_f + 1
+
+    def get_upcoming_predictions(self, competition_id: str, max_matches: int = 12, existing_match_odds: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Recupera tots els partits de la jornada activa (tant els ja jugats com els pendents de disputar),
+        calcula les prediccions completes, i per als partits ja disputats n'avalua el marcador final
+        i les diferències amb les previsions del model.
+        """
+        active_jornada = self.get_active_jornada(competition_id)
+
+        # 1. Recuperar partits registrats a SQLite per a aquesta jornada
         with self.db.get_connection() as conn:
             c = conn.cursor()
             c.execute("""
                 SELECT * FROM matches
-                WHERE competition_id = ? AND status = 'SCHEDULED' AND jornada >= ?
-                ORDER BY jornada ASC, date_time ASC
+                WHERE competition_id = ? AND jornada = ?
+                ORDER BY date_time ASC
             """, (competition_id, active_jornada))
             rows = [dict(r) for r in c.fetchall()]
 
-        # Si a SQLite no hi ha suficients partits scheduled per a aquesta jornada, consultar JornadaResolver
+        # Si a SQLite no hi ha suficients partits per a aquesta jornada, consultar JornadaResolver
         if len(rows) < 8:
             resolver = JornadaResolver(competition_id=competition_id)
             fixtures = resolver.get_jornada_fixtures(active_jornada)
             if fixtures:
-                rows = []
+                existing_keys = {f"{r['home_team_id']}_{r['away_team_id']}" for r in rows}
                 for f in fixtures:
                     h_name = f["home_team"]
                     a_name = f["away_team"]
                     h_id = self.db.find_team_id(h_name) or self.db.get_or_create_team(h_name)
                     a_id = self.db.find_team_id(a_name) or self.db.get_or_create_team(a_name)
-                    rows.append({
-                        "competition_id": competition_id,
-                        "jornada": active_jornada,
-                        "home_team_id": h_id,
-                        "away_team_id": a_id,
-                        "date_time": f.get("date", "Pendent"),
-                        "status": "SCHEDULED",
-                        "home_name": h_name,
-                        "url": f.get("url", "")
-                    })
+                    key = f"{h_id}_{a_id}"
+                    if key not in existing_keys:
+                        score_h = f.get("score_h")
+                        score_a = f.get("score_a")
+                        is_played = score_h is not None and str(score_h).isdigit()
+                        rows.append({
+                            "competition_id": competition_id,
+                            "jornada": active_jornada,
+                            "home_team_id": h_id,
+                            "away_team_id": a_id,
+                            "date_time": f.get("date", "Pendent"),
+                            "status": "FINISHED" if is_played else "SCHEDULED",
+                            "home_goals": int(score_h) if is_played else None,
+                            "away_goals": int(score_a) if is_played else None,
+                            "home_name": h_name,
+                            "url": f.get("url", "")
+                        })
 
         predicted_list = []
         referee_updates = []
@@ -298,7 +372,7 @@ class WebDataExporter:
             )
             ref_data = ref_res.get("ref_data") or self.db.get_referee("REF_DEFAULT")
 
-            # Predicció
+            # Predicció matemàtica del model (Poisson GLM)
             pred = self.predictor.predict_single_match(
                 home_team=home_data,
                 away_team=away_data,
@@ -309,18 +383,26 @@ class WebDataExporter:
             pred["date"] = match_date
             pred["referee_resolution"] = ref_res
 
-            # Cuotes Winamax
-            odds = self.winamax.get_match_odds(home_data["name"], away_data["name"], competition_id=competition_id)
-            if (not odds.get("matched")) and existing_match_odds:
-                m_key = f"{h_id}_{a_id}"
-                if m_key in existing_match_odds:
-                    odds = existing_match_odds[m_key]
+            # Comprovar si el partit ja s'ha disputat (FINISHED)
+            h_goals = r.get("home_goals")
+            a_goals = r.get("away_goals")
+            is_finished = (r.get("status") == "FINISHED" and h_goals is not None)
 
-            bet_analysis = self.value_engine.analyze_match_betting(pred, odds)
-            if (not bet_analysis.get("value_bets")) and existing_match_odds:
-                m_key = f"{h_id}_{a_id}"
-                if m_key in existing_match_odds and existing_match_odds[m_key].get("cached_value_bets"):
-                    bet_analysis["value_bets"] = existing_match_odds[m_key]["cached_value_bets"]
+            # Cuotes Winamax
+            odds = {}
+            bet_analysis = {"value_bets": []}
+            if not is_finished:
+                odds = self.winamax.get_match_odds(home_data["name"], away_data["name"], competition_id=competition_id)
+                if (not odds.get("matched")) and existing_match_odds:
+                    m_key = f"{h_id}_{a_id}"
+                    if m_key in existing_match_odds:
+                        odds = existing_match_odds[m_key]
+
+                bet_analysis = self.value_engine.analyze_match_betting(pred, odds)
+                if (not bet_analysis.get("value_bets")) and existing_match_odds:
+                    m_key = f"{h_id}_{a_id}"
+                    if m_key in existing_match_odds and existing_match_odds[m_key].get("cached_value_bets"):
+                        bet_analysis["value_bets"] = existing_match_odds[m_key]["cached_value_bets"]
 
             pred["odds"] = odds
             pred["bet_analysis"] = bet_analysis
@@ -382,6 +464,7 @@ class WebDataExporter:
                         "summary": f"Designació oficial de {ref_res['name']} (índex severitat {strictness}). Mitjana històrica de {y_avg} grogues i {r_avg} vermelles per partit."
                     }
                 })
+
             scores = goals.get("top_scorelines", [])
             if scores and isinstance(scores[0], dict):
                 top_score = scores[0].get("score", "1-1")
@@ -406,7 +489,6 @@ class WebDataExporter:
                 except Exception:
                     return default
 
-            # Àrbitre info neta
             ref_info = {
                 "name": ref_res["name"],
                 "is_official": not ref_res.get("is_generic", False),
@@ -429,10 +511,48 @@ class WebDataExporter:
             prob_cd_35 = _to_pct(card_preds.get("prob_over_cards", {}).get("over_3_5", 70.0))
             prob_cd_45 = _to_pct(card_preds.get("prob_over_cards", {}).get("over_4_5", 50.0))
 
+            xg_h_val = round(float(goals.get("expected_goals_home", goals.get("lambda_home", 1.30))), 2)
+            xg_a_val = round(float(goals.get("expected_goals_away", goals.get("mu_away", 1.05))), 2)
+
+            # Càlcul de mètriques d'avaluació per a partits finalitzats
+            actual_1x2 = None
+            predicted_1x2 = None
+            is_hit_1x2 = None
+            is_exact_score = None
+            xg_diff_h = None
+            xg_diff_a = None
+            final_score_str = None
+
+            p1_val = _to_pct(prob_1x2.get("1"), 33.3)
+            px_val = _to_pct(prob_1x2.get("X"), 33.3)
+            p2_val = _to_pct(prob_1x2.get("2"), 33.3)
+
+            # Predicció 1X2 principal del model
+            if p1_val >= px_val and p1_val >= p2_val:
+                predicted_1x2 = "1"
+            elif p2_val >= px_val and p2_val >= p1_val:
+                predicted_1x2 = "2"
+            else:
+                predicted_1x2 = "X"
+
+            if is_finished:
+                final_score_str = f"{h_goals} - {a_goals}"
+                if int(h_goals) > int(a_goals):
+                    actual_1x2 = "1"
+                elif int(h_goals) < int(a_goals):
+                    actual_1x2 = "2"
+                else:
+                    actual_1x2 = "X"
+                is_hit_1x2 = (actual_1x2 == predicted_1x2)
+                is_exact_score = (f"{int(h_goals)}-{int(a_goals)}" == top_score.replace(" ", ""))
+                xg_diff_h = round(float(h_goals) - xg_h_val, 2)
+                xg_diff_a = round(float(a_goals) - xg_a_val, 2)
+
             predicted_list.append({
                 "match_id": f"{competition_id}_J{active_jornada}_{h_id}_{a_id}",
                 "competition_id": competition_id,
                 "jornada": active_jornada,
+                "status": "FINISHED" if is_finished else "SCHEDULED",
                 "home_team": {
                     "id": h_id,
                     "name": home_data["name"],
@@ -446,12 +566,27 @@ class WebDataExporter:
                     "elo": round(float(away_data.get("elo_rating", 1500.0)), 1)
                 },
                 "date": match_date,
+                # Dades reals si ja s'ha jugat
+                "home_goals": int(h_goals) if is_finished else None,
+                "away_goals": int(a_goals) if is_finished else None,
+                "final_score": final_score_str,
+                "actual_1x2": actual_1x2,
+                "predicted_1x2": predicted_1x2,
+                "is_hit_1x2": is_hit_1x2,
+                "is_exact_score": is_exact_score,
+                "xg_diff_home": xg_diff_h,
+                "xg_diff_away": xg_diff_a,
+                "real_corners_home": r.get("home_corners"),
+                "real_corners_away": r.get("away_corners"),
+                "real_cards_home": r.get("home_yellow_cards"),
+                "real_cards_away": r.get("away_yellow_cards"),
+                # Prediccions del model
                 "verdict": pred.get("verdict_1x2", "Pronòstic Reservat"),
-                "prob_1": _to_pct(prob_1x2.get("1"), 33.3),
-                "prob_x": _to_pct(prob_1x2.get("X"), 33.3),
-                "prob_2": _to_pct(prob_1x2.get("2"), 33.3),
-                "xg_home": round(float(goals.get("expected_goals_home", goals.get("lambda_home", 1.30))), 2),
-                "xg_away": round(float(goals.get("expected_goals_away", goals.get("mu_away", 1.05))), 2),
+                "prob_1": p1_val,
+                "prob_x": px_val,
+                "prob_2": p2_val,
+                "xg_home": xg_h_val,
+                "xg_away": xg_a_val,
                 "most_likely_score": top_score,
                 "prob_over_25": _to_pct(prob_ou.get("over_2_5", prob_ou.get("over")), 50.0),
                 "prob_under_25": _to_pct(prob_ou.get("under_2_5", prob_ou.get("under")), 50.0),
@@ -481,7 +616,7 @@ class WebDataExporter:
                     "yes": o_btts.get("yes"),
                     "no": o_btts.get("no")
                 },
-                "value_bets": bet_analysis.get("value_bets", []),
+                "value_bets": bet_analysis.get("value_bets", []) if not is_finished else [],
                 "raw_pred": pred # per a càlculs posteriors
             })
 
@@ -496,9 +631,22 @@ class WebDataExporter:
         """
         Retorna el paquet oficial de 6 combinades per lliga o multi-lliga.
         Si la jornada ja s'havia generat (ex: divendres), NO regenera les combinades
-        sinó que les preserva i n'avalua dinàmicament l'estat de cada partit (dissabte/diumenge).
+        sinó que les preserva i n'avalua dinàmicament l'estat de cada partit i el progrés en viu.
         """
         existing_combos = self.db.get_combos_for_jornada(competition_id, jornada)
+
+        # Si per a aquesta jornada no hi ha combinades a la BD, buscar la jornada activa més recent que en tingui
+        if not existing_combos or len(existing_combos) < 2:
+            with self.db.get_connection() as conn:
+                cursor = conn.cursor()
+                cand_j = cursor.execute(
+                    "SELECT MAX(jornada) FROM combo_recommendations WHERE competition_id = ?",
+                    (competition_id,)
+                ).fetchone()[0]
+                if cand_j and cand_j != jornada:
+                    print(f"   ℹ️ [COMBINADES] Preservant les 6 combinades de la Jornada {cand_j} per a {competition_id} (seguiment en directe).")
+                    existing_combos = self.db.get_combos_for_jornada(competition_id, cand_j)
+                    jornada = cand_j
 
         if existing_combos and len(existing_combos) >= 2:
             safe_list = []
@@ -577,6 +725,13 @@ class WebDataExporter:
                         legs_evaluation=legs_evaluated
                     )
 
+                won_cnt = sum(1 for l in legs_evaluated if l["status"] == "WON")
+                lost_cnt = sum(1 for l in legs_evaluated if l["status"] == "LOST")
+                pending_cnt = sum(1 for l in legs_evaluated if l["status"] == "PENDING")
+                total_cnt = len(legs_evaluated)
+                progress_pct = round((won_cnt + lost_cnt) / total_cnt * 100.0, 1) if total_cnt > 0 else 0.0
+                summary_str = f"{won_cnt}/{total_cnt} encertats" + (f" · {pending_cnt} pendents" if pending_cnt > 0 else "")
+
                 combo_obj = {
                     "id": c.get("id"),
                     "profile": c.get("profile", ""),
@@ -592,6 +747,14 @@ class WebDataExporter:
                     "potential_profit": round((stake * boosted_odd) - stake, 2),
                     "status": final_status,
                     "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
+                    "progress": {
+                        "won_count": won_cnt,
+                        "lost_count": lost_cnt,
+                        "pending_count": pending_cnt,
+                        "total_count": total_cnt,
+                        "progress_pct": progress_pct,
+                        "summary": summary_str
+                    },
                     "legs": legs_evaluated
                 }
 
@@ -658,6 +821,7 @@ class WebDataExporter:
                 combo_summary=c_to_save
             )
 
+            total_cnt = len(legs)
             return {
                 "profile": c.get("profile", ""),
                 "category_code": cat_code,
@@ -672,6 +836,14 @@ class WebDataExporter:
                 "potential_profit": profit,
                 "status": "PENDING",
                 "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
+                "progress": {
+                    "won_count": 0,
+                    "lost_count": 0,
+                    "pending_count": total_cnt,
+                    "total_count": total_cnt,
+                    "progress_pct": 0.0,
+                    "summary": f"0/{total_cnt} encertats · {total_cnt} pendents"
+                },
                 "legs": legs
             }
 
@@ -914,6 +1086,9 @@ class WebDataExporter:
 
             # C) 6 Combinades per lliga
             league_combos = self.get_full_combos_suite(pred_data["matches"], cid, pred_data["jornada"])
+            if (not league_combos.get("safe")) and previous_data.get("combos", {}).get(cid, {}).get("safe"):
+                print(f"   🛡️ PROTECCIÓ: Preservant combinades prèvies de {cid} de la memòria cau.")
+                league_combos = previous_data["combos"][cid]
             combos[cid] = league_combos
 
             active_comps_meta.append({
@@ -928,6 +1103,9 @@ class WebDataExporter:
         # 2. Mega-Combinades Multi-Lliga (6 combinades)
         print("[*] Generant les 6 combinades Multi-Lliga...")
         multi_combos = self.get_full_combos_suite(all_predicted_matches_flat, "MULTI", max(c["active_jornada"] for c in active_comps_meta))
+        if (not multi_combos.get("safe")) and previous_data.get("combos", {}).get("MULTI", {}).get("safe"):
+            print("   🛡️ PROTECCIÓ: Preservant combinades Multi-Lliga de la memòria cau.")
+            multi_combos = previous_data["combos"]["MULTI"]
         combos["MULTI"] = multi_combos
 
         # Protecció de Value bets si el scraper de Winamax ha estat bloquejat al núvol
