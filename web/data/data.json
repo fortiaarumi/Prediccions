@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-09-27T13:13:15.761726",
-    "formatted_date": "27/09/2026 a les 13:13",
+    "generated_at": "2026-09-27T13:20:03.991105",
+    "formatted_date": "27/09/2026 a les 13:20",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,7 +43,7 @@
   "changelog": [
     {
       "date": "2026-09-27",
-      "timestamp": "2026-09-27T13:14:17.148082",
+      "timestamp": "2026-09-27T13:21:13.014694",
       "title": "Actualització Diària del Model · 27/09/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -3751,9 +3751,9 @@
             "fouls_avg": 25.0
           },
           "odds_1x2": {
-            "1": 1.31,
+            "1": 1.3,
             "X": 5.9,
-            "2": 6.5
+            "2": 6.75
           },
           "odds_ou25": {
             "over": null,
@@ -3826,11 +3826,11 @@
             },
             {
               "model_prob": 39.4,
-              "bookie_odd": 3.3,
+              "bookie_odd": 3.35,
               "fair_odd": 2.54,
-              "implied_prob": 30.3,
-              "ev_pct": 30.0,
-              "kelly_pct": 3.3,
+              "implied_prob": 29.9,
+              "ev_pct": 32.0,
+              "kelly_pct": 3.4,
               "is_value": true,
               "rating": "🔥 EXCEL·LENT (+15% EV)",
               "name": "X2 - Empat o Villarreal CF",
@@ -6856,8 +6856,8 @@
           "is_exact_score": null,
           "xg_diff_home": null,
           "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
+          "real_corners_home": 0,
+          "real_corners_away": 0,
           "real_cards_home": null,
           "real_cards_away": null,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -7162,8 +7162,8 @@
           "is_exact_score": null,
           "xg_diff_home": null,
           "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
+          "real_corners_home": 0,
+          "real_corners_away": 0,
           "real_cards_home": null,
           "real_cards_away": null,
           "verdict": "Victòria Visitant (UD Almería)",
@@ -7333,8 +7333,8 @@
           "is_exact_score": null,
           "xg_diff_home": null,
           "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
+          "real_corners_home": 0,
+          "real_corners_away": 0,
           "real_cards_home": null,
           "real_cards_away": null,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -7504,8 +7504,8 @@
           "is_exact_score": null,
           "xg_diff_home": null,
           "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
+          "real_corners_home": 0,
+          "real_corners_away": 0,
           "real_cards_home": null,
           "real_cards_away": null,
           "verdict": "Victòria Local (SD Eibar)",
@@ -10071,6 +10071,20 @@
       "winamax_url": "https://www.winamax.es"
     },
     {
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "Real Madrid vs Villarreal CF",
+      "date": "10.10.2026 21:00",
+      "selection": "X2 - Empat o Villarreal CF",
+      "category": "Doble Oportunitat",
+      "bookie_odd": 3.35,
+      "model_prob": 39.4,
+      "fair_odd": 2.54,
+      "edge_pct": 32.0,
+      "kelly_stake": 3.4,
+      "winamax_url": "https://www.winamax.es"
+    },
+    {
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
       "matchup": "Preston North End vs Millwall",
@@ -10194,20 +10208,6 @@
       "fair_odd": 1.26,
       "edge_pct": 30.4,
       "kelly_stake": 11.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Real Madrid vs Villarreal CF",
-      "date": "10.10.2026 21:00",
-      "selection": "X2 - Empat o Villarreal CF",
-      "category": "Doble Oportunitat",
-      "bookie_odd": 3.3,
-      "model_prob": 39.4,
-      "fair_odd": 2.54,
-      "edge_pct": 30.0,
-      "kelly_stake": 3.3,
       "winamax_url": "https://www.winamax.es"
     },
     {
