@@ -1,46 +1,18 @@
 [
   {
     "date": "2026-09-29",
-    "timestamp": "2026-09-29T02:05:05.824046",
+    "timestamp": "2026-09-29T13:07:51.695698",
     "title": "Actualització Diària del Model · 29/09/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
     "items": [
-      "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-      "   • [HYPERMOTION J7] Leganés 0 - 2 Castellón | xG: 1.66-1.52 | Targetes: 8 🟨 | Córners: 6 🚩 | Àrbitre: Ojaos A.",
-      "📊 Actualització de Power Rànquings Elo:",
-      "   • Leganés (-18.8 ➔ 1536.0) | Castellón (+18.8 ➔ 1599.1)",
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+      "ℹ️ Sincronització de les darreres dades i mètriques del model."
     ],
-    "matches": [
-      {
-        "match_id": "HYPERMOTION_J7_LEG_CAS",
-        "competition_id": "HYPERMOTION",
-        "jornada": 7,
-        "home_team": "Leganés",
-        "away_team": "Castellón",
-        "home_team_id": "LEG",
-        "away_team_id": "CAS",
-        "home_goals": 0,
-        "away_goals": 2,
-        "score": "0 - 2",
-        "home_xg": 1.66,
-        "away_xg": 1.52,
-        "home_yellow_cards": 6,
-        "away_yellow_cards": 1,
-        "home_red_cards": 0,
-        "away_red_cards": 1,
-        "home_corners": 4,
-        "away_corners": 2,
-        "referee": "Ojaos A.",
-        "elo_change_home": -18.8,
-        "elo_change_away": 18.8,
-        "new_elo_home": 1536.0,
-        "new_elo_away": 1599.1,
-        "date": "28.09.2026 18:30"
-      }
-    ],
+    "matches": [],
     "combos_evaluated": [],
     "combos_generated": [],
     "referee_updates": []
