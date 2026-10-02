@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-02T01:44:21.810017",
-    "formatted_date": "02/10/2026 a les 01:44",
+    "generated_at": "2026-10-02T12:51:49.535107",
+    "formatted_date": "02/10/2026 a les 12:51",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,7 +43,7 @@
   "changelog": [
     {
       "date": "2026-10-02",
-      "timestamp": "2026-10-02T01:44:25.920570",
+      "timestamp": "2026-10-02T12:51:52.730167",
       "title": "Actualització Diària del Model · 02/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -12672,7 +12672,7 @@
         "competition_id": "HYPERMOTION",
         "jornada": 8,
         "season": "2026-2027",
-        "created_at": "2026-10-02 01:44:21",
+        "created_at": "2026-10-02 12:51:49",
         "total_stake": 0.0,
         "total_payout": 0.0,
         "net_profit": 0.0,
@@ -12693,11 +12693,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-02 01:44:21",
+            "created_at": "2026-10-02 12:51:49",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1120,
+                "id": 1140,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "CD Eldense vs Real Oviedo",
                 "selection_name": "2 - Victòria Visitant (Real Oviedo)",
@@ -12713,7 +12713,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1121,
+                "id": 1141,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -12729,7 +12729,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1122,
+                "id": 1142,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "UD Almería vs Burgos CF",
                 "selection_name": "1 - Victòria Local (UD Almería)",
@@ -12745,7 +12745,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1123,
+                "id": 1143,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -12761,7 +12761,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1124,
+                "id": 1144,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12793,11 +12793,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-02 01:44:21",
+            "created_at": "2026-10-02 12:51:49",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1125,
+                "id": 1145,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "CD Eldense vs Real Oviedo",
                 "selection_name": "2 - Victòria Visitant (Real Oviedo)",
@@ -12813,7 +12813,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1126,
+                "id": 1146,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "UD Almería vs Burgos CF",
                 "selection_name": "1 - Victòria Local (UD Almería)",
@@ -12829,7 +12829,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1127,
+                "id": 1147,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -12845,7 +12845,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1128,
+                "id": 1148,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12861,7 +12861,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1129,
+                "id": 1149,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "UD Las Palmas vs Real Valladolid",
                 "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -12893,11 +12893,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-02 01:44:21",
+            "created_at": "2026-10-02 12:51:48",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1110,
+                "id": 1130,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
                 "matchup": "UD Almería vs Burgos CF",
                 "selection_name": "1 - Victòria Local (UD Almería)",
@@ -12913,7 +12913,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1111,
+                "id": 1131,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12945,11 +12945,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-02 01:44:21",
+            "created_at": "2026-10-02 12:51:49",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1112,
+                "id": 1132,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -12965,7 +12965,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1113,
+                "id": 1133,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
                 "matchup": "CD Castellón vs AD Ceuta",
                 "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -12997,11 +12997,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-02 01:44:21",
+            "created_at": "2026-10-02 12:51:49",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1114,
+                "id": 1134,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "CD Eldense vs Real Oviedo",
                 "selection_name": "2 - Victòria Visitant (Real Oviedo)",
@@ -13017,7 +13017,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1115,
+                "id": 1135,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -13033,7 +13033,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1116,
+                "id": 1136,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "UD Almería vs Burgos CF",
                 "selection_name": "1 - Victòria Local (UD Almería)",
@@ -13065,11 +13065,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-02 01:44:21",
+            "created_at": "2026-10-02 12:51:49",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1117,
+                "id": 1137,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -13085,7 +13085,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1118,
+                "id": 1138,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -13101,7 +13101,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1119,
+                "id": 1139,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16068,11 +16068,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-02 01:44:21",
+        "created_at": "2026-10-02 12:51:49",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1120,
+            "id": 1140,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "CD Eldense vs Real Oviedo",
             "selection_name": "2 - Victòria Visitant (Real Oviedo)",
@@ -16088,7 +16088,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1121,
+            "id": 1141,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -16104,7 +16104,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1122,
+            "id": 1142,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "UD Almería vs Burgos CF",
             "selection_name": "1 - Victòria Local (UD Almería)",
@@ -16120,7 +16120,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1123,
+            "id": 1143,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -16136,7 +16136,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1124,
+            "id": 1144,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16464,11 +16464,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-02 01:44:21",
+        "created_at": "2026-10-02 12:51:49",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1125,
+            "id": 1145,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "CD Eldense vs Real Oviedo",
             "selection_name": "2 - Victòria Visitant (Real Oviedo)",
@@ -16484,7 +16484,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1126,
+            "id": 1146,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "UD Almería vs Burgos CF",
             "selection_name": "1 - Victòria Local (UD Almería)",
@@ -16500,7 +16500,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1127,
+            "id": 1147,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -16516,7 +16516,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1128,
+            "id": 1148,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16532,7 +16532,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1129,
+            "id": 1149,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "UD Las Palmas vs Real Valladolid",
             "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -16684,11 +16684,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-02 01:44:21",
+        "created_at": "2026-10-02 12:51:48",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1110,
+            "id": 1130,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
             "matchup": "UD Almería vs Burgos CF",
             "selection_name": "1 - Victòria Local (UD Almería)",
@@ -16704,7 +16704,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1111,
+            "id": 1131,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16840,11 +16840,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-02 01:44:21",
+        "created_at": "2026-10-02 12:51:49",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1112,
+            "id": 1132,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -16860,7 +16860,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1113,
+            "id": 1133,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
             "matchup": "CD Castellón vs AD Ceuta",
             "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -17108,11 +17108,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-02 01:44:21",
+        "created_at": "2026-10-02 12:51:49",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1114,
+            "id": 1134,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "CD Eldense vs Real Oviedo",
             "selection_name": "2 - Victòria Visitant (Real Oviedo)",
@@ -17128,7 +17128,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1115,
+            "id": 1135,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -17144,7 +17144,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1116,
+            "id": 1136,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "UD Almería vs Burgos CF",
             "selection_name": "1 - Victòria Local (UD Almería)",
@@ -17392,11 +17392,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-02 01:44:21",
+        "created_at": "2026-10-02 12:51:49",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1117,
+            "id": 1137,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -17412,7 +17412,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1118,
+            "id": 1138,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -17428,7 +17428,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1119,
+            "id": 1139,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
