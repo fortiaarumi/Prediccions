@@ -1,27 +1,33 @@
 [
   {
     "date": "2026-10-03",
-    "timestamp": "2026-10-03T01:16:24.193550",
+    "timestamp": "2026-10-03T11:50:42.913588",
     "title": "Actualització Diària del Model · 03/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
     "items": [
       "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-      "   • [HYPERMOTION J8] Eldense 4 - 1 Real Oviedo | xG: 3.30-0.96 | Targetes: 6 🟨 | Córners: 14 🚩 | Àrbitre: Sanchez R.",
+      "   • [HYPERMOTION J8] CD Eldense 4 - 1 Real Oviedo | xG: 3.30-0.96 | Targetes: 6 🟨 | Córners: 14 🚩 | Àrbitre: Rafael Sánchez López",
       "📊 Actualització de Power Rànquings Elo:",
-      "   • Eldense (+23.7 ➔ 1488.4) | Real Oviedo (-23.7 ➔ 1515.4)",
+      "   • CD Eldense (+20.7 ➔ 1509.1) | Real Oviedo (-20.7 ➔ 1494.7)",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
+      "   • [LaLiga Hypermotion J8] Albacete Balompié vs SD Eibar: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José María Sánchez Martínez'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 52.7% (+6.0%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 6.9% ➔ 6.9% (+0.0%)",
+      "   • [LaLiga Hypermotion J8] UD Almería vs Burgos CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Galech I.'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 61.2% (+14.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 90.9% ➔ 90.9% (+0.0%)",
+      "   • [LaLiga Hypermotion J8] Cádiz CF vs CD Leganés: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Morilla A.'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 61.2% (+14.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 90.9% ➔ 90.9% (+0.0%)",
+      "   • [LaLiga Hypermotion J8] CE Sabadell vs FC Andorra: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José Luis Guzmán Mansilla'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 69.8% (+16.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)"
     ],
     "matches": [
       {
         "match_id": "HYPERMOTION_J8_ELD_ROV",
         "competition_id": "HYPERMOTION",
         "jornada": 8,
-        "home_team": "Eldense",
+        "home_team": "CD Eldense",
         "away_team": "Real Oviedo",
-        "home_team_id": "ELD",
-        "away_team_id": "ROV",
         "home_goals": 4,
         "away_goals": 1,
         "score": "4 - 1",
@@ -33,17 +39,174 @@
         "away_red_cards": 0,
         "home_corners": 6,
         "away_corners": 8,
-        "referee": "Sanchez R.",
-        "elo_change_home": 23.7,
-        "elo_change_away": -23.7,
-        "new_elo_home": 1488.4,
-        "new_elo_away": 1515.4,
+        "referee": "Rafael Sánchez López",
+        "elo_change_home": 20.7,
+        "elo_change_away": -20.7,
+        "new_elo_home": 1509.1,
+        "new_elo_away": 1494.7,
         "date": "02.10.2026 18:30"
       }
     ],
     "combos_evaluated": [],
     "combos_generated": [],
-    "referee_updates": []
+    "referee_updates": [
+      {
+        "match_id": "HYPERMOTION_J8_ALB_EIB",
+        "matchup": "Albacete Balompié vs SD Eibar",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "03.10.2026 12:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "José María Sánchez Martínez",
+        "ref_stats": {
+          "yellow_avg": 4.8,
+          "red_avg": 0.22,
+          "fouls_avg": 25.5,
+          "strictness_index": 1.06
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 52.7,
+            "delta": 6.0
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 19.7,
+            "delta": -2.4
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 25.5,
+            "delta": 1.0
+          },
+          "home_win_prob": {
+            "before": 6.9,
+            "after": 6.9,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de José María Sánchez Martínez (índex severitat 1.06). Mitjana històrica de 4.8 grogues i 0.22 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J8_ALM_BUR",
+        "matchup": "UD Almería vs Burgos CF",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "03.10.2026 14:15",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Galech I.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 61.2,
+            "delta": 14.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 90.9,
+            "after": 90.9,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Galech I. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J8_CAD_LEG",
+        "matchup": "Cádiz CF vs CD Leganés",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "03.10.2026 16:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Morilla A.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 61.2,
+            "delta": 14.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 90.9,
+            "after": 90.9,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Morilla A. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J8_SAB_AND",
+        "matchup": "CE Sabadell vs FC Andorra",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "03.10.2026 16:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "José Luis Guzmán Mansilla",
+        "ref_stats": {
+          "yellow_avg": 5.3,
+          "red_avg": 0.3,
+          "fouls_avg": 27.0,
+          "strictness_index": 1.19
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 69.8,
+            "delta": 16.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 27.0,
+            "delta": 2.5
+          },
+          "home_win_prob": {
+            "before": 46.6,
+            "after": 46.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de José Luis Guzmán Mansilla (índex severitat 1.19). Mitjana històrica de 5.3 grogues i 0.3 vermelles per partit."
+        }
+      }
+    ]
   },
   {
     "date": "2026-10-02",

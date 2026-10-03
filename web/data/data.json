@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-03T01:16:20.317613",
-    "formatted_date": "03/10/2026 a les 01:16",
+    "generated_at": "2026-10-03T11:50:40.284800",
+    "formatted_date": "03/10/2026 a les 11:50",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,27 +43,33 @@
   "changelog": [
     {
       "date": "2026-10-03",
-      "timestamp": "2026-10-03T01:16:24.193550",
+      "timestamp": "2026-10-03T11:50:42.913588",
       "title": "Actualització Diària del Model · 03/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
       "items": [
         "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-        "   • [HYPERMOTION J8] Eldense 4 - 1 Real Oviedo | xG: 3.30-0.96 | Targetes: 6 🟨 | Córners: 14 🚩 | Àrbitre: Sanchez R.",
+        "   • [HYPERMOTION J8] CD Eldense 4 - 1 Real Oviedo | xG: 3.30-0.96 | Targetes: 6 🟨 | Córners: 14 🚩 | Àrbitre: Rafael Sánchez López",
         "📊 Actualització de Power Rànquings Elo:",
-        "   • Eldense (+23.7 ➔ 1488.4) | Real Oviedo (-23.7 ➔ 1515.4)",
+        "   • CD Eldense (+20.7 ➔ 1509.1) | Real Oviedo (-20.7 ➔ 1494.7)",
         "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+        "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
+        "   • [LaLiga Hypermotion J8] Albacete Balompié vs SD Eibar: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José María Sánchez Martínez'",
+        "     └ Impacte model: Targetes >4.5: 46.7% ➔ 52.7% (+6.0%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 6.9% ➔ 6.9% (+0.0%)",
+        "   • [LaLiga Hypermotion J8] UD Almería vs Burgos CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Galech I.'",
+        "     └ Impacte model: Targetes >4.5: 46.7% ➔ 61.2% (+14.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 90.9% ➔ 90.9% (+0.0%)",
+        "   • [LaLiga Hypermotion J8] Cádiz CF vs CD Leganés: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Morilla A.'",
+        "     └ Impacte model: Targetes >4.5: 46.7% ➔ 61.2% (+14.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 90.9% ➔ 90.9% (+0.0%)",
+        "   • [LaLiga Hypermotion J8] CE Sabadell vs FC Andorra: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José Luis Guzmán Mansilla'",
+        "     └ Impacte model: Targetes >4.5: 53.4% ➔ 69.8% (+16.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)"
       ],
       "matches": [
         {
           "match_id": "HYPERMOTION_J8_ELD_ROV",
           "competition_id": "HYPERMOTION",
           "jornada": 8,
-          "home_team": "Eldense",
+          "home_team": "CD Eldense",
           "away_team": "Real Oviedo",
-          "home_team_id": "ELD",
-          "away_team_id": "ROV",
           "home_goals": 4,
           "away_goals": 1,
           "score": "4 - 1",
@@ -75,17 +81,174 @@
           "away_red_cards": 0,
           "home_corners": 6,
           "away_corners": 8,
-          "referee": "Sanchez R.",
-          "elo_change_home": 23.7,
-          "elo_change_away": -23.7,
-          "new_elo_home": 1488.4,
-          "new_elo_away": 1515.4,
+          "referee": "Rafael Sánchez López",
+          "elo_change_home": 20.7,
+          "elo_change_away": -20.7,
+          "new_elo_home": 1509.1,
+          "new_elo_away": 1494.7,
           "date": "02.10.2026 18:30"
         }
       ],
       "combos_evaluated": [],
       "combos_generated": [],
-      "referee_updates": []
+      "referee_updates": [
+        {
+          "match_id": "HYPERMOTION_J8_ALB_EIB",
+          "matchup": "Albacete Balompié vs SD Eibar",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 8,
+          "date": "03.10.2026 12:00",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "José María Sánchez Martínez",
+          "ref_stats": {
+            "yellow_avg": 4.8,
+            "red_avg": 0.22,
+            "fouls_avg": 25.5,
+            "strictness_index": 1.06
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 46.7,
+              "after": 52.7,
+              "delta": 6.0
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 19.7,
+              "delta": -2.4
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 25.5,
+              "delta": 1.0
+            },
+            "home_win_prob": {
+              "before": 6.9,
+              "after": 6.9,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de José María Sánchez Martínez (índex severitat 1.06). Mitjana històrica de 4.8 grogues i 0.22 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J8_ALM_BUR",
+          "matchup": "UD Almería vs Burgos CF",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 8,
+          "date": "03.10.2026 14:15",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Galech I.",
+          "ref_stats": {
+            "yellow_avg": 5.2,
+            "red_avg": 0.3,
+            "fouls_avg": 26.5,
+            "strictness_index": 1.15
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 46.7,
+              "after": 61.2,
+              "delta": 14.5
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 25.9,
+              "delta": 3.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 26.5,
+              "delta": 2.0
+            },
+            "home_win_prob": {
+              "before": 90.9,
+              "after": 90.9,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Galech I. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J8_CAD_LEG",
+          "matchup": "Cádiz CF vs CD Leganés",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 8,
+          "date": "03.10.2026 16:30",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Morilla A.",
+          "ref_stats": {
+            "yellow_avg": 5.2,
+            "red_avg": 0.3,
+            "fouls_avg": 26.5,
+            "strictness_index": 1.15
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 46.7,
+              "after": 61.2,
+              "delta": 14.5
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 25.9,
+              "delta": 3.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 26.5,
+              "delta": 2.0
+            },
+            "home_win_prob": {
+              "before": 90.9,
+              "after": 90.9,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Morilla A. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J8_SAB_AND",
+          "matchup": "CE Sabadell vs FC Andorra",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 8,
+          "date": "03.10.2026 16:30",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "José Luis Guzmán Mansilla",
+          "ref_stats": {
+            "yellow_avg": 5.3,
+            "red_avg": 0.3,
+            "fouls_avg": 27.0,
+            "strictness_index": 1.19
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 53.4,
+              "after": 69.8,
+              "delta": 16.4
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 25.9,
+              "delta": 3.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 27.0,
+              "delta": 2.5
+            },
+            "home_win_prob": {
+              "before": 46.6,
+              "after": 46.6,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de José Luis Guzmán Mansilla (índex severitat 1.19). Mitjana històrica de 5.3 grogues i 0.3 vermelles per partit."
+          }
+        }
+      ]
     },
     {
       "date": "2026-10-02",
@@ -5362,17 +5525,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.2,
-          "cards_away": 2.2,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 65.7,
-          "prob_over_cards_45": 46.7,
+          "cards_home": 2.4,
+          "cards_away": 2.4,
+          "cards_total": 4.8,
+          "prob_over_cards_35": 70.8,
+          "prob_over_cards_45": 52.7,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
+            "name": "José María Sánchez Martínez",
+            "is_official": true,
             "yellow_avg": 4.2,
             "red_avg": 0.2,
-            "fouls_avg": 25.0
+            "fouls_avg": 25.5
           },
           "odds_1x2": {
             "1": 2.55,
@@ -5449,17 +5612,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.2,
-          "cards_away": 2.2,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 65.7,
-          "prob_over_cards_45": 46.7,
+          "cards_home": 2.6,
+          "cards_away": 2.6,
+          "cards_total": 5.3,
+          "prob_over_cards_35": 77.5,
+          "prob_over_cards_45": 61.2,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
+            "name": "Galech I.",
+            "is_official": true,
             "yellow_avg": 4.2,
             "red_avg": 0.2,
-            "fouls_avg": 25.0
+            "fouls_avg": 26.5
           },
           "odds_1x2": {
             "1": 1.58,
@@ -5536,17 +5699,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.2,
-          "cards_away": 2.2,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 65.7,
-          "prob_over_cards_45": 46.7,
+          "cards_home": 2.6,
+          "cards_away": 2.6,
+          "cards_total": 5.3,
+          "prob_over_cards_35": 77.5,
+          "prob_over_cards_45": 61.2,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
+            "name": "Morilla A.",
+            "is_official": true,
             "yellow_avg": 4.2,
             "red_avg": 0.2,
-            "fouls_avg": 25.0
+            "fouls_avg": 26.5
           },
           "odds_1x2": {
             "1": null,
@@ -5610,17 +5773,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.9,
+          "cards_away": 2.9,
+          "cards_total": 5.9,
+          "prob_over_cards_35": 83.7,
+          "prob_over_cards_45": 69.8,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
+            "name": "José Luis Guzmán Mansilla",
+            "is_official": true,
             "yellow_avg": 4.2,
             "red_avg": 0.2,
-            "fouls_avg": 25.0
+            "fouls_avg": 27.0
           },
           "odds_1x2": {
             "1": 2.0,
@@ -12691,7 +12854,7 @@
         "competition_id": "HYPERMOTION",
         "jornada": 8,
         "season": "2026-2027",
-        "created_at": "2026-10-03 01:16:20",
+        "created_at": "2026-10-03 11:50:40",
         "total_stake": 0.0,
         "total_payout": 0.0,
         "net_profit": 0.0,
@@ -12712,11 +12875,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 01:16:20",
+            "created_at": "2026-10-03 11:50:40",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1180,
+                "id": 1200,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -12732,7 +12895,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1181,
+                "id": 1201,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "UD Almería vs Burgos CF",
                 "selection_name": "1 - Victòria Local (UD Almería)",
@@ -12748,7 +12911,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1182,
+                "id": 1202,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -12764,7 +12927,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1183,
+                "id": 1203,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12780,7 +12943,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1184,
+                "id": 1204,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "UD Las Palmas vs Real Valladolid",
                 "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -12812,11 +12975,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 01:16:20",
+            "created_at": "2026-10-03 11:50:40",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1185,
+                "id": 1205,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -12832,7 +12995,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1186,
+                "id": 1206,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "UD Almería vs Burgos CF",
                 "selection_name": "1 - Victòria Local (UD Almería)",
@@ -12848,7 +13011,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1187,
+                "id": 1207,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -12864,7 +13027,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1188,
+                "id": 1208,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12880,7 +13043,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1189,
+                "id": 1209,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Girona FC vs RCD Mallorca",
                 "selection_name": "1 - Victòria Local (Girona FC)",
@@ -12912,11 +13075,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 01:16:20",
+            "created_at": "2026-10-03 11:50:40",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1170,
+                "id": 1190,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
                 "matchup": "UD Almería vs Burgos CF",
                 "selection_name": "1 - Victòria Local (UD Almería)",
@@ -12932,7 +13095,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1171,
+                "id": 1191,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12964,11 +13127,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 01:16:20",
+            "created_at": "2026-10-03 11:50:40",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1172,
+                "id": 1192,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -12984,7 +13147,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1173,
+                "id": 1193,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
                 "matchup": "CD Castellón vs AD Ceuta",
                 "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -13016,11 +13179,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 01:16:20",
+            "created_at": "2026-10-03 11:50:40",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1174,
+                "id": 1194,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -13036,7 +13199,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1175,
+                "id": 1195,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -13052,7 +13215,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1176,
+                "id": 1196,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -13084,11 +13247,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 01:16:20",
+            "created_at": "2026-10-03 11:50:40",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1177,
+                "id": 1197,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "Albacete Balompié vs SD Eibar",
                 "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -13104,7 +13267,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1178,
+                "id": 1198,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "UD Almería vs Burgos CF",
                 "selection_name": "1 - Victòria Local (UD Almería)",
@@ -13120,7 +13283,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1179,
+                "id": 1199,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -16087,11 +16250,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 01:16:20",
+        "created_at": "2026-10-03 11:50:40",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1180,
+            "id": 1200,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -16107,7 +16270,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1181,
+            "id": 1201,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "UD Almería vs Burgos CF",
             "selection_name": "1 - Victòria Local (UD Almería)",
@@ -16123,7 +16286,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1182,
+            "id": 1202,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -16139,7 +16302,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1183,
+            "id": 1203,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16155,7 +16318,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1184,
+            "id": 1204,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "UD Las Palmas vs Real Valladolid",
             "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -16483,11 +16646,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 01:16:20",
+        "created_at": "2026-10-03 11:50:40",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1185,
+            "id": 1205,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -16503,7 +16666,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1186,
+            "id": 1206,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "UD Almería vs Burgos CF",
             "selection_name": "1 - Victòria Local (UD Almería)",
@@ -16519,7 +16682,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1187,
+            "id": 1207,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -16535,7 +16698,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1188,
+            "id": 1208,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16551,7 +16714,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1189,
+            "id": 1209,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Girona FC vs RCD Mallorca",
             "selection_name": "1 - Victòria Local (Girona FC)",
@@ -16703,11 +16866,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 01:16:20",
+        "created_at": "2026-10-03 11:50:40",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1170,
+            "id": 1190,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
             "matchup": "UD Almería vs Burgos CF",
             "selection_name": "1 - Victòria Local (UD Almería)",
@@ -16723,7 +16886,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1171,
+            "id": 1191,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16859,11 +17022,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 01:16:20",
+        "created_at": "2026-10-03 11:50:40",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1172,
+            "id": 1192,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -16879,7 +17042,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1173,
+            "id": 1193,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
             "matchup": "CD Castellón vs AD Ceuta",
             "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -17127,11 +17290,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 01:16:20",
+        "created_at": "2026-10-03 11:50:40",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1174,
+            "id": 1194,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -17147,7 +17310,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1175,
+            "id": 1195,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -17163,7 +17326,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1176,
+            "id": 1196,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -17411,11 +17574,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 01:16:20",
+        "created_at": "2026-10-03 11:50:40",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1177,
+            "id": 1197,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "Albacete Balompié vs SD Eibar",
             "selection_name": "2 - Victòria Visitant (SD Eibar)",
@@ -17431,7 +17594,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1178,
+            "id": 1198,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "UD Almería vs Burgos CF",
             "selection_name": "1 - Victòria Local (UD Almería)",
@@ -17447,7 +17610,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1179,
+            "id": 1199,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
