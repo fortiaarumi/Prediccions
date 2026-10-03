@@ -1,5 +1,51 @@
 [
   {
+    "date": "2026-10-03",
+    "timestamp": "2026-10-03T01:16:24.193550",
+    "title": "Actualització Diària del Model · 03/10/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
+      "   • [HYPERMOTION J8] Eldense 4 - 1 Real Oviedo | xG: 3.30-0.96 | Targetes: 6 🟨 | Córners: 14 🚩 | Àrbitre: Sanchez R.",
+      "📊 Actualització de Power Rànquings Elo:",
+      "   • Eldense (+23.7 ➔ 1488.4) | Real Oviedo (-23.7 ➔ 1515.4)",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+    ],
+    "matches": [
+      {
+        "match_id": "HYPERMOTION_J8_ELD_ROV",
+        "competition_id": "HYPERMOTION",
+        "jornada": 8,
+        "home_team": "Eldense",
+        "away_team": "Real Oviedo",
+        "home_team_id": "ELD",
+        "away_team_id": "ROV",
+        "home_goals": 4,
+        "away_goals": 1,
+        "score": "4 - 1",
+        "home_xg": 3.3,
+        "away_xg": 0.96,
+        "home_yellow_cards": 2,
+        "away_yellow_cards": 4,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 6,
+        "away_corners": 8,
+        "referee": "Sanchez R.",
+        "elo_change_home": 23.7,
+        "elo_change_away": -23.7,
+        "new_elo_home": 1488.4,
+        "new_elo_away": 1515.4,
+        "date": "02.10.2026 18:30"
+      }
+    ],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": []
+  },
+  {
     "date": "2026-10-02",
     "timestamp": "2026-10-02T18:33:00.417192",
     "title": "Actualització Diària del Model · 02/10/2026",
