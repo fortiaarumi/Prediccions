@@ -1,21 +1,19 @@
 [
   {
     "date": "2026-10-03",
-    "timestamp": "2026-10-03T11:50:42.913588",
+    "timestamp": "2026-10-03T17:27:15.842061",
     "title": "Actualització Diària del Model · 03/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
     "items": [
-      "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-      "   • [HYPERMOTION J8] CD Eldense 4 - 1 Real Oviedo | xG: 3.30-0.96 | Targetes: 6 🟨 | Córners: 14 🚩 | Àrbitre: Rafael Sánchez López",
+      "⚽ S'han ingesta resultats oficials i mètriques de 2 partit(s) disputat(s):",
+      "   • [HYPERMOTION J8] Almería 2 - 1 Burgos CF | xG: 2.20-1.08 | Targetes: 5 🟨 | Córners: 11 🚩 | Àrbitre: Galech I.",
+      "   • [HYPERMOTION J8] Albacete 1 - 3 Eibar | xG: 1.48-1.52 | Targetes: 3 🟨 | Córners: 6 🚩 | Àrbitre: Sanchez J.",
       "📊 Actualització de Power Rànquings Elo:",
-      "   • CD Eldense (+20.7 ➔ 1509.1) | Real Oviedo (-20.7 ➔ 1494.7)",
+      "   • Almería (+7.9 ➔ 1591.6) | Burgos CF (-7.9 ➔ 1524.4)",
+      "   • Albacete (-11.7 ➔ 1413.6) | Eibar (+11.7 ➔ 1607.0)",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
-      "   • [LaLiga Hypermotion J8] Albacete Balompié vs SD Eibar: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José María Sánchez Martínez'",
-      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 52.7% (+6.0%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 6.9% ➔ 6.9% (+0.0%)",
-      "   • [LaLiga Hypermotion J8] UD Almería vs Burgos CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Galech I.'",
-      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 61.2% (+14.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 90.9% ➔ 90.9% (+0.0%)",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 2 partit(s):",
       "   • [LaLiga Hypermotion J8] Cádiz CF vs CD Leganés: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Morilla A.'",
       "     └ Impacte model: Targetes >4.5: 46.7% ➔ 61.2% (+14.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 90.9% ➔ 90.9% (+0.0%)",
       "   • [LaLiga Hypermotion J8] CE Sabadell vs FC Andorra: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José Luis Guzmán Mansilla'",
@@ -23,111 +21,61 @@
     ],
     "matches": [
       {
-        "match_id": "HYPERMOTION_J8_ELD_ROV",
+        "match_id": "HYPERMOTION_J8_ALM_BUR",
         "competition_id": "HYPERMOTION",
         "jornada": 8,
-        "home_team": "CD Eldense",
-        "away_team": "Real Oviedo",
-        "home_goals": 4,
+        "home_team": "Almería",
+        "away_team": "Burgos CF",
+        "home_team_id": "ALM",
+        "away_team_id": "BUR",
+        "home_goals": 2,
         "away_goals": 1,
-        "score": "4 - 1",
-        "home_xg": 3.3,
-        "away_xg": 0.96,
+        "score": "2 - 1",
+        "home_xg": 2.2,
+        "away_xg": 1.08,
         "home_yellow_cards": 2,
-        "away_yellow_cards": 4,
+        "away_yellow_cards": 3,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 8,
+        "away_corners": 3,
+        "referee": "Galech I.",
+        "elo_change_home": 7.9,
+        "elo_change_away": -7.9,
+        "new_elo_home": 1591.6,
+        "new_elo_away": 1524.4,
+        "date": "03.10.2026 14:15"
+      },
+      {
+        "match_id": "HYPERMOTION_J8_ALB_EIB",
+        "competition_id": "HYPERMOTION",
+        "jornada": 8,
+        "home_team": "Albacete",
+        "away_team": "Eibar",
+        "home_team_id": "ALB",
+        "away_team_id": "EIB",
+        "home_goals": 1,
+        "away_goals": 3,
+        "score": "1 - 3",
+        "home_xg": 1.48,
+        "away_xg": 1.52,
+        "home_yellow_cards": 2,
+        "away_yellow_cards": 1,
         "home_red_cards": 0,
         "away_red_cards": 0,
         "home_corners": 6,
-        "away_corners": 8,
-        "referee": "Rafael Sánchez López",
-        "elo_change_home": 20.7,
-        "elo_change_away": -20.7,
-        "new_elo_home": 1509.1,
-        "new_elo_away": 1494.7,
-        "date": "02.10.2026 18:30"
+        "away_corners": 0,
+        "referee": "Sanchez J.",
+        "elo_change_home": -11.7,
+        "elo_change_away": 11.7,
+        "new_elo_home": 1413.6,
+        "new_elo_away": 1607.0,
+        "date": "03.10.2026 12:00"
       }
     ],
     "combos_evaluated": [],
     "combos_generated": [],
     "referee_updates": [
-      {
-        "match_id": "HYPERMOTION_J8_ALB_EIB",
-        "matchup": "Albacete Balompié vs SD Eibar",
-        "competition_id": "HYPERMOTION",
-        "competition_name": "LaLiga Hypermotion",
-        "jornada": 8,
-        "date": "03.10.2026 12:00",
-        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
-        "new_referee": "José María Sánchez Martínez",
-        "ref_stats": {
-          "yellow_avg": 4.8,
-          "red_avg": 0.22,
-          "fouls_avg": 25.5,
-          "strictness_index": 1.06
-        },
-        "changes": {
-          "cards_over_45": {
-            "before": 46.7,
-            "after": 52.7,
-            "delta": 6.0
-          },
-          "red_card_prob": {
-            "before": 22.1,
-            "after": 19.7,
-            "delta": -2.4
-          },
-          "fouls_exp": {
-            "before": 24.5,
-            "after": 25.5,
-            "delta": 1.0
-          },
-          "home_win_prob": {
-            "before": 6.9,
-            "after": 6.9,
-            "delta": 0.0
-          },
-          "summary": "Designació oficial de José María Sánchez Martínez (índex severitat 1.06). Mitjana històrica de 4.8 grogues i 0.22 vermelles per partit."
-        }
-      },
-      {
-        "match_id": "HYPERMOTION_J8_ALM_BUR",
-        "matchup": "UD Almería vs Burgos CF",
-        "competition_id": "HYPERMOTION",
-        "competition_name": "LaLiga Hypermotion",
-        "jornada": 8,
-        "date": "03.10.2026 14:15",
-        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
-        "new_referee": "Galech I.",
-        "ref_stats": {
-          "yellow_avg": 5.2,
-          "red_avg": 0.3,
-          "fouls_avg": 26.5,
-          "strictness_index": 1.15
-        },
-        "changes": {
-          "cards_over_45": {
-            "before": 46.7,
-            "after": 61.2,
-            "delta": 14.5
-          },
-          "red_card_prob": {
-            "before": 22.1,
-            "after": 25.9,
-            "delta": 3.8
-          },
-          "fouls_exp": {
-            "before": 24.5,
-            "after": 26.5,
-            "delta": 2.0
-          },
-          "home_win_prob": {
-            "before": 90.9,
-            "after": 90.9,
-            "delta": 0.0
-          },
-          "summary": "Designació oficial de Galech I. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
-        }
-      },
       {
         "match_id": "HYPERMOTION_J8_CAD_LEG",
         "matchup": "Cádiz CF vs CD Leganés",
