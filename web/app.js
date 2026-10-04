@@ -19,6 +19,69 @@ let currentMatchFilter = 'ALL';
 let activeModalComboKey = null;
 window.combosRegistry = {};
 
+// Memòria persistent resilient amb IndexedDB (resistent a neteja de memòria cau bàsica)
+const IDB_NAME = 'PrediccionsResilientDB';
+const IDB_STORE = 'app_data';
+
+function openIDB() {
+  return new Promise((resolve) => {
+    if (!window.indexedDB) return resolve(null);
+    try {
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) {
+          db.createObjectStore(IDB_STORE);
+        }
+      };
+      req.onsuccess = (e) => resolve(e.target.result);
+      req.onerror = () => resolve(null);
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+async function idbGet(key) {
+  const db = await openIDB();
+  if (!db) return null;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const req = tx.objectStore(IDB_STORE).get(key);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => resolve(null);
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+async function idbSet(key, val) {
+  const db = await openIDB();
+  if (!db) return;
+  try {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(val, key);
+  } catch (e) {}
+}
+
+let selectedJornadaPred = {};
+let selectedJornadaCombo = {};
+
+window.onJornadaChange = function(type, val) {
+  const jNum = val === 'ACTIVE' ? 'ACTIVE' : parseInt(val, 10);
+  if (type === 'predictions') {
+    selectedJornadaPred[currentLeague] = jNum;
+    UserAuth.saveCurrentPreference(`jornada_pred_${currentLeague}`, jNum);
+    renderPredictions();
+  } else if (type === 'combos') {
+    selectedJornadaCombo[currentLeague] = jNum;
+    UserAuth.saveCurrentPreference(`jornada_combo_${currentLeague}`, jNum);
+    renderCombos();
+  }
+};
+
 // Memòria cau local resilient per a combinades (evita que desapareguin durant canvis de jornada o càrrega)
 window._cachedCombos = {};
 try {
@@ -28,21 +91,32 @@ try {
 
 window.setMatchesFilter = function(status) {
   currentMatchFilter = status;
+  UserAuth.saveCurrentPreference('matchFilter', status);
   document.querySelectorAll('.match-filter-pill').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-match-filter') === status);
   });
   renderPredictions();
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await UserAuth.init();
   initEventListeners();
   loadData();
 });
 
 function initEventListeners() {
-  // Navigation Tabs
+  // Navigation Tabs (Top)
   const tabButtons = document.querySelectorAll('.nav-tab');
   tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.getAttribute('data-tab');
+      switchTab(tabId);
+    });
+  });
+
+  // Mobile Bottom Navigation Dock
+  const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+  mobileNavBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const tabId = btn.getAttribute('data-tab');
       switchTab(tabId);
@@ -56,6 +130,7 @@ function initEventListeners() {
       leagueButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentLeague = btn.getAttribute('data-league');
+      UserAuth.saveCurrentPreference('favoriteLeague', currentLeague);
       applyFilters();
     });
   });
@@ -190,16 +265,28 @@ function initEventListeners() {
       PersonalBets.render();
     };
   });
+
+  // Backup & Restore Account Listeners
+  const btnExportAcc = document.getElementById('btn-export-account');
+  if (btnExportAcc) btnExportAcc.onclick = () => UserAuth.exportAccountBackup();
+  const inputImportAcc = document.getElementById('input-import-account');
+  if (inputImportAcc) inputImportAcc.onchange = (e) => UserAuth.importAccountBackup(e);
 }
 
 function switchTab(tabId) {
   currentTab = tabId;
+  UserAuth.saveCurrentPreference('preferredTab', tabId);
 
-  // Actualitzar botons
+  // Actualitzar botons superiors
   document.querySelectorAll('.nav-tab').forEach(b => {
     const isTarget = b.getAttribute('data-tab') === tabId;
     b.classList.toggle('active', isTarget);
     b.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+  });
+
+  // Actualitzar botons de la barra inferior mòbil
+  document.querySelectorAll('.mobile-nav-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
   });
 
   // Actualitzar seccions
@@ -383,19 +470,90 @@ function renderPredictions() {
   const grid = document.getElementById('matches-grid');
   if (!grid || !appData.predictions) return;
 
+  // Actualitzar Desplegable de Jornades
+  const selPred = document.getElementById('select-jornada-pred');
+  const badgePred = document.getElementById('badge-jornada-pred');
+
+  if (selPred) {
+    if (currentLeague === 'ALL') {
+      selPred.innerHTML = `<option value="ACTIVE" selected>Jornada en Curs de Cada Lliga</option>`;
+      if (badgePred) {
+        badgePred.textContent = 'Multi-Lliga';
+        badgePred.className = 'jornada-badge badge-active';
+      }
+    } else {
+      const pData = appData.predictions[currentLeague];
+      if (pData) {
+        const activeJ = pData.active_jornada || pData.jornada || 8;
+        const available = pData.available_jornadas || [activeJ];
+        const maxJ = Math.max(...available, activeJ + 2);
+        const minJ = 1;
+
+        let targetJ = selectedJornadaPred[currentLeague];
+        if (!targetJ || targetJ === 'ACTIVE') {
+          targetJ = activeJ;
+          selectedJornadaPred[currentLeague] = activeJ;
+        }
+
+        let optionsHtml = '';
+        for (let j = minJ; j <= maxJ; j++) {
+          let statusText = '';
+          if (j < activeJ) statusText = ' (🏁 Finalitzada)';
+          else if (j === activeJ) statusText = ' (🟢 En Curs)';
+          else statusText = ' (⏳ Properament)';
+
+          const isSelected = (j === targetJ) ? 'selected' : '';
+          optionsHtml += `<option value="${j}" ${isSelected}>Jornada ${j}${statusText}</option>`;
+        }
+        selPred.innerHTML = optionsHtml;
+
+        if (badgePred) {
+          if (targetJ < activeJ) {
+            badgePred.textContent = '🏁 Jornada Finalitzada';
+            badgePred.className = 'jornada-badge badge-finished';
+          } else if (targetJ === activeJ) {
+            badgePred.textContent = '🟢 Jornada en Curs';
+            badgePred.className = 'jornada-badge badge-active';
+          } else {
+            badgePred.textContent = '⏳ Properament';
+            badgePred.className = 'jornada-badge badge-future';
+          }
+        }
+      }
+    }
+  }
+
   let allMatches = [];
   const comps = appData.metadata.competitions || [];
+  let isFutureSelected = false;
+  let futureJornadaNum = 0;
 
   comps.forEach(c => {
     if (currentLeague !== 'ALL' && currentLeague !== c.id) return;
     const pData = appData.predictions[c.id];
-    if (pData && pData.matches) {
-      pData.matches.forEach(m => {
-        m._compName = c.name;
-        m._compFlag = c.flag;
-        allMatches.push(m);
-      });
+    if (!pData) return;
+
+    const activeJ = pData.active_jornada || pData.jornada || 8;
+    const targetJ = (currentLeague === 'ALL') ? activeJ : (selectedJornadaPred[c.id] || activeJ);
+
+    if (targetJ > activeJ) {
+      isFutureSelected = true;
+      futureJornadaNum = targetJ;
     }
+
+    let jMatches = [];
+    if (targetJ === activeJ && pData.matches && pData.matches.length > 0) {
+      jMatches = pData.matches;
+    } else if (pData.by_jornada && pData.by_jornada[String(targetJ)]) {
+      jMatches = pData.by_jornada[String(targetJ)];
+    }
+
+    jMatches.forEach(m => {
+      m._compName = c.name;
+      m._compFlag = c.flag;
+      m._targetJornada = targetJ;
+      allMatches.push(m);
+    });
   });
 
   if (currentSearch) {
@@ -425,7 +583,19 @@ function renderPredictions() {
   }
 
   if (allMatches.length === 0) {
-    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No hi ha partits que coincideixin amb el filtre seleccionat.</p>`;
+    if (isFutureSelected) {
+      grid.innerHTML = `
+        <div class="empty-jornada-state" style="grid-column: 1/-1; text-align: center; padding: 48px 20px; background: rgba(17, 24, 39, 0.5); border: 1px dashed rgba(255,255,255,0.12); border-radius: var(--radius-md);">
+          <span style="font-size: 38px; display: block; margin-bottom: 12px;">⏳</span>
+          <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 8px;">Encara no hi ha partits disponibles per a la Jornada ${futureJornadaNum}</h3>
+          <p style="color: var(--text-muted); max-width: 480px; margin: 0 auto; font-size: 13px;">
+            Els calendaris, designacions arbitrals del CTA/PGMOL i les cuotes oficials de Winamax s'incorporaran automàticament tan bon punt la competició iniciï aquesta jornada.
+          </p>
+        </div>
+      `;
+    } else {
+      grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No hi ha partits que coincideixin amb el filtre seleccionat.</p>`;
+    }
     return;
   }
 
@@ -438,7 +608,7 @@ function renderPredictions() {
     const px = m.prob_x || 33.3;
     const p2 = m.prob_2 || 33.4;
 
-    const ref = m.referee || { name: 'Pendent Oficial', yellow_avg: 4.2, fouls_avg: 24.5 };
+    const ref = m.referee || { name: 'Pendent Oficial', yellow_avg: null, fouls_avg: null };
     const refBadgeCls = ref.is_official ? 'color: #c084fc;' : 'color: var(--text-muted);';
 
     // -------------------------------------------------------------------------
@@ -628,7 +798,7 @@ function renderPredictions() {
 
         <div class="referee-tag">
           <span style="${refBadgeCls}">⚖️ ${ref.name}</span>
-          <span style="font-family: var(--font-mono);">(${ref.yellow_avg} 🟨/p · ${ref.fouls_avg} faltes)</span>
+          <span style="font-family: var(--font-mono);">${ref.yellow_avg ? `(${ref.yellow_avg} 🟨/p · ${ref.fouls_avg || '-'} faltes)` : '<span style="color: var(--text-muted); font-size: 11px;">(Pendent de designació oficial)</span>'}</span>
         </div>
       </div>
     `;
@@ -737,19 +907,92 @@ function renderCombos() {
     badgeEl.innerHTML = `<span>Inversió per jornada: <strong>${safeFmt}</strong> Segura · <strong>${semiFmt}</strong> Semi · <strong>${riskyFmt}</strong> Arriscada</span>`;
   }
 
+  // Actualitzar Desplegable de Jornades de Combinades
+  const selCombo = document.getElementById('select-jornada-combo');
+  const badgeCombo = document.getElementById('badge-jornada-combo');
+
+  if (selCombo) {
+    if (currentLeague === 'ALL') {
+      selCombo.innerHTML = `<option value="ACTIVE" selected>Jornada en Curs de Cada Lliga</option>`;
+      if (badgeCombo) {
+        badgeCombo.textContent = 'Multi-Lliga';
+        badgeCombo.className = 'jornada-badge badge-active';
+      }
+    } else {
+      const cData = appData.combos[currentLeague];
+      if (cData) {
+        const activeJ = cData.active_jornada || (appData.predictions[currentLeague]?.active_jornada) || 8;
+        const available = cData.available_jornadas || [activeJ];
+        const maxJ = Math.max(...available, activeJ + 2);
+        const minJ = 1;
+
+        let targetJ = selectedJornadaCombo[currentLeague];
+        if (!targetJ || targetJ === 'ACTIVE') {
+          targetJ = activeJ;
+          selectedJornadaCombo[currentLeague] = activeJ;
+        }
+
+        let optionsHtml = '';
+        for (let j = minJ; j <= maxJ; j++) {
+          let statusText = '';
+          if (j < activeJ) statusText = ' (🏁 Finalitzada)';
+          else if (j === activeJ) statusText = ' (🟢 En Curs)';
+          else statusText = ' (⏳ Properament)';
+
+          const isSelected = (j === targetJ) ? 'selected' : '';
+          optionsHtml += `<option value="${j}" ${isSelected}>Jornada ${j}${statusText}</option>`;
+        }
+        selCombo.innerHTML = optionsHtml;
+
+        if (badgeCombo) {
+          if (targetJ < activeJ) {
+            badgeCombo.textContent = '🏁 Jornada Finalitzada';
+            badgeCombo.className = 'jornada-badge badge-finished';
+          } else if (targetJ === activeJ) {
+            badgeCombo.textContent = '🟢 Jornada en Curs';
+            badgeCombo.className = 'jornada-badge badge-active';
+          } else {
+            badgeCombo.textContent = '⏳ Properament';
+            badgeCombo.className = 'jornada-badge badge-future';
+          }
+        }
+      }
+    }
+  }
+
   window.combosRegistry = {};
   const leagueKeys = ['LALIGA', 'PREMIER', 'HYPERMOTION', 'CHAMPIONSHIP', 'MULTI'];
   let html = '';
+  let totalCombosFound = 0;
+  let isFutureCombos = false;
+  let futureComboJ = 0;
 
   leagueKeys.forEach(lKey => {
     if (currentLeague !== 'ALL' && currentLeague !== lKey) return;
 
-    let leagueCombos = appData.combos[lKey];
-    if (!leagueCombos || (!leagueCombos.safe?.length && !leagueCombos.semi?.length && !leagueCombos.risky?.length)) {
-      if (window._cachedCombos && window._cachedCombos[lKey]) {
-        leagueCombos = window._cachedCombos[lKey];
-      }
+    const cData = appData.combos[lKey];
+    if (!cData) return;
+
+    const activeJ = cData.active_jornada || (appData.predictions[lKey]?.active_jornada) || 8;
+    const targetJ = (currentLeague === 'ALL') ? activeJ : (selectedJornadaCombo[lKey] || activeJ);
+
+    if (targetJ > activeJ) {
+      isFutureCombos = true;
+      futureComboJ = targetJ;
     }
+
+    let leagueCombos = null;
+    if (targetJ === activeJ) {
+      leagueCombos = cData;
+      if (!leagueCombos || (!leagueCombos.safe?.length && !leagueCombos.semi?.length && !leagueCombos.risky?.length)) {
+        if (window._cachedCombos && window._cachedCombos[lKey]) {
+          leagueCombos = window._cachedCombos[lKey];
+        }
+      }
+    } else if (cData.by_jornada && cData.by_jornada[String(targetJ)]) {
+      leagueCombos = cData.by_jornada[String(targetJ)];
+    }
+
     if (!leagueCombos) return;
 
     let allCards = [
@@ -758,7 +1001,7 @@ function renderCombos() {
       ...(leagueCombos.risky || []).map(c => ({ ...c, type: 'risky' }))
     ];
 
-    if (allCards.length === 0 && window._cachedCombos && window._cachedCombos[lKey]) {
+    if (allCards.length === 0 && targetJ === activeJ && window._cachedCombos && window._cachedCombos[lKey]) {
       const cached = window._cachedCombos[lKey];
       allCards = [
         ...(cached.safe || []).map(c => ({ ...c, type: 'safe' })),
@@ -768,6 +1011,7 @@ function renderCombos() {
     }
 
     if (allCards.length === 0) return;
+    totalCombosFound += allCards.length;
 
     let leagueTitle = lKey;
     if (lKey === 'LALIGA') leagueTitle = '🇪🇸 LaLiga EA Sports';
@@ -956,7 +1200,23 @@ function renderCombos() {
     `;
   });
 
-  container.innerHTML = html || `<p style="text-align: center; padding: 40px; color: var(--text-muted);">No hi ha combinades disponibles per al filtre actual.</p>`;
+  if (totalCombosFound === 0) {
+    if (isFutureCombos) {
+      container.innerHTML = `
+        <div class="empty-jornada-state" style="text-align: center; padding: 48px 20px; background: rgba(17, 24, 39, 0.5); border: 1px dashed rgba(255,255,255,0.12); border-radius: var(--radius-md); margin: 20px 0;">
+          <span style="font-size: 38px; display: block; margin-bottom: 12px;">🎯</span>
+          <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 8px;">Combinades pendents de generar per a la Jornada ${futureComboJ}</h3>
+          <p style="color: var(--text-muted); max-width: 480px; margin: 0 auto; font-size: 13px;">
+            Les combinades es congelen un cop comença la jornada per garantir la màxima transparència. La nova suite de 6 combinades de la Jornada ${futureComboJ} es calcularà i congelarà automàticament abans de l'inici del primer partit amb les millors cuotes de Winamax.
+          </p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `<p style="text-align: center; padding: 40px; color: var(--text-muted);">No s'han trobat combinades disponibles per al filtre actual.</p>`;
+    }
+  } else {
+    container.innerHTML = html;
+  }
 }
 
 // =============================================================================
@@ -965,6 +1225,30 @@ function renderCombos() {
 const UserAuth = {
   SESSION_KEY: 'prediccions_user_session',
   USERS_KEY: 'prediccions_user_accounts',
+
+  async init() {
+    try {
+      let rawUsers = localStorage.getItem(this.USERS_KEY);
+      if (!rawUsers) {
+        const idbUsers = await idbGet(this.USERS_KEY);
+        if (idbUsers) {
+          localStorage.setItem(this.USERS_KEY, JSON.stringify(idbUsers));
+          console.log("🛡️ Comptes restaurats des d'IndexedDB.");
+        }
+      }
+      let rawSession = localStorage.getItem(this.SESSION_KEY);
+      if (!rawSession) {
+        const idbSession = await idbGet(this.SESSION_KEY);
+        if (idbSession) {
+          localStorage.setItem(this.SESSION_KEY, JSON.stringify(idbSession));
+        }
+      }
+    } catch (e) {
+      console.warn("Error inicialitzant emmagatzematge resilient:", e);
+    }
+    this.restoreUserPreferences();
+    this.updateUI();
+  },
 
   getCurrentUser() {
     try {
@@ -984,9 +1268,11 @@ const UserAuth = {
   setCurrentUser(userObj) {
     try {
       localStorage.setItem(this.SESSION_KEY, JSON.stringify(userObj));
+      idbSet(this.SESSION_KEY, userObj);
     } catch (e) {
       console.warn("Error desant sessió:", e);
     }
+    this.restoreUserPreferences();
     this.updateUI();
     PersonalBets.render();
   },
@@ -1003,7 +1289,110 @@ const UserAuth = {
   saveUsers(users) {
     try {
       localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+      idbSet(this.USERS_KEY, users);
     } catch (e) {}
+  },
+
+  saveCurrentPreference(key, value) {
+    const user = this.getCurrentUser();
+    if (!user || user.isGuest) return;
+    const users = this.getAllUsers();
+    if (!users[user.username]) users[user.username] = {};
+    if (!users[user.username].preferences) users[user.username].preferences = {};
+    users[user.username].preferences[key] = value;
+    this.saveUsers(users);
+  },
+
+  restoreUserPreferences() {
+    const user = this.getCurrentUser();
+    if (!user || user.isGuest) return;
+    const users = this.getAllUsers();
+    const account = users[user.username];
+    if (account && account.preferences) {
+      const p = account.preferences;
+      if (p.favoriteLeague) {
+        currentLeague = p.favoriteLeague;
+        document.querySelectorAll('.pill-btn').forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-league') === currentLeague);
+        });
+      }
+      if (p.matchFilter) {
+        currentMatchFilter = p.matchFilter;
+        document.querySelectorAll('.match-filter-pill').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-match-filter') === currentMatchFilter);
+        });
+      }
+      if (p.preferredTab && p.preferredTab !== currentTab) {
+        setTimeout(() => switchTab(p.preferredTab), 60);
+      }
+    }
+  },
+
+  exportAccountBackup() {
+    const users = this.getAllUsers();
+    const currentUser = this.getCurrentUser();
+    const allStorage = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('prediccions_')) {
+        allStorage[k] = localStorage.getItem(k);
+      }
+    }
+    const backupData = {
+      app: 'Prediccions Futbol AI',
+      exportedAt: new Date().toISOString(),
+      currentUser: currentUser.username,
+      users: users,
+      storage: allStorage
+    };
+
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `prediccions_compte_${currentUser.username}_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("💾 Còpia de seguretat descarregada amb èxit!", "success");
+  },
+
+  importAccountBackup(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data || !data.users) {
+          throw new Error("El fitxer no té un format de còpia vàlid.");
+        }
+        this.saveUsers(data.users);
+        if (data.storage) {
+          for (const [k, v] of Object.entries(data.storage)) {
+            localStorage.setItem(k, v);
+            await idbSet(k, typeof v === 'string' ? JSON.parse(v) : v);
+          }
+        }
+        if (data.currentUser && data.currentUser !== 'Convidat' && data.users[data.currentUser]) {
+          this.setCurrentUser({
+            username: data.currentUser,
+            isGuest: false,
+            isAuthenticated: true,
+            avatar: data.currentUser[0].toUpperCase()
+          });
+        }
+        showToast("📥 Compte i dades restaurades correctament!", "success");
+        closeAuthModal();
+        this.restoreUserPreferences();
+        PersonalBets.render();
+        applyFilters();
+      } catch (err) {
+        alert("Error en importar el fitxer: " + err.message);
+      }
+    };
+    reader.readAsText(file);
   },
 
   login(username, password) {
@@ -1015,7 +1404,13 @@ const UserAuth = {
     if (!users[cleanUser]) {
       users[cleanUser] = {
         password: btoa(password),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        preferences: {
+          favoriteLeague: currentLeague,
+          preferredTab: currentTab,
+          matchFilter: currentMatchFilter
+        },
+        bets: []
       };
       this.saveUsers(users);
       showToast(`🎉 Compte creat amb èxit per a ${cleanUser}!`, 'success');
@@ -1109,12 +1504,30 @@ const PersonalBets = {
     } catch (e) {
       console.warn("Error carregant apostes:", e);
     }
+    // Fallback: comprovar directament al perfil de l'usuari
+    const user = UserAuth.getCurrentUser();
+    if (!user.isGuest) {
+      const users = UserAuth.getAllUsers();
+      if (users[user.username] && Array.isArray(users[user.username].bets) && users[user.username].bets.length > 0) {
+        return users[user.username].bets;
+      }
+    }
     return [];
   },
 
   saveAll(bets) {
     try {
       localStorage.setItem(this.getStorageKey(), JSON.stringify(bets));
+      idbSet(this.getStorageKey(), bets);
+      // Sincronitzar directament dins de l'objecte de compte
+      const user = UserAuth.getCurrentUser();
+      if (!user.isGuest) {
+        const users = UserAuth.getAllUsers();
+        if (users[user.username]) {
+          users[user.username].bets = bets;
+          UserAuth.saveUsers(users);
+        }
+      }
     } catch (e) {
       console.warn("Error desant apostes:", e);
     }
@@ -3026,4 +3439,6 @@ window.copyModalComboSummary = copyModalComboSummary;
 window.openModalAllMatches = openModalAllMatches;
 window.openWinamaxAutofill = openWinamaxAutofill;
 window.launchTestComboAutofill = launchTestComboAutofill;
+window.onJornadaChange = onJornadaChange;
+window.UserAuth = UserAuth;
 

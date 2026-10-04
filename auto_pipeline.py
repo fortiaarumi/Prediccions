@@ -35,13 +35,11 @@ from engine.jornada_predictor import JornadaPredictor
 from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
 from engine.pdf_report_generator import PDFReportGenerator
-from notifier.email_sender import EmailSender
 from scraper.jornada_resolver import JornadaResolver
 
 def run_pipeline(
     jornada: Optional[int] = None,
     leagues: List[str] = None,
-    send_email: bool = True,
     season: str = "2026-2027"
 ):
     if not leagues:
@@ -147,20 +145,6 @@ def run_pipeline(
         generated_pdfs.append(multi_pdf_path)
         print(f"[+] Informe Multi-Lliga generat amb èxit a: {multi_pdf_path}")
 
-    # -------------------------------------------------------------
-    # FASE 4: ENVIAMENT AUTOMÀTIC PER CORREU ELECTRÒNIC
-    # -------------------------------------------------------------
-    if send_email:
-        print("\n[*] FASE 4: Enviament d'informes per correu electrònic...")
-        email_sender = EmailSender()
-        email_sender.send_reports(
-            pdf_paths=generated_pdfs,
-            jornada=jornada,
-            simulation_summary=sim_summary
-        )
-    else:
-        print("\n[*] FASE 4: Enviament per correu desactivat (--no-email).")
-
     print("\n" + "=" * 80)
     print("   🎉 [PIPELINE COMPLETAT AMB ÈXIT]")
     print(f"   Total fitxers PDF generats a 'reports/': {len(generated_pdfs)}")
@@ -208,7 +192,6 @@ def main():
     parser = argparse.ArgumentParser(description="Pipeline Autònom de Prediccions de Futbol Multi-Lliga")
     parser.add_argument("--jornada", type=int, default=None, help="Número de jornada (si no s'indica, es detecta automàticament per a cada lliga)")
     parser.add_argument("--leagues", nargs="+", default=["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"], help="Lligues a incloure (ex: LALIGA PREMIER HYPERMOTION CHAMPIONSHIP)")
-    parser.add_argument("--no-email", action="store_true", help="Genera els informes PDF però no envia correus")
     parser.add_argument("--season", type=str, default="2026-2027", help="Temporada oficial")
     parser.add_argument("--update-results", action="store_true", help="Només descarrega resultats de la jornada i actualitza el PnL (per als dimarts)")
 
@@ -220,7 +203,6 @@ def main():
         run_pipeline(
             jornada=args.jornada,
             leagues=args.leagues,
-            send_email=not args.no_email,
             season=args.season
         )
 

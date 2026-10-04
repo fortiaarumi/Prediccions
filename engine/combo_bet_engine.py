@@ -176,17 +176,14 @@ class ComboBetEngine:
                 valid = [m for m in mm.get("markets", []) if m["model_prob"] >= (min_prob * 0.75) and m["bookie_odd"] >= 1.05]
             if not valid:
                 return []
-            sorted_m = sorted(valid, key=lambda x: x["model_prob"], reverse=True)
-            primary = sorted_m[0]
-            alt = None
-            for m in sorted_m[1:]:
-                if m.get("category") != primary.get("category"):
-                    alt = m
-                    break
-            cands = [primary]
-            if alt:
-                cands.append(alt)
-            return cands
+            # Agrupar el millor mercat per a cada categoria per permetre triar Córners, Targetes, Doble Oportunitat i Gols
+            by_category = {}
+            for m in valid:
+                cat = m.get("category", "Altres")
+                if cat not in by_category or m["model_prob"] > by_category[cat]["model_prob"]:
+                    by_category[cat] = m
+            sorted_cands = sorted(by_category.values(), key=lambda x: x["model_prob"], reverse=True)
+            return sorted_cands[:3]
 
         pools = []
         if is_multi:

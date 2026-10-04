@@ -494,9 +494,9 @@ class WebDataExporter:
             ref_info = {
                 "name": ref_res["name"],
                 "is_official": not ref_res.get("is_generic", False),
-                "yellow_avg": round(float(ref_data.get("yellow_avg", 4.2)), 2),
-                "red_avg": round(float(ref_data.get("red_avg", 0.2)), 2),
-                "fouls_avg": round(float(ref_data.get("fouls_avg", 24.5)), 1)
+                "yellow_avg": round(float(ref_data.get("yellow_cards_avg", ref_data.get("yellow_avg", 4.5))), 2),
+                "red_avg": round(float(ref_data.get("red_cards_avg", ref_data.get("red_avg", 0.25))), 2),
+                "fouls_avg": round(float(ref_data.get("fouls_avg", 25.0)), 1)
             }
 
             corners = pred.get("corners", {})
@@ -629,6 +629,106 @@ class WebDataExporter:
             "referee_updates": referee_updates
         }
 
+    def get_jornada_matches(self, competition_id: str, jornada: int) -> List[Dict[str, Any]]:
+        """
+        Recupera i formata tots els partits d'una jornada concreta des de SQLite,
+        incloent el resultat final, mètriques d'avaluació (si està FINISHED) i estadístiques oficials.
+        """
+        try:
+            with self.db.get_connection() as conn:
+                c = conn.cursor()
+                c.execute("""
+                    SELECT m.*, ht.name as h_name, ht.short_name as h_short, htr.elo_rating as h_elo,
+                           at.name as a_name, at.short_name as a_short, atr.elo_rating as a_elo,
+                           r.name as ref_name, r.yellow_cards_avg as ref_yellow, r.fouls_avg as ref_fouls
+                    FROM matches m
+                    JOIN teams ht ON m.home_team_id = ht.id
+                    JOIN teams at ON m.away_team_id = at.id
+                    LEFT JOIN team_ratings htr ON ht.id = htr.team_id
+                    LEFT JOIN team_ratings atr ON at.id = atr.team_id
+                    LEFT JOIN referees r ON m.referee_id = r.id
+                    WHERE m.competition_id = ? AND m.jornada = ?
+                    ORDER BY m.date_time ASC
+                """, (competition_id, jornada))
+                rows = [dict(r) for r in c.fetchall()]
+        except Exception as e:
+            print(f"   [!] Error recuperant partits de {competition_id} J{jornada}: {e}")
+            return []
+
+        matches_list = []
+        for r in rows:
+            is_finished = (r.get("status") == "FINISHED" and r.get("home_goals") is not None)
+            hg = r.get("home_goals")
+            ag = r.get("away_goals")
+            final_str = f"{hg} - {ag}" if is_finished else None
+            actual_1x2 = "1" if (is_finished and hg > ag) else ("2" if (is_finished and ag > hg) else ("X" if is_finished else None))
+
+            home_data = {"id": r["home_team_id"], "name": r["h_name"], "elo_rating": r.get("h_elo", 1500.0)}
+            away_data = {"id": r["away_team_id"], "name": r["a_name"], "elo_rating": r.get("a_elo", 1500.0)}
+            ref_data = {"name": r.get("ref_name") or "Àrbitre Oficial", "yellow_cards_avg": r.get("ref_yellow", 4.5), "fouls_avg": r.get("ref_fouls", 25.0)}
+            pred = self.predictor.predict_single_match(home_data, away_data, referee=ref_data)
+
+            p_1x2 = pred.get("goals", {}).get("prob_1X2", {})
+            p1 = round(float(p_1x2.get("1", 33.3)), 1)
+            px = round(float(p_1x2.get("X", 33.3)), 1)
+            p2 = round(float(p_1x2.get("2", 33.3)), 1)
+            predicted_1x2 = "1" if (p1 >= px and p1 >= p2) else ("2" if (p2 >= px and p2 >= p1) else "X")
+            is_hit_1x2 = (actual_1x2 == predicted_1x2) if is_finished else None
+
+            matches_list.append({
+                "match_id": r["id"],
+                "competition_id": competition_id,
+                "jornada": jornada,
+                "status": r.get("status", "FINISHED" if is_finished else "SCHEDULED"),
+                "home_team": {
+                    "id": r["home_team_id"],
+                    "name": r["h_name"],
+                    "short_name": r.get("h_short") or r["h_name"][:3].upper(),
+                    "elo": round(float(r.get("h_elo", 1500.0)), 1)
+                },
+                "away_team": {
+                    "id": r["away_team_id"],
+                    "name": r["a_name"],
+                    "short_name": r.get("a_short") or r["a_name"][:3].upper(),
+                    "elo": round(float(r.get("a_elo", 1500.0)), 1)
+                },
+                "date": r.get("date_time", "Pendent"),
+                "home_goals": hg,
+                "away_goals": ag,
+                "final_score": final_str,
+                "actual_1x2": actual_1x2,
+                "predicted_1x2": predicted_1x2,
+                "is_hit_1x2": is_hit_1x2,
+                "xg_home": round(float(r.get("home_xg") or pred.get("goals", {}).get("lambda_home", 1.3)), 2),
+                "xg_away": round(float(r.get("away_xg") or pred.get("goals", {}).get("mu_away", 1.1)), 2),
+                "real_corners_home": r.get("home_corners"),
+                "real_corners_away": r.get("away_corners"),
+                "real_cards_home": r.get("home_yellow_cards"),
+                "real_cards_away": r.get("away_yellow_cards"),
+                "verdict": pred.get("verdict_1x2", "Pronòstic"),
+                "prob_1": p1,
+                "prob_x": px,
+                "prob_2": p2,
+                "most_likely_score": pred.get("goals", {}).get("top_scorelines", [{"score": "1-1"}])[0].get("score", "1-1") if isinstance(pred.get("goals", {}).get("top_scorelines", []), list) and pred.get("goals", {}).get("top_scorelines") else "1-1",
+                "prob_over_25": round(float(pred.get("goals", {}).get("over_under", {}).get("over_2_5", 50.0)), 1),
+                "prob_under_25": round(float(pred.get("goals", {}).get("over_under", {}).get("under_2_5", 50.0)), 1),
+                "prob_btts_yes": round(float(pred.get("goals", {}).get("btts", {}).get("yes", 50.0)), 1),
+                "prob_btts_no": round(float(pred.get("goals", {}).get("btts", {}).get("no", 50.0)), 1),
+                "corners_home": round(float(pred.get("corners", {}).get("expected_home_corners", 5.0)), 1),
+                "corners_away": round(float(pred.get("corners", {}).get("expected_away_corners", 4.0)), 1),
+                "corners_total": round(float(pred.get("corners", {}).get("expected_total_corners", 9.0)), 1),
+                "cards_home": round(float(pred.get("cards", {}).get("expected_home_cards", 2.3)), 1),
+                "cards_away": round(float(pred.get("cards", {}).get("expected_away_cards", 2.4)), 1),
+                "cards_total": round(float(pred.get("cards", {}).get("expected_total_cards", 4.7)), 1),
+                "referee": {
+                    "name": r.get("ref_name") or "Àrbitre Oficial",
+                    "is_official": bool(r.get("ref_name")),
+                    "yellow_avg": round(float(r.get("ref_yellow") or 4.5), 2),
+                    "fouls_avg": round(float(r.get("ref_fouls") or 25.0), 1)
+                }
+            })
+        return matches_list
+
     def get_full_combos_suite(self, predicted_matches: List[Dict[str, Any]], competition_id: str, jornada: int) -> Dict[str, Any]:
         """
         Retorna el paquet oficial de 6 combinades per lliga o multi-lliga.
@@ -664,6 +764,13 @@ class WebDataExporter:
                     h_id = leg.get("home_team_id")
                     a_id = leg.get("away_team_id")
                     match_row = None
+
+                    if not h_id or not a_id:
+                        m_str = leg.get("matchup", "")
+                        if " vs " in m_str:
+                            p_parts = m_str.split(" vs ", 1)
+                            h_id = h_id or self.db.find_team_id(p_parts[0].strip())
+                            a_id = a_id or self.db.find_team_id(p_parts[1].strip())
 
                     if h_id and a_id:
                         with self.db.get_connection() as conn:
@@ -1123,7 +1230,7 @@ class WebDataExporter:
             pr = self.get_power_rankings(cid)
             power_rankings[cid] = pr
 
-            # B) Prediccions
+            # B) Prediccions i Historial de Jornades
             pred_data = self.get_upcoming_predictions(cid, existing_match_odds=existing_match_odds)
             if pred_data.get("referee_updates"):
                 for ru in pred_data["referee_updates"]:
@@ -1132,10 +1239,33 @@ class WebDataExporter:
                         seen_referee_match_ids.add(mid)
                         all_referee_updates.append(ru)
 
+            # Obtenir totes les jornades disponibles a la BD per a aquesta lliga
+            with self.db.get_connection() as conn:
+                j_rows = conn.cursor().execute(
+                    "SELECT DISTINCT jornada FROM matches WHERE competition_id = ? AND jornada IS NOT NULL ORDER BY jornada ASC",
+                    (cid,)
+                ).fetchall()
+                available_jornadas = [int(r[0]) for r in j_rows if r[0]]
+            
+            if pred_data["jornada"] not in available_jornadas:
+                available_jornadas.append(pred_data["jornada"])
+            available_jornadas.sort()
+
+            # Diccionari de partits per cada jornada
+            by_jornada_matches = {}
+            for j_val in available_jornadas:
+                if j_val == pred_data["jornada"]:
+                    by_jornada_matches[str(j_val)] = [{k: v for k, v in m.items() if k != "raw_pred"} for m in pred_data["matches"]]
+                else:
+                    by_jornada_matches[str(j_val)] = self.get_jornada_matches(cid, j_val)
+
             predictions[cid] = {
                 "jornada": pred_data["jornada"],
+                "active_jornada": pred_data["jornada"],
+                "available_jornadas": available_jornadas,
                 "competition_id": cid,
                 "competition_name": cname,
+                "by_jornada": by_jornada_matches,
                 "matches": [{k: v for k, v in m.items() if k != "raw_pred"} for m in pred_data["matches"]]
             }
 
@@ -1143,7 +1273,6 @@ class WebDataExporter:
             for m in pred_data["matches"]:
                 all_predicted_matches_flat.append(m)
                 for vb in m.get("value_bets", []):
-                    # Extreure el percentatge d'avantatge real (ev_pct)
                     edge_val = vb.get("ev_pct")
                     if edge_val is None:
                         edge_val = vb.get("edge")
@@ -1171,11 +1300,52 @@ class WebDataExporter:
                         "winamax_url": vb.get("url", m.get("odds", {}).get("match_url", "https://www.winamax.es"))
                     })
 
-            # C) 6 Combinades per lliga
+            # C) 6 Combinades per lliga i seguiment multijornada
             league_combos = self.get_full_combos_suite(pred_data["matches"], cid, pred_data["jornada"])
             if (not league_combos.get("safe")) and previous_data.get("combos", {}).get(cid, {}).get("safe"):
                 print(f"   🛡️ PROTECCIÓ: Preservant combinades prèvies de {cid} de la memòria cau.")
                 league_combos = previous_data["combos"][cid]
+
+            # Obtenir totes les jornades de combinades disponibles a la BD per a aquesta lliga
+            with self.db.get_connection() as conn:
+                c_j_rows = conn.cursor().execute(
+                    "SELECT DISTINCT jornada FROM combo_recommendations WHERE competition_id = ? ORDER BY jornada ASC",
+                    (cid,)
+                ).fetchall()
+                combo_jornadas = [int(r[0]) for r in c_j_rows if r[0]]
+
+            if pred_data["jornada"] not in combo_jornadas:
+                combo_jornadas.append(pred_data["jornada"])
+            combo_jornadas.sort()
+
+            actual_combo_jornada = league_combos.get("jornada", pred_data["jornada"])
+            by_jornada_combos = {}
+            for cj in combo_jornadas:
+                if cj == actual_combo_jornada:
+                    by_jornada_combos[str(cj)] = {
+                        "competition_id": cid,
+                        "jornada": cj,
+                        "safe": list(league_combos.get("safe", [])),
+                        "semi": list(league_combos.get("semi", [])),
+                        "risky": list(league_combos.get("risky", []))
+                    }
+                else:
+                    j_matches = by_jornada_matches.get(str(cj)) or []
+                    existing_for_cj = self.db.get_combos_for_jornada(cid, cj)
+                    if existing_for_cj:
+                        by_jornada_combos[str(cj)] = self.get_full_combos_suite(j_matches, cid, cj)
+                    else:
+                        by_jornada_combos[str(cj)] = {
+                            "competition_id": cid,
+                            "jornada": cj,
+                            "safe": [],
+                            "semi": [],
+                            "risky": []
+                        }
+
+            league_combos["by_jornada"] = by_jornada_combos
+            league_combos["available_jornadas"] = combo_jornadas
+            league_combos["active_jornada"] = actual_combo_jornada
             combos[cid] = league_combos
 
             active_comps_meta.append({
@@ -1189,10 +1359,35 @@ class WebDataExporter:
 
         # 2. Mega-Combinades Multi-Lliga (6 combinades)
         print("[*] Generant les 6 combinades Multi-Lliga...")
-        multi_combos = self.get_full_combos_suite(all_predicted_matches_flat, "MULTI", max(c["active_jornada"] for c in active_comps_meta))
+        active_multi_j = max(c["active_jornada"] for c in active_comps_meta)
+        multi_combos = self.get_full_combos_suite(all_predicted_matches_flat, "MULTI", active_multi_j)
         if (not multi_combos.get("safe")) and previous_data.get("combos", {}).get("MULTI", {}).get("safe"):
             print("   🛡️ PROTECCIÓ: Preservant combinades Multi-Lliga de la memòria cau.")
             multi_combos = previous_data["combos"]["MULTI"]
+
+        with self.db.get_connection() as conn:
+            m_j_rows = conn.cursor().execute(
+                "SELECT DISTINCT jornada FROM combo_recommendations WHERE competition_id = 'MULTI' ORDER BY jornada ASC"
+            ).fetchall()
+            multi_jornadas = [int(r[0]) for r in m_j_rows if r[0]]
+        if active_multi_j not in multi_jornadas:
+            multi_jornadas.append(active_multi_j)
+        multi_jornadas.sort()
+
+        by_jornada_multi = {}
+        for mj in multi_jornadas:
+            if mj == active_multi_j:
+                by_jornada_multi[str(mj)] = {
+                    "safe": list(multi_combos.get("safe", [])),
+                    "semi": list(multi_combos.get("semi", [])),
+                    "risky": list(multi_combos.get("risky", []))
+                }
+            else:
+                by_jornada_multi[str(mj)] = self.get_full_combos_suite([], "MULTI", mj)
+
+        multi_combos["by_jornada"] = by_jornada_multi
+        multi_combos["available_jornadas"] = multi_jornadas
+        multi_combos["active_jornada"] = active_multi_j
         combos["MULTI"] = multi_combos
 
         # Protecció de Value bets si el scraper de Winamax ha estat bloquejat al núvol

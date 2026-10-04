@@ -12,7 +12,6 @@ echo     2. Prediccions de LaLiga EA Sports, Premier League i LaLiga Hypermotion
 echo     3. Cuotes en directe de Winamax Espanya
 echo     4. Mega-Combinades Multi-Lliga
 echo     5. Generacio de 4 Informes PDF a reports/
-echo     6. Enviament per correu electronic a config/recipients.txt
 echo.
 
 python auto_pipeline.py

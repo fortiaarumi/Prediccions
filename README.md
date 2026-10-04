@@ -28,9 +28,6 @@ Plataforma avançada de predicció matemàtica i anàlisi d'apostes esportives a
    - Informes individuals per a cada competició: `informe_jornada_{N}_laliga.pdf`, `informe_jornada_{N}_premier.pdf`, `informe_jornada_{N}_hypermotion.pdf`.
    - **Mega-Informe Multi-Lliga (`informe_jornada_{N}_multilliga.pdf`)**: Tauler financer PnL, Mega-Combinades transfrontereres i Radar de Valor dels millors duels del continent.
 
-5. **Enviament Automàtic per Correu Electrònic**:
-   - Distribució automàtica dels PDFs adjunts a la llista de destinataris de `config/recipients.txt`.
-
 ---
 
 ## 📁 Estructura del Projecte
@@ -39,10 +36,7 @@ Plataforma avançada de predicció matemàtica i anàlisi d'apostes esportives a
 PreddicionsLliga/
 ├── auto_pipeline.py          # Orquestrador autònom integral (1 sol pas)
 ├── schedule_weekly.bat       # Executable de Windows per córrer tot el pipeline
-├── main.py                   # Comandes manuals per terminal (CLI)
-├── config/
-│   ├── recipients.txt        # Llista de correus destinataris (un per línia)
-│   └── email_config.json     # Configuració del servidor SMTP de correu
+├── cli.py                    # Comandes manuals per terminal (CLI)
 ├── data/
 │   └── laliga.db             # Base de dades SQLite relacional oficial
 ├── database/
@@ -59,8 +53,6 @@ PreddicionsLliga/
 │   ├── card_model.py         # Model de targetes i severitat arbitral
 │   ├── corner_model.py       # Model de córners
 │   └── rank_engine.py        # Motor d'Elo i rànquings ofensius/defensius
-├── notifier/
-│   └── email_sender.py       # Enviament de correus amb fitxers PDF adjunts
 ├── scraper/
 │   ├── live_crawler.py       # Rastrejador Flashscore multi-lliga
 │   ├── match_scraper.py      # Extracció d'estadístiques avançades (xG, targetes, córners)
@@ -78,9 +70,9 @@ Fes doble clic sobre `schedule_weekly.bat`.
 
 ### 2. Execució per Terminal
 ```bash
-# Executar el pipeline complet (avaluació de resultats, prediccions, PDFs i enviament per correu)
-python auto_pipeline.py --jornada 6
+# Executar el pipeline complet (avaluació de resultats, prediccions i PDFs)
+python auto_pipeline.py
 
-# Executar sense enviar correu (només generar els PDFs a reports/)
-python auto_pipeline.py --jornada 6 --no-email
+# Actualitzar només resultats de la jornada i PnL
+python auto_pipeline.py --update-results
 ```

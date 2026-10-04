@@ -46,9 +46,8 @@ from engine.jornada_predictor import JornadaPredictor
 from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
 from engine.pdf_report_generator import PDFReportGenerator
-from notifier.email_sender import EmailSender
-
 COMPETITIONS = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"]
+
 
 def load_state() -> Dict[str, Any]:
     state = {
@@ -166,7 +165,7 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
         print(f"   [!] Error analitzant calendari Flashscore per a {comp_id}: {e}")
         return None
 
-def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False):
+def run_daily_autonomous_check(force: bool = False):
     print("\n" + "=" * 80)
     print(f"   🤖 EXECUTOR AUTÒNOM DIARI DE PREDICCIONS · {datetime.now().strftime('%d/%m/%Y %H:%M')}")
     print("=" * 80)
@@ -262,8 +261,7 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
             print(f"   • {comp} J{j}: 🔥 COMENÇA AVIAT! (Primer partit: {first_dt.strftime('%d/%m %H:%M')}, en {hours_to_start:.1f}h). Àrbitres oficials assignats.")
             leagues_to_predict.append(comp)
         elif hours_to_start < 0:
-            print(f"   • {comp} J{j}: En curs (primer partit començat a les {first_dt.strftime('%d/%m %H:%M')}).")
-            leagues_to_predict.append(comp)
+            print(f"   • {comp} J{j}: ⚽ En curs (primer partit començat a les {first_dt.strftime('%d/%m %H:%M')}). Combinades congelades oficials amb seguiment de progrés en directe.")
         else:
             days_to_start = hours_to_start / 24.0
             print(f"   • {comp} J{j}: Falten {days_to_start:.1f} dies ({first_dt.strftime('%d/%m %H:%M')}). Esperant que s'apropi per tenir les designacions arbitrals oficials.")
@@ -376,37 +374,6 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
     except Exception as e:
         print(f"   [!] Error actualitzant dades de la web: {e}")
 
-    # Enviament d'avis per correu només quan hi ha nova jornada a disputar
-    if leagues_to_predict:
-        try:
-            email_sender = EmailSender()
-            active_j_str = ", ".join(f"{c} J{round_infos[c]['jornada']}" for c in leagues_to_predict)
-            sim_summary = tracker.get_simulation_summary()
-            import os
-            web_url = os.getenv("VERCEL_WEB_URL", "https://prediccions.vercel.app")
-
-            # Enviament de l'alerta web interactiva
-            email_sender.send_web_alert(
-                jornada_info=active_j_str,
-                web_url=web_url,
-                simulation_summary=sim_summary
-            )
-
-            # Si també s'han generat PDFs i s'ha activat explícitament, enviar-los com a còpia adjunta
-            if generated_pdfs and send_pdf_email:
-                print("\n[*] Enviant també informes PDF adjunts per correu (--send-pdf activat)...")
-                main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
-                res = email_sender.send_reports(
-                    pdf_paths=generated_pdfs,
-                    jornada=main_j,
-                    simulation_summary=sim_summary
-                )
-                print(f"   [Èxit enviament correu]: {res}")
-            elif generated_pdfs and not send_pdf_email:
-                print("\n[*] FASE 5b: PDFs generats però NO enviats per correu (usa --send-pdf per activar-ho).")
-        except Exception as e:
-            print(f"   [!] Avís: No s'ha pogut trametre el correu electrònic: {e}")
-
     save_state(state)
     print("\n" + "=" * 80)
     print("   ✅ CICLE DIARI COMPLETAT AMB ÈXIT")
@@ -414,9 +381,8 @@ def run_daily_autonomous_check(force: bool = False, send_pdf_email: bool = False
 
 if __name__ == "__main__":
     force_run = "--force" in sys.argv
-    send_pdf = "--send-pdf" in sys.argv
     try:
-        run_daily_autonomous_check(force=force_run, send_pdf_email=send_pdf)
+        run_daily_autonomous_check(force=force_run)
     except Exception as e:
         import traceback
         print(f"\n❌ [ERROR CRÍTIC EN EL PIPELINE DIARI]: {e}", file=sys.stderr)

@@ -1,5 +1,228 @@
 [
   {
+    "date": "2026-10-04",
+    "timestamp": "2026-10-04T14:14:29.358436",
+    "title": "Actualització Diària del Model · 04/10/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 5 partit(s):",
+      "   • [LaLiga Hypermotion J8] Real Sporting vs Celta de Vigo B: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Germán Cid Camacho'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 63.6% (+16.9%) | Vermella: 22.1% ➔ 27.4% (+5.3%) | Victòria Local: 90.9% ➔ 90.9% (+0.0%)",
+      "   • [LaLiga Hypermotion J8] CD Castellón vs AD Ceuta: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'De Aza M. H.'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 47.5% ➔ 47.5% (+0.0%)",
+      "   • [LaLiga Hypermotion J8] UD Las Palmas vs Real Valladolid: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Manuel Ángel Pérez Hernández'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 62.2% (+8.8%) | Vermella: 22.1% ➔ 22.1% (+0.0%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)",
+      "   • [LaLiga Hypermotion J8] Girona FC vs RCD Mallorca: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Eder Mallo Fernández'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 69.8% (+16.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)",
+      "   • [LaLiga Hypermotion J8] CE Sabadell vs FC Andorra: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José Luis Guzmán Mansilla'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 69.8% (+16.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)"
+    ],
+    "matches": [],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": [
+      {
+        "match_id": "HYPERMOTION_J8_SPG_CDV",
+        "matchup": "Real Sporting vs Celta de Vigo B",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "04.10.2026 16:15",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Germán Cid Camacho",
+        "ref_stats": {
+          "yellow_avg": 5.3,
+          "red_avg": 0.32,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.18
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 63.6,
+            "delta": 16.9
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 27.4,
+            "delta": 5.3
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 90.9,
+            "after": 90.9,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Germán Cid Camacho (índex severitat 1.18). Mitjana històrica de 5.3 grogues i 0.32 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J8_CAS_CEU",
+        "matchup": "CD Castellón vs AD Ceuta",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "04.10.2026 18:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "De Aza M. H.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 66.7,
+            "delta": 13.3
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 47.5,
+            "after": 47.5,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de De Aza M. H. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J8_LAS_VLL",
+        "matchup": "UD Las Palmas vs Real Valladolid",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "04.10.2026 18:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Manuel Ángel Pérez Hernández",
+        "ref_stats": {
+          "yellow_avg": 5.0,
+          "red_avg": 0.25,
+          "fouls_avg": 25.5,
+          "strictness_index": 1.1
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 62.2,
+            "delta": 8.8
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 22.1,
+            "delta": 0.0
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 25.5,
+            "delta": 1.0
+          },
+          "home_win_prob": {
+            "before": 46.6,
+            "after": 46.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Manuel Ángel Pérez Hernández (índex severitat 1.1). Mitjana històrica de 5.0 grogues i 0.25 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J8_GIR_MLL",
+        "matchup": "Girona FC vs RCD Mallorca",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "04.10.2026 21:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Eder Mallo Fernández",
+        "ref_stats": {
+          "yellow_avg": 5.3,
+          "red_avg": 0.3,
+          "fouls_avg": 27.0,
+          "strictness_index": 1.19
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 69.8,
+            "delta": 16.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 27.0,
+            "delta": 2.5
+          },
+          "home_win_prob": {
+            "before": 46.6,
+            "after": 46.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Eder Mallo Fernández (índex severitat 1.19). Mitjana històrica de 5.3 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J8_SAB_AND",
+        "matchup": "CE Sabadell vs FC Andorra",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 8,
+        "date": "04.10.2026 21:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "José Luis Guzmán Mansilla",
+        "ref_stats": {
+          "yellow_avg": 5.3,
+          "red_avg": 0.3,
+          "fouls_avg": 27.0,
+          "strictness_index": 1.19
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 69.8,
+            "delta": 16.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 27.0,
+            "delta": 2.5
+          },
+          "home_win_prob": {
+            "before": 46.6,
+            "after": 46.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de José Luis Guzmán Mansilla (índex severitat 1.19). Mitjana històrica de 5.3 grogues i 0.3 vermelles per partit."
+        }
+      }
+    ]
+  },
+  {
     "date": "2026-09-28",
     "timestamp": "2026-09-28T18:12:23.397471",
     "title": "Actualització Diària del Model · 28/09/2026",

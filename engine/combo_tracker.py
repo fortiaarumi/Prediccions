@@ -106,26 +106,37 @@ class ComboTracker:
             won = h_goals == 0 or a_goals == 0
             return ("WON" if won else "LOST"), f"{h_goals}-{a_goals} ({'BTTS No encertat' if won else 'han marcat ambdós'})"
 
-        # 5. Targetes
+        # 5. Targetes (Tant Més/Over com Menys/Under i qualsevol línia)
         elif "targetes" in sel_name or "tarjetas" in sel_name or "cards" in sel_name:
-            if "4.5" in sel_name:
-                won = tot_cards >= 5
-                return ("WON" if won else "LOST"), f"{tot_cards} targetes"
-            elif "5.5" in sel_name:
-                won = tot_cards >= 6
-                return ("WON" if won else "LOST"), f"{tot_cards} targetes"
+            import re
+            is_under = any(w in sel_name for w in ["menys", "menos", "under", "-"])
+            m_cards = re.search(r'(\d+(?:\.\d+)?)', sel_name)
+            if m_cards:
+                line_val = float(m_cards.group(1))
+                if is_under:
+                    won = tot_cards < line_val
+                    return ("WON" if won else "LOST"), f"{tot_cards} targetes ({'Menys de ' + str(line_val) + ' encertat' if won else 'Més de ' + str(line_val)})"
+                else:
+                    won = tot_cards > line_val
+                    return ("WON" if won else "LOST"), f"{tot_cards} targetes ({'Més de ' + str(line_val) + ' encertat' if won else 'Menys de ' + str(line_val)})"
+            won = tot_cards >= 5
+            return ("WON" if won else "LOST"), f"{tot_cards} targetes"
 
-        # 6. Córners
-        elif "córner" in sel_name or "corner" in sel_name:
-            if "8.5" in sel_name:
-                won = tot_corn >= 9
-                return ("WON" if won else "LOST"), f"{tot_corn} córners"
-            elif "9.5" in sel_name:
-                won = tot_corn >= 10
-                return ("WON" if won else "LOST"), f"{tot_corn} córners"
-            elif "10.5" in sel_name:
-                won = tot_corn >= 11
-                return ("WON" if won else "LOST"), f"{tot_corn} córners"
+        # 6. Córners (Tant Més/Over com Menys/Under i qualsevol línia)
+        elif "córner" in sel_name or "corner" in sel_name or "corners" in sel_name:
+            import re
+            is_under = any(w in sel_name for w in ["menys", "menos", "under", "-"])
+            m_corn = re.search(r'(\d+(?:\.\d+)?)', sel_name)
+            if m_corn:
+                line_val = float(m_corn.group(1))
+                if is_under:
+                    won = tot_corn < line_val
+                    return ("WON" if won else "LOST"), f"{tot_corn} córners ({'Menys de ' + str(line_val) + ' encertat' if won else 'Més de ' + str(line_val)})"
+                else:
+                    won = tot_corn > line_val
+                    return ("WON" if won else "LOST"), f"{tot_corn} córners ({'Més de ' + str(line_val) + ' encertat' if won else 'Menys de ' + str(line_val)})"
+            won = tot_corn >= 10
+            return ("WON" if won else "LOST"), f"{tot_corn} córners"
 
         # Per defecte si no es reconeix
         return "PENDING", f"{h_goals}-{a_goals}"

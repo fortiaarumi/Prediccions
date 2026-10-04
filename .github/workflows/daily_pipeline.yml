@@ -50,7 +50,6 @@ jobs:
               'engine.pdf_report_generator',
               'engine.value_bet_engine',
               'engine.web_data_exporter',
-              'notifier.email_sender',
               'scraper.jornada_resolver',
               'scraper.live_crawler',
               'scraper.winamax_scraper',
@@ -71,9 +70,6 @@ jobs:
 
       - name: 4. Executar Màquina d'Estats Diària
         env:
-          GMAIL_SENDER_EMAIL: ${{ secrets.GMAIL_SENDER_EMAIL }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
           VERCEL_WEB_URL: ${{ secrets.VERCEL_WEB_URL }}
           FORCE_RUN: ${{ inputs.force || 'false' }}
         run: |

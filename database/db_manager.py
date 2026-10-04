@@ -822,6 +822,19 @@ class DatabaseManager:
 
         with self.get_connection() as conn:
             cursor = conn.cursor()
+
+            # Protecció: si aquesta combinada ja existeix i la jornada ja ha arrencat, NO sobreescriure-la!
+            existing_row = cursor.execute("SELECT id, status FROM combo_recommendations WHERE id = ?", (combo_id,)).fetchone()
+            if existing_row:
+                # Comprovar si algun partit d'aquesta jornada ja ha finalitzat o està en curs
+                c_chk = cursor.execute(
+                    "SELECT sum(case when status = 'FINISHED' then 1 else 0 end) as fin FROM matches WHERE competition_id = ? AND jornada = ?",
+                    (competition_id, jornada)
+                ).fetchone()
+                if c_chk and c_chk["fin"] and c_chk["fin"] > 0:
+                    print(f"   🔒 [JORNADA BLOCADA] {competition_id} J{jornada} ({profile}): La jornada ja ha arrencat. Combinades congelades oficials preservades.")
+                    return combo_id
+
             cursor.execute("""
                 INSERT OR REPLACE INTO combo_recommendations
                 (id, competition_id, season, jornada, profile, stake, combined_odd, combined_prob_pct, fair_odd, ev_pct, status, winamax_url, created_at)

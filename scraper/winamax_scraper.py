@@ -340,22 +340,19 @@ class WinamaxScraper:
                                 if val is not None and lbl.lower() in ["sí", "si"]:
                                     odds_data["cards"]["Targeta Vermella (Sí)"] = float(val)
 
-                        # Córners
+                        # Córners (Extracció dinàmica de totes les línies Over/Under)
                         elif ("córner" in b_cat_lower or "corner" in b_cat_lower) and "número total" in b_title_lower:
                             for oid in out_ids:
                                 o_obj = outcomes.get(str(oid)) or {}
                                 lbl = str(o_obj.get("label") or o_obj.get("code") or "").strip()
                                 val = odds.get(str(oid))
                                 if val is not None:
-                                    lbl_lower = lbl.lower()
-                                    if "más de 9,5" in lbl_lower or "más de 9.5" in lbl_lower:
-                                        odds_data["corners"]["Over 9.5 Córners"] = float(val)
-                                    elif "menos de 9,5" in lbl_lower or "menos de 9.5" in lbl_lower:
-                                        odds_data["corners"]["Under 9.5 Córners"] = float(val)
-                                    elif "más de 8,5" in lbl_lower or "más de 8.5" in lbl_lower:
-                                        odds_data["corners"]["Over 8.5 Córners"] = float(val)
-                                    elif "más de 10,5" in lbl_lower or "más de 10.5" in lbl_lower:
-                                        odds_data["corners"]["Over 10.5 Córners"] = float(val)
+                                    lbl_clean = lbl.lower().replace(",", ".")
+                                    m_c = re.search(r'(m[aá]s|menos)\s+de\s+(\d+(?:\.\d+)?)', lbl_clean)
+                                    if m_c:
+                                        prefix = "Over" if "m" in m_c.group(1) else "Under"
+                                        c_line = m_c.group(2)
+                                        odds_data["corners"][f"{prefix} {c_line} Córners"] = float(val)
 
             else:
                 print(f"[!] No s'ha trobat cap partit actiu a Winamax per a '{home_team}' vs '{away_team}'.")

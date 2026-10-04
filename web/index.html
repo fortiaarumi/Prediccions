@@ -138,6 +138,18 @@
         <div class="round-status-pill" id="predictions-round-status"></div>
       </div>
 
+      <div class="jornada-control-bar" id="predictions-jornada-bar">
+        <div class="jornada-select-group">
+          <label for="select-jornada-pred" class="jornada-select-label">📅 Jornada:</label>
+          <div class="jornada-select-wrapper">
+            <select id="select-jornada-pred" class="jornada-dropdown" onchange="onJornadaChange('predictions', this.value)" aria-label="Selecciona la jornada de prediccions">
+              <!-- Opcions generades dinàmicament per JS -->
+            </select>
+          </div>
+          <span class="jornada-badge" id="badge-jornada-pred">Jornada Activa</span>
+        </div>
+      </div>
+
       <div class="matches-filter-bar" id="matches-filter-bar">
         <button class="match-filter-pill active" data-match-filter="ALL" onclick="setMatchesFilter('ALL')">
           Tots els Partits (<span id="count-matches-all">0</span>)
@@ -180,6 +192,18 @@
         </div>
         <div class="stake-policy-badge" id="combos-policy-badge">
           <span>Inversió per jornada: <strong>25€</strong> Segura · <strong>10€</strong> Semi · <strong>5€</strong> Arriscada</span>
+        </div>
+      </div>
+
+      <div class="jornada-control-bar" id="combos-jornada-bar">
+        <div class="jornada-select-group">
+          <label for="select-jornada-combo" class="jornada-select-label">📅 Jornada Combinades:</label>
+          <div class="jornada-select-wrapper">
+            <select id="select-jornada-combo" class="jornada-dropdown" onchange="onJornadaChange('combos', this.value)" aria-label="Selecciona la jornada de combinades">
+              <!-- Opcions generades dinàmicament per JS -->
+            </select>
+          </div>
+          <span class="jornada-badge" id="badge-jornada-combo">Jornada Activa</span>
         </div>
       </div>
 
@@ -581,6 +605,30 @@
             <span>👤 Entrar com a Convidat</span>
           </button>
         </div>
+
+        <div class="auth-separator">
+          <span>SEGURETAT & COPIA DE SEGURETAT</span>
+        </div>
+
+        <!-- Còpia de Seguretat i Restauració de Compte -->
+        <div class="backup-recovery-card">
+          <div class="backup-card-info">
+            <span class="backup-icon">🛡️</span>
+            <div>
+              <strong>Protecció de Compte & Preferències</strong>
+              <p>El teu compte i apostes es guarden automàticament de forma persistent. Pots descarregar una còpia de seguretat o importar-la en qualsevol altre dispositiu.</p>
+            </div>
+          </div>
+          <div class="backup-actions-row">
+            <button type="button" class="btn-backup-action" id="btn-export-account">
+              <span>💾 Descarregar Còpia (Backup JSON)</span>
+            </button>
+            <label class="btn-restore-action" for="input-import-account" style="cursor: pointer;">
+              <span>📥 Restaurar Compte des de Fitxer</span>
+              <input type="file" id="input-import-account" accept=".json" style="display: none;" />
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -687,6 +735,30 @@
     </div>
   </footer>
 
-  <script src="app.js?v=3.3.0"></script>
+  <script src="app.js?v=3.4.0"></script>
+
+  <!-- Barra de Navegació Inferior per a Mòbil (Dock) -->
+  <nav class="mobile-bottom-nav" aria-label="Navegació Ràpida per a Mòbil">
+    <button class="mobile-nav-btn active" data-tab="novetats">
+      <span class="mobile-nav-icon">🔔</span>
+      <span class="mobile-nav-lbl">Novetats</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="predictions">
+      <span class="mobile-nav-icon">🔮</span>
+      <span class="mobile-nav-lbl">Partits</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="combos">
+      <span class="mobile-nav-icon">🎯</span>
+      <span class="mobile-nav-lbl">Combos</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="value">
+      <span class="mobile-nav-icon">💎</span>
+      <span class="mobile-nav-lbl">+EV</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="bankroll">
+      <span class="mobile-nav-icon">💰</span>
+      <span class="mobile-nav-lbl">Diners</span>
+    </button>
+  </nav>
 </body>
 </html>

@@ -138,41 +138,54 @@ class JornadaPredictor:
             print(f"    • Pronòstic: {match_pred['verdict_1x2']} | Cuotes Winamax: 1({o_1x2.get('1', '-')}) X({o_1x2.get('X', '-')}) 2({o_1x2.get('2', '-')}) | Oportunitats +EV%: {n_vbs}")
 
         # 3. Anàlisi i generació d'apostes combinades matemàtiques
-        combo_bets = self.combo_engine.analyze_jornada_combos(predicted_matches)
+        existing_combos = self.db.get_combos_for_jornada(comp_id, jornada)
+        if existing_combos and len(existing_combos) >= 2:
+            print(f"\n[*] Preservant combinades congelades de {comp_id} J{jornada} ({len(existing_combos)} combinades registrades)...")
+            safe_c_list = [c for c in existing_combos if "SAFE" in c.get("profile", "").upper()]
+            semi_c_list = [c for c in existing_combos if "SEMI" in c.get("profile", "").upper()]
+            risky_c_list = [c for c in existing_combos if "RISKY" in c.get("profile", "").upper()]
+            combo_bets = {
+                "safe": safe_c_list,
+                "semi": semi_c_list,
+                "risky": risky_c_list,
+                "safe_combo": safe_c_list[0] if safe_c_list else {},
+                "risky_combo": risky_c_list[0] if risky_c_list else {}
+            }
+        else:
+            combo_bets = self.combo_engine.analyze_jornada_combos(predicted_matches)
+            for idx, sc in enumerate(combo_bets.get("safe", []), 1):
+                if sc and sc.get("legs"):
+                    self.db.save_combo_recommendation(
+                        competition_id=comp_id,
+                        season=season,
+                        jornada=jornada,
+                        profile=f"SAFE_{idx}",
+                        stake=25.0,
+                        combo_summary=sc
+                    )
+            for idx, sm in enumerate(combo_bets.get("semi", []), 1):
+                if sm and sm.get("legs"):
+                    self.db.save_combo_recommendation(
+                        competition_id=comp_id,
+                        season=season,
+                        jornada=jornada,
+                        profile=f"SEMI_{idx}",
+                        stake=10.0,
+                        combo_summary=sm
+                    )
+            for idx, rc in enumerate(combo_bets.get("risky", []), 1):
+                if rc and rc.get("legs"):
+                    self.db.save_combo_recommendation(
+                        competition_id=comp_id,
+                        season=season,
+                        jornada=jornada,
+                        profile=f"RISKY_{idx}",
+                        stake=5.0,
+                        combo_summary=rc
+                    )
+
         safe_c = combo_bets.get("safe_combo", {})
         risky_c = combo_bets.get("risky_combo", {})
-
-        # Registrar automàticament les combinades al sistema de seguiment ('Què hagués passat si...')
-        for idx, sc in enumerate(combo_bets.get("safe", []), 1):
-            if sc and sc.get("legs"):
-                self.db.save_combo_recommendation(
-                    competition_id=comp_id,
-                    season=season,
-                    jornada=jornada,
-                    profile=f"SAFE_{idx}",
-                    stake=25.0,
-                    combo_summary=sc
-                )
-        for idx, sm in enumerate(combo_bets.get("semi", []), 1):
-            if sm and sm.get("legs"):
-                self.db.save_combo_recommendation(
-                    competition_id=comp_id,
-                    season=season,
-                    jornada=jornada,
-                    profile=f"SEMI_{idx}",
-                    stake=10.0,
-                    combo_summary=sm
-                )
-        for idx, rc in enumerate(combo_bets.get("risky", []), 1):
-            if rc and rc.get("legs"):
-                self.db.save_combo_recommendation(
-                    competition_id=comp_id,
-                    season=season,
-                    jornada=jornada,
-                    profile=f"RISKY_{idx}",
-                    stake=5.0,
-                    combo_summary=rc
-                )
 
         print("\n" + "-" * 75)
         print(f"   🎯 APOSTES COMBINADES RECOMANADES ({comp_name.upper()} - WINAMAX ESPANYA)")

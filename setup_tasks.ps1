@@ -9,7 +9,7 @@ Write-Host "====================================================================
 $tr_dimarts = "`"$python`" `"$proj\auto_pipeline.py`" --update-results"
 & schtasks /create /tn "PrediccionsFutbol_Dimarts" /tr $tr_dimarts /sc weekly /d TUE /st 09:00 /f
 
-# 2. Divendres a les 16:00: Prediccions completes, generació de PDFs i enviament per correu
+# 2. Divendres a les 16:00: Prediccions completes i generació de PDFs
 $tr_divendres = "`"$python`" `"$proj\auto_pipeline.py`""
 & schtasks /create /tn "PrediccionsFutbol_Divendres" /tr $tr_divendres /sc weekly /d FRI /st 16:00 /f
 

@@ -5,7 +5,10 @@ Motor d'anàlisi de valor (+EV%) i detecció d'apostes rendibles.
 Avalua ÚNICAMENT les cuotes que realment estan publicades a Winamax.
 """
 
+import re
+import math
 from typing import Dict, Any, List
+from scipy.stats import poisson
 
 class ValueBetEngine:
     def __init__(self, kelly_fraction: float = 0.25):
@@ -235,55 +238,52 @@ class ValueBetEngine:
             cards_warning = "⚠️ Àrbitre pendent de designació oficial pel CTA: No és recomanable apostar a targetes."
         else:
             o_cards = winamax_odds.get("cards", {})
-            if "Over 4.5 Targetes" in o_cards and o_cards["Over 4.5 Targetes"] > 1.0:
-                v = self.calculate_market_value(prob_cards_o45, o_cards["Over 4.5 Targetes"])
-                v["name"] = "Més de 4.5 Targetes"
-                v["category"] = "Targetes"
-                single_markets.append(v)
+            if o_cards:
+                from scipy.stats import poisson
+                lambda_cards = float(p_cards.get("expected_total_cards", 4.8))
+                for card_key, card_odd in o_cards.items():
+                    if not card_odd or card_odd <= 1.0:
+                        continue
+                    if "vermella" in card_key.lower() or "expulsi" in card_key.lower():
+                        v = self.calculate_market_value(prob_red_card, card_odd)
+                        v["name"] = "Hi haurà Expulsió (Vermella Sí)"
+                        v["category"] = "Targetes"
+                        single_markets.append(v)
+                    else:
+                        is_under = "under" in card_key.lower() or "menys" in card_key.lower()
+                        m_c_th = re.search(r'(\d+(?:\.\d+)?)', card_key)
+                        if m_c_th:
+                            thresh = float(m_c_th.group(1))
+                            k_max = int(thresh)
+                            prob_under = float(poisson.cdf(k_max, lambda_cards))
+                            prob_over = 1.0 - prob_under
+                            model_p = prob_under if is_under else prob_over
+                            dir_label = f"Menys de {thresh} Targetes" if is_under else f"Més de {thresh} Targetes"
+                            v = self.calculate_market_value(model_p, card_odd)
+                            v["name"] = dir_label
+                            v["category"] = "Targetes"
+                            single_markets.append(v)
 
-            if "Under 4.5 Targetes" in o_cards and o_cards["Under 4.5 Targetes"] > 1.0:
-                v = self.calculate_market_value(prob_cards_u45, o_cards["Under 4.5 Targetes"])
-                v["name"] = "Menys de 4.5 Targetes"
-                v["category"] = "Targetes"
-                single_markets.append(v)
-
-            if "Over 5.5 Targetes" in o_cards and o_cards["Over 5.5 Targetes"] > 1.0:
-                v = self.calculate_market_value(prob_cards_o55, o_cards["Over 5.5 Targetes"])
-                v["name"] = "Més de 5.5 Targetes"
-                v["category"] = "Targetes"
-                single_markets.append(v)
-
-            if "Targeta Vermella (Sí)" in o_cards and o_cards["Targeta Vermella (Sí)"] > 1.0:
-                v = self.calculate_market_value(prob_red_card, o_cards["Targeta Vermella (Sí)"])
-                v["name"] = "Hi haurà Expulsió (Vermella Sí)"
-                v["category"] = "Targetes"
-                single_markets.append(v)
-
-        # 6. Córners - NOMÉS SI WINAMAX HO OFEREIX
+        # 6. Córners - Avaluació dinàmica de totes les línies de Winamax via Poisson
         o_corners = winamax_odds.get("corners", {})
-        if "Over 8.5 Córners" in o_corners and o_corners["Over 8.5 Córners"] > 1.0:
-            v = self.calculate_market_value(prob_corners_o85, o_corners["Over 8.5 Córners"])
-            v["name"] = "Més de 8.5 Córners"
-            v["category"] = "Córners"
-            single_markets.append(v)
-
-        if "Over 9.5 Córners" in o_corners and o_corners["Over 9.5 Córners"] > 1.0:
-            v = self.calculate_market_value(prob_corners_o95, o_corners["Over 9.5 Córners"])
-            v["name"] = "Més de 9.5 Córners"
-            v["category"] = "Córners"
-            single_markets.append(v)
-
-        if "Under 9.5 Córners" in o_corners and o_corners["Under 9.5 Córners"] > 1.0:
-            v = self.calculate_market_value(prob_corners_u95, o_corners["Under 9.5 Córners"])
-            v["name"] = "Menys de 9.5 Córners"
-            v["category"] = "Córners"
-            single_markets.append(v)
-
-        if "Over 10.5 Córners" in o_corners and o_corners["Over 10.5 Córners"] > 1.0:
-            v = self.calculate_market_value(prob_corners_o105, o_corners["Over 10.5 Córners"])
-            v["name"] = "Més de 10.5 Córners"
-            v["category"] = "Córners"
-            single_markets.append(v)
+        if o_corners:
+            lambda_corn = float(p_corners.get("expected_total_corners", 9.4))
+            for c_key, c_odd in o_corners.items():
+                if not c_odd or c_odd <= 1.0:
+                    continue
+                is_under = "under" in c_key.lower() or "menys" in c_key.lower()
+                m_thresh = re.search(r'(\d+(?:\.\d+)?)', c_key)
+                if m_thresh:
+                    thresh = float(m_thresh.group(1))
+                    k_max = int(thresh)
+                    prob_under = float(poisson.cdf(k_max, lambda_corn))
+                    prob_over = 1.0 - prob_under
+                    model_p = prob_under if is_under else prob_over
+                    dir_label = f"Menys de {thresh} Córners" if is_under else f"Més de {thresh} Córners"
+                    v = self.calculate_market_value(model_p, c_odd)
+                    v["name"] = dir_label
+                    v["category"] = "Córners"
+                    single_markets.append(v)
 
         # Ordenar mercats pel major Valor Esperat (+EV%)
         single_markets.sort(key=lambda x: x["ev_pct"], reverse=True)
