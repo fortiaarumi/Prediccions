@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-04T00:47:39.873543",
-    "formatted_date": "04/10/2026 a les 00:47",
+    "generated_at": "2026-10-04T12:34:10.915568",
+    "formatted_date": "04/10/2026 a les 12:34",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,27 +43,111 @@
   "changelog": [
     {
       "date": "2026-10-04",
-      "timestamp": "2026-10-04T00:47:43.058110",
+      "timestamp": "2026-10-04T12:34:13.901753",
       "title": "Actualització Diària del Model · 04/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
       "items": [
-        "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-        "   • [HYPERMOTION J8] Cádiz 4 - 0 Leganés | xG: 2.00-0.99 | Targetes: 5 🟨 | Córners: 9 🚩 | Àrbitre: Morilla A.",
+        "⚽ S'han ingesta resultats oficials i mètriques de 4 partit(s) disputat(s):",
+        "   • [HYPERMOTION J8] CD Eldense 4 - 1 Real Oviedo | xG: 3.30-0.96 | Targetes: 6 🟨 | Córners: 14 🚩 | Àrbitre: Rafael Sánchez López",
+        "   • [HYPERMOTION J8] Albacete Balompié 1 - 3 SD Eibar | xG: 1.48-1.52 | Targetes: 3 🟨 | Córners: 6 🚩 | Àrbitre: José María Sánchez Martínez",
+        "   • [HYPERMOTION J8] UD Almería 2 - 1 Burgos CF | xG: 2.20-1.08 | Targetes: 5 🟨 | Córners: 11 🚩 | Àrbitre: Galech I.",
+        "   • [HYPERMOTION J8] Cádiz CF 4 - 0 CD Leganés | xG: 2.00-0.99 | Targetes: 5 🟨 | Córners: 9 🚩 | Àrbitre: Morilla A.",
         "📊 Actualització de Power Rànquings Elo:",
-        "   • Cádiz (+25.6 ➔ 1513.3) | Leganés (-25.6 ➔ 1510.4)",
+        "   • CD Eldense (+20.7 ➔ 1509.1) | Real Oviedo (-20.7 ➔ 1494.7)",
+        "   • Albacete Balompié (-10.7 ➔ 1402.9) | SD Eibar (+10.7 ➔ 1617.7)",
+        "   • UD Almería (+7.5 ➔ 1599.1) | Burgos CF (-7.5 ➔ 1516.9)",
+        "   • Cádiz CF (+21.9 ➔ 1535.2) | CD Leganés (-21.9 ➔ 1488.5)",
         "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+        "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
+        "   • [LaLiga Hypermotion J8] Real Sporting vs Celta de Vigo B: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Germán Cid Camacho'",
+        "     └ Impacte model: Targetes >4.5: 46.7% ➔ 63.6% (+16.9%) | Vermella: 22.1% ➔ 27.4% (+5.3%) | Victòria Local: 90.9% ➔ 90.9% (+0.0%)",
+        "   • [LaLiga Hypermotion J8] CD Castellón vs AD Ceuta: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'De Aza M. H.'",
+        "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)",
+        "   • [LaLiga Hypermotion J8] UD Las Palmas vs Real Valladolid: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Manuel Ángel Pérez Hernández'",
+        "     └ Impacte model: Targetes >4.5: 53.4% ➔ 62.2% (+8.8%) | Vermella: 22.1% ➔ 22.1% (+0.0%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)",
+        "   • [LaLiga Hypermotion J8] Girona FC vs RCD Mallorca: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Eder Mallo Fernández'",
+        "     └ Impacte model: Targetes >4.5: 53.4% ➔ 69.8% (+16.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)"
       ],
       "matches": [
+        {
+          "match_id": "HYPERMOTION_J8_ELD_ROV",
+          "competition_id": "HYPERMOTION",
+          "jornada": 8,
+          "home_team": "CD Eldense",
+          "away_team": "Real Oviedo",
+          "home_goals": 4,
+          "away_goals": 1,
+          "score": "4 - 1",
+          "home_xg": 3.3,
+          "away_xg": 0.96,
+          "home_yellow_cards": 2,
+          "away_yellow_cards": 4,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 6,
+          "away_corners": 8,
+          "referee": "Rafael Sánchez López",
+          "elo_change_home": 20.7,
+          "elo_change_away": -20.7,
+          "new_elo_home": 1509.1,
+          "new_elo_away": 1494.7,
+          "date": "02.10.2026 18:30"
+        },
+        {
+          "match_id": "HYPERMOTION_J8_ALB_EIB",
+          "competition_id": "HYPERMOTION",
+          "jornada": 8,
+          "home_team": "Albacete Balompié",
+          "away_team": "SD Eibar",
+          "home_goals": 1,
+          "away_goals": 3,
+          "score": "1 - 3",
+          "home_xg": 1.48,
+          "away_xg": 1.52,
+          "home_yellow_cards": 2,
+          "away_yellow_cards": 1,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 6,
+          "away_corners": 0,
+          "referee": "José María Sánchez Martínez",
+          "elo_change_home": -10.7,
+          "elo_change_away": 10.7,
+          "new_elo_home": 1402.9,
+          "new_elo_away": 1617.7,
+          "date": "03.10.2026 12:00"
+        },
+        {
+          "match_id": "HYPERMOTION_J8_ALM_BUR",
+          "competition_id": "HYPERMOTION",
+          "jornada": 8,
+          "home_team": "UD Almería",
+          "away_team": "Burgos CF",
+          "home_goals": 2,
+          "away_goals": 1,
+          "score": "2 - 1",
+          "home_xg": 2.2,
+          "away_xg": 1.08,
+          "home_yellow_cards": 2,
+          "away_yellow_cards": 3,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 8,
+          "away_corners": 3,
+          "referee": "Galech I.",
+          "elo_change_home": 7.5,
+          "elo_change_away": -7.5,
+          "new_elo_home": 1599.1,
+          "new_elo_away": 1516.9,
+          "date": "03.10.2026 14:15"
+        },
         {
           "match_id": "HYPERMOTION_J8_CAD_LEG",
           "competition_id": "HYPERMOTION",
           "jornada": 8,
-          "home_team": "Cádiz",
-          "away_team": "Leganés",
-          "home_team_id": "CAD",
-          "away_team_id": "LEG",
+          "home_team": "Cádiz CF",
+          "away_team": "CD Leganés",
           "home_goals": 4,
           "away_goals": 0,
           "score": "4 - 0",
@@ -76,16 +160,173 @@
           "home_corners": 5,
           "away_corners": 4,
           "referee": "Morilla A.",
-          "elo_change_home": 25.6,
-          "elo_change_away": -25.6,
-          "new_elo_home": 1513.3,
-          "new_elo_away": 1510.4,
+          "elo_change_home": 21.9,
+          "elo_change_away": -21.9,
+          "new_elo_home": 1535.2,
+          "new_elo_away": 1488.5,
           "date": "03.10.2026 16:30"
         }
       ],
       "combos_evaluated": [],
       "combos_generated": [],
-      "referee_updates": []
+      "referee_updates": [
+        {
+          "match_id": "HYPERMOTION_J8_SPG_CDV",
+          "matchup": "Real Sporting vs Celta de Vigo B",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 8,
+          "date": "04.10.2026 14:15",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Germán Cid Camacho",
+          "ref_stats": {
+            "yellow_avg": 5.3,
+            "red_avg": 0.32,
+            "fouls_avg": 26.5,
+            "strictness_index": 1.18
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 46.7,
+              "after": 63.6,
+              "delta": 16.9
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 27.4,
+              "delta": 5.3
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 26.5,
+              "delta": 2.0
+            },
+            "home_win_prob": {
+              "before": 90.9,
+              "after": 90.9,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Germán Cid Camacho (índex severitat 1.18). Mitjana històrica de 5.3 grogues i 0.32 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J8_CAS_CEU",
+          "matchup": "CD Castellón vs AD Ceuta",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 8,
+          "date": "04.10.2026 16:30",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "De Aza M. H.",
+          "ref_stats": {
+            "yellow_avg": 5.2,
+            "red_avg": 0.3,
+            "fouls_avg": 26.5,
+            "strictness_index": 1.15
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 53.4,
+              "after": 66.7,
+              "delta": 13.3
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 25.9,
+              "delta": 3.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 26.5,
+              "delta": 2.0
+            },
+            "home_win_prob": {
+              "before": 46.6,
+              "after": 46.6,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de De Aza M. H. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J8_LAS_VLL",
+          "matchup": "UD Las Palmas vs Real Valladolid",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 8,
+          "date": "04.10.2026 16:30",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Manuel Ángel Pérez Hernández",
+          "ref_stats": {
+            "yellow_avg": 5.0,
+            "red_avg": 0.25,
+            "fouls_avg": 25.5,
+            "strictness_index": 1.1
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 53.4,
+              "after": 62.2,
+              "delta": 8.8
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 22.1,
+              "delta": 0.0
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 25.5,
+              "delta": 1.0
+            },
+            "home_win_prob": {
+              "before": 46.6,
+              "after": 46.6,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Manuel Ángel Pérez Hernández (índex severitat 1.1). Mitjana històrica de 5.0 grogues i 0.25 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J8_GIR_MLL",
+          "matchup": "Girona FC vs RCD Mallorca",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 8,
+          "date": "04.10.2026 19:00",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Eder Mallo Fernández",
+          "ref_stats": {
+            "yellow_avg": 5.3,
+            "red_avg": 0.3,
+            "fouls_avg": 27.0,
+            "strictness_index": 1.19
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 53.4,
+              "after": 69.8,
+              "delta": 16.4
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 25.9,
+              "delta": 3.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 27.0,
+              "delta": 2.5
+            },
+            "home_win_prob": {
+              "before": 46.6,
+              "after": 46.6,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Eder Mallo Fernández (índex severitat 1.19). Mitjana històrica de 5.3 grogues i 0.3 vermelles per partit."
+          }
+        }
+      ]
     },
     {
       "date": "2026-10-03",
@@ -5621,80 +5862,6 @@
           "value_bets": []
         },
         {
-          "match_id": "HYPERMOTION_J8_SAB_AND",
-          "competition_id": "HYPERMOTION",
-          "jornada": 8,
-          "status": "SCHEDULED",
-          "home_team": {
-            "id": "SAB",
-            "name": "CE Sabadell",
-            "short_name": "Sabadell",
-            "elo": 1510.9
-          },
-          "away_team": {
-            "id": "AND",
-            "name": "FC Andorra",
-            "short_name": "Andorra",
-            "elo": 1444.4
-          },
-          "date": "03.10.2026 16:30",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
-          "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
-          "verdict": "1X (Favorit Local / Risc d'Empat)",
-          "prob_1": 46.6,
-          "prob_x": 28.6,
-          "prob_2": 24.8,
-          "xg_home": 1.48,
-          "xg_away": 1.02,
-          "most_likely_score": "1-1",
-          "prob_over_25": 45.7,
-          "prob_under_25": 54.3,
-          "prob_btts_yes": 50.7,
-          "prob_btts_no": 49.3,
-          "corners_home": 5.0,
-          "corners_away": 4.5,
-          "corners_total": 9.5,
-          "prob_over_corners_85": 60.8,
-          "prob_over_corners_95": 47.8,
-          "cards_home": 2.9,
-          "cards_away": 2.9,
-          "cards_total": 5.9,
-          "prob_over_cards_35": 83.7,
-          "prob_over_cards_45": 69.8,
-          "referee": {
-            "name": "José Luis Guzmán Mansilla",
-            "is_official": true,
-            "yellow_avg": 4.2,
-            "red_avg": 0.2,
-            "fouls_avg": 27.0
-          },
-          "odds_1x2": {
-            "1": 2.0,
-            "X": 3.2,
-            "2": 3.4
-          },
-          "odds_ou25": {
-            "over": null,
-            "under": null
-          },
-          "odds_btts": {
-            "yes": null,
-            "no": null
-          },
-          "value_bets": []
-        },
-        {
           "match_id": "HYPERMOTION_J8_CAD_LEG",
           "competition_id": "HYPERMOTION",
           "jornada": 8,
@@ -5902,17 +6069,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.2,
-          "cards_away": 2.2,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 65.7,
-          "prob_over_cards_45": 46.7,
+          "cards_home": 2.7,
+          "cards_away": 2.7,
+          "cards_total": 5.5,
+          "prob_over_cards_35": 79.3,
+          "prob_over_cards_45": 63.6,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
+            "name": "Germán Cid Camacho",
+            "is_official": true,
             "yellow_avg": 4.2,
             "red_avg": 0.2,
-            "fouls_avg": 25.0
+            "fouls_avg": 26.5
           },
           "odds_1x2": {
             "1": 1.52,
@@ -5989,17 +6156,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.8,
+          "cards_away": 2.8,
+          "cards_total": 5.7,
+          "prob_over_cards_35": 81.6,
+          "prob_over_cards_45": 66.7,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
+            "name": "De Aza M. H.",
+            "is_official": true,
             "yellow_avg": 4.2,
             "red_avg": 0.2,
-            "fouls_avg": 25.0
+            "fouls_avg": 26.5
           },
           "odds_1x2": {
             "1": 1.3,
@@ -6088,17 +6255,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.7,
+          "cards_away": 2.7,
+          "cards_total": 5.4,
+          "prob_over_cards_35": 78.3,
+          "prob_over_cards_45": 62.2,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
+            "name": "Manuel Ángel Pérez Hernández",
+            "is_official": true,
             "yellow_avg": 4.2,
             "red_avg": 0.2,
-            "fouls_avg": 25.0
+            "fouls_avg": 25.5
           },
           "odds_1x2": {
             "1": 2.1,
@@ -6162,17 +6329,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.9,
+          "cards_away": 2.9,
+          "cards_total": 5.9,
+          "prob_over_cards_35": 83.7,
+          "prob_over_cards_45": 69.8,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
+            "name": "Eder Mallo Fernández",
+            "is_official": true,
             "yellow_avg": 4.2,
             "red_avg": 0.2,
-            "fouls_avg": 25.0
+            "fouls_avg": 27.0
           },
           "odds_1x2": {
             "1": 2.05,
@@ -6201,6 +6368,80 @@
               "category": "1X2"
             }
           ]
+        },
+        {
+          "match_id": "HYPERMOTION_J8_SAB_AND",
+          "competition_id": "HYPERMOTION",
+          "jornada": 8,
+          "status": "SCHEDULED",
+          "home_team": {
+            "id": "SAB",
+            "name": "CE Sabadell",
+            "short_name": "Sabadell",
+            "elo": 1510.9
+          },
+          "away_team": {
+            "id": "AND",
+            "name": "FC Andorra",
+            "short_name": "Andorra",
+            "elo": 1444.4
+          },
+          "date": "04.10.2026 19:00",
+          "home_goals": null,
+          "away_goals": null,
+          "final_score": null,
+          "actual_1x2": null,
+          "predicted_1x2": "1",
+          "is_hit_1x2": null,
+          "is_exact_score": null,
+          "xg_diff_home": null,
+          "xg_diff_away": null,
+          "real_corners_home": 0,
+          "real_corners_away": 0,
+          "real_cards_home": null,
+          "real_cards_away": null,
+          "verdict": "1X (Favorit Local / Risc d'Empat)",
+          "prob_1": 46.6,
+          "prob_x": 28.6,
+          "prob_2": 24.8,
+          "xg_home": 1.48,
+          "xg_away": 1.02,
+          "most_likely_score": "1-1",
+          "prob_over_25": 45.7,
+          "prob_under_25": 54.3,
+          "prob_btts_yes": 50.7,
+          "prob_btts_no": 49.3,
+          "corners_home": 5.0,
+          "corners_away": 4.5,
+          "corners_total": 9.5,
+          "prob_over_corners_85": 60.8,
+          "prob_over_corners_95": 47.8,
+          "cards_home": 2.9,
+          "cards_away": 2.9,
+          "cards_total": 5.9,
+          "prob_over_cards_35": 83.7,
+          "prob_over_cards_45": 69.8,
+          "referee": {
+            "name": "José Luis Guzmán Mansilla",
+            "is_official": true,
+            "yellow_avg": 4.2,
+            "red_avg": 0.2,
+            "fouls_avg": 27.0
+          },
+          "odds_1x2": {
+            "1": 2.0,
+            "X": 3.2,
+            "2": 3.4
+          },
+          "odds_ou25": {
+            "over": null,
+            "under": null
+          },
+          "odds_btts": {
+            "yes": null,
+            "no": null
+          },
+          "value_bets": []
         },
         {
           "match_id": "HYPERMOTION_J8_COR_TEN",
@@ -8881,14 +9122,14 @@
           "profile": "SEMI_1",
           "category_code": "SEMI",
           "stake": 10.0,
-          "combined_odd": 10.1,
-          "combined_prob_pct": 16.6,
-          "fair_odd": 6.04,
-          "ev_pct": 67.3,
+          "combined_odd": 8.61,
+          "combined_prob_pct": 10.1,
+          "fair_odd": 9.88,
+          "ev_pct": -12.9,
           "booster_pct": 0.0,
-          "boosted_odd": 10.1,
-          "potential_payout": 101.0,
-          "potential_profit": 91.0,
+          "boosted_odd": 8.61,
+          "potential_payout": 86.1,
+          "potential_profit": 76.1,
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
@@ -8901,13 +9142,13 @@
           },
           "legs": [
             {
-              "matchup": "Real Sociedad B vs Granada CF",
-              "selection_name": "2 - Victòria Visitant (Granada CF)",
+              "matchup": "UD Las Palmas vs Real Valladolid",
+              "selection_name": "1 - Victòria Local (UD Las Palmas)",
               "category": "1X2",
-              "bookie_odd": 2.65,
-              "model_prob": 76.3,
-              "date": "04.10.2026 12:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
+              "bookie_odd": 2.1,
+              "model_prob": 46.6,
+              "date": "04.10.2026 16:30",
+              "url": "https://www.winamax.es/apuestas-deportivas/match/72477464",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
@@ -8923,13 +9164,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Córdoba CF vs CD Tenerife",
-              "selection_name": "1 - Victòria Local (Córdoba CF)",
+              "matchup": "CE Sabadell vs FC Andorra",
+              "selection_name": "1 - Victòria Local (CE Sabadell)",
               "category": "1X2",
-              "bookie_odd": 1.86,
+              "bookie_odd": 2.0,
               "model_prob": 46.6,
-              "date": "05.10.2026 18:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477458",
+              "date": "04.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             }
@@ -8940,14 +9181,14 @@
           "profile": "SEMI_2",
           "category_code": "SEMI",
           "stake": 10.0,
-          "combined_odd": 11.0,
-          "combined_prob_pct": 15.1,
-          "fair_odd": 6.64,
-          "ev_pct": 65.7,
+          "combined_odd": 8.51,
+          "combined_prob_pct": 9.2,
+          "fair_odd": 10.87,
+          "ev_pct": -21.7,
           "booster_pct": 5.0,
-          "boosted_odd": 11.55,
-          "potential_payout": 115.5,
-          "potential_profit": 105.5,
+          "boosted_odd": 8.94,
+          "potential_payout": 89.4,
+          "potential_profit": 79.4,
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
@@ -8959,17 +9200,6 @@
             "summary": "0/4 encertats · 4 pendents"
           },
           "legs": [
-            {
-              "matchup": "Real Sociedad B vs Granada CF",
-              "selection_name": "2 - Victòria Visitant (Granada CF)",
-              "category": "1X2",
-              "bookie_odd": 2.65,
-              "model_prob": 76.3,
-              "date": "04.10.2026 12:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
-            },
             {
               "matchup": "Real Sporting vs Celta de Vigo B",
               "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -9002,6 +9232,17 @@
               "url": "https://www.winamax.es/apuestas-deportivas/match/72477464",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "Girona FC vs RCD Mallorca",
+              "selection_name": "1 - Victòria Local (Girona FC)",
+              "category": "1X2",
+              "bookie_odd": 2.05,
+              "model_prob": 46.6,
+              "date": "04.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/match/72477462",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
             }
           ]
         }
@@ -9012,36 +9253,25 @@
           "profile": "RISKY_1",
           "category_code": "RISKY",
           "stake": 5.0,
-          "combined_odd": 32.25,
-          "combined_prob_pct": 7.0,
-          "fair_odd": 14.25,
-          "ev_pct": 126.3,
-          "booster_pct": 7.5,
-          "boosted_odd": 34.67,
-          "potential_payout": 173.35,
-          "potential_profit": 168.35,
+          "combined_odd": 31.64,
+          "combined_prob_pct": 2.0,
+          "fair_odd": 50.06,
+          "ev_pct": -36.8,
+          "booster_pct": 10.0,
+          "boosted_odd": 34.8,
+          "potential_payout": 174.0,
+          "potential_profit": 169.0,
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
-            "pending_count": 5,
-            "total_count": 5,
+            "pending_count": 6,
+            "total_count": 6,
             "progress_pct": 0.0,
-            "summary": "0/5 encertats · 5 pendents"
+            "summary": "0/6 encertats · 6 pendents"
           },
           "legs": [
-            {
-              "matchup": "Real Sociedad B vs Granada CF",
-              "selection_name": "2 - Victòria Visitant (Granada CF)",
-              "category": "1X2",
-              "bookie_odd": 2.65,
-              "model_prob": 76.3,
-              "date": "04.10.2026 12:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
-            },
             {
               "matchup": "Real Sporting vs Celta de Vigo B",
               "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -9050,6 +9280,17 @@
               "model_prob": 90.9,
               "date": "04.10.2026 14:15",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72477470",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "CD Castellón vs AD Ceuta",
+              "selection_name": "1 - Victòria Local (CD Castellón)",
+              "category": "1X2",
+              "bookie_odd": 1.3,
+              "model_prob": 46.6,
+              "date": "04.10.2026 16:30",
+              "url": "https://www.winamax.es/apuestas-deportivas/match/72477456",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
@@ -9072,6 +9313,17 @@
               "model_prob": 46.6,
               "date": "04.10.2026 19:00",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72477462",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "CE Sabadell vs FC Andorra",
+              "selection_name": "1 - Victòria Local (CE Sabadell)",
+              "category": "1X2",
+              "bookie_odd": 2.0,
+              "model_prob": 46.6,
+              "date": "04.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
@@ -9093,14 +9345,14 @@
           "profile": "RISKY_2",
           "category_code": "RISKY",
           "stake": 5.0,
-          "combined_odd": 41.93,
-          "combined_prob_pct": 3.3,
-          "fair_odd": 30.58,
-          "ev_pct": 37.1,
+          "combined_odd": 31.64,
+          "combined_prob_pct": 2.0,
+          "fair_odd": 50.06,
+          "ev_pct": -36.8,
           "booster_pct": 10.0,
-          "boosted_odd": 46.12,
-          "potential_payout": 230.6,
-          "potential_profit": 225.6,
+          "boosted_odd": 34.8,
+          "potential_payout": 174.0,
+          "potential_profit": 169.0,
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
@@ -9112,17 +9364,6 @@
             "summary": "0/6 encertats · 6 pendents"
           },
           "legs": [
-            {
-              "matchup": "Real Sociedad B vs Granada CF",
-              "selection_name": "2 - Victòria Visitant (Granada CF)",
-              "category": "1X2",
-              "bookie_odd": 2.65,
-              "model_prob": 76.3,
-              "date": "04.10.2026 12:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
-            },
             {
               "matchup": "Real Sporting vs Celta de Vigo B",
               "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -9164,6 +9405,17 @@
               "model_prob": 46.6,
               "date": "04.10.2026 19:00",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72477462",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "CE Sabadell vs FC Andorra",
+              "selection_name": "1 - Victòria Local (CE Sabadell)",
+              "category": "1X2",
+              "bookie_odd": 2.0,
+              "model_prob": 46.6,
+              "date": "04.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
@@ -12816,7 +13068,7 @@
         "competition_id": "HYPERMOTION",
         "jornada": 8,
         "season": "2026-2027",
-        "created_at": "2026-10-04 00:47:39",
+        "created_at": "2026-10-04 12:34:10",
         "total_stake": 0.0,
         "total_payout": 0.0,
         "net_profit": 0.0,
@@ -12829,35 +13081,19 @@
             "jornada": 8,
             "profile": "RISKY_1",
             "stake": 5.0,
-            "combined_odd": 32.25,
-            "combined_prob_pct": 7.0,
-            "fair_odd": 14.25,
-            "ev_pct": 126.3,
+            "combined_odd": 31.64,
+            "combined_prob_pct": 2.0,
+            "fair_odd": 50.06,
+            "ev_pct": -36.8,
             "status": "PENDING",
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-04 00:47:39",
+            "created_at": "2026-10-04 12:34:10",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1243,
-                "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
-                "matchup": "Real Sociedad B vs Granada CF",
-                "selection_name": "2 - Victòria Visitant (Granada CF)",
-                "category": "1X2",
-                "bookie_odd": 2.65,
-                "model_prob": 76.3,
-                "match_date": "04.10.2026 12:00",
-                "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-                "home_team_id": "RSB",
-                "away_team_id": "GRA",
-                "status": "PENDING",
-                "actual_result": null,
-                "evaluated_at": null
-              },
-              {
-                "id": 1244,
+                "id": 1265,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12873,7 +13109,23 @@
                 "evaluated_at": null
               },
               {
-                "id": 1245,
+                "id": 1266,
+                "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
+                "matchup": "CD Castellón vs AD Ceuta",
+                "selection_name": "1 - Victòria Local (CD Castellón)",
+                "category": "1X2",
+                "bookie_odd": 1.3,
+                "model_prob": 46.6,
+                "match_date": "04.10.2026 16:30",
+                "url": "https://www.winamax.es/apuestas-deportivas/match/72477456",
+                "home_team_id": "CAS",
+                "away_team_id": "CEU",
+                "status": "PENDING",
+                "actual_result": null,
+                "evaluated_at": null
+              },
+              {
+                "id": 1267,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "UD Las Palmas vs Real Valladolid",
                 "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -12889,7 +13141,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1246,
+                "id": 1268,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Girona FC vs RCD Mallorca",
                 "selection_name": "1 - Victòria Local (Girona FC)",
@@ -12905,7 +13157,23 @@
                 "evaluated_at": null
               },
               {
-                "id": 1247,
+                "id": 1269,
+                "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
+                "matchup": "CE Sabadell vs FC Andorra",
+                "selection_name": "1 - Victòria Local (CE Sabadell)",
+                "category": "1X2",
+                "bookie_odd": 2.0,
+                "model_prob": 46.6,
+                "match_date": "04.10.2026 19:00",
+                "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
+                "home_team_id": "SAB",
+                "away_team_id": "AND",
+                "status": "PENDING",
+                "actual_result": null,
+                "evaluated_at": null
+              },
+              {
+                "id": 1270,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Córdoba CF vs CD Tenerife",
                 "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -12929,35 +13197,19 @@
             "jornada": 8,
             "profile": "RISKY_2",
             "stake": 5.0,
-            "combined_odd": 41.93,
-            "combined_prob_pct": 3.3,
-            "fair_odd": 30.58,
-            "ev_pct": 37.1,
+            "combined_odd": 31.64,
+            "combined_prob_pct": 2.0,
+            "fair_odd": 50.06,
+            "ev_pct": -36.8,
             "status": "PENDING",
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-04 00:47:39",
+            "created_at": "2026-10-04 12:34:10",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1248,
-                "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
-                "matchup": "Real Sociedad B vs Granada CF",
-                "selection_name": "2 - Victòria Visitant (Granada CF)",
-                "category": "1X2",
-                "bookie_odd": 2.65,
-                "model_prob": 76.3,
-                "match_date": "04.10.2026 12:00",
-                "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-                "home_team_id": "RSB",
-                "away_team_id": "GRA",
-                "status": "PENDING",
-                "actual_result": null,
-                "evaluated_at": null
-              },
-              {
-                "id": 1249,
+                "id": 1271,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12973,7 +13225,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1250,
+                "id": 1272,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "CD Castellón vs AD Ceuta",
                 "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -12989,7 +13241,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1251,
+                "id": 1273,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "UD Las Palmas vs Real Valladolid",
                 "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -13005,7 +13257,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1252,
+                "id": 1274,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Girona FC vs RCD Mallorca",
                 "selection_name": "1 - Victòria Local (Girona FC)",
@@ -13021,7 +13273,23 @@
                 "evaluated_at": null
               },
               {
-                "id": 1253,
+                "id": 1275,
+                "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
+                "matchup": "CE Sabadell vs FC Andorra",
+                "selection_name": "1 - Victòria Local (CE Sabadell)",
+                "category": "1X2",
+                "bookie_odd": 2.0,
+                "model_prob": 46.6,
+                "match_date": "04.10.2026 19:00",
+                "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
+                "home_team_id": "SAB",
+                "away_team_id": "AND",
+                "status": "PENDING",
+                "actual_result": null,
+                "evaluated_at": null
+              },
+              {
+                "id": 1276,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Córdoba CF vs CD Tenerife",
                 "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -13053,11 +13321,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-04 00:47:39",
+            "created_at": "2026-10-04 12:34:10",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1232,
+                "id": 1254,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -13073,7 +13341,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1233,
+                "id": 1255,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
                 "matchup": "CD Castellón vs AD Ceuta",
                 "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -13105,11 +13373,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-04 00:47:39",
+            "created_at": "2026-10-04 12:34:10",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1234,
+                "id": 1256,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -13125,7 +13393,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1235,
+                "id": 1257,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
                 "matchup": "Córdoba CF vs CD Tenerife",
                 "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -13149,35 +13417,35 @@
             "jornada": 8,
             "profile": "SEMI_1",
             "stake": 10.0,
-            "combined_odd": 10.1,
-            "combined_prob_pct": 16.6,
-            "fair_odd": 6.04,
-            "ev_pct": 67.3,
+            "combined_odd": 8.61,
+            "combined_prob_pct": 10.1,
+            "fair_odd": 9.88,
+            "ev_pct": -12.9,
             "status": "PENDING",
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-04 00:47:39",
+            "created_at": "2026-10-04 12:34:10",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1236,
+                "id": 1258,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
-                "matchup": "Real Sociedad B vs Granada CF",
-                "selection_name": "2 - Victòria Visitant (Granada CF)",
+                "matchup": "UD Las Palmas vs Real Valladolid",
+                "selection_name": "1 - Victòria Local (UD Las Palmas)",
                 "category": "1X2",
-                "bookie_odd": 2.65,
-                "model_prob": 76.3,
-                "match_date": "04.10.2026 12:00",
-                "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-                "home_team_id": "RSB",
-                "away_team_id": "GRA",
+                "bookie_odd": 2.1,
+                "model_prob": 46.6,
+                "match_date": "04.10.2026 16:30",
+                "url": "https://www.winamax.es/apuestas-deportivas/match/72477464",
+                "home_team_id": "LAS",
+                "away_team_id": "VLL",
                 "status": "PENDING",
                 "actual_result": null,
                 "evaluated_at": null
               },
               {
-                "id": 1237,
+                "id": 1259,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "Girona FC vs RCD Mallorca",
                 "selection_name": "1 - Victòria Local (Girona FC)",
@@ -13193,17 +13461,17 @@
                 "evaluated_at": null
               },
               {
-                "id": 1238,
+                "id": 1260,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
-                "matchup": "Córdoba CF vs CD Tenerife",
-                "selection_name": "1 - Victòria Local (Córdoba CF)",
+                "matchup": "CE Sabadell vs FC Andorra",
+                "selection_name": "1 - Victòria Local (CE Sabadell)",
                 "category": "1X2",
-                "bookie_odd": 1.86,
+                "bookie_odd": 2.0,
                 "model_prob": 46.6,
-                "match_date": "05.10.2026 18:30",
-                "url": "https://www.winamax.es/apuestas-deportivas/match/72477458",
-                "home_team_id": "COR",
-                "away_team_id": "TEN",
+                "match_date": "04.10.2026 19:00",
+                "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
+                "home_team_id": "SAB",
+                "away_team_id": "AND",
                 "status": "PENDING",
                 "actual_result": null,
                 "evaluated_at": null
@@ -13217,35 +13485,19 @@
             "jornada": 8,
             "profile": "SEMI_2",
             "stake": 10.0,
-            "combined_odd": 11.0,
-            "combined_prob_pct": 15.1,
-            "fair_odd": 6.64,
-            "ev_pct": 65.7,
+            "combined_odd": 8.51,
+            "combined_prob_pct": 9.2,
+            "fair_odd": 10.87,
+            "ev_pct": -21.7,
             "status": "PENDING",
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-04 00:47:39",
+            "created_at": "2026-10-04 12:34:10",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1239,
-                "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
-                "matchup": "Real Sociedad B vs Granada CF",
-                "selection_name": "2 - Victòria Visitant (Granada CF)",
-                "category": "1X2",
-                "bookie_odd": 2.65,
-                "model_prob": 76.3,
-                "match_date": "04.10.2026 12:00",
-                "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-                "home_team_id": "RSB",
-                "away_team_id": "GRA",
-                "status": "PENDING",
-                "actual_result": null,
-                "evaluated_at": null
-              },
-              {
-                "id": 1240,
+                "id": 1261,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -13261,7 +13513,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1241,
+                "id": 1262,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "CD Castellón vs AD Ceuta",
                 "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -13277,7 +13529,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1242,
+                "id": 1263,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "UD Las Palmas vs Real Valladolid",
                 "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -13288,6 +13540,22 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/match/72477464",
                 "home_team_id": "LAS",
                 "away_team_id": "VLL",
+                "status": "PENDING",
+                "actual_result": null,
+                "evaluated_at": null
+              },
+              {
+                "id": 1264,
+                "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
+                "matchup": "Girona FC vs RCD Mallorca",
+                "selection_name": "1 - Victòria Local (Girona FC)",
+                "category": "1X2",
+                "bookie_odd": 2.05,
+                "model_prob": 46.6,
+                "match_date": "04.10.2026 19:00",
+                "url": "https://www.winamax.es/apuestas-deportivas/match/72477462",
+                "home_team_id": "GIR",
+                "away_team_id": "MLL",
                 "status": "PENDING",
                 "actual_result": null,
                 "evaluated_at": null
@@ -16236,35 +16504,19 @@
         "jornada": 8,
         "profile": "RISKY_1",
         "stake": 5.0,
-        "combined_odd": 32.25,
-        "combined_prob_pct": 7.0,
-        "fair_odd": 14.25,
-        "ev_pct": 126.3,
+        "combined_odd": 31.64,
+        "combined_prob_pct": 2.0,
+        "fair_odd": 50.06,
+        "ev_pct": -36.8,
         "status": "PENDING",
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-04 00:47:39",
+        "created_at": "2026-10-04 12:34:10",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1243,
-            "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
-            "matchup": "Real Sociedad B vs Granada CF",
-            "selection_name": "2 - Victòria Visitant (Granada CF)",
-            "category": "1X2",
-            "bookie_odd": 2.65,
-            "model_prob": 76.3,
-            "match_date": "04.10.2026 12:00",
-            "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-            "home_team_id": "RSB",
-            "away_team_id": "GRA",
-            "status": "PENDING",
-            "actual_result": null,
-            "evaluated_at": null
-          },
-          {
-            "id": 1244,
+            "id": 1265,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16280,7 +16532,23 @@
             "evaluated_at": null
           },
           {
-            "id": 1245,
+            "id": 1266,
+            "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
+            "matchup": "CD Castellón vs AD Ceuta",
+            "selection_name": "1 - Victòria Local (CD Castellón)",
+            "category": "1X2",
+            "bookie_odd": 1.3,
+            "model_prob": 46.6,
+            "match_date": "04.10.2026 16:30",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/72477456",
+            "home_team_id": "CAS",
+            "away_team_id": "CEU",
+            "status": "PENDING",
+            "actual_result": null,
+            "evaluated_at": null
+          },
+          {
+            "id": 1267,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "UD Las Palmas vs Real Valladolid",
             "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -16296,7 +16564,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1246,
+            "id": 1268,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Girona FC vs RCD Mallorca",
             "selection_name": "1 - Victòria Local (Girona FC)",
@@ -16312,7 +16580,23 @@
             "evaluated_at": null
           },
           {
-            "id": 1247,
+            "id": 1269,
+            "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
+            "matchup": "CE Sabadell vs FC Andorra",
+            "selection_name": "1 - Victòria Local (CE Sabadell)",
+            "category": "1X2",
+            "bookie_odd": 2.0,
+            "model_prob": 46.6,
+            "match_date": "04.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
+            "home_team_id": "SAB",
+            "away_team_id": "AND",
+            "status": "PENDING",
+            "actual_result": null,
+            "evaluated_at": null
+          },
+          {
+            "id": 1270,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Córdoba CF vs CD Tenerife",
             "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -16632,35 +16916,19 @@
         "jornada": 8,
         "profile": "RISKY_2",
         "stake": 5.0,
-        "combined_odd": 41.93,
-        "combined_prob_pct": 3.3,
-        "fair_odd": 30.58,
-        "ev_pct": 37.1,
+        "combined_odd": 31.64,
+        "combined_prob_pct": 2.0,
+        "fair_odd": 50.06,
+        "ev_pct": -36.8,
         "status": "PENDING",
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-04 00:47:39",
+        "created_at": "2026-10-04 12:34:10",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1248,
-            "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
-            "matchup": "Real Sociedad B vs Granada CF",
-            "selection_name": "2 - Victòria Visitant (Granada CF)",
-            "category": "1X2",
-            "bookie_odd": 2.65,
-            "model_prob": 76.3,
-            "match_date": "04.10.2026 12:00",
-            "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-            "home_team_id": "RSB",
-            "away_team_id": "GRA",
-            "status": "PENDING",
-            "actual_result": null,
-            "evaluated_at": null
-          },
-          {
-            "id": 1249,
+            "id": 1271,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16676,7 +16944,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1250,
+            "id": 1272,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "CD Castellón vs AD Ceuta",
             "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -16692,7 +16960,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1251,
+            "id": 1273,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "UD Las Palmas vs Real Valladolid",
             "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -16708,7 +16976,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1252,
+            "id": 1274,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Girona FC vs RCD Mallorca",
             "selection_name": "1 - Victòria Local (Girona FC)",
@@ -16724,7 +16992,23 @@
             "evaluated_at": null
           },
           {
-            "id": 1253,
+            "id": 1275,
+            "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
+            "matchup": "CE Sabadell vs FC Andorra",
+            "selection_name": "1 - Victòria Local (CE Sabadell)",
+            "category": "1X2",
+            "bookie_odd": 2.0,
+            "model_prob": 46.6,
+            "match_date": "04.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
+            "home_team_id": "SAB",
+            "away_team_id": "AND",
+            "status": "PENDING",
+            "actual_result": null,
+            "evaluated_at": null
+          },
+          {
+            "id": 1276,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Córdoba CF vs CD Tenerife",
             "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -16876,11 +17160,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-04 00:47:39",
+        "created_at": "2026-10-04 12:34:10",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1232,
+            "id": 1254,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16896,7 +17180,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1233,
+            "id": 1255,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
             "matchup": "CD Castellón vs AD Ceuta",
             "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -17032,11 +17316,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-04 00:47:39",
+        "created_at": "2026-10-04 12:34:10",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1234,
+            "id": 1256,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -17052,7 +17336,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1235,
+            "id": 1257,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
             "matchup": "Córdoba CF vs CD Tenerife",
             "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -17292,35 +17576,35 @@
         "jornada": 8,
         "profile": "SEMI_1",
         "stake": 10.0,
-        "combined_odd": 10.1,
-        "combined_prob_pct": 16.6,
-        "fair_odd": 6.04,
-        "ev_pct": 67.3,
+        "combined_odd": 8.61,
+        "combined_prob_pct": 10.1,
+        "fair_odd": 9.88,
+        "ev_pct": -12.9,
         "status": "PENDING",
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-04 00:47:39",
+        "created_at": "2026-10-04 12:34:10",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1236,
+            "id": 1258,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
-            "matchup": "Real Sociedad B vs Granada CF",
-            "selection_name": "2 - Victòria Visitant (Granada CF)",
+            "matchup": "UD Las Palmas vs Real Valladolid",
+            "selection_name": "1 - Victòria Local (UD Las Palmas)",
             "category": "1X2",
-            "bookie_odd": 2.65,
-            "model_prob": 76.3,
-            "match_date": "04.10.2026 12:00",
-            "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-            "home_team_id": "RSB",
-            "away_team_id": "GRA",
+            "bookie_odd": 2.1,
+            "model_prob": 46.6,
+            "match_date": "04.10.2026 16:30",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/72477464",
+            "home_team_id": "LAS",
+            "away_team_id": "VLL",
             "status": "PENDING",
             "actual_result": null,
             "evaluated_at": null
           },
           {
-            "id": 1237,
+            "id": 1259,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "Girona FC vs RCD Mallorca",
             "selection_name": "1 - Victòria Local (Girona FC)",
@@ -17336,17 +17620,17 @@
             "evaluated_at": null
           },
           {
-            "id": 1238,
+            "id": 1260,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
-            "matchup": "Córdoba CF vs CD Tenerife",
-            "selection_name": "1 - Victòria Local (Córdoba CF)",
+            "matchup": "CE Sabadell vs FC Andorra",
+            "selection_name": "1 - Victòria Local (CE Sabadell)",
             "category": "1X2",
-            "bookie_odd": 1.86,
+            "bookie_odd": 2.0,
             "model_prob": 46.6,
-            "match_date": "05.10.2026 18:30",
-            "url": "https://www.winamax.es/apuestas-deportivas/match/72477458",
-            "home_team_id": "COR",
-            "away_team_id": "TEN",
+            "match_date": "04.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/72477468",
+            "home_team_id": "SAB",
+            "away_team_id": "AND",
             "status": "PENDING",
             "actual_result": null,
             "evaluated_at": null
@@ -17576,35 +17860,19 @@
         "jornada": 8,
         "profile": "SEMI_2",
         "stake": 10.0,
-        "combined_odd": 11.0,
-        "combined_prob_pct": 15.1,
-        "fair_odd": 6.64,
-        "ev_pct": 65.7,
+        "combined_odd": 8.51,
+        "combined_prob_pct": 9.2,
+        "fair_odd": 10.87,
+        "ev_pct": -21.7,
         "status": "PENDING",
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-04 00:47:39",
+        "created_at": "2026-10-04 12:34:10",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1239,
-            "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
-            "matchup": "Real Sociedad B vs Granada CF",
-            "selection_name": "2 - Victòria Visitant (Granada CF)",
-            "category": "1X2",
-            "bookie_odd": 2.65,
-            "model_prob": 76.3,
-            "match_date": "04.10.2026 12:00",
-            "url": "https://www.winamax.es/apuestas-deportivas/match/72477466",
-            "home_team_id": "RSB",
-            "away_team_id": "GRA",
-            "status": "PENDING",
-            "actual_result": null,
-            "evaluated_at": null
-          },
-          {
-            "id": 1240,
+            "id": 1261,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -17620,7 +17888,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1241,
+            "id": 1262,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "CD Castellón vs AD Ceuta",
             "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -17636,7 +17904,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1242,
+            "id": 1263,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "UD Las Palmas vs Real Valladolid",
             "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -17647,6 +17915,22 @@
             "url": "https://www.winamax.es/apuestas-deportivas/match/72477464",
             "home_team_id": "LAS",
             "away_team_id": "VLL",
+            "status": "PENDING",
+            "actual_result": null,
+            "evaluated_at": null
+          },
+          {
+            "id": 1264,
+            "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
+            "matchup": "Girona FC vs RCD Mallorca",
+            "selection_name": "1 - Victòria Local (Girona FC)",
+            "category": "1X2",
+            "bookie_odd": 2.05,
+            "model_prob": 46.6,
+            "match_date": "04.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/72477462",
+            "home_team_id": "GIR",
+            "away_team_id": "MLL",
             "status": "PENDING",
             "actual_result": null,
             "evaluated_at": null
