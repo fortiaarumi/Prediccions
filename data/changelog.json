@@ -1,5 +1,51 @@
 [
   {
+    "date": "2026-10-04",
+    "timestamp": "2026-10-04T00:47:43.058110",
+    "title": "Actualització Diària del Model · 04/10/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
+      "   • [HYPERMOTION J8] Cádiz 4 - 0 Leganés | xG: 2.00-0.99 | Targetes: 5 🟨 | Córners: 9 🚩 | Àrbitre: Morilla A.",
+      "📊 Actualització de Power Rànquings Elo:",
+      "   • Cádiz (+25.6 ➔ 1513.3) | Leganés (-25.6 ➔ 1510.4)",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+    ],
+    "matches": [
+      {
+        "match_id": "HYPERMOTION_J8_CAD_LEG",
+        "competition_id": "HYPERMOTION",
+        "jornada": 8,
+        "home_team": "Cádiz",
+        "away_team": "Leganés",
+        "home_team_id": "CAD",
+        "away_team_id": "LEG",
+        "home_goals": 4,
+        "away_goals": 0,
+        "score": "4 - 0",
+        "home_xg": 2.0,
+        "away_xg": 0.99,
+        "home_yellow_cards": 2,
+        "away_yellow_cards": 3,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 5,
+        "away_corners": 4,
+        "referee": "Morilla A.",
+        "elo_change_home": 25.6,
+        "elo_change_away": -25.6,
+        "new_elo_home": 1513.3,
+        "new_elo_away": 1510.4,
+        "date": "03.10.2026 16:30"
+      }
+    ],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": []
+  },
+  {
     "date": "2026-10-03",
     "timestamp": "2026-10-03T17:27:15.842061",
     "title": "Actualització Diària del Model · 03/10/2026",

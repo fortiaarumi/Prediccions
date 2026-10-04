@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-03T17:27:14.023273",
-    "formatted_date": "03/10/2026 a les 17:27",
+    "generated_at": "2026-10-04T00:47:39.873543",
+    "formatted_date": "04/10/2026 a les 00:47",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -41,6 +41,52 @@
     ]
   },
   "changelog": [
+    {
+      "date": "2026-10-04",
+      "timestamp": "2026-10-04T00:47:43.058110",
+      "title": "Actualització Diària del Model · 04/10/2026",
+      "badge": "Diari (08:00 UTC)",
+      "badge_type": "primary",
+      "items": [
+        "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
+        "   • [HYPERMOTION J8] Cádiz 4 - 0 Leganés | xG: 2.00-0.99 | Targetes: 5 🟨 | Córners: 9 🚩 | Àrbitre: Morilla A.",
+        "📊 Actualització de Power Rànquings Elo:",
+        "   • Cádiz (+25.6 ➔ 1513.3) | Leganés (-25.6 ➔ 1510.4)",
+        "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+      ],
+      "matches": [
+        {
+          "match_id": "HYPERMOTION_J8_CAD_LEG",
+          "competition_id": "HYPERMOTION",
+          "jornada": 8,
+          "home_team": "Cádiz",
+          "away_team": "Leganés",
+          "home_team_id": "CAD",
+          "away_team_id": "LEG",
+          "home_goals": 4,
+          "away_goals": 0,
+          "score": "4 - 0",
+          "home_xg": 2.0,
+          "away_xg": 0.99,
+          "home_yellow_cards": 2,
+          "away_yellow_cards": 3,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 5,
+          "away_corners": 4,
+          "referee": "Morilla A.",
+          "elo_change_home": 25.6,
+          "elo_change_away": -25.6,
+          "new_elo_home": 1513.3,
+          "new_elo_away": 1510.4,
+          "date": "03.10.2026 16:30"
+        }
+      ],
+      "combos_evaluated": [],
+      "combos_generated": [],
+      "referee_updates": []
+    },
     {
       "date": "2026-10-03",
       "timestamp": "2026-10-03T17:27:15.842061",
@@ -2465,7 +2511,7 @@
         "short_name": "Girona",
         "elo_rating": 1589.3,
         "off_rank": 3.0,
-        "def_rank": 10.0,
+        "def_rank": 9.0,
         "played": 7,
         "won": 4,
         "drawn": 1,
@@ -2490,7 +2536,7 @@
         "name": "RCD Mallorca",
         "short_name": "Mallorca",
         "elo_rating": 1568.8,
-        "off_rank": 11.0,
+        "off_rank": 12.0,
         "def_rank": 2.0,
         "played": 7,
         "won": 4,
@@ -2512,32 +2558,6 @@
       },
       {
         "rank": 6,
-        "team_id": "LEG",
-        "name": "CD Leganés",
-        "short_name": "Leganés",
-        "elo_rating": 1536.0,
-        "off_rank": 18.0,
-        "def_rank": 7.0,
-        "played": 7,
-        "won": 3,
-        "drawn": 2,
-        "lost": 2,
-        "gf": 6,
-        "ga": 7,
-        "gd": -1,
-        "points": 11,
-        "form": [
-          "W",
-          "D",
-          "L",
-          "W",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 7,
         "team_id": "LAS",
         "name": "UD Las Palmas",
         "short_name": "Las Palmas",
@@ -2563,13 +2583,13 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 8,
+        "rank": 7,
         "team_id": "BUR",
         "name": "Burgos CF",
         "short_name": "Burgos",
         "elo_rating": 1524.4,
         "off_rank": 6.0,
-        "def_rank": 9.0,
+        "def_rank": 8.0,
         "played": 8,
         "won": 4,
         "drawn": 2,
@@ -2589,12 +2609,12 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 9,
+        "rank": 8,
         "team_id": "TEN",
         "name": "CD Tenerife",
         "short_name": "Tenerife",
         "elo_rating": 1518.9,
-        "off_rank": 12.0,
+        "off_rank": 13.0,
         "def_rank": 12.0,
         "played": 7,
         "won": 3,
@@ -2615,13 +2635,13 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 10,
+        "rank": 9,
         "team_id": "ROV",
         "name": "Real Oviedo",
         "short_name": "Oviedo",
         "elo_rating": 1515.4,
-        "off_rank": 15.0,
-        "def_rank": 8.0,
+        "off_rank": 16.0,
+        "def_rank": 7.0,
         "played": 8,
         "won": 3,
         "drawn": 2,
@@ -2641,7 +2661,7 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 11,
+        "rank": 10,
         "team_id": "GRA",
         "name": "Granada CF",
         "short_name": "Granada",
@@ -2667,12 +2687,38 @@
         "avg_corners": 5.0
       },
       {
+        "rank": 11,
+        "team_id": "CAD",
+        "name": "Cádiz CF",
+        "short_name": "Cádiz",
+        "elo_rating": 1513.3,
+        "off_rank": 10.0,
+        "def_rank": 10.0,
+        "played": 8,
+        "won": 1,
+        "drawn": 4,
+        "lost": 3,
+        "gf": 11,
+        "ga": 10,
+        "gd": 1,
+        "points": 7,
+        "form": [
+          "L",
+          "L",
+          "L",
+          "D",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
         "rank": 12,
         "team_id": "SAB",
         "name": "CE Sabadell",
         "short_name": "Sabadell",
         "elo_rating": 1510.9,
-        "off_rank": 13.0,
+        "off_rank": 14.0,
         "def_rank": 4.0,
         "played": 7,
         "won": 3,
@@ -2698,7 +2744,7 @@
         "name": "Real Valladolid",
         "short_name": "Valladolid",
         "elo_rating": 1510.7,
-        "off_rank": 19.0,
+        "off_rank": 18.0,
         "def_rank": 13.0,
         "played": 7,
         "won": 2,
@@ -2720,6 +2766,32 @@
       },
       {
         "rank": 14,
+        "team_id": "LEG",
+        "name": "CD Leganés",
+        "short_name": "Leganés",
+        "elo_rating": 1510.4,
+        "off_rank": 20.0,
+        "def_rank": 14.0,
+        "played": 8,
+        "won": 3,
+        "drawn": 2,
+        "lost": 3,
+        "gf": 6,
+        "ga": 11,
+        "gd": -5,
+        "points": 11,
+        "form": [
+          "D",
+          "L",
+          "W",
+          "L",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 15,
         "team_id": "SPG",
         "name": "Real Sporting",
         "short_name": "Sporting",
@@ -2745,12 +2817,12 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 15,
+        "rank": 16,
         "team_id": "ELD",
         "name": "CD Eldense",
         "short_name": "Eldense",
         "elo_rating": 1488.4,
-        "off_rank": 16.0,
+        "off_rank": 17.0,
         "def_rank": 11.0,
         "played": 8,
         "won": 2,
@@ -2771,38 +2843,12 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 16,
-        "team_id": "CAD",
-        "name": "Cádiz CF",
-        "short_name": "Cádiz",
-        "elo_rating": 1487.7,
-        "off_rank": 17.0,
-        "def_rank": 14.0,
-        "played": 7,
-        "won": 0,
-        "drawn": 4,
-        "lost": 3,
-        "gf": 7,
-        "ga": 10,
-        "gd": -3,
-        "points": 4,
-        "form": [
-          "D",
-          "L",
-          "L",
-          "L",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
         "rank": 17,
         "team_id": "RSB",
         "name": "Real Sociedad B",
         "short_name": "R. Sociedad B",
         "elo_rating": 1479.3,
-        "off_rank": 10.0,
+        "off_rank": 11.0,
         "def_rank": 15.0,
         "played": 7,
         "won": 2,
@@ -2828,7 +2874,7 @@
         "name": "Celta de Vigo B",
         "short_name": "Celta B",
         "elo_rating": 1465.9,
-        "off_rank": 14.0,
+        "off_rank": 15.0,
         "def_rank": 18.0,
         "played": 7,
         "won": 2,
@@ -2932,7 +2978,7 @@
         "name": "AD Ceuta",
         "short_name": "Ceuta",
         "elo_rating": 1408.7,
-        "off_rank": 20.0,
+        "off_rank": 19.0,
         "def_rank": 22.0,
         "played": 7,
         "won": 1,
@@ -5575,80 +5621,6 @@
           "value_bets": []
         },
         {
-          "match_id": "HYPERMOTION_J8_CAD_LEG",
-          "competition_id": "HYPERMOTION",
-          "jornada": 8,
-          "status": "SCHEDULED",
-          "home_team": {
-            "id": "CAD",
-            "name": "Cádiz CF",
-            "short_name": "Cádiz",
-            "elo": 1487.7
-          },
-          "away_team": {
-            "id": "LEG",
-            "name": "CD Leganés",
-            "short_name": "Leganés",
-            "elo": 1536.0
-          },
-          "date": "03.10.2026 16:30",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
-          "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
-          "verdict": "Victòria Local (Cádiz CF)",
-          "prob_1": 90.9,
-          "prob_x": 7.6,
-          "prob_2": 1.5,
-          "xg_home": 3.23,
-          "xg_away": 0.33,
-          "most_likely_score": "3-0",
-          "prob_over_25": 68.4,
-          "prob_under_25": 31.6,
-          "prob_btts_yes": 27.4,
-          "prob_btts_no": 72.6,
-          "corners_home": 5.0,
-          "corners_away": 4.5,
-          "corners_total": 9.5,
-          "prob_over_corners_85": 60.8,
-          "prob_over_corners_95": 47.8,
-          "cards_home": 2.6,
-          "cards_away": 2.6,
-          "cards_total": 5.3,
-          "prob_over_cards_35": 77.5,
-          "prob_over_cards_45": 61.2,
-          "referee": {
-            "name": "Morilla A.",
-            "is_official": true,
-            "yellow_avg": 4.2,
-            "red_avg": 0.2,
-            "fouls_avg": 26.5
-          },
-          "odds_1x2": {
-            "1": null,
-            "X": null,
-            "2": null
-          },
-          "odds_ou25": {
-            "over": null,
-            "under": null
-          },
-          "odds_btts": {
-            "yes": null,
-            "no": null
-          },
-          "value_bets": []
-        },
-        {
           "match_id": "HYPERMOTION_J8_SAB_AND",
           "competition_id": "HYPERMOTION",
           "jornada": 8,
@@ -5711,6 +5683,80 @@
             "1": 2.0,
             "X": 3.2,
             "2": 3.4
+          },
+          "odds_ou25": {
+            "over": null,
+            "under": null
+          },
+          "odds_btts": {
+            "yes": null,
+            "no": null
+          },
+          "value_bets": []
+        },
+        {
+          "match_id": "HYPERMOTION_J8_CAD_LEG",
+          "competition_id": "HYPERMOTION",
+          "jornada": 8,
+          "status": "FINISHED",
+          "home_team": {
+            "id": "CAD",
+            "name": "Cádiz CF",
+            "short_name": "Cádiz",
+            "elo": 1513.3
+          },
+          "away_team": {
+            "id": "LEG",
+            "name": "CD Leganés",
+            "short_name": "Leganés",
+            "elo": 1510.4
+          },
+          "date": "03.10.2026 16:30",
+          "home_goals": 4,
+          "away_goals": 0,
+          "final_score": "4 - 0",
+          "actual_1x2": "1",
+          "predicted_1x2": "1",
+          "is_hit_1x2": true,
+          "is_exact_score": false,
+          "xg_diff_home": 0.77,
+          "xg_diff_away": -0.33,
+          "real_corners_home": 5,
+          "real_corners_away": 4,
+          "real_cards_home": 2,
+          "real_cards_away": 3,
+          "verdict": "Victòria Local (Cádiz CF)",
+          "prob_1": 90.9,
+          "prob_x": 7.6,
+          "prob_2": 1.5,
+          "xg_home": 3.23,
+          "xg_away": 0.33,
+          "most_likely_score": "3-0",
+          "prob_over_25": 68.4,
+          "prob_under_25": 31.6,
+          "prob_btts_yes": 27.4,
+          "prob_btts_no": 72.6,
+          "corners_home": 5.0,
+          "corners_away": 4.5,
+          "corners_total": 9.5,
+          "prob_over_corners_85": 60.8,
+          "prob_over_corners_95": 47.8,
+          "cards_home": 2.6,
+          "cards_away": 2.6,
+          "cards_total": 5.3,
+          "prob_over_cards_35": 77.5,
+          "prob_over_cards_45": 61.2,
+          "referee": {
+            "name": "Morilla A.",
+            "is_official": true,
+            "yellow_avg": 4.2,
+            "red_avg": 0.2,
+            "fouls_avg": 26.5
+          },
+          "odds_1x2": {
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -12770,7 +12816,7 @@
         "competition_id": "HYPERMOTION",
         "jornada": 8,
         "season": "2026-2027",
-        "created_at": "2026-10-03 17:27:14",
+        "created_at": "2026-10-04 00:47:39",
         "total_stake": 0.0,
         "total_payout": 0.0,
         "net_profit": 0.0,
@@ -12791,11 +12837,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 17:27:14",
+            "created_at": "2026-10-04 00:47:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1221,
+                "id": 1243,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -12811,7 +12857,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1222,
+                "id": 1244,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12827,7 +12873,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1223,
+                "id": 1245,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "UD Las Palmas vs Real Valladolid",
                 "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -12843,7 +12889,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1224,
+                "id": 1246,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Girona FC vs RCD Mallorca",
                 "selection_name": "1 - Victòria Local (Girona FC)",
@@ -12859,7 +12905,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1225,
+                "id": 1247,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
                 "matchup": "Córdoba CF vs CD Tenerife",
                 "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -12891,11 +12937,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 17:27:14",
+            "created_at": "2026-10-04 00:47:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1226,
+                "id": 1248,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -12911,7 +12957,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1227,
+                "id": 1249,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -12927,7 +12973,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1228,
+                "id": 1250,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "CD Castellón vs AD Ceuta",
                 "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -12943,7 +12989,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1229,
+                "id": 1251,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "UD Las Palmas vs Real Valladolid",
                 "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -12959,7 +13005,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1230,
+                "id": 1252,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Girona FC vs RCD Mallorca",
                 "selection_name": "1 - Victòria Local (Girona FC)",
@@ -12975,7 +13021,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1231,
+                "id": 1253,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
                 "matchup": "Córdoba CF vs CD Tenerife",
                 "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -13007,11 +13053,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 17:27:13",
+            "created_at": "2026-10-04 00:47:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1210,
+                "id": 1232,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -13027,7 +13073,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1211,
+                "id": 1233,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
                 "matchup": "CD Castellón vs AD Ceuta",
                 "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -13059,11 +13105,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 17:27:13",
+            "created_at": "2026-10-04 00:47:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1212,
+                "id": 1234,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -13079,7 +13125,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1213,
+                "id": 1235,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
                 "matchup": "Córdoba CF vs CD Tenerife",
                 "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -13111,11 +13157,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 17:27:13",
+            "created_at": "2026-10-04 00:47:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1214,
+                "id": 1236,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -13131,7 +13177,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1215,
+                "id": 1237,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "Girona FC vs RCD Mallorca",
                 "selection_name": "1 - Victòria Local (Girona FC)",
@@ -13147,7 +13193,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1216,
+                "id": 1238,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
                 "matchup": "Córdoba CF vs CD Tenerife",
                 "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -13179,11 +13225,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-03 17:27:14",
+            "created_at": "2026-10-04 00:47:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 1217,
+                "id": 1239,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "Real Sociedad B vs Granada CF",
                 "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -13199,7 +13245,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1218,
+                "id": 1240,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "Real Sporting vs Celta de Vigo B",
                 "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -13215,7 +13261,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1219,
+                "id": 1241,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "CD Castellón vs AD Ceuta",
                 "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -13231,7 +13277,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 1220,
+                "id": 1242,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
                 "matchup": "UD Las Palmas vs Real Valladolid",
                 "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -16198,11 +16244,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 17:27:14",
+        "created_at": "2026-10-04 00:47:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1221,
+            "id": 1243,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -16218,7 +16264,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1222,
+            "id": 1244,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16234,7 +16280,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1223,
+            "id": 1245,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "UD Las Palmas vs Real Valladolid",
             "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -16250,7 +16296,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1224,
+            "id": 1246,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Girona FC vs RCD Mallorca",
             "selection_name": "1 - Victòria Local (Girona FC)",
@@ -16266,7 +16312,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1225,
+            "id": 1247,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_1",
             "matchup": "Córdoba CF vs CD Tenerife",
             "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -16594,11 +16640,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 17:27:14",
+        "created_at": "2026-10-04 00:47:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1226,
+            "id": 1248,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -16614,7 +16660,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1227,
+            "id": 1249,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16630,7 +16676,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1228,
+            "id": 1250,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "CD Castellón vs AD Ceuta",
             "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -16646,7 +16692,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1229,
+            "id": 1251,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "UD Las Palmas vs Real Valladolid",
             "selection_name": "1 - Victòria Local (UD Las Palmas)",
@@ -16662,7 +16708,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1230,
+            "id": 1252,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Girona FC vs RCD Mallorca",
             "selection_name": "1 - Victòria Local (Girona FC)",
@@ -16678,7 +16724,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1231,
+            "id": 1253,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_RISKY_2",
             "matchup": "Córdoba CF vs CD Tenerife",
             "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -16830,11 +16876,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 17:27:13",
+        "created_at": "2026-10-04 00:47:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1210,
+            "id": 1232,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -16850,7 +16896,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1211,
+            "id": 1233,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_1",
             "matchup": "CD Castellón vs AD Ceuta",
             "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -16986,11 +17032,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 17:27:13",
+        "created_at": "2026-10-04 00:47:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1212,
+            "id": 1234,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -17006,7 +17052,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1213,
+            "id": 1235,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SAFE_2",
             "matchup": "Córdoba CF vs CD Tenerife",
             "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -17254,11 +17300,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 17:27:13",
+        "created_at": "2026-10-04 00:47:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1214,
+            "id": 1236,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -17274,7 +17320,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1215,
+            "id": 1237,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "Girona FC vs RCD Mallorca",
             "selection_name": "1 - Victòria Local (Girona FC)",
@@ -17290,7 +17336,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1216,
+            "id": 1238,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_1",
             "matchup": "Córdoba CF vs CD Tenerife",
             "selection_name": "1 - Victòria Local (Córdoba CF)",
@@ -17538,11 +17584,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-03 17:27:14",
+        "created_at": "2026-10-04 00:47:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 1217,
+            "id": 1239,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "Real Sociedad B vs Granada CF",
             "selection_name": "2 - Victòria Visitant (Granada CF)",
@@ -17558,7 +17604,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1218,
+            "id": 1240,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "Real Sporting vs Celta de Vigo B",
             "selection_name": "1 - Victòria Local (Real Sporting)",
@@ -17574,7 +17620,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1219,
+            "id": 1241,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "CD Castellón vs AD Ceuta",
             "selection_name": "1 - Victòria Local (CD Castellón)",
@@ -17590,7 +17636,7 @@
             "evaluated_at": null
           },
           {
-            "id": 1220,
+            "id": 1242,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J8_SEMI_2",
             "matchup": "UD Las Palmas vs Real Valladolid",
             "selection_name": "1 - Victòria Local (UD Las Palmas)",
