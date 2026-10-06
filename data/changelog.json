@@ -1,46 +1,18 @@
 [
   {
     "date": "2026-10-06",
-    "timestamp": "2026-10-06T02:22:04.272729",
+    "timestamp": "2026-10-06T13:27:22.776349",
     "title": "Actualització Diària del Model · 06/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
     "items": [
-      "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-      "   • [HYPERMOTION J8] Córdoba 3 - 2 Tenerife | xG: 2.00-0.77 | Targetes: 12 🟨 | Córners: 12 🚩 | Àrbitre: Ojaos A.",
-      "📊 Actualització de Power Rànquings Elo:",
-      "   • Córdoba (+11.7 ➔ 1461.3) | Tenerife (-11.7 ➔ 1507.2)",
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+      "ℹ️ Sincronització de les darreres dades i mètriques del model."
     ],
-    "matches": [
-      {
-        "match_id": "HYPERMOTION_J8_COR_TEN",
-        "competition_id": "HYPERMOTION",
-        "jornada": 8,
-        "home_team": "Córdoba",
-        "away_team": "Tenerife",
-        "home_team_id": "COR",
-        "away_team_id": "TEN",
-        "home_goals": 3,
-        "away_goals": 2,
-        "score": "3 - 2",
-        "home_xg": 2.0,
-        "away_xg": 0.77,
-        "home_yellow_cards": 4,
-        "away_yellow_cards": 7,
-        "home_red_cards": 0,
-        "away_red_cards": 1,
-        "home_corners": 4,
-        "away_corners": 8,
-        "referee": "Ojaos A.",
-        "elo_change_home": 11.7,
-        "elo_change_away": -11.7,
-        "new_elo_home": 1461.3,
-        "new_elo_away": 1507.2,
-        "date": "05.10.2026 18:30"
-      }
-    ],
+    "matches": [],
     "combos_evaluated": [],
     "combos_generated": [],
     "referee_updates": []
