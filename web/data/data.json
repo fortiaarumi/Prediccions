@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-07T13:38:00.800219",
-    "formatted_date": "07/10/2026 a les 13:38",
+    "generated_at": "2026-10-08T02:05:12.938949",
+    "formatted_date": "08/10/2026 a les 02:05",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -41,6 +41,24 @@
     ]
   },
   "changelog": [
+    {
+      "date": "2026-10-08",
+      "timestamp": "2026-10-08T02:05:18.638016",
+      "title": "Actualització Diària del Model · 08/10/2026",
+      "badge": "Diari (08:00 UTC)",
+      "badge_type": "primary",
+      "items": [
+        "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+        "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+        "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+        "ℹ️ Sincronització de les darreres dades i mètriques del model."
+      ],
+      "matches": [],
+      "combos_evaluated": [],
+      "combos_generated": [],
+      "referee_updates": []
+    },
     {
       "date": "2026-10-07",
       "timestamp": "2026-10-07T13:38:04.850583",
