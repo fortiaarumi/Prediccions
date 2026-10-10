@@ -1,5 +1,695 @@
 [
   {
+    "date": "2026-10-10",
+    "timestamp": "2026-10-10T01:50:37.307828",
+    "title": "Actualització Diària del Model · 10/10/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ S'han ingesta resultats oficials i mètriques de 2 partit(s) disputat(s):",
+      "   • [LALIGA J8] Málaga 1 - 1 Espanyol | xG: 0.69-1.08 | Targetes: 9 🟨 | Córners: 10 🚩 | Àrbitre: Maeso F.",
+      "   • [CHAMPIONSHIP J9] West Ham 1 - 1 QPR | xG: 1.58-1.21 | Targetes: 6 🟨 | Córners: 5 🚩 | Àrbitre: Ricardo R.",
+      "📊 Actualització de Power Rànquings Elo:",
+      "   • Málaga (+0.7 ➔ 1503.9) | Espanyol (-0.7 ➔ 1575.5)",
+      "   • West Ham (-6.8 ➔ 1682.2) | QPR (+6.8 ➔ 1499.8)",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 15 partit(s):",
+      "   • [LaLiga EA Sports J8] Rayo Vallecano vs Athletic Club: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José María Sánchez Martínez'",
+      "     └ Impacte model: Targetes >4.5: 49.3% ➔ 55.2% (+5.9%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 16.9% ➔ 16.9% (+0.0%)",
+      "   • [LaLiga EA Sports J8] Deportivo Alavés vs Atlético de Madrid: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Alejandro Quintero González'",
+      "     └ Impacte model: Targetes >4.5: 47.4% ➔ 48.0% (+0.6%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 9.7% ➔ 9.7% (+0.0%)",
+      "   • [LaLiga EA Sports J8] FC Barcelona vs Getafe CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Jesús Gil Manzano'",
+      "     └ Impacte model: Targetes >4.5: 45.9% ➔ 58.5% (+12.6%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 90.0% ➔ 90.0% (+0.0%)",
+      "   • [LaLiga EA Sports J8] Real Madrid vs Villarreal CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Isidro Díaz de Mera Escuderos'",
+      "     └ Impacte model: Targetes >4.5: 50.8% ➔ 66.9% (+16.1%) | Vermella: 22.1% ➔ 27.4% (+5.3%) | Victòria Local: 60.6% ➔ 60.6% (+0.0%)",
+      "   • [EFL Championship J9] Charlton Athletic vs Bristol City: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Reeves T.'",
+      "     └ Impacte model: Targetes >4.5: 47.4% ➔ 40.0% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 13.7% ➔ 13.7% (+0.0%)",
+      "   • [EFL Championship J9] Swansea City vs Norwich City: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Kitchen A.'",
+      "     └ Impacte model: Targetes >4.5: 47.4% ➔ 40.0% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 8.4% ➔ 8.4% (+0.0%)",
+      "   • [EFL Championship J9] West Bromwich Albion vs Birmingham City: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Ward G.'",
+      "     └ Impacte model: Targetes >4.5: 47.4% ➔ 40.0% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 88.6% ➔ 88.6% (+0.0%)",
+      "   • [EFL Championship J9] Blackburn Rovers vs Cardiff City: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Nield T.'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 46.2% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 47.6% ➔ 47.6% (+0.0%)",
+      "   • [EFL Championship J9] Bolton Wanderers vs Stoke City: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Kirk T.'",
+      "     └ Impacte model: Targetes >4.5: 47.4% ➔ 40.0% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 13.7% ➔ 13.7% (+0.0%)",
+      "   • [EFL Championship J9] Derby County vs Wrexham: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Donohue M.'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 46.2% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 47.6% ➔ 47.6% (+0.0%)",
+      "   • [EFL Championship J9] Middlesbrough vs Wolverhampton Wanderers: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Hallam F.'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 39.3% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 91.2% ➔ 91.2% (+0.0%)",
+      "   • [EFL Championship J9] Preston North End vs Millwall: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Speedie B.'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 46.2% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 47.6% ➔ 47.6% (+0.0%)",
+      "   • [EFL Championship J9] Sheffield United vs Lincoln City: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Smith J.'",
+      "     └ Impacte model: Targetes >4.5: 45.9% ➔ 38.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 98.3% ➔ 98.3% (+0.0%)",
+      "   • [EFL Championship J9] Watford vs Burnley: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Andy Madley'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 40.5% (-12.9%) | Vermella: 22.1% ➔ 8.6% (-13.5%) | Victòria Local: 42.7% ➔ 42.7% (+0.0%)",
+      "   • [EFL Championship J9] Southampton vs Portsmouth: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Herczeg A.'",
+      "     └ Impacte model: Targetes >4.5: 51.9% ➔ 44.7% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 46.7% ➔ 46.7% (+0.0%)"
+    ],
+    "matches": [
+      {
+        "match_id": "LALIGA_J8_MAL_ESP",
+        "competition_id": "LALIGA",
+        "jornada": 8,
+        "home_team": "Málaga",
+        "away_team": "Espanyol",
+        "home_team_id": "MAL",
+        "away_team_id": "ESP",
+        "home_goals": 1,
+        "away_goals": 1,
+        "score": "1 - 1",
+        "home_xg": 0.69,
+        "away_xg": 1.08,
+        "home_yellow_cards": 4,
+        "away_yellow_cards": 5,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 8,
+        "away_corners": 2,
+        "referee": "Maeso F.",
+        "elo_change_home": 0.7,
+        "elo_change_away": -0.7,
+        "new_elo_home": 1503.9,
+        "new_elo_away": 1575.5,
+        "date": "09.10.2026 19:00"
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_WHU_QPR",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 9,
+        "home_team": "West Ham",
+        "away_team": "QPR",
+        "home_team_id": "WHU",
+        "away_team_id": "QPR",
+        "home_goals": 1,
+        "away_goals": 1,
+        "score": "1 - 1",
+        "home_xg": 1.58,
+        "away_xg": 1.21,
+        "home_yellow_cards": 2,
+        "away_yellow_cards": 4,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 4,
+        "away_corners": 1,
+        "referee": "Ricardo R.",
+        "elo_change_home": -6.8,
+        "elo_change_away": 6.8,
+        "new_elo_home": 1682.2,
+        "new_elo_away": 1499.8,
+        "date": "09.10.2026 19:00"
+      }
+    ],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": [
+      {
+        "match_id": "LALIGA_J8_RAY_ATH",
+        "matchup": "Rayo Vallecano vs Athletic Club",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 8,
+        "date": "10.10.2026 12:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "José María Sánchez Martínez",
+        "ref_stats": {
+          "yellow_avg": 4.8,
+          "red_avg": 0.22,
+          "fouls_avg": 25.5,
+          "strictness_index": 1.06
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 49.3,
+            "after": 55.2,
+            "delta": 5.9
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 19.7,
+            "delta": -2.4
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 25.5,
+            "delta": 1.0
+          },
+          "home_win_prob": {
+            "before": 16.9,
+            "after": 16.9,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de José María Sánchez Martínez (índex severitat 1.06). Mitjana històrica de 4.8 grogues i 0.22 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "LALIGA_J8_ALA_ATM",
+        "matchup": "Deportivo Alavés vs Atlético de Madrid",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 8,
+        "date": "10.10.2026 14:15",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Alejandro Quintero González",
+        "ref_stats": {
+          "yellow_avg": 4.5,
+          "red_avg": 0.2,
+          "fouls_avg": 24.8,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 47.4,
+            "after": 48.0,
+            "delta": 0.6
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 18.1,
+            "delta": -4.0
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 24.8,
+            "delta": 0.3
+          },
+          "home_win_prob": {
+            "before": 9.7,
+            "after": 9.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Alejandro Quintero González (índex severitat 1.0). Mitjana històrica de 4.5 grogues i 0.2 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "LALIGA_J8_FCB_GET",
+        "matchup": "FC Barcelona vs Getafe CF",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 8,
+        "date": "10.10.2026 16:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Jesús Gil Manzano",
+        "ref_stats": {
+          "yellow_avg": 5.1,
+          "red_avg": 0.3,
+          "fouls_avg": 26.0,
+          "strictness_index": 1.13
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 45.9,
+            "after": 58.5,
+            "delta": 12.6
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.0,
+            "delta": 1.5
+          },
+          "home_win_prob": {
+            "before": 90.0,
+            "after": 90.0,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Jesús Gil Manzano (índex severitat 1.13). Mitjana històrica de 5.1 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "LALIGA_J8_RMA_VIL",
+        "matchup": "Real Madrid vs Villarreal CF",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 8,
+        "date": "10.10.2026 19:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Isidro Díaz de Mera Escuderos",
+        "ref_stats": {
+          "yellow_avg": 5.3,
+          "red_avg": 0.32,
+          "fouls_avg": 27.2,
+          "strictness_index": 1.18
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 50.8,
+            "after": 66.9,
+            "delta": 16.1
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 27.4,
+            "delta": 5.3
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 27.2,
+            "delta": 2.7
+          },
+          "home_win_prob": {
+            "before": 60.6,
+            "after": 60.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Isidro Díaz de Mera Escuderos (índex severitat 1.18). Mitjana històrica de 5.3 grogues i 0.32 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_CHA_BRC",
+        "matchup": "Charlton Athletic vs Bristol City",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 11:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Reeves T.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 47.4,
+            "after": 40.0,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 13.7,
+            "after": 13.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Reeves T. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_SWA_NOR",
+        "matchup": "Swansea City vs Norwich City",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 11:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Kitchen A.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 47.4,
+            "after": 40.0,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 8.4,
+            "after": 8.4,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Kitchen A. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_WBA_BIR",
+        "matchup": "West Bromwich Albion vs Birmingham City",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 11:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Ward G.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 47.4,
+            "after": 40.0,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 88.6,
+            "after": 88.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Ward G. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_BLA_CDF",
+        "matchup": "Blackburn Rovers vs Cardiff City",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Nield T.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 46.2,
+            "delta": -7.2
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 47.6,
+            "after": 47.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Nield T. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_BOL_STK",
+        "matchup": "Bolton Wanderers vs Stoke City",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Kirk T.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 47.4,
+            "after": 40.0,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 13.7,
+            "after": 13.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Kirk T. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_DER_WRE",
+        "matchup": "Derby County vs Wrexham",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Donohue M.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 46.2,
+            "delta": -7.2
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 47.6,
+            "after": 47.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Donohue M. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_MID_WOL",
+        "matchup": "Middlesbrough vs Wolverhampton Wanderers",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Hallam F.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 39.3,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 91.2,
+            "after": 91.2,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Hallam F. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_PNE_MIL",
+        "matchup": "Preston North End vs Millwall",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Speedie B.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 46.2,
+            "delta": -7.2
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 47.6,
+            "after": 47.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Speedie B. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_SHU_LIN",
+        "matchup": "Sheffield United vs Lincoln City",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Smith J.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 45.9,
+            "after": 38.5,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 98.3,
+            "after": 98.3,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Smith J. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_WAT_BNL",
+        "matchup": "Watford vs Burnley",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "10.10.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Andy Madley",
+        "ref_stats": {
+          "yellow_avg": 3.4,
+          "red_avg": 0.09,
+          "fouls_avg": 20.2,
+          "strictness_index": 0.96
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 40.5,
+            "delta": -12.9
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 8.6,
+            "delta": -13.5
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 20.2,
+            "delta": -4.3
+          },
+          "home_win_prob": {
+            "before": 42.7,
+            "after": 42.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Andy Madley (índex severitat 0.96). Mitjana històrica de 3.4 grogues i 0.09 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J9_SOU_POR",
+        "matchup": "Southampton vs Portsmouth",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 9,
+        "date": "11.10.2026 11:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Herczeg A.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 51.9,
+            "after": 44.7,
+            "delta": -7.2
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 46.7,
+            "after": 46.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Herczeg A. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      }
+    ]
+  },
+  {
     "date": "2026-10-09",
     "timestamp": "2026-10-09T13:29:19.959575",
     "title": "Actualització Diària del Model · 09/10/2026",
