@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-11T13:07:25.441247",
-    "formatted_date": "11/10/2026 a les 13:07",
+    "generated_at": "2026-10-11T18:11:50.545155",
+    "formatted_date": "11/10/2026 a les 18:11",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,101 +43,215 @@
   "changelog": [
     {
       "date": "2026-10-11",
-      "timestamp": "2026-10-11T13:07:26.274722",
+      "timestamp": "2026-10-11T18:11:51.419512",
       "title": "Actualització Diària del Model · 11/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
       "items": [
-        "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-        "   • [CHAMPIONSHIP J9] Southampton 1 - 0 Portsmouth | xG: 1.27-0.72 | Targetes: 9 🟨 | Córners: 6 🚩 | Àrbitre: Herczeg A.",
+        "⚽ S'han ingesta resultats oficials i mètriques de 7 partit(s) disputat(s):",
+        "   • [LALIGA J8] Real Sociedad 3 - 2 Deportivo de A Coruña | xG: 1.45-1.94 | Targetes: 5 🟨 | Córners: 17 🚩 | Àrbitre: Sesma M.",
+        "   • [LALIGA J8] Elche 0 - 0 Celta de Vigo | xG: 0.80-0.32 | Targetes: 4 🟨 | Córners: 7 🚩 | Àrbitre: Alberola J.",
+        "   • [PREMIER J6] Liverpool 0 - 3 Manchester City | xG: 0.86-1.30 | Targetes: 7 🟨 | Córners: 11 🚩 | Àrbitre: Kavanagh C.",
+        "   • [PREMIER J6] Crystal Palace 3 - 1 Nottingham Forest | xG: 2.38-2.96 | Targetes: 4 🟨 | Córners: 13 🚩 | Àrbitre: Bankes P.",
+        "   • [PREMIER J6] Hull 2 - 2 Everton | xG: 1.33-1.71 | Targetes: 2 🟨 | Córners: 13 🚩 | Àrbitre: Salisbury M.",
+        "   • [HYPERMOTION J9] Almería 3 - 0 Leganés | xG: 1.21-0.41 | Targetes: 7 🟨 | Córners: 11 🚩 | Àrbitre: Romero G.",
+        "   • [HYPERMOTION J9] Andorra 1 - 0 Castellón | xG: 2.59-0.70 | Targetes: 6 🟨 | Córners: 11 🚩 | Àrbitre: Dominguez A.",
         "📊 Actualització de Power Rànquings Elo:",
-        "   • Southampton (+5.6 ➔ 1542.5) | Portsmouth (-5.6 ➔ 1394.5)",
-        "📈 S'han resolt 1 combinades pendents (1 encertades, 0 fallades):",
-        "   • [CHAMPIONSHIP J9] SAFE_2: 🏆 GUANYADA (Cuota @2.01 · Balanç: +25.25 €)",
+        "   • Real Sociedad (+3.6 ➔ 1720.5) | Deportivo de A Coruña (-3.6 ➔ 1479.7)",
+        "   • Elche (+2.3 ➔ 1461.4) | Celta de Vigo (-2.3 ➔ 1581.3)",
+        "   • Liverpool (-23.7 ➔ 1941.6) | Manchester City (+23.7 ➔ 2015.1)",
+        "   • Crystal Palace (+16.0 ➔ 1577.4) | Nottingham Forest (-16.0 ➔ 1564.0)",
+        "   • Hull (+0.9 ➔ 1529.7) | Everton (-0.9 ➔ 1606.1)",
+        "   • Almería (+15.2 ➔ 1606.7) | Leganés (-15.2 ➔ 1512.6)",
+        "   • Andorra (+13.5 ➔ 1461.5) | Castellón (-13.5 ➔ 1560.6)",
+        "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
         "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
       ],
       "matches": [
         {
-          "match_id": "CHAMPIONSHIP_J9_SOU_POR",
-          "competition_id": "CHAMPIONSHIP",
+          "match_id": "LALIGA_J8_RSO_DEP",
+          "competition_id": "LALIGA",
+          "jornada": 8,
+          "home_team": "Real Sociedad",
+          "away_team": "Deportivo de A Coruña",
+          "home_team_id": "RSO",
+          "away_team_id": "DEP",
+          "home_goals": 3,
+          "away_goals": 2,
+          "score": "3 - 2",
+          "home_xg": 1.45,
+          "away_xg": 1.94,
+          "home_yellow_cards": 1,
+          "away_yellow_cards": 2,
+          "home_red_cards": 1,
+          "away_red_cards": 1,
+          "home_corners": 7,
+          "away_corners": 10,
+          "referee": "Sesma M.",
+          "elo_change_home": 3.6,
+          "elo_change_away": -3.6,
+          "new_elo_home": 1720.5,
+          "new_elo_away": 1479.7,
+          "date": "11.10.2026 14:15"
+        },
+        {
+          "match_id": "LALIGA_J8_ELC_CEL",
+          "competition_id": "LALIGA",
+          "jornada": 8,
+          "home_team": "Elche",
+          "away_team": "Celta de Vigo",
+          "home_team_id": "ELC",
+          "away_team_id": "CEL",
+          "home_goals": 0,
+          "away_goals": 0,
+          "score": "0 - 0",
+          "home_xg": 0.8,
+          "away_xg": 0.32,
+          "home_yellow_cards": 1,
+          "away_yellow_cards": 3,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 5,
+          "away_corners": 2,
+          "referee": "Alberola J.",
+          "elo_change_home": 2.3,
+          "elo_change_away": -2.3,
+          "new_elo_home": 1461.4,
+          "new_elo_away": 1581.3,
+          "date": "11.10.2026 12:00"
+        },
+        {
+          "match_id": "PREMIER_J6_LIV_MCI",
+          "competition_id": "PREMIER",
+          "jornada": 6,
+          "home_team": "Liverpool",
+          "away_team": "Manchester City",
+          "home_team_id": "LIV",
+          "away_team_id": "MCI",
+          "home_goals": 0,
+          "away_goals": 3,
+          "score": "0 - 3",
+          "home_xg": 0.86,
+          "away_xg": 1.3,
+          "home_yellow_cards": 4,
+          "away_yellow_cards": 2,
+          "home_red_cards": 1,
+          "away_red_cards": 0,
+          "home_corners": 5,
+          "away_corners": 6,
+          "referee": "Kavanagh C.",
+          "elo_change_home": -23.7,
+          "elo_change_away": 23.7,
+          "new_elo_home": 1941.6,
+          "new_elo_away": 2015.1,
+          "date": "11.10.2026 15:30"
+        },
+        {
+          "match_id": "PREMIER_J6_CRY_NFO",
+          "competition_id": "PREMIER",
+          "jornada": 6,
+          "home_team": "Crystal Palace",
+          "away_team": "Nottingham Forest",
+          "home_team_id": "CRY",
+          "away_team_id": "NFO",
+          "home_goals": 3,
+          "away_goals": 1,
+          "score": "3 - 1",
+          "home_xg": 2.38,
+          "away_xg": 2.96,
+          "home_yellow_cards": 2,
+          "away_yellow_cards": 2,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 5,
+          "away_corners": 8,
+          "referee": "Bankes P.",
+          "elo_change_home": 16.0,
+          "elo_change_away": -16.0,
+          "new_elo_home": 1577.4,
+          "new_elo_away": 1564.0,
+          "date": "11.10.2026 13:00"
+        },
+        {
+          "match_id": "PREMIER_J6_HUL_EVE",
+          "competition_id": "PREMIER",
+          "jornada": 6,
+          "home_team": "Hull",
+          "away_team": "Everton",
+          "home_team_id": "HUL",
+          "away_team_id": "EVE",
+          "home_goals": 2,
+          "away_goals": 2,
+          "score": "2 - 2",
+          "home_xg": 1.33,
+          "away_xg": 1.71,
+          "home_yellow_cards": 2,
+          "away_yellow_cards": 0,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 7,
+          "away_corners": 6,
+          "referee": "Salisbury M.",
+          "elo_change_home": 0.9,
+          "elo_change_away": -0.9,
+          "new_elo_home": 1529.7,
+          "new_elo_away": 1606.1,
+          "date": "11.10.2026 13:00"
+        },
+        {
+          "match_id": "HYPERMOTION_J9_ALM_LEG",
+          "competition_id": "HYPERMOTION",
           "jornada": 9,
-          "home_team": "Southampton",
-          "away_team": "Portsmouth",
-          "home_team_id": "SOU",
-          "away_team_id": "POR",
+          "home_team": "Almería",
+          "away_team": "Leganés",
+          "home_team_id": "ALM",
+          "away_team_id": "LEG",
+          "home_goals": 3,
+          "away_goals": 0,
+          "score": "3 - 0",
+          "home_xg": 1.21,
+          "away_xg": 0.41,
+          "home_yellow_cards": 2,
+          "away_yellow_cards": 5,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 8,
+          "away_corners": 3,
+          "referee": "Romero G.",
+          "elo_change_home": 15.2,
+          "elo_change_away": -15.2,
+          "new_elo_home": 1606.7,
+          "new_elo_away": 1512.6,
+          "date": "11.10.2026 14:15"
+        },
+        {
+          "match_id": "HYPERMOTION_J9_AND_CAS",
+          "competition_id": "HYPERMOTION",
+          "jornada": 9,
+          "home_team": "Andorra",
+          "away_team": "Castellón",
+          "home_team_id": "AND",
+          "away_team_id": "CAS",
           "home_goals": 1,
           "away_goals": 0,
           "score": "1 - 0",
-          "home_xg": 1.27,
-          "away_xg": 0.72,
-          "home_yellow_cards": 5,
-          "away_yellow_cards": 3,
-          "home_red_cards": 1,
+          "home_xg": 2.59,
+          "away_xg": 0.7,
+          "home_yellow_cards": 4,
+          "away_yellow_cards": 2,
+          "home_red_cards": 0,
           "away_red_cards": 0,
-          "home_corners": 2,
-          "away_corners": 4,
-          "referee": "Herczeg A.",
-          "elo_change_home": 5.6,
-          "elo_change_away": -5.6,
-          "new_elo_home": 1542.5,
-          "new_elo_away": 1394.5,
-          "date": "11.10.2026 11:00"
+          "home_corners": 4,
+          "away_corners": 7,
+          "referee": "Dominguez A.",
+          "elo_change_home": 13.5,
+          "elo_change_away": -13.5,
+          "new_elo_home": 1461.5,
+          "new_elo_away": 1560.6,
+          "date": "11.10.2026 12:00"
         }
       ],
-      "combos_evaluated": [
-        {
-          "id": "COMBO_2026-2027_CHAMPIONSHIP_J9_SAFE_2",
-          "competition_id": "CHAMPIONSHIP",
-          "season": "2026-2027",
-          "jornada": 9,
-          "profile": "SAFE_2",
-          "stake": 25.0,
-          "combined_odd": 2.01,
-          "combined_prob_pct": 85.2,
-          "fair_odd": 1.17,
-          "ev_pct": 71.2,
-          "status": "WON",
-          "payout": 50.25,
-          "profit": 25.25,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-09-25 14:42:05",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 1029,
-              "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J9_SAFE_2",
-              "matchup": "Middlesbrough vs Wolverhampton Wanderers",
-              "selection_name": "1X - Middlesbrough o Empat",
-              "category": "Doble Oportunitat",
-              "bookie_odd": 1.38,
-              "model_prob": 98.7,
-              "match_date": "10.10.2026 16:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339872",
-              "home_team_id": "MID",
-              "away_team_id": "WOL",
-              "status": "WON",
-              "actual_result": "1-0 (1X encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 1030,
-              "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J9_SAFE_2",
-              "matchup": "Southampton vs Portsmouth",
-              "selection_name": "Menys de 3.5 Gols (Under 3.5)",
-              "category": "Gols",
-              "bookie_odd": 1.46,
-              "model_prob": 86.3,
-              "match_date": "11.10.2026 13:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339878",
-              "home_team_id": "SOU",
-              "away_team_id": "POR",
-              "status": "WON",
-              "actual_result": "1 gols (Under 3.5 encertat)",
-              "evaluated_at": null
-            }
-          ]
-        }
-      ],
+      "combos_evaluated": [],
       "combos_generated": [],
       "referee_updates": []
     },
@@ -3456,7 +3570,7 @@
         "name": "Real Betis",
         "short_name": "Betis",
         "elo_rating": 1749.8,
-        "off_rank": 13.0,
+        "off_rank": 14.0,
         "def_rank": 4.0,
         "played": 7,
         "won": 5,
@@ -3483,7 +3597,7 @@
         "short_name": "Athletic",
         "elo_rating": 1732.9,
         "off_rank": 16.0,
-        "def_rank": 1.0,
+        "def_rank": 2.0,
         "played": 7,
         "won": 2,
         "drawn": 3,
@@ -3507,22 +3621,22 @@
         "team_id": "RSO",
         "name": "Real Sociedad",
         "short_name": "R. Sociedad",
-        "elo_rating": 1716.9,
-        "off_rank": 14.0,
-        "def_rank": 14.0,
-        "played": 7,
-        "won": 3,
+        "elo_rating": 1720.5,
+        "off_rank": 6.0,
+        "def_rank": 16.0,
+        "played": 8,
+        "won": 4,
         "drawn": 1,
         "lost": 3,
-        "gf": 9,
-        "ga": 13,
-        "gd": -4,
-        "points": 10,
+        "gf": 12,
+        "ga": 15,
+        "gd": -3,
+        "points": 13,
         "form": [
-          "W",
           "D",
           "W",
           "L",
+          "W",
           "W"
         ],
         "avg_cards": 2.2,
@@ -3560,8 +3674,8 @@
         "name": "Sevilla FC",
         "short_name": "Sevilla",
         "elo_rating": 1628.1,
-        "off_rank": 8.0,
-        "def_rank": 10.0,
+        "off_rank": 9.0,
+        "def_rank": 9.0,
         "played": 7,
         "won": 4,
         "drawn": 1,
@@ -3637,23 +3751,23 @@
         "team_id": "CEL",
         "name": "RC Celta de Vigo",
         "short_name": "Celta",
-        "elo_rating": 1583.6,
+        "elo_rating": 1581.3,
         "off_rank": 15.0,
-        "def_rank": 2.0,
-        "played": 7,
+        "def_rank": 1.0,
+        "played": 8,
         "won": 1,
-        "drawn": 4,
+        "drawn": 5,
         "lost": 2,
         "gf": 8,
         "ga": 6,
         "gd": 2,
-        "points": 7,
+        "points": 8,
         "form": [
-          "L",
           "D",
           "D",
           "D",
-          "W"
+          "W",
+          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -3665,7 +3779,7 @@
         "short_name": "Espanyol",
         "elo_rating": 1575.5,
         "off_rank": 11.0,
-        "def_rank": 11.0,
+        "def_rank": 10.0,
         "played": 8,
         "won": 2,
         "drawn": 2,
@@ -3691,7 +3805,7 @@
         "short_name": "Osasuna",
         "elo_rating": 1562.5,
         "off_rank": 17.0,
-        "def_rank": 15.0,
+        "def_rank": 14.0,
         "played": 7,
         "won": 2,
         "drawn": 2,
@@ -3717,7 +3831,7 @@
         "short_name": "Getafe",
         "elo_rating": 1561.3,
         "off_rank": 19.0,
-        "def_rank": 9.0,
+        "def_rank": 8.0,
         "played": 8,
         "won": 2,
         "drawn": 2,
@@ -3743,7 +3857,7 @@
         "short_name": "Valencia",
         "elo_rating": 1551.9,
         "off_rank": 18.0,
-        "def_rank": 16.0,
+        "def_rank": 15.0,
         "played": 7,
         "won": 1,
         "drawn": 1,
@@ -3768,7 +3882,7 @@
         "name": "Levante UD",
         "short_name": "Levante",
         "elo_rating": 1529.7,
-        "off_rank": 12.0,
+        "off_rank": 13.0,
         "def_rank": 17.0,
         "played": 6,
         "won": 1,
@@ -3819,23 +3933,23 @@
         "team_id": "DEP",
         "name": "RC Deportivo de La Coruña",
         "short_name": "Deportivo",
-        "elo_rating": 1483.3,
-        "off_rank": 9.0,
-        "def_rank": 8.0,
-        "played": 7,
+        "elo_rating": 1479.7,
+        "off_rank": 8.0,
+        "def_rank": 11.0,
+        "played": 8,
         "won": 2,
         "drawn": 4,
-        "lost": 1,
-        "gf": 10,
-        "ga": 8,
-        "gd": 2,
+        "lost": 2,
+        "gf": 12,
+        "ga": 11,
+        "gd": 1,
         "points": 10,
         "form": [
           "W",
-          "W",
           "D",
           "L",
-          "D"
+          "D",
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -3845,23 +3959,23 @@
         "team_id": "ELC",
         "name": "Elche CF",
         "short_name": "Elche",
-        "elo_rating": 1459.1,
-        "off_rank": 5.0,
+        "elo_rating": 1461.4,
+        "off_rank": 12.0,
         "def_rank": 19.0,
-        "played": 7,
+        "played": 8,
         "won": 1,
-        "drawn": 2,
+        "drawn": 3,
         "lost": 4,
         "gf": 11,
         "ga": 17,
         "gd": -6,
-        "points": 5,
+        "points": 6,
         "form": [
-          "L",
           "L",
           "D",
           "L",
-          "W"
+          "W",
+          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -3872,7 +3986,7 @@
         "name": "Racing de Santander",
         "short_name": "Racing",
         "elo_rating": 1441.5,
-        "off_rank": 6.0,
+        "off_rank": 5.0,
         "def_rank": 20.0,
         "played": 7,
         "won": 2,
@@ -3899,17 +4013,17 @@
         "team_id": "MCI",
         "name": "Manchester City",
         "short_name": "Man. City",
-        "elo_rating": 1991.4,
+        "elo_rating": 2015.1,
         "off_rank": 2.0,
-        "def_rank": 7.0,
-        "played": 5,
-        "won": 5,
+        "def_rank": 1.0,
+        "played": 6,
+        "won": 6,
         "drawn": 0,
         "lost": 0,
-        "gf": 13,
+        "gf": 16,
         "ga": 5,
-        "gd": 8,
-        "points": 15,
+        "gd": 11,
+        "points": 18,
         "form": [
           "W",
           "W",
@@ -3922,38 +4036,12 @@
       },
       {
         "rank": 2,
-        "team_id": "LIV",
-        "name": "Liverpool",
-        "short_name": "Liverpool",
-        "elo_rating": 1965.3,
-        "off_rank": 9.0,
-        "def_rank": 2.0,
-        "played": 5,
-        "won": 2,
-        "drawn": 3,
-        "lost": 0,
-        "gf": 7,
-        "ga": 4,
-        "gd": 3,
-        "points": 9,
-        "form": [
-          "D",
-          "D",
-          "W",
-          "D",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 3,
         "team_id": "ARS",
         "name": "Arsenal",
         "short_name": "Arsenal",
         "elo_rating": 1962.8,
         "off_rank": 6.0,
-        "def_rank": 4.0,
+        "def_rank": 2.0,
         "played": 6,
         "won": 5,
         "drawn": 0,
@@ -3973,13 +4061,39 @@
         "avg_corners": 5.0
       },
       {
+        "rank": 3,
+        "team_id": "LIV",
+        "name": "Liverpool",
+        "short_name": "Liverpool",
+        "elo_rating": 1941.6,
+        "off_rank": 13.0,
+        "def_rank": 8.0,
+        "played": 6,
+        "won": 2,
+        "drawn": 3,
+        "lost": 1,
+        "gf": 7,
+        "ga": 7,
+        "gd": 0,
+        "points": 9,
+        "form": [
+          "D",
+          "W",
+          "D",
+          "W",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
         "rank": 4,
         "team_id": "CHE",
         "name": "Chelsea",
         "short_name": "Chelsea",
         "elo_rating": 1803.1,
         "off_rank": 3.0,
-        "def_rank": 18.0,
+        "def_rank": 19.0,
         "played": 6,
         "won": 3,
         "drawn": 1,
@@ -4057,7 +4171,7 @@
         "short_name": "Brighton",
         "elo_rating": 1758.1,
         "off_rank": 1.0,
-        "def_rank": 5.0,
+        "def_rank": 3.0,
         "played": 6,
         "won": 4,
         "drawn": 1,
@@ -4109,7 +4223,7 @@
         "short_name": "Bournemouth",
         "elo_rating": 1657.0,
         "off_rank": 14.0,
-        "def_rank": 19.0,
+        "def_rank": 20.0,
         "played": 6,
         "won": 0,
         "drawn": 3,
@@ -4135,7 +4249,7 @@
         "short_name": "Brentford",
         "elo_rating": 1647.2,
         "off_rank": 4.0,
-        "def_rank": 9.0,
+        "def_rank": 6.0,
         "played": 6,
         "won": 2,
         "drawn": 4,
@@ -4185,21 +4299,47 @@
         "team_id": "EVE",
         "name": "Everton",
         "short_name": "Everton",
-        "elo_rating": 1607.0,
-        "off_rank": 11.0,
-        "def_rank": 1.0,
-        "played": 5,
+        "elo_rating": 1606.1,
+        "off_rank": 10.0,
+        "def_rank": 4.0,
+        "played": 6,
         "won": 2,
-        "drawn": 3,
+        "drawn": 4,
         "lost": 0,
-        "gf": 6,
-        "ga": 3,
+        "gf": 8,
+        "ga": 5,
         "gd": 3,
-        "points": 9,
+        "points": 10,
         "form": [
+          "D",
+          "D",
+          "D",
           "W",
-          "D",
-          "D",
+          "D"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 13,
+        "team_id": "CRY",
+        "name": "Crystal Palace",
+        "short_name": "Crystal Palace",
+        "elo_rating": 1577.4,
+        "off_rank": 7.0,
+        "def_rank": 16.0,
+        "played": 6,
+        "won": 2,
+        "drawn": 1,
+        "lost": 3,
+        "gf": 9,
+        "ga": 12,
+        "gd": -3,
+        "points": 7,
+        "form": [
+          "L",
+          "W",
+          "L",
           "D",
           "W"
         ],
@@ -4207,53 +4347,27 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 13,
+        "rank": 14,
         "team_id": "NFO",
         "name": "Nottingham Forest",
         "short_name": "Nottm Forest",
-        "elo_rating": 1580.0,
+        "elo_rating": 1564.0,
         "off_rank": 18.0,
-        "def_rank": 8.0,
-        "played": 5,
+        "def_rank": 9.0,
+        "played": 6,
         "won": 1,
         "drawn": 2,
-        "lost": 2,
-        "gf": 4,
-        "ga": 5,
-        "gd": -1,
+        "lost": 3,
+        "gf": 5,
+        "ga": 8,
+        "gd": -3,
         "points": 5,
         "form": [
-          "L",
           "D",
           "D",
           "W",
+          "L",
           "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 14,
-        "team_id": "CRY",
-        "name": "Crystal Palace",
-        "short_name": "Crystal Palace",
-        "elo_rating": 1561.4,
-        "off_rank": 12.0,
-        "def_rank": 20.0,
-        "played": 5,
-        "won": 1,
-        "drawn": 1,
-        "lost": 3,
-        "gf": 6,
-        "ga": 11,
-        "gd": -5,
-        "points": 4,
-        "form": [
-          "L",
-          "L",
-          "W",
-          "L",
-          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -4264,8 +4378,8 @@
         "name": "Leeds Utd",
         "short_name": "Leeds Utd",
         "elo_rating": 1547.9,
-        "off_rank": 10.0,
-        "def_rank": 6.0,
+        "off_rank": 11.0,
+        "def_rank": 5.0,
         "played": 6,
         "won": 2,
         "drawn": 3,
@@ -4289,23 +4403,23 @@
         "team_id": "HUL",
         "name": "Hull",
         "short_name": "Hull",
-        "elo_rating": 1528.8,
-        "off_rank": 13.0,
-        "def_rank": 3.0,
-        "played": 5,
+        "elo_rating": 1529.7,
+        "off_rank": 12.0,
+        "def_rank": 7.0,
+        "played": 6,
         "won": 2,
-        "drawn": 2,
+        "drawn": 3,
         "lost": 1,
-        "gf": 6,
-        "ga": 4,
+        "gf": 8,
+        "ga": 6,
         "gd": 2,
-        "points": 8,
+        "points": 9,
         "form": [
           "W",
-          "W",
           "D",
           "D",
-          "L"
+          "L",
+          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -4316,7 +4430,7 @@
         "name": "Manchester Utd",
         "short_name": "Manchester Utd",
         "elo_rating": 1509.8,
-        "off_rank": 7.0,
+        "off_rank": 8.0,
         "def_rank": 11.0,
         "played": 6,
         "won": 1,
@@ -4342,8 +4456,8 @@
         "name": "Ipswich Town",
         "short_name": "Ipswich",
         "elo_rating": 1500.0,
-        "off_rank": 8.0,
-        "def_rank": 16.0,
+        "off_rank": 9.0,
+        "def_rank": 17.0,
         "played": 6,
         "won": 3,
         "drawn": 0,
@@ -4369,7 +4483,7 @@
         "short_name": "Sunderland",
         "elo_rating": 1488.4,
         "off_rank": 17.0,
-        "def_rank": 17.0,
+        "def_rank": 18.0,
         "played": 6,
         "won": 1,
         "drawn": 1,
@@ -4447,17 +4561,17 @@
         "team_id": "ALM",
         "name": "UD Almería",
         "short_name": "Almería",
-        "elo_rating": 1591.6,
-        "off_rank": 4.0,
+        "elo_rating": 1606.7,
+        "off_rank": 2.0,
         "def_rank": 3.0,
-        "played": 8,
-        "won": 6,
+        "played": 9,
+        "won": 7,
         "drawn": 0,
         "lost": 2,
-        "gf": 13,
+        "gf": 16,
         "ga": 5,
-        "gd": 8,
-        "points": 18,
+        "gd": 11,
+        "points": 21,
         "form": [
           "W",
           "W",
@@ -4496,38 +4610,12 @@
       },
       {
         "rank": 4,
-        "team_id": "CAS",
-        "name": "CD Castellón",
-        "short_name": "Castellón",
-        "elo_rating": 1574.1,
-        "off_rank": 2.0,
-        "def_rank": 1.0,
-        "played": 8,
-        "won": 6,
-        "drawn": 2,
-        "lost": 0,
-        "gf": 15,
-        "ga": 3,
-        "gd": 12,
-        "points": 20,
-        "form": [
-          "W",
-          "W",
-          "W",
-          "W",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 5,
         "team_id": "MLL",
         "name": "RCD Mallorca",
         "short_name": "Mallorca",
         "elo_rating": 1571.0,
         "off_rank": 16.0,
-        "def_rank": 2.0,
+        "def_rank": 1.0,
         "played": 8,
         "won": 4,
         "drawn": 2,
@@ -4542,6 +4630,32 @@
           "W",
           "L",
           "D"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 5,
+        "team_id": "CAS",
+        "name": "CD Castellón",
+        "short_name": "Castellón",
+        "elo_rating": 1560.6,
+        "off_rank": 4.0,
+        "def_rank": 2.0,
+        "played": 9,
+        "won": 6,
+        "drawn": 2,
+        "lost": 1,
+        "gf": 15,
+        "ga": 4,
+        "gd": 11,
+        "points": 20,
+        "form": [
+          "W",
+          "W",
+          "W",
+          "D",
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -4574,32 +4688,6 @@
       },
       {
         "rank": 7,
-        "team_id": "LEG",
-        "name": "CD Leganés",
-        "short_name": "Leganés",
-        "elo_rating": 1527.8,
-        "off_rank": 21.0,
-        "def_rank": 12.0,
-        "played": 8,
-        "won": 3,
-        "drawn": 2,
-        "lost": 3,
-        "gf": 6,
-        "ga": 11,
-        "gd": -5,
-        "points": 11,
-        "form": [
-          "D",
-          "L",
-          "W",
-          "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 8,
         "team_id": "GRA",
         "name": "Granada CF",
         "short_name": "Granada",
@@ -4625,7 +4713,7 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 9,
+        "rank": 8,
         "team_id": "BUR",
         "name": "Burgos CF",
         "short_name": "Burgos",
@@ -4651,7 +4739,7 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 10,
+        "rank": 9,
         "team_id": "SAB",
         "name": "CE Sabadell",
         "short_name": "Sabadell",
@@ -4677,7 +4765,7 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 11,
+        "rank": 10,
         "team_id": "ROV",
         "name": "Real Oviedo",
         "short_name": "Oviedo",
@@ -4703,7 +4791,7 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 12,
+        "rank": 11,
         "team_id": "CAD",
         "name": "Cádiz CF",
         "short_name": "Cádiz",
@@ -4729,7 +4817,7 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 13,
+        "rank": 12,
         "team_id": "SPG",
         "name": "Real Sporting",
         "short_name": "Sporting",
@@ -4755,13 +4843,13 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 14,
+        "rank": 13,
         "team_id": "VLL",
         "name": "Real Valladolid",
         "short_name": "Valladolid",
         "elo_rating": 1512.9,
         "off_rank": 19.0,
-        "def_rank": 13.0,
+        "def_rank": 12.0,
         "played": 8,
         "won": 2,
         "drawn": 3,
@@ -4781,13 +4869,39 @@
         "avg_corners": 5.0
       },
       {
+        "rank": 14,
+        "team_id": "LEG",
+        "name": "CD Leganés",
+        "short_name": "Leganés",
+        "elo_rating": 1512.6,
+        "off_rank": 21.0,
+        "def_rank": 14.0,
+        "played": 9,
+        "won": 3,
+        "drawn": 2,
+        "lost": 4,
+        "gf": 6,
+        "ga": 14,
+        "gd": -8,
+        "points": 11,
+        "form": [
+          "L",
+          "W",
+          "L",
+          "L",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
         "rank": 15,
         "team_id": "TEN",
         "name": "CD Tenerife",
         "short_name": "Tenerife",
         "elo_rating": 1507.2,
         "off_rank": 13.0,
-        "def_rank": 14.0,
+        "def_rank": 13.0,
         "played": 8,
         "won": 3,
         "drawn": 2,
@@ -4860,6 +4974,32 @@
       },
       {
         "rank": 18,
+        "team_id": "AND",
+        "name": "FC Andorra",
+        "short_name": "Andorra",
+        "elo_rating": 1461.5,
+        "off_rank": 10.0,
+        "def_rank": 18.0,
+        "played": 9,
+        "won": 3,
+        "drawn": 1,
+        "lost": 5,
+        "gf": 13,
+        "ga": 15,
+        "gd": -2,
+        "points": 10,
+        "form": [
+          "L",
+          "L",
+          "W",
+          "D",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 19,
         "team_id": "COR",
         "name": "Córdoba CF",
         "short_name": "Córdoba",
@@ -4885,7 +5025,7 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 19,
+        "rank": 20,
         "team_id": "RSB",
         "name": "Real Sociedad B",
         "short_name": "R. Sociedad B",
@@ -4906,32 +5046,6 @@
           "L",
           "L",
           "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 20,
-        "team_id": "AND",
-        "name": "FC Andorra",
-        "short_name": "Andorra",
-        "elo_rating": 1448.0,
-        "off_rank": 10.0,
-        "def_rank": 18.0,
-        "played": 8,
-        "won": 2,
-        "drawn": 1,
-        "lost": 5,
-        "gf": 12,
-        "ga": 15,
-        "gd": -3,
-        "points": 7,
-        "form": [
-          "L",
-          "L",
-          "L",
-          "W",
-          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -5851,13 +5965,13 @@
               "id": "DEP",
               "name": "RC Deportivo de La Coruña",
               "short_name": "Deportivo",
-              "elo": 1483.3
+              "elo": 1479.7
             },
             "away_team": {
               "id": "ELC",
               "name": "Elche CF",
               "short_name": "Elche",
-              "elo": 1459.1
+              "elo": 1461.4
             },
             "date": "17.08.2026 21:00",
             "home_goals": 1,
@@ -6013,7 +6127,7 @@
               "id": "RSO",
               "name": "Real Sociedad",
               "short_name": "R. Sociedad",
-              "elo": 1716.9
+              "elo": 1720.5
             },
             "date": "26.08.2026 21:00",
             "home_goals": 4,
@@ -6059,7 +6173,7 @@
               "id": "CEL",
               "name": "RC Celta de Vigo",
               "short_name": "Celta",
-              "elo": 1583.6
+              "elo": 1581.3
             },
             "away_team": {
               "id": "OSA",
@@ -6223,7 +6337,7 @@
               "id": "RSO",
               "name": "Real Sociedad",
               "short_name": "R. Sociedad",
-              "elo": 1716.9
+              "elo": 1720.5
             },
             "date": "21.08.2026 21:00",
             "home_goals": 1,
@@ -6327,7 +6441,7 @@
               "id": "CEL",
               "name": "RC Celta de Vigo",
               "short_name": "Celta",
-              "elo": 1583.6
+              "elo": 1581.3
             },
             "date": "22.08.2026 19:30",
             "home_goals": 0,
@@ -6529,7 +6643,7 @@
               "id": "ELC",
               "name": "Elche CF",
               "short_name": "Elche",
-              "elo": 1459.1
+              "elo": 1461.4
             },
             "away_team": {
               "id": "FCB",
@@ -6639,7 +6753,7 @@
               "id": "DEP",
               "name": "RC Deportivo de La Coruña",
               "short_name": "Deportivo",
-              "elo": 1483.3
+              "elo": 1479.7
             },
             "date": "24.08.2026 21:30",
             "home_goals": 1,
@@ -6693,7 +6807,7 @@
               "id": "ELC",
               "name": "Elche CF",
               "short_name": "Elche",
-              "elo": 1459.1
+              "elo": 1461.4
             },
             "date": "28.08.2026 19:00",
             "home_goals": 3,
@@ -6843,7 +6957,7 @@
               "id": "RSO",
               "name": "Real Sociedad",
               "short_name": "R. Sociedad",
-              "elo": 1716.9
+              "elo": 1720.5
             },
             "away_team": {
               "id": "ESP",
@@ -6999,7 +7113,7 @@
               "id": "DEP",
               "name": "RC Deportivo de La Coruña",
               "short_name": "Deportivo",
-              "elo": 1483.3
+              "elo": 1479.7
             },
             "away_team": {
               "id": "VAL",
@@ -7051,7 +7165,7 @@
               "id": "CEL",
               "name": "RC Celta de Vigo",
               "short_name": "Celta",
-              "elo": 1583.6
+              "elo": 1581.3
             },
             "away_team": {
               "id": "ATH",
@@ -7371,7 +7485,7 @@
               "id": "DEP",
               "name": "RC Deportivo de La Coruña",
               "short_name": "Deportivo",
-              "elo": 1483.3
+              "elo": 1479.7
             },
             "date": "05.09.2026 21:00",
             "home_goals": 2,
@@ -7631,7 +7745,7 @@
               "id": "CEL",
               "name": "RC Celta de Vigo",
               "short_name": "Celta",
-              "elo": 1583.6
+              "elo": 1581.3
             },
             "date": "07.09.2026 19:00",
             "home_goals": 1,
@@ -7677,13 +7791,13 @@
               "id": "ELC",
               "name": "Elche CF",
               "short_name": "Elche",
-              "elo": 1459.1
+              "elo": 1461.4
             },
             "away_team": {
               "id": "RSO",
               "name": "Real Sociedad",
               "short_name": "R. Sociedad",
-              "elo": 1716.9
+              "elo": 1720.5
             },
             "date": "07.09.2026 21:30",
             "home_goals": 2,
@@ -7893,7 +8007,7 @@
               "id": "ELC",
               "name": "Elche CF",
               "short_name": "Elche",
-              "elo": 1459.1
+              "elo": 1461.4
             },
             "date": "12.09.2026 18:30",
             "home_goals": 1,
@@ -7991,7 +8105,7 @@
               "id": "CEL",
               "name": "RC Celta de Vigo",
               "short_name": "Celta",
-              "elo": 1583.6
+              "elo": 1581.3
             },
             "away_team": {
               "id": "MAL",
@@ -8101,7 +8215,7 @@
               "id": "DEP",
               "name": "RC Deportivo de La Coruña",
               "short_name": "Deportivo",
-              "elo": 1483.3
+              "elo": 1479.7
             },
             "date": "13.09.2026 18:30",
             "home_goals": 1,
@@ -8147,7 +8261,7 @@
               "id": "RSO",
               "name": "Real Sociedad",
               "short_name": "R. Sociedad",
-              "elo": 1716.9
+              "elo": 1720.5
             },
             "away_team": {
               "id": "ATM",
@@ -8253,13 +8367,13 @@
               "id": "RSO",
               "name": "Real Sociedad",
               "short_name": "R. Sociedad",
-              "elo": 1716.9
+              "elo": 1720.5
             },
             "away_team": {
               "id": "CEL",
               "name": "RC Celta de Vigo",
               "short_name": "Celta",
-              "elo": 1583.6
+              "elo": 1581.3
             },
             "date": "03.09.2026 21:00",
             "home_goals": 0,
@@ -8409,7 +8523,7 @@
               "id": "ELC",
               "name": "Elche CF",
               "short_name": "Elche",
-              "elo": 1459.1
+              "elo": 1461.4
             },
             "away_team": {
               "id": "RMA",
@@ -8513,7 +8627,7 @@
               "id": "DEP",
               "name": "RC Deportivo de La Coruña",
               "short_name": "Deportivo",
-              "elo": 1483.3
+              "elo": 1479.7
             },
             "away_team": {
               "id": "SEV",
@@ -8781,7 +8895,7 @@
               "id": "ELC",
               "name": "Elche CF",
               "short_name": "Elche",
-              "elo": 1459.1
+              "elo": 1461.4
             },
             "date": "18.09.2026 21:00",
             "home_goals": 1,
@@ -8931,7 +9045,7 @@
               "id": "CEL",
               "name": "RC Celta de Vigo",
               "short_name": "Celta",
-              "elo": 1583.6
+              "elo": 1581.3
             },
             "away_team": {
               "id": "RDS",
@@ -9139,7 +9253,7 @@
               "id": "DEP",
               "name": "RC Deportivo de La Coruña",
               "short_name": "Deportivo",
-              "elo": 1483.3
+              "elo": 1479.7
             },
             "away_team": {
               "id": "BET",
@@ -9249,7 +9363,7 @@
               "id": "RSO",
               "name": "Real Sociedad",
               "short_name": "R. Sociedad",
-              "elo": 1716.9
+              "elo": 1720.5
             },
             "date": "20.09.2026 21:00",
             "home_goals": 2,
@@ -9662,44 +9776,44 @@
             "match_id": "LALIGA_J8_ELC_CEL",
             "competition_id": "LALIGA",
             "jornada": 8,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "home_team": {
               "id": "ELC",
               "name": "Elche CF",
               "short_name": "Elche",
-              "elo": 1459.1
+              "elo": 1461.4
             },
             "away_team": {
               "id": "CEL",
               "name": "RC Celta de Vigo",
               "short_name": "Celta",
-              "elo": 1583.6
+              "elo": 1581.3
             },
             "date": "11.10.2026 12:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 0,
+            "away_goals": 0,
+            "final_score": "0 - 0",
+            "actual_1x2": "X",
             "predicted_1x2": "2",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": 0,
-            "real_corners_away": 0,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": false,
+            "is_exact_score": false,
+            "xg_diff_home": -1.19,
+            "xg_diff_away": -1.48,
+            "real_corners_home": 5,
+            "real_corners_away": 2,
+            "real_cards_home": 1,
+            "real_cards_away": 3,
             "verdict": "X2 (Favorit Visitant / Risc d'Empat)",
             "prob_1": 29.3,
-            "prob_x": 27.7,
-            "prob_2": 43.0,
-            "xg_home": 1.22,
-            "xg_away": 1.52,
+            "prob_x": 28.1,
+            "prob_2": 42.6,
+            "xg_home": 1.19,
+            "xg_away": 1.48,
             "most_likely_score": "1-1",
-            "prob_over_25": 51.5,
-            "prob_under_25": 48.5,
-            "prob_btts_yes": 56.2,
-            "prob_btts_no": 43.8,
+            "prob_over_25": 49.9,
+            "prob_under_25": 50.1,
+            "prob_btts_yes": 55.0,
+            "prob_btts_no": 45.0,
             "corners_home": 5.0,
             "corners_away": 4.5,
             "corners_total": 9.5,
@@ -9718,9 +9832,9 @@
               "fouls_avg": 21.0
             },
             "odds_1x2": {
-              "1": 2.7,
-              "X": 3.3,
-              "2": 2.55
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -9730,63 +9844,50 @@
               "yes": null,
               "no": null
             },
-            "value_bets": [
-              {
-                "model_prob": 43.0,
-                "bookie_odd": 2.55,
-                "fair_odd": 2.33,
-                "implied_prob": 39.2,
-                "ev_pct": 9.6,
-                "kelly_pct": 1.6,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "2 - Victòria Visitant (RC Celta de Vigo)",
-                "category": "1X2"
-              }
-            ]
+            "value_bets": []
           },
           {
             "match_id": "LALIGA_J8_RSO_DEP",
             "competition_id": "LALIGA",
             "jornada": 8,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "home_team": {
               "id": "RSO",
               "name": "Real Sociedad",
               "short_name": "R. Sociedad",
-              "elo": 1716.9
+              "elo": 1720.5
             },
             "away_team": {
               "id": "DEP",
               "name": "RC Deportivo de La Coruña",
               "short_name": "Deportivo",
-              "elo": 1483.3
+              "elo": 1479.7
             },
             "date": "11.10.2026 14:15",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 3,
+            "away_goals": 2,
+            "final_score": "3 - 2",
+            "actual_1x2": "1",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": 0,
-            "real_corners_away": 0,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": true,
+            "is_exact_score": false,
+            "xg_diff_home": -0.13,
+            "xg_diff_away": 1.63,
+            "real_corners_home": 7,
+            "real_corners_away": 10,
+            "real_cards_home": 1,
+            "real_cards_away": 2,
             "verdict": "Victòria Local (Real Sociedad)",
-            "prob_1": 90.0,
-            "prob_x": 8.1,
+            "prob_1": 89.6,
+            "prob_x": 8.5,
             "prob_2": 1.9,
-            "xg_home": 3.21,
-            "xg_away": 0.38,
+            "xg_home": 3.13,
+            "xg_away": 0.37,
             "most_likely_score": "3-0",
-            "prob_over_25": 69.0,
-            "prob_under_25": 31.0,
-            "prob_btts_yes": 30.7,
-            "prob_btts_no": 69.3,
+            "prob_over_25": 67.4,
+            "prob_under_25": 32.6,
+            "prob_btts_yes": 29.9,
+            "prob_btts_no": 70.1,
             "corners_home": 5.0,
             "corners_away": 4.5,
             "corners_total": 9.5,
@@ -9805,9 +9906,9 @@
               "fouls_avg": 25.0
             },
             "odds_1x2": {
-              "1": 1.7,
-              "X": 3.95,
-              "2": 4.4
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -9817,20 +9918,7 @@
               "yes": null,
               "no": null
             },
-            "value_bets": [
-              {
-                "model_prob": 90.0,
-                "bookie_odd": 1.7,
-                "fair_odd": 1.11,
-                "implied_prob": 58.8,
-                "ev_pct": 53.0,
-                "kelly_pct": 18.9,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1 - Victòria Local (Real Sociedad)",
-                "category": "1X2"
-              }
-            ]
+            "value_bets": []
           },
           {
             "match_id": "LALIGA_J8_BET_OSA",
@@ -10482,44 +10570,44 @@
           "match_id": "LALIGA_J8_ELC_CEL",
           "competition_id": "LALIGA",
           "jornada": 8,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "home_team": {
             "id": "ELC",
             "name": "Elche CF",
             "short_name": "Elche",
-            "elo": 1459.1
+            "elo": 1461.4
           },
           "away_team": {
             "id": "CEL",
             "name": "RC Celta de Vigo",
             "short_name": "Celta",
-            "elo": 1583.6
+            "elo": 1581.3
           },
           "date": "11.10.2026 12:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 0,
+          "away_goals": 0,
+          "final_score": "0 - 0",
+          "actual_1x2": "X",
           "predicted_1x2": "2",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": false,
+          "is_exact_score": false,
+          "xg_diff_home": -1.19,
+          "xg_diff_away": -1.48,
+          "real_corners_home": 5,
+          "real_corners_away": 2,
+          "real_cards_home": 1,
+          "real_cards_away": 3,
           "verdict": "X2 (Favorit Visitant / Risc d'Empat)",
           "prob_1": 29.3,
-          "prob_x": 27.7,
-          "prob_2": 43.0,
-          "xg_home": 1.22,
-          "xg_away": 1.52,
+          "prob_x": 28.1,
+          "prob_2": 42.6,
+          "xg_home": 1.19,
+          "xg_away": 1.48,
           "most_likely_score": "1-1",
-          "prob_over_25": 51.5,
-          "prob_under_25": 48.5,
-          "prob_btts_yes": 56.2,
-          "prob_btts_no": 43.8,
+          "prob_over_25": 49.9,
+          "prob_under_25": 50.1,
+          "prob_btts_yes": 55.0,
+          "prob_btts_no": 45.0,
           "corners_home": 5.0,
           "corners_away": 4.5,
           "corners_total": 9.5,
@@ -10538,9 +10626,9 @@
             "fouls_avg": 21.0
           },
           "odds_1x2": {
-            "1": 2.7,
-            "X": 3.3,
-            "2": 2.55
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -10550,63 +10638,50 @@
             "yes": null,
             "no": null
           },
-          "value_bets": [
-            {
-              "model_prob": 43.0,
-              "bookie_odd": 2.55,
-              "fair_odd": 2.33,
-              "implied_prob": 39.2,
-              "ev_pct": 9.6,
-              "kelly_pct": 1.6,
-              "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-              "name": "2 - Victòria Visitant (RC Celta de Vigo)",
-              "category": "1X2"
-            }
-          ]
+          "value_bets": []
         },
         {
           "match_id": "LALIGA_J8_RSO_DEP",
           "competition_id": "LALIGA",
           "jornada": 8,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "home_team": {
             "id": "RSO",
             "name": "Real Sociedad",
             "short_name": "R. Sociedad",
-            "elo": 1716.9
+            "elo": 1720.5
           },
           "away_team": {
             "id": "DEP",
             "name": "RC Deportivo de La Coruña",
             "short_name": "Deportivo",
-            "elo": 1483.3
+            "elo": 1479.7
           },
           "date": "11.10.2026 14:15",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 3,
+          "away_goals": 2,
+          "final_score": "3 - 2",
+          "actual_1x2": "1",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": true,
+          "is_exact_score": false,
+          "xg_diff_home": -0.13,
+          "xg_diff_away": 1.63,
+          "real_corners_home": 7,
+          "real_corners_away": 10,
+          "real_cards_home": 1,
+          "real_cards_away": 2,
           "verdict": "Victòria Local (Real Sociedad)",
-          "prob_1": 90.0,
-          "prob_x": 8.1,
+          "prob_1": 89.6,
+          "prob_x": 8.5,
           "prob_2": 1.9,
-          "xg_home": 3.21,
-          "xg_away": 0.38,
+          "xg_home": 3.13,
+          "xg_away": 0.37,
           "most_likely_score": "3-0",
-          "prob_over_25": 69.0,
-          "prob_under_25": 31.0,
-          "prob_btts_yes": 30.7,
-          "prob_btts_no": 69.3,
+          "prob_over_25": 67.4,
+          "prob_under_25": 32.6,
+          "prob_btts_yes": 29.9,
+          "prob_btts_no": 70.1,
           "corners_home": 5.0,
           "corners_away": 4.5,
           "corners_total": 9.5,
@@ -10625,9 +10700,9 @@
             "fouls_avg": 25.0
           },
           "odds_1x2": {
-            "1": 1.7,
-            "X": 3.95,
-            "2": 4.4
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -10637,20 +10712,7 @@
             "yes": null,
             "no": null
           },
-          "value_bets": [
-            {
-              "model_prob": 90.0,
-              "bookie_odd": 1.7,
-              "fair_odd": 1.11,
-              "implied_prob": 58.8,
-              "ev_pct": 53.0,
-              "kelly_pct": 18.9,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "1 - Victòria Local (Real Sociedad)",
-              "category": "1X2"
-            }
-          ]
+          "value_bets": []
         },
         {
           "match_id": "LALIGA_J8_BET_OSA",
@@ -11004,7 +11066,7 @@
               "id": "HUL",
               "name": "Hull",
               "short_name": "Hull",
-              "elo": 1528.8
+              "elo": 1529.7
             },
             "away_team": {
               "id": "MAN",
@@ -11056,13 +11118,13 @@
               "id": "EVE",
               "name": "Everton",
               "short_name": "Everton",
-              "elo": 1607.0
+              "elo": 1606.1
             },
             "away_team": {
               "id": "CRY",
               "name": "Crystal Palace",
               "short_name": "Crystal Palace",
-              "elo": 1561.4
+              "elo": 1577.4
             },
             "date": "22.08.2026 16:00",
             "home_goals": 2,
@@ -11160,7 +11222,7 @@
               "id": "NFO",
               "name": "Nottingham Forest",
               "short_name": "Nottm Forest",
-              "elo": 1580.0
+              "elo": 1564.0
             },
             "away_team": {
               "id": "LEE",
@@ -11316,7 +11378,7 @@
               "id": "MCI",
               "name": "Manchester City",
               "short_name": "Man. City",
-              "elo": 1991.4
+              "elo": 2015.1
             },
             "away_team": {
               "id": "BOU",
@@ -11374,7 +11436,7 @@
               "id": "LIV",
               "name": "Liverpool",
               "short_name": "Liverpool",
-              "elo": 1965.3
+              "elo": 1941.6
             },
             "date": "23.08.2026 17:30",
             "home_goals": 2,
@@ -11474,13 +11536,13 @@
               "id": "CRY",
               "name": "Crystal Palace",
               "short_name": "Crystal Palace",
-              "elo": 1561.4
+              "elo": 1577.4
             },
             "away_team": {
               "id": "MCI",
               "name": "Manchester City",
               "short_name": "Man. City",
-              "elo": 1991.4
+              "elo": 2015.1
             },
             "date": "28.08.2026 21:00",
             "home_goals": 1,
@@ -11526,13 +11588,13 @@
               "id": "LIV",
               "name": "Liverpool",
               "short_name": "Liverpool",
-              "elo": 1965.3
+              "elo": 1941.6
             },
             "away_team": {
               "id": "NFO",
               "name": "Nottingham Forest",
               "short_name": "Nottm Forest",
-              "elo": 1580.0
+              "elo": 1564.0
             },
             "date": "29.08.2026 13:30",
             "home_goals": 2,
@@ -11584,7 +11646,7 @@
               "id": "EVE",
               "name": "Everton",
               "short_name": "Everton",
-              "elo": 1607.0
+              "elo": 1606.1
             },
             "date": "29.08.2026 16:00",
             "home_goals": 1,
@@ -11636,7 +11698,7 @@
               "id": "HUL",
               "name": "Hull",
               "short_name": "Hull",
-              "elo": 1528.8
+              "elo": 1529.7
             },
             "date": "29.08.2026 16:00",
             "home_goals": 0,
@@ -12002,7 +12064,7 @@
               "id": "LIV",
               "name": "Liverpool",
               "short_name": "Liverpool",
-              "elo": 1965.3
+              "elo": 1941.6
             },
             "date": "04.09.2026 21:00",
             "home_goals": 0,
@@ -12210,7 +12272,7 @@
               "id": "CRY",
               "name": "Crystal Palace",
               "short_name": "Crystal Palace",
-              "elo": 1561.4
+              "elo": 1577.4
             },
             "date": "05.09.2026 16:00",
             "home_goals": 2,
@@ -12256,7 +12318,7 @@
               "id": "MCI",
               "name": "Manchester City",
               "short_name": "Man. City",
-              "elo": 1991.4
+              "elo": 2015.1
             },
             "away_team": {
               "id": "COV",
@@ -12308,7 +12370,7 @@
               "id": "NFO",
               "name": "Nottingham Forest",
               "short_name": "Nottm Forest",
-              "elo": 1580.0
+              "elo": 1564.0
             },
             "away_team": {
               "id": "TOT",
@@ -12360,7 +12422,7 @@
               "id": "HUL",
               "name": "Hull",
               "short_name": "Hull",
-              "elo": 1528.8
+              "elo": 1529.7
             },
             "away_team": {
               "id": "AVL",
@@ -12412,7 +12474,7 @@
               "id": "EVE",
               "name": "Everton",
               "short_name": "Everton",
-              "elo": 1607.0
+              "elo": 1606.1
             },
             "away_team": {
               "id": "MAN",
@@ -12524,7 +12586,7 @@
               "id": "NFO",
               "name": "Nottingham Forest",
               "short_name": "Nottm Forest",
-              "elo": 1580.0
+              "elo": 1564.0
             },
             "date": "12.09.2026 16:00",
             "home_goals": 1,
@@ -12628,7 +12690,7 @@
               "id": "HUL",
               "name": "Hull",
               "short_name": "Hull",
-              "elo": 1528.8
+              "elo": 1529.7
             },
             "date": "12.09.2026 16:00",
             "home_goals": 2,
@@ -12674,7 +12736,7 @@
               "id": "CRY",
               "name": "Crystal Palace",
               "short_name": "Crystal Palace",
-              "elo": 1561.4
+              "elo": 1577.4
             },
             "away_team": {
               "id": "IPS",
@@ -12726,7 +12788,7 @@
               "id": "LIV",
               "name": "Liverpool",
               "short_name": "Liverpool",
-              "elo": 1965.3
+              "elo": 1941.6
             },
             "away_team": {
               "id": "FUL",
@@ -12784,7 +12846,7 @@
               "id": "EVE",
               "name": "Everton",
               "short_name": "Everton",
-              "elo": 1607.0
+              "elo": 1606.1
             },
             "date": "12.09.2026 18:30",
             "home_goals": 0,
@@ -12940,7 +13002,7 @@
               "id": "MCI",
               "name": "Manchester City",
               "short_name": "Man. City",
-              "elo": 1991.4
+              "elo": 2015.1
             },
             "date": "13.09.2026 17:30",
             "home_goals": 0,
@@ -13196,7 +13258,7 @@
               "id": "EVE",
               "name": "Everton",
               "short_name": "Everton",
-              "elo": 1607.0
+              "elo": 1606.1
             },
             "away_team": {
               "id": "IPS",
@@ -13254,7 +13316,7 @@
               "id": "HUL",
               "name": "Hull",
               "short_name": "Hull",
-              "elo": 1528.8
+              "elo": 1529.7
             },
             "date": "19.09.2026 16:00",
             "home_goals": 2,
@@ -13300,7 +13362,7 @@
               "id": "NFO",
               "name": "Nottingham Forest",
               "short_name": "Nottm Forest",
-              "elo": 1580.0
+              "elo": 1564.0
             },
             "away_team": {
               "id": "COV",
@@ -13358,7 +13420,7 @@
               "id": "LIV",
               "name": "Liverpool",
               "short_name": "Liverpool",
-              "elo": 1965.3
+              "elo": 1941.6
             },
             "date": "20.09.2026 15:00",
             "home_goals": 0,
@@ -13410,7 +13472,7 @@
               "id": "CRY",
               "name": "Crystal Palace",
               "short_name": "Crystal Palace",
-              "elo": 1561.4
+              "elo": 1577.4
             },
             "date": "20.09.2026 15:00",
             "home_goals": 0,
@@ -13456,7 +13518,7 @@
               "id": "MCI",
               "name": "Manchester City",
               "short_name": "Man. City",
-              "elo": 1991.4
+              "elo": 2015.1
             },
             "away_team": {
               "id": "SUN",
@@ -14001,44 +14063,44 @@
             "match_id": "PREMIER_J6_CRY_NFO",
             "competition_id": "PREMIER",
             "jornada": 6,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "home_team": {
               "id": "CRY",
               "name": "Crystal Palace",
               "short_name": "Crystal Palace",
-              "elo": 1561.4
+              "elo": 1577.4
             },
             "away_team": {
               "id": "NFO",
               "name": "Nottingham Forest",
               "short_name": "Nottm Forest",
-              "elo": 1580.0
+              "elo": 1564.0
             },
             "date": "11.10.2026 13:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 3,
+            "away_goals": 1,
+            "final_score": "3 - 1",
+            "actual_1x2": "1",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": 0,
-            "real_corners_away": 0,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": true,
+            "is_exact_score": false,
+            "xg_diff_home": 1.44,
+            "xg_diff_away": -0.09,
+            "real_corners_home": 5,
+            "real_corners_away": 8,
+            "real_cards_home": 2,
+            "real_cards_away": 2,
             "verdict": "1X (Favorit Local / Risc d'Empat)",
-            "prob_1": 47.5,
-            "prob_x": 27.2,
-            "prob_2": 25.3,
-            "xg_home": 1.6,
-            "xg_away": 1.11,
+            "prob_1": 47.2,
+            "prob_x": 27.6,
+            "prob_2": 25.2,
+            "xg_home": 1.56,
+            "xg_away": 1.09,
             "most_likely_score": "1-1",
-            "prob_over_25": 51.0,
-            "prob_under_25": 49.0,
-            "prob_btts_yes": 54.8,
-            "prob_btts_no": 45.2,
+            "prob_over_25": 49.4,
+            "prob_under_25": 50.6,
+            "prob_btts_yes": 53.6,
+            "prob_btts_no": 46.4,
             "corners_home": 5.0,
             "corners_away": 4.5,
             "corners_total": 9.5,
@@ -14057,9 +14119,9 @@
               "fouls_avg": 23.0
             },
             "odds_1x2": {
-              "1": 2.55,
-              "X": 3.45,
-              "2": 2.6
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -14069,63 +14131,50 @@
               "yes": null,
               "no": null
             },
-            "value_bets": [
-              {
-                "model_prob": 47.5,
-                "bookie_odd": 2.55,
-                "fair_odd": 2.11,
-                "implied_prob": 39.2,
-                "ev_pct": 21.1,
-                "kelly_pct": 3.4,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1 - Victòria Local (Crystal Palace)",
-                "category": "1X2"
-              }
-            ]
+            "value_bets": []
           },
           {
             "match_id": "PREMIER_J6_HUL_EVE",
             "competition_id": "PREMIER",
             "jornada": 6,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "home_team": {
               "id": "HUL",
               "name": "Hull",
               "short_name": "Hull",
-              "elo": 1528.8
+              "elo": 1529.7
             },
             "away_team": {
               "id": "EVE",
               "name": "Everton",
               "short_name": "Everton",
-              "elo": 1607.0
+              "elo": 1606.1
             },
             "date": "11.10.2026 13:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 2,
+            "away_goals": 2,
+            "final_score": "2 - 2",
+            "actual_1x2": "X",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": 0,
-            "real_corners_away": 0,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": false,
+            "is_exact_score": false,
+            "xg_diff_home": 0.62,
+            "xg_diff_away": 0.83,
+            "real_corners_home": 7,
+            "real_corners_away": 6,
+            "real_cards_home": 2,
+            "real_cards_away": 0,
             "verdict": "1X (Favorit Local / Risc d'Empat)",
-            "prob_1": 39.8,
-            "prob_x": 28.8,
-            "prob_2": 31.4,
+            "prob_1": 40.5,
+            "prob_x": 29.0,
+            "prob_2": 30.5,
             "xg_home": 1.38,
-            "xg_away": 1.2,
+            "xg_away": 1.17,
             "most_likely_score": "1-1",
-            "prob_over_25": 47.9,
-            "prob_under_25": 52.1,
-            "prob_btts_yes": 53.7,
-            "prob_btts_no": 46.3,
+            "prob_over_25": 47.1,
+            "prob_under_25": 52.9,
+            "prob_btts_yes": 53.0,
+            "prob_btts_no": 47.0,
             "corners_home": 5.0,
             "corners_away": 4.5,
             "corners_total": 9.5,
@@ -14144,9 +14193,9 @@
               "fouls_avg": 20.8
             },
             "odds_1x2": {
-              "1": 3.5,
-              "X": 3.45,
-              "2": 2.0
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -14156,63 +14205,50 @@
               "yes": null,
               "no": null
             },
-            "value_bets": [
-              {
-                "model_prob": 39.8,
-                "bookie_odd": 3.5,
-                "fair_odd": 2.51,
-                "implied_prob": 28.6,
-                "ev_pct": 39.3,
-                "kelly_pct": 3.9,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1 - Victòria Local (Hull)",
-                "category": "1X2"
-              }
-            ]
+            "value_bets": []
           },
           {
             "match_id": "PREMIER_J6_LIV_MCI",
             "competition_id": "PREMIER",
             "jornada": 6,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "home_team": {
               "id": "LIV",
               "name": "Liverpool",
               "short_name": "Liverpool",
-              "elo": 1965.3
+              "elo": 1941.6
             },
             "away_team": {
               "id": "MCI",
               "name": "Manchester City",
               "short_name": "Man. City",
-              "elo": 1991.4
+              "elo": 2015.1
             },
             "date": "11.10.2026 15:30",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 0,
+            "away_goals": 3,
+            "final_score": "0 - 3",
+            "actual_1x2": "2",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": 0,
-            "real_corners_away": 0,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": false,
+            "is_exact_score": false,
+            "xg_diff_home": -1.2,
+            "xg_diff_away": 2.2,
+            "real_corners_home": 5,
+            "real_corners_away": 6,
+            "real_cards_home": 4,
+            "real_cards_away": 2,
             "verdict": "1X (Favorit Local / Risc d'Empat)",
-            "prob_1": 44.5,
-            "prob_x": 32.1,
-            "prob_2": 23.5,
-            "xg_home": 1.23,
-            "xg_away": 0.82,
+            "prob_1": 44.2,
+            "prob_x": 32.5,
+            "prob_2": 23.3,
+            "xg_home": 1.2,
+            "xg_away": 0.8,
             "most_likely_score": "1-0",
-            "prob_over_25": 33.9,
-            "prob_under_25": 66.1,
-            "prob_btts_yes": 41.1,
-            "prob_btts_no": 58.9,
+            "prob_over_25": 32.5,
+            "prob_under_25": 67.5,
+            "prob_btts_yes": 39.9,
+            "prob_btts_no": 60.1,
             "corners_home": 5.0,
             "corners_away": 4.5,
             "corners_total": 9.5,
@@ -14231,9 +14267,9 @@
               "fouls_avg": 21.8
             },
             "odds_1x2": {
-              "1": 2.45,
-              "X": 3.8,
-              "2": 2.5
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -14243,32 +14279,7 @@
               "yes": null,
               "no": null
             },
-            "value_bets": [
-              {
-                "model_prob": 32.1,
-                "bookie_odd": 3.8,
-                "fair_odd": 3.12,
-                "implied_prob": 26.3,
-                "ev_pct": 22.0,
-                "kelly_pct": 2.0,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "X - Empat",
-                "category": "1X2"
-              },
-              {
-                "model_prob": 44.5,
-                "bookie_odd": 2.45,
-                "fair_odd": 2.25,
-                "implied_prob": 40.8,
-                "ev_pct": 9.0,
-                "kelly_pct": 1.6,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "1 - Victòria Local (Liverpool)",
-                "category": "1X2"
-              }
-            ]
+            "value_bets": []
           },
           {
             "match_id": "PREMIER_J6_COV_NEW",
@@ -14368,7 +14379,7 @@
               "id": "EVE",
               "name": "Everton",
               "short_name": "Everton",
-              "elo": 1607.0
+              "elo": 1606.1
             },
             "away_team": {
               "id": "CHE",
@@ -14426,7 +14437,7 @@
               "id": "LIV",
               "name": "Liverpool",
               "short_name": "Liverpool",
-              "elo": 1965.3
+              "elo": 1941.6
             },
             "date": "17.10.2026 16:00",
             "home_goals": null,
@@ -14478,7 +14489,7 @@
               "id": "HUL",
               "name": "Hull",
               "short_name": "Hull",
-              "elo": 1528.8
+              "elo": 1529.7
             },
             "date": "17.10.2026 16:00",
             "home_goals": null,
@@ -14524,7 +14535,7 @@
               "id": "MCI",
               "name": "Manchester City",
               "short_name": "Man. City",
-              "elo": 1991.4
+              "elo": 2015.1
             },
             "away_team": {
               "id": "IPS",
@@ -14686,7 +14697,7 @@
               "id": "CRY",
               "name": "Crystal Palace",
               "short_name": "Crystal Palace",
-              "elo": 1561.4
+              "elo": 1577.4
             },
             "date": "18.10.2026 15:00",
             "home_goals": null,
@@ -14784,7 +14795,7 @@
               "id": "NFO",
               "name": "Nottingham Forest",
               "short_name": "Nottm Forest",
-              "elo": 1580.0
+              "elo": 1564.0
             },
             "away_team": {
               "id": "ARS",
@@ -15330,44 +15341,44 @@
           "match_id": "PREMIER_J6_CRY_NFO",
           "competition_id": "PREMIER",
           "jornada": 6,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "home_team": {
             "id": "CRY",
             "name": "Crystal Palace",
             "short_name": "Crystal Palace",
-            "elo": 1561.4
+            "elo": 1577.4
           },
           "away_team": {
             "id": "NFO",
             "name": "Nottingham Forest",
             "short_name": "Nottm Forest",
-            "elo": 1580.0
+            "elo": 1564.0
           },
           "date": "11.10.2026 13:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 3,
+          "away_goals": 1,
+          "final_score": "3 - 1",
+          "actual_1x2": "1",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": true,
+          "is_exact_score": false,
+          "xg_diff_home": 1.44,
+          "xg_diff_away": -0.09,
+          "real_corners_home": 5,
+          "real_corners_away": 8,
+          "real_cards_home": 2,
+          "real_cards_away": 2,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
-          "prob_1": 47.5,
-          "prob_x": 27.2,
-          "prob_2": 25.3,
-          "xg_home": 1.6,
-          "xg_away": 1.11,
+          "prob_1": 47.2,
+          "prob_x": 27.6,
+          "prob_2": 25.2,
+          "xg_home": 1.56,
+          "xg_away": 1.09,
           "most_likely_score": "1-1",
-          "prob_over_25": 51.0,
-          "prob_under_25": 49.0,
-          "prob_btts_yes": 54.8,
-          "prob_btts_no": 45.2,
+          "prob_over_25": 49.4,
+          "prob_under_25": 50.6,
+          "prob_btts_yes": 53.6,
+          "prob_btts_no": 46.4,
           "corners_home": 5.0,
           "corners_away": 4.5,
           "corners_total": 9.5,
@@ -15386,9 +15397,9 @@
             "fouls_avg": 23.0
           },
           "odds_1x2": {
-            "1": 2.55,
-            "X": 3.45,
-            "2": 2.6
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -15398,63 +15409,50 @@
             "yes": null,
             "no": null
           },
-          "value_bets": [
-            {
-              "model_prob": 47.5,
-              "bookie_odd": 2.55,
-              "fair_odd": 2.11,
-              "implied_prob": 39.2,
-              "ev_pct": 21.1,
-              "kelly_pct": 3.4,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "1 - Victòria Local (Crystal Palace)",
-              "category": "1X2"
-            }
-          ]
+          "value_bets": []
         },
         {
           "match_id": "PREMIER_J6_HUL_EVE",
           "competition_id": "PREMIER",
           "jornada": 6,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "home_team": {
             "id": "HUL",
             "name": "Hull",
             "short_name": "Hull",
-            "elo": 1528.8
+            "elo": 1529.7
           },
           "away_team": {
             "id": "EVE",
             "name": "Everton",
             "short_name": "Everton",
-            "elo": 1607.0
+            "elo": 1606.1
           },
           "date": "11.10.2026 13:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 2,
+          "away_goals": 2,
+          "final_score": "2 - 2",
+          "actual_1x2": "X",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": false,
+          "is_exact_score": false,
+          "xg_diff_home": 0.62,
+          "xg_diff_away": 0.83,
+          "real_corners_home": 7,
+          "real_corners_away": 6,
+          "real_cards_home": 2,
+          "real_cards_away": 0,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
-          "prob_1": 39.8,
-          "prob_x": 28.8,
-          "prob_2": 31.4,
+          "prob_1": 40.5,
+          "prob_x": 29.0,
+          "prob_2": 30.5,
           "xg_home": 1.38,
-          "xg_away": 1.2,
+          "xg_away": 1.17,
           "most_likely_score": "1-1",
-          "prob_over_25": 47.9,
-          "prob_under_25": 52.1,
-          "prob_btts_yes": 53.7,
-          "prob_btts_no": 46.3,
+          "prob_over_25": 47.1,
+          "prob_under_25": 52.9,
+          "prob_btts_yes": 53.0,
+          "prob_btts_no": 47.0,
           "corners_home": 5.0,
           "corners_away": 4.5,
           "corners_total": 9.5,
@@ -15473,9 +15471,9 @@
             "fouls_avg": 20.8
           },
           "odds_1x2": {
-            "1": 3.5,
-            "X": 3.45,
-            "2": 2.0
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -15485,63 +15483,50 @@
             "yes": null,
             "no": null
           },
-          "value_bets": [
-            {
-              "model_prob": 39.8,
-              "bookie_odd": 3.5,
-              "fair_odd": 2.51,
-              "implied_prob": 28.6,
-              "ev_pct": 39.3,
-              "kelly_pct": 3.9,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "1 - Victòria Local (Hull)",
-              "category": "1X2"
-            }
-          ]
+          "value_bets": []
         },
         {
           "match_id": "PREMIER_J6_LIV_MCI",
           "competition_id": "PREMIER",
           "jornada": 6,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "home_team": {
             "id": "LIV",
             "name": "Liverpool",
             "short_name": "Liverpool",
-            "elo": 1965.3
+            "elo": 1941.6
           },
           "away_team": {
             "id": "MCI",
             "name": "Manchester City",
             "short_name": "Man. City",
-            "elo": 1991.4
+            "elo": 2015.1
           },
           "date": "11.10.2026 15:30",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 0,
+          "away_goals": 3,
+          "final_score": "0 - 3",
+          "actual_1x2": "2",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": false,
+          "is_exact_score": false,
+          "xg_diff_home": -1.2,
+          "xg_diff_away": 2.2,
+          "real_corners_home": 5,
+          "real_corners_away": 6,
+          "real_cards_home": 4,
+          "real_cards_away": 2,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
-          "prob_1": 44.5,
-          "prob_x": 32.1,
-          "prob_2": 23.5,
-          "xg_home": 1.23,
-          "xg_away": 0.82,
+          "prob_1": 44.2,
+          "prob_x": 32.5,
+          "prob_2": 23.3,
+          "xg_home": 1.2,
+          "xg_away": 0.8,
           "most_likely_score": "1-0",
-          "prob_over_25": 33.9,
-          "prob_under_25": 66.1,
-          "prob_btts_yes": 41.1,
-          "prob_btts_no": 58.9,
+          "prob_over_25": 32.5,
+          "prob_under_25": 67.5,
+          "prob_btts_yes": 39.9,
+          "prob_btts_no": 60.1,
           "corners_home": 5.0,
           "corners_away": 4.5,
           "corners_total": 9.5,
@@ -15560,9 +15545,9 @@
             "fouls_avg": 21.8
           },
           "odds_1x2": {
-            "1": 2.45,
-            "X": 3.8,
-            "2": 2.5
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -15572,32 +15557,7 @@
             "yes": null,
             "no": null
           },
-          "value_bets": [
-            {
-              "model_prob": 32.1,
-              "bookie_odd": 3.8,
-              "fair_odd": 3.12,
-              "implied_prob": 26.3,
-              "ev_pct": 22.0,
-              "kelly_pct": 2.0,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "X - Empat",
-              "category": "1X2"
-            },
-            {
-              "model_prob": 44.5,
-              "bookie_odd": 2.45,
-              "fair_odd": 2.25,
-              "implied_prob": 40.8,
-              "ev_pct": 9.0,
-              "kelly_pct": 1.6,
-              "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-              "name": "1 - Victòria Local (Liverpool)",
-              "category": "1X2"
-            }
-          ]
+          "value_bets": []
         },
         {
           "match_id": "PREMIER_J6_COV_NEW",
@@ -15721,7 +15681,7 @@
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "date": "14.08.2026 20:30",
             "home_goals": 0,
@@ -15767,7 +15727,7 @@
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "away_team": {
               "id": "CEU",
@@ -16085,7 +16045,7 @@
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "date": "16.08.2026 19:00",
             "home_goals": 1,
@@ -16235,7 +16195,7 @@
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "away_team": {
               "id": "ELD",
@@ -16347,7 +16307,7 @@
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "date": "22.08.2026 17:00",
             "home_goals": 0,
@@ -16601,7 +16561,7 @@
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "away_team": {
               "id": "SAB",
@@ -16711,7 +16671,7 @@
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "date": "23.08.2026 21:30",
             "home_goals": 1,
@@ -16763,7 +16723,7 @@
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "date": "24.08.2026 19:00",
             "home_goals": 4,
@@ -16921,7 +16881,7 @@
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "date": "29.08.2026 17:00",
             "home_goals": 1,
@@ -17019,7 +16979,7 @@
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "away_team": {
               "id": "ELD",
@@ -17123,7 +17083,7 @@
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "away_team": {
               "id": "EIB",
@@ -17389,7 +17349,7 @@
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "date": "31.08.2026 21:30",
             "home_goals": 1,
@@ -17443,7 +17403,7 @@
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "date": "04.09.2026 20:30",
             "home_goals": 0,
@@ -17651,7 +17611,7 @@
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "date": "05.09.2026 18:30",
             "home_goals": 1,
@@ -17853,7 +17813,7 @@
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "away_team": {
               "id": "ALB",
@@ -17905,7 +17865,7 @@
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "away_team": {
               "id": "CAD",
@@ -18063,7 +18023,7 @@
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "away_team": {
               "id": "RSB",
@@ -18173,7 +18133,7 @@
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "date": "12.09.2026 18:30",
             "home_goals": 1,
@@ -18277,7 +18237,7 @@
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "date": "12.09.2026 21:00",
             "home_goals": 0,
@@ -18485,7 +18445,7 @@
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "date": "13.09.2026 21:00",
             "home_goals": 2,
@@ -18689,7 +18649,7 @@
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "away_team": {
               "id": "SPG",
@@ -18741,7 +18701,7 @@
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "away_team": {
               "id": "TEN",
@@ -19001,7 +18961,7 @@
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "away_team": {
               "id": "CDV",
@@ -19105,7 +19065,7 @@
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "away_team": {
               "id": "GRA",
@@ -19269,7 +19229,7 @@
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "date": "26.09.2026 16:15",
             "home_goals": 2,
@@ -19477,7 +19437,7 @@
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "date": "27.09.2026 16:15",
             "home_goals": 0,
@@ -19679,13 +19639,13 @@
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "away_team": {
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "date": "28.09.2026 20:30",
             "home_goals": 0,
@@ -19837,7 +19797,7 @@
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "away_team": {
               "id": "BUR",
@@ -19895,7 +19855,7 @@
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "date": "03.10.2026 16:30",
             "home_goals": 4,
@@ -20045,7 +20005,7 @@
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "away_team": {
               "id": "CEU",
@@ -20207,7 +20167,7 @@
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "date": "04.10.2026 19:00",
             "home_goals": 0,
@@ -20524,33 +20484,33 @@
             "match_id": "HYPERMOTION_J9_AND_CAS",
             "competition_id": "HYPERMOTION",
             "jornada": 9,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "home_team": {
               "id": "AND",
               "name": "FC Andorra",
               "short_name": "Andorra",
-              "elo": 1448.0
+              "elo": 1461.5
             },
             "away_team": {
               "id": "CAS",
               "name": "CD Castellón",
               "short_name": "Castellón",
-              "elo": 1574.1
+              "elo": 1560.6
             },
             "date": "11.10.2026 12:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 1,
+            "away_goals": 0,
+            "final_score": "1 - 0",
+            "actual_1x2": "1",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": 0,
-            "real_corners_away": 0,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": true,
+            "is_exact_score": false,
+            "xg_diff_home": -0.48,
+            "xg_diff_away": -1.02,
+            "real_corners_home": 4,
+            "real_corners_away": 7,
+            "real_cards_home": 4,
+            "real_cards_away": 2,
             "verdict": "1X (Favorit Local / Risc d'Empat)",
             "prob_1": 46.6,
             "prob_x": 28.6,
@@ -20598,33 +20558,33 @@
             "match_id": "HYPERMOTION_J9_ALM_LEG",
             "competition_id": "HYPERMOTION",
             "jornada": 9,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "home_team": {
               "id": "ALM",
               "name": "UD Almería",
               "short_name": "Almería",
-              "elo": 1591.6
+              "elo": 1606.7
             },
             "away_team": {
               "id": "LEG",
               "name": "CD Leganés",
               "short_name": "Leganés",
-              "elo": 1527.8
+              "elo": 1512.6
             },
             "date": "11.10.2026 14:15",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 3,
+            "away_goals": 0,
+            "final_score": "3 - 0",
+            "actual_1x2": "1",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": 0,
-            "real_corners_away": 0,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": true,
+            "is_exact_score": true,
+            "xg_diff_home": -0.23,
+            "xg_diff_away": -0.33,
+            "real_corners_home": 8,
+            "real_corners_away": 3,
+            "real_cards_home": 2,
+            "real_cards_away": 5,
             "verdict": "Victòria Local (UD Almería)",
             "prob_1": 90.9,
             "prob_x": 7.6,
@@ -21341,33 +21301,33 @@
           "match_id": "HYPERMOTION_J9_AND_CAS",
           "competition_id": "HYPERMOTION",
           "jornada": 9,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "home_team": {
             "id": "AND",
             "name": "FC Andorra",
             "short_name": "Andorra",
-            "elo": 1448.0
+            "elo": 1461.5
           },
           "away_team": {
             "id": "CAS",
             "name": "CD Castellón",
             "short_name": "Castellón",
-            "elo": 1574.1
+            "elo": 1560.6
           },
           "date": "11.10.2026 12:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 1,
+          "away_goals": 0,
+          "final_score": "1 - 0",
+          "actual_1x2": "1",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": true,
+          "is_exact_score": false,
+          "xg_diff_home": -0.48,
+          "xg_diff_away": -1.02,
+          "real_corners_home": 4,
+          "real_corners_away": 7,
+          "real_cards_home": 4,
+          "real_cards_away": 2,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
           "prob_1": 46.6,
           "prob_x": 28.6,
@@ -21415,33 +21375,33 @@
           "match_id": "HYPERMOTION_J9_ALM_LEG",
           "competition_id": "HYPERMOTION",
           "jornada": 9,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "home_team": {
             "id": "ALM",
             "name": "UD Almería",
             "short_name": "Almería",
-            "elo": 1591.6
+            "elo": 1606.7
           },
           "away_team": {
             "id": "LEG",
             "name": "CD Leganés",
             "short_name": "Leganés",
-            "elo": 1527.8
+            "elo": 1512.6
           },
           "date": "11.10.2026 14:15",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 3,
+          "away_goals": 0,
+          "final_score": "3 - 0",
+          "actual_1x2": "1",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": true,
+          "is_exact_score": true,
+          "xg_diff_home": -0.23,
+          "xg_diff_away": -0.33,
+          "real_corners_home": 8,
+          "real_corners_away": 3,
+          "real_cards_home": 2,
+          "real_cards_away": 5,
           "verdict": "Victòria Local (UD Almería)",
           "prob_1": 90.9,
           "prob_x": 7.6,
@@ -28771,20 +28731,6 @@
     {
       "competition_id": "LALIGA",
       "competition_name": "LaLiga EA Sports",
-      "matchup": "Real Sociedad vs RC Deportivo de La Coruña",
-      "date": "11.10.2026 14:15",
-      "selection": "1 - Victòria Local (Real Sociedad)",
-      "category": "1X2",
-      "bookie_odd": 1.7,
-      "model_prob": 90.0,
-      "fair_odd": 1.11,
-      "edge_pct": 53.0,
-      "kelly_stake": 18.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
       "matchup": "Racing de Santander vs Valencia CF",
       "date": "11.10.2026 19:00",
       "selection": "2 - Victòria Visitant (Valencia CF)",
@@ -28794,20 +28740,6 @@
       "fair_odd": 2.33,
       "edge_pct": 39.8,
       "kelly_stake": 4.4,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "PREMIER",
-      "competition_name": "Premier League",
-      "matchup": "Hull vs Everton",
-      "date": "11.10.2026 13:00",
-      "selection": "1 - Victòria Local (Hull)",
-      "category": "1X2",
-      "bookie_odd": 3.5,
-      "model_prob": 39.8,
-      "fair_odd": 2.51,
-      "edge_pct": 39.3,
-      "kelly_stake": 3.9,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -28822,62 +28754,6 @@
       "fair_odd": 1.26,
       "edge_pct": 30.4,
       "kelly_stake": 11.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "PREMIER",
-      "competition_name": "Premier League",
-      "matchup": "Liverpool vs Manchester City",
-      "date": "11.10.2026 15:30",
-      "selection": "X - Empat",
-      "category": "1X2",
-      "bookie_odd": 3.8,
-      "model_prob": 32.1,
-      "fair_odd": 3.12,
-      "edge_pct": 22.0,
-      "kelly_stake": 2.0,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "PREMIER",
-      "competition_name": "Premier League",
-      "matchup": "Crystal Palace vs Nottingham Forest",
-      "date": "11.10.2026 13:00",
-      "selection": "1 - Victòria Local (Crystal Palace)",
-      "category": "1X2",
-      "bookie_odd": 2.55,
-      "model_prob": 47.5,
-      "fair_odd": 2.11,
-      "edge_pct": 21.1,
-      "kelly_stake": 3.4,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Elche CF vs RC Celta de Vigo",
-      "date": "11.10.2026 12:00",
-      "selection": "2 - Victòria Visitant (RC Celta de Vigo)",
-      "category": "1X2",
-      "bookie_odd": 2.55,
-      "model_prob": 43.0,
-      "fair_odd": 2.33,
-      "edge_pct": 9.6,
-      "kelly_stake": 1.6,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "PREMIER",
-      "competition_name": "Premier League",
-      "matchup": "Liverpool vs Manchester City",
-      "date": "11.10.2026 15:30",
-      "selection": "1 - Victòria Local (Liverpool)",
-      "category": "1X2",
-      "bookie_odd": 2.45,
-      "model_prob": 44.5,
-      "fair_odd": 2.25,
-      "edge_pct": 9.0,
-      "kelly_stake": 1.6,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -28916,12 +28792,12 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 0,
+            "won_count": 1,
             "lost_count": 0,
-            "pending_count": 2,
+            "pending_count": 1,
             "total_count": 2,
-            "progress_pct": 0.0,
-            "summary": "0/2 encertats · 2 pendents"
+            "progress_pct": 50.0,
+            "summary": "1/2 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -28932,8 +28808,8 @@
               "model_prob": 90.0,
               "date": "11.10.2026 16:15",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3-2 (1 encertat)"
             },
             {
               "matchup": "Levante UD vs Sevilla FC",
@@ -29014,12 +28890,12 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 2,
+            "won_count": 3,
             "lost_count": 0,
-            "pending_count": 3,
+            "pending_count": 2,
             "total_count": 5,
-            "progress_pct": 40.0,
-            "summary": "2/5 encertats · 3 pendents"
+            "progress_pct": 60.0,
+            "summary": "3/5 encertats · 2 pendents"
           },
           "legs": [
             {
@@ -29052,8 +28928,8 @@
               "model_prob": 90.0,
               "date": "11.10.2026 16:15",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3-2 (1 encertat)"
             },
             {
               "matchup": "Real Betis vs CA Osasuna",
@@ -29095,12 +28971,12 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 3,
+            "won_count": 4,
             "lost_count": 0,
-            "pending_count": 2,
+            "pending_count": 1,
             "total_count": 5,
-            "progress_pct": 60.0,
-            "summary": "3/5 encertats · 2 pendents"
+            "progress_pct": 80.0,
+            "summary": "4/5 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -29144,8 +29020,8 @@
               "model_prob": 90.0,
               "date": "11.10.2026 16:15",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3-2 (1 encertat)"
             },
             {
               "matchup": "Levante UD vs Sevilla FC",
@@ -29178,12 +29054,12 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 4,
+            "won_count": 5,
             "lost_count": 0,
-            "pending_count": 4,
+            "pending_count": 3,
             "total_count": 8,
-            "progress_pct": 50.0,
-            "summary": "4/8 encertats · 4 pendents"
+            "progress_pct": 62.5,
+            "summary": "5/8 encertats · 3 pendents"
           },
           "legs": [
             {
@@ -29238,8 +29114,8 @@
               "model_prob": 90.0,
               "date": "11.10.2026 16:15",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3-2 (1 encertat)"
             },
             {
               "matchup": "Real Betis vs CA Osasuna",
@@ -29292,12 +29168,12 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 4,
+            "won_count": 5,
             "lost_count": 0,
-            "pending_count": 4,
+            "pending_count": 3,
             "total_count": 8,
-            "progress_pct": 50.0,
-            "summary": "4/8 encertats · 4 pendents"
+            "progress_pct": 62.5,
+            "summary": "5/8 encertats · 3 pendents"
           },
           "legs": [
             {
@@ -29352,8 +29228,8 @@
               "model_prob": 90.0,
               "date": "11.10.2026 16:15",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3-2 (1 encertat)"
             },
             {
               "matchup": "Real Betis vs CA Osasuna",
@@ -29412,12 +29288,12 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 0,
+                "won_count": 1,
                 "lost_count": 0,
-                "pending_count": 2,
+                "pending_count": 1,
                 "total_count": 2,
-                "progress_pct": 0.0,
-                "summary": "0/2 encertats · 2 pendents"
+                "progress_pct": 50.0,
+                "summary": "1/2 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -29428,8 +29304,8 @@
                   "model_prob": 90.0,
                   "date": "11.10.2026 16:15",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3-2 (1 encertat)"
                 },
                 {
                   "matchup": "Levante UD vs Sevilla FC",
@@ -29510,12 +29386,12 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 2,
+                "won_count": 3,
                 "lost_count": 0,
-                "pending_count": 3,
+                "pending_count": 2,
                 "total_count": 5,
-                "progress_pct": 40.0,
-                "summary": "2/5 encertats · 3 pendents"
+                "progress_pct": 60.0,
+                "summary": "3/5 encertats · 2 pendents"
               },
               "legs": [
                 {
@@ -29548,8 +29424,8 @@
                   "model_prob": 90.0,
                   "date": "11.10.2026 16:15",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3-2 (1 encertat)"
                 },
                 {
                   "matchup": "Real Betis vs CA Osasuna",
@@ -29591,12 +29467,12 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 3,
+                "won_count": 4,
                 "lost_count": 0,
-                "pending_count": 2,
+                "pending_count": 1,
                 "total_count": 5,
-                "progress_pct": 60.0,
-                "summary": "3/5 encertats · 2 pendents"
+                "progress_pct": 80.0,
+                "summary": "4/5 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -29640,8 +29516,8 @@
                   "model_prob": 90.0,
                   "date": "11.10.2026 16:15",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3-2 (1 encertat)"
                 },
                 {
                   "matchup": "Levante UD vs Sevilla FC",
@@ -29674,12 +29550,12 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 4,
+                "won_count": 5,
                 "lost_count": 0,
-                "pending_count": 4,
+                "pending_count": 3,
                 "total_count": 8,
-                "progress_pct": 50.0,
-                "summary": "4/8 encertats · 4 pendents"
+                "progress_pct": 62.5,
+                "summary": "5/8 encertats · 3 pendents"
               },
               "legs": [
                 {
@@ -29734,8 +29610,8 @@
                   "model_prob": 90.0,
                   "date": "11.10.2026 16:15",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3-2 (1 encertat)"
                 },
                 {
                   "matchup": "Real Betis vs CA Osasuna",
@@ -29788,12 +29664,12 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 4,
+                "won_count": 5,
                 "lost_count": 0,
-                "pending_count": 4,
+                "pending_count": 3,
                 "total_count": 8,
-                "progress_pct": 50.0,
-                "summary": "4/8 encertats · 4 pendents"
+                "progress_pct": 62.5,
+                "summary": "5/8 encertats · 3 pendents"
               },
               "legs": [
                 {
@@ -29848,8 +29724,8 @@
                   "model_prob": 90.0,
                   "date": "11.10.2026 16:15",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72478624",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3-2 (1 encertat)"
                 },
                 {
                   "matchup": "Real Betis vs CA Osasuna",
@@ -30093,12 +29969,12 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 3,
+            "won_count": 4,
             "lost_count": 0,
-            "pending_count": 2,
+            "pending_count": 1,
             "total_count": 5,
-            "progress_pct": 60.0,
-            "summary": "3/5 encertats · 2 pendents"
+            "progress_pct": 80.0,
+            "summary": "4/5 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -30142,8 +30018,8 @@
               "model_prob": 84.7,
               "date": "11.10.2026 17:30",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72221306",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3 gols (Under 3.5 encertat)"
             },
             {
               "matchup": "Coventry vs Newcastle United",
@@ -30176,12 +30052,12 @@
           "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 4,
+            "won_count": 5,
             "lost_count": 2,
-            "pending_count": 2,
+            "pending_count": 1,
             "total_count": 8,
-            "progress_pct": 75.0,
-            "summary": "4/8 encertats · 2 pendents"
+            "progress_pct": 87.5,
+            "summary": "5/8 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -30258,8 +30134,8 @@
               "model_prob": 84.7,
               "date": "11.10.2026 17:30",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72221306",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3 gols (Under 3.5 encertat)"
             },
             {
               "matchup": "Coventry vs Newcastle United",
@@ -30290,12 +30166,12 @@
           "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 4,
+            "won_count": 6,
             "lost_count": 1,
-            "pending_count": 3,
+            "pending_count": 1,
             "total_count": 8,
-            "progress_pct": 62.5,
-            "summary": "4/8 encertats · 3 pendents"
+            "progress_pct": 87.5,
+            "summary": "6/8 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -30361,8 +30237,8 @@
               "model_prob": 74.7,
               "date": "11.10.2026 15:00",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72221300",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3-1 (1X encertat)"
             },
             {
               "matchup": "Liverpool vs Manchester City",
@@ -30372,8 +30248,8 @@
               "model_prob": 84.7,
               "date": "11.10.2026 17:30",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72221306",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "3 gols (Under 3.5 encertat)"
             },
             {
               "matchup": "Coventry vs Newcastle United",
@@ -30589,12 +30465,12 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 3,
+                "won_count": 4,
                 "lost_count": 0,
-                "pending_count": 2,
+                "pending_count": 1,
                 "total_count": 5,
-                "progress_pct": 60.0,
-                "summary": "3/5 encertats · 2 pendents"
+                "progress_pct": 80.0,
+                "summary": "4/5 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -30638,8 +30514,8 @@
                   "model_prob": 84.7,
                   "date": "11.10.2026 17:30",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72221306",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3 gols (Under 3.5 encertat)"
                 },
                 {
                   "matchup": "Coventry vs Newcastle United",
@@ -30672,12 +30548,12 @@
               "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 4,
+                "won_count": 5,
                 "lost_count": 2,
-                "pending_count": 2,
+                "pending_count": 1,
                 "total_count": 8,
-                "progress_pct": 75.0,
-                "summary": "4/8 encertats · 2 pendents"
+                "progress_pct": 87.5,
+                "summary": "5/8 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -30754,8 +30630,8 @@
                   "model_prob": 84.7,
                   "date": "11.10.2026 17:30",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72221306",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3 gols (Under 3.5 encertat)"
                 },
                 {
                   "matchup": "Coventry vs Newcastle United",
@@ -30786,12 +30662,12 @@
               "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 4,
+                "won_count": 6,
                 "lost_count": 1,
-                "pending_count": 3,
+                "pending_count": 1,
                 "total_count": 8,
-                "progress_pct": 62.5,
-                "summary": "4/8 encertats · 3 pendents"
+                "progress_pct": 87.5,
+                "summary": "6/8 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -30857,8 +30733,8 @@
                   "model_prob": 74.7,
                   "date": "11.10.2026 15:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72221300",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3-1 (1X encertat)"
                 },
                 {
                   "matchup": "Liverpool vs Manchester City",
@@ -30868,8 +30744,8 @@
                   "model_prob": 84.7,
                   "date": "11.10.2026 17:30",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72221306",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "3 gols (Under 3.5 encertat)"
                 },
                 {
                   "matchup": "Coventry vs Newcastle United",
