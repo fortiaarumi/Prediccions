@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-12T01:26:29.982995",
-    "formatted_date": "12/10/2026 a les 01:26",
+    "generated_at": "2026-10-12T15:45:53.194406",
+    "formatted_date": "12/10/2026 a les 15:45",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,187 +43,173 @@
   "changelog": [
     {
       "date": "2026-10-12",
-      "timestamp": "2026-10-12T01:26:30.589926",
+      "timestamp": "2026-10-12T15:45:53.896799",
       "title": "Actualització Diària del Model · 12/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
       "items": [
-        "⚽ S'han ingesta resultats oficials i mètriques de 4 partit(s) disputat(s):",
-        "   • [LALIGA J8] R. Racing Club 2 - 2 Valencia | xG: 1.31-1.69 | Targetes: 6 🟨 | Córners: 11 🚩 | Àrbitre: Bestard Servera L.",
-        "   • [LALIGA J8] Real Betis 5 - 2 Osasuna | xG: 2.77-1.51 | Targetes: 7 🟨 | Córners: 12 🚩 | Àrbitre: Muniz C.",
-        "   • [HYPERMOTION J9] Cádiz 0 - 1 Real Sporting | xG: 0.52-0.69 | Targetes: 3 🟨 | Córners: 14 🚩 | Àrbitre: Ais S.",
-        "   • [HYPERMOTION J9] Mallorca 3 - 1 Las Palmas | xG: 0.84-0.45 | Targetes: 4 🟨 | Córners: 9 🚩 | Àrbitre: Etayo G.",
+        "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
+        "   • [HYPERMOTION J9] Real Valladolid 5 - 0 Albacete | xG: 2.88-0.67 | Targetes: 6 🟨 | Córners: 12 🚩 | Àrbitre: Miranda D.",
         "📊 Actualització de Power Rànquings Elo:",
-        "   • R. Racing Club (+1.9 ➔ 1443.4) | Valencia (-1.9 ➔ 1550.0)",
-        "   • Real Betis (+9.0 ➔ 1758.8) | Osasuna (-9.0 ➔ 1553.5)",
-        "   • Cádiz (-12.7 ➔ 1502.0) | Real Sporting (+12.7 ➔ 1525.9)",
-        "   • Mallorca (+13.0 ➔ 1584.0) | Las Palmas (-13.0 ➔ 1515.7)",
-        "📈 S'han resolt 1 combinades pendents (1 encertades, 0 fallades):",
-        "   • [LALIGA J8] SAFE_2: 🏆 GUANYADA (Cuota @2.48 · Balanç: +37.00 €)",
-        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+        "   • Real Valladolid (+17.1 ➔ 1530.0) | Albacete (-17.1 ➔ 1396.5)",
+        "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+        "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 3 partit(s):",
+        "   • [LaLiga EA Sports J8] Levante UD vs Sevilla FC: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Cordero A.'",
+        "     └ Impacte model: Targetes >4.5: 48.9% ➔ 55.8% (+6.9%) | Vermella: 22.1% ➔ 21.3% (-0.8%) | Victòria Local: 81.8% ➔ 81.8% (+0.0%)",
+        "   • [LaLiga Hypermotion J9] Real Oviedo vs SD Eibar: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Morales P.'",
+        "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 44.5% ➔ 44.5% (+0.0%)",
+        "   • [LaLiga Hypermotion J9] CD Tenerife vs Girona FC: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Palencia D.'",
+        "     └ Impacte model: Targetes >4.5: 53.4% ➔ 66.7% (+13.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 46.6% ➔ 46.6% (+0.0%)"
       ],
       "matches": [
         {
-          "match_id": "LALIGA_J8_RDS_VAL",
-          "competition_id": "LALIGA",
-          "jornada": 8,
-          "home_team": "R. Racing Club",
-          "away_team": "Valencia",
-          "home_team_id": "RDS",
-          "away_team_id": "VAL",
-          "home_goals": 2,
-          "away_goals": 2,
-          "score": "2 - 2",
-          "home_xg": 1.31,
-          "away_xg": 1.69,
-          "home_yellow_cards": 3,
-          "away_yellow_cards": 3,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 8,
-          "away_corners": 3,
-          "referee": "Bestard Servera L.",
-          "elo_change_home": 1.9,
-          "elo_change_away": -1.9,
-          "new_elo_home": 1443.4,
-          "new_elo_away": 1550.0,
-          "date": "11.10.2026 19:00"
-        },
-        {
-          "match_id": "LALIGA_J8_BET_OSA",
-          "competition_id": "LALIGA",
-          "jornada": 8,
-          "home_team": "Real Betis",
-          "away_team": "Osasuna",
-          "home_team_id": "BET",
-          "away_team_id": "OSA",
+          "match_id": "HYPERMOTION_J9_VLL_ALB",
+          "competition_id": "HYPERMOTION",
+          "jornada": 9,
+          "home_team": "Real Valladolid",
+          "away_team": "Albacete",
+          "home_team_id": "VLL",
+          "away_team_id": "ALB",
           "home_goals": 5,
-          "away_goals": 2,
-          "score": "5 - 2",
-          "home_xg": 2.77,
-          "away_xg": 1.51,
+          "away_goals": 0,
+          "score": "5 - 0",
+          "home_xg": 2.88,
+          "away_xg": 0.67,
           "home_yellow_cards": 2,
-          "away_yellow_cards": 5,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 8,
-          "away_corners": 4,
-          "referee": "Muniz C.",
-          "elo_change_home": 9.0,
-          "elo_change_away": -9.0,
-          "new_elo_home": 1758.8,
-          "new_elo_away": 1553.5,
-          "date": "11.10.2026 16:30"
-        },
-        {
-          "match_id": "HYPERMOTION_J9_CAD_SPG",
-          "competition_id": "HYPERMOTION",
-          "jornada": 9,
-          "home_team": "Cádiz",
-          "away_team": "Real Sporting",
-          "home_team_id": "CAD",
-          "away_team_id": "SPG",
-          "home_goals": 0,
-          "away_goals": 1,
-          "score": "0 - 1",
-          "home_xg": 0.52,
-          "away_xg": 0.69,
-          "home_yellow_cards": 1,
-          "away_yellow_cards": 2,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 8,
-          "away_corners": 6,
-          "referee": "Ais S.",
-          "elo_change_home": -12.7,
-          "elo_change_away": 12.7,
-          "new_elo_home": 1502.0,
-          "new_elo_away": 1525.9,
-          "date": "11.10.2026 19:00"
-        },
-        {
-          "match_id": "HYPERMOTION_J9_MLL_LAS",
-          "competition_id": "HYPERMOTION",
-          "jornada": 9,
-          "home_team": "Mallorca",
-          "away_team": "Las Palmas",
-          "home_team_id": "MLL",
-          "away_team_id": "LAS",
-          "home_goals": 3,
-          "away_goals": 1,
-          "score": "3 - 1",
-          "home_xg": 0.84,
-          "away_xg": 0.45,
-          "home_yellow_cards": 1,
-          "away_yellow_cards": 3,
+          "away_yellow_cards": 4,
           "home_red_cards": 0,
           "away_red_cards": 0,
           "home_corners": 7,
-          "away_corners": 2,
-          "referee": "Etayo G.",
-          "elo_change_home": 13.0,
-          "elo_change_away": -13.0,
-          "new_elo_home": 1584.0,
-          "new_elo_away": 1515.7,
-          "date": "11.10.2026 16:30"
+          "away_corners": 5,
+          "referee": "Miranda D.",
+          "elo_change_home": 17.1,
+          "elo_change_away": -17.1,
+          "new_elo_home": 1530.0,
+          "new_elo_away": 1396.5,
+          "date": "12.10.2026 12:00"
         }
       ],
-      "combos_evaluated": [
-        {
-          "id": "COMBO_2026-2027_LALIGA_J8_SAFE_2",
-          "competition_id": "LALIGA",
-          "season": "2026-2027",
-          "jornada": 8,
-          "profile": "SAFE_2",
-          "stake": 25.0,
-          "combined_odd": 2.48,
-          "combined_prob_pct": 75.6,
-          "fair_odd": 1.32,
-          "ev_pct": 87.5,
-          "status": "WON",
-          "payout": 62.0,
-          "profit": 37.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-09-25 14:41:27",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 932,
-              "combo_id": "COMBO_2026-2027_LALIGA_J8_SAFE_2",
-              "matchup": "Real Madrid vs Villarreal CF",
-              "selection_name": "Menys de 3.5 Gols (Under 3.5)",
-              "category": "Gols",
-              "bookie_odd": 2.05,
-              "model_prob": 80.1,
-              "match_date": "10.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478622",
-              "home_team_id": "RMA",
-              "away_team_id": "VIL",
-              "status": "WON",
-              "actual_result": "1 gols (Under 3.5 encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 933,
-              "combo_id": "COMBO_2026-2027_LALIGA_J8_SAFE_2",
-              "matchup": "Real Betis vs CA Osasuna",
-              "selection_name": "1X - Real Betis o Empat",
-              "category": "Doble Oportunitat",
-              "bookie_odd": 1.21,
-              "model_prob": 94.4,
-              "match_date": "11.10.2026 18:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478608",
-              "home_team_id": "BET",
-              "away_team_id": "OSA",
-              "status": "WON",
-              "actual_result": "5-2 (1X encertat)",
-              "evaluated_at": null
-            }
-          ]
-        }
-      ],
+      "combos_evaluated": [],
       "combos_generated": [],
-      "referee_updates": []
+      "referee_updates": [
+        {
+          "match_id": "LALIGA_J8_LEV_SEV",
+          "matchup": "Levante UD vs Sevilla FC",
+          "competition_id": "LALIGA",
+          "competition_name": "LaLiga EA Sports",
+          "jornada": 8,
+          "date": "12.10.2026 19:00",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Cordero A.",
+          "ref_stats": {
+            "yellow_avg": 4.8,
+            "red_avg": 0.24,
+            "fouls_avg": 25.5,
+            "strictness_index": 1.08
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 48.9,
+              "after": 55.8,
+              "delta": 6.9
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 21.3,
+              "delta": -0.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 25.5,
+              "delta": 1.0
+            },
+            "home_win_prob": {
+              "before": 81.8,
+              "after": 81.8,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Cordero A. (índex severitat 1.08). Mitjana històrica de 4.8 grogues i 0.24 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J9_ROV_EIB",
+          "matchup": "Real Oviedo vs SD Eibar",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 9,
+          "date": "12.10.2026 16:30",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Morales P.",
+          "ref_stats": {
+            "yellow_avg": 5.2,
+            "red_avg": 0.3,
+            "fouls_avg": 26.5,
+            "strictness_index": 1.15
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 53.4,
+              "after": 66.7,
+              "delta": 13.3
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 25.9,
+              "delta": 3.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 26.5,
+              "delta": 2.0
+            },
+            "home_win_prob": {
+              "before": 44.5,
+              "after": 44.5,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Morales P. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "HYPERMOTION_J9_TEN_GIR",
+          "matchup": "CD Tenerife vs Girona FC",
+          "competition_id": "HYPERMOTION",
+          "competition_name": "LaLiga Hypermotion",
+          "jornada": 9,
+          "date": "12.10.2026 19:00",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Palencia D.",
+          "ref_stats": {
+            "yellow_avg": 5.2,
+            "red_avg": 0.3,
+            "fouls_avg": 26.5,
+            "strictness_index": 1.15
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 53.4,
+              "after": 66.7,
+              "delta": 13.3
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 25.9,
+              "delta": 3.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 26.5,
+              "delta": 2.0
+            },
+            "home_win_prob": {
+              "before": 46.6,
+              "after": 46.6,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Palencia D. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+          }
+        }
+      ]
     },
     {
       "date": "2026-10-11",
@@ -4798,7 +4784,7 @@
         "name": "RCD Mallorca",
         "short_name": "Mallorca",
         "elo_rating": 1584.0,
-        "off_rank": 13.0,
+        "off_rank": 14.0,
         "def_rank": 1.0,
         "played": 9,
         "won": 5,
@@ -4846,6 +4832,32 @@
       },
       {
         "rank": 6,
+        "team_id": "VLL",
+        "name": "Real Valladolid",
+        "short_name": "Valladolid",
+        "elo_rating": 1530.0,
+        "off_rank": 9.0,
+        "def_rank": 10.0,
+        "played": 9,
+        "won": 3,
+        "drawn": 3,
+        "lost": 3,
+        "gf": 13,
+        "ga": 11,
+        "gd": 2,
+        "points": 12,
+        "form": [
+          "L",
+          "D",
+          "W",
+          "D",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 7,
         "team_id": "GRA",
         "name": "Granada CF",
         "short_name": "Granada",
@@ -4871,12 +4883,12 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 7,
+        "rank": 8,
         "team_id": "SPG",
         "name": "Real Sporting",
         "short_name": "Sporting",
         "elo_rating": 1525.9,
-        "off_rank": 17.0,
+        "off_rank": 18.0,
         "def_rank": 6.0,
         "played": 9,
         "won": 5,
@@ -4897,7 +4909,7 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 8,
+        "rank": 9,
         "team_id": "BUR",
         "name": "Burgos CF",
         "short_name": "Burgos",
@@ -4923,12 +4935,12 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 9,
+        "rank": 10,
         "team_id": "SAB",
         "name": "CE Sabadell",
         "short_name": "Sabadell",
         "elo_rating": 1517.0,
-        "off_rank": 15.0,
+        "off_rank": 16.0,
         "def_rank": 4.0,
         "played": 9,
         "won": 4,
@@ -4949,12 +4961,12 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 10,
+        "rank": 11,
         "team_id": "LAS",
         "name": "UD Las Palmas",
         "short_name": "Las Palmas",
         "elo_rating": 1515.7,
-        "off_rank": 9.0,
+        "off_rank": 10.0,
         "def_rank": 18.0,
         "played": 9,
         "won": 3,
@@ -4975,12 +4987,12 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 11,
+        "rank": 12,
         "team_id": "ROV",
         "name": "Real Oviedo",
         "short_name": "Oviedo",
         "elo_rating": 1515.4,
-        "off_rank": 18.0,
+        "off_rank": 19.0,
         "def_rank": 8.0,
         "played": 8,
         "won": 3,
@@ -4996,32 +5008,6 @@
           "L",
           "W",
           "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 12,
-        "team_id": "VLL",
-        "name": "Real Valladolid",
-        "short_name": "Valladolid",
-        "elo_rating": 1512.9,
-        "off_rank": 19.0,
-        "def_rank": 12.0,
-        "played": 8,
-        "won": 2,
-        "drawn": 3,
-        "lost": 3,
-        "gf": 8,
-        "ga": 11,
-        "gd": -3,
-        "points": 9,
-        "form": [
-          "W",
-          "L",
-          "D",
-          "W",
-          "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -5058,7 +5044,7 @@
         "name": "CD Tenerife",
         "short_name": "Tenerife",
         "elo_rating": 1507.2,
-        "off_rank": 12.0,
+        "off_rank": 13.0,
         "def_rank": 13.0,
         "played": 8,
         "won": 3,
@@ -5084,8 +5070,8 @@
         "name": "Cádiz CF",
         "short_name": "Cádiz",
         "elo_rating": 1502.0,
-        "off_rank": 14.0,
-        "def_rank": 10.0,
+        "off_rank": 15.0,
+        "def_rank": 11.0,
         "played": 9,
         "won": 1,
         "drawn": 4,
@@ -5110,8 +5096,8 @@
         "name": "CD Eldense",
         "short_name": "Eldense",
         "elo_rating": 1497.1,
-        "off_rank": 16.0,
-        "def_rank": 11.0,
+        "off_rank": 17.0,
+        "def_rank": 12.0,
         "played": 9,
         "won": 3,
         "drawn": 2,
@@ -5162,7 +5148,7 @@
         "name": "FC Andorra",
         "short_name": "Andorra",
         "elo_rating": 1461.5,
-        "off_rank": 10.0,
+        "off_rank": 11.0,
         "def_rank": 17.0,
         "played": 9,
         "won": 3,
@@ -5189,7 +5175,7 @@
         "short_name": "Córdoba",
         "elo_rating": 1452.6,
         "off_rank": 7.0,
-        "def_rank": 21.0,
+        "def_rank": 20.0,
         "played": 9,
         "won": 3,
         "drawn": 0,
@@ -5214,8 +5200,8 @@
         "name": "Real Sociedad B",
         "short_name": "R. Sociedad B",
         "elo_rating": 1448.1,
-        "off_rank": 11.0,
-        "def_rank": 20.0,
+        "off_rank": 12.0,
+        "def_rank": 19.0,
         "played": 9,
         "won": 2,
         "drawn": 2,
@@ -5236,38 +5222,12 @@
       },
       {
         "rank": 21,
-        "team_id": "ALB",
-        "name": "Albacete Balompié",
-        "short_name": "Albacete",
-        "elo_rating": 1413.6,
-        "off_rank": 22.0,
-        "def_rank": 19.0,
-        "played": 8,
-        "won": 0,
-        "drawn": 1,
-        "lost": 7,
-        "gf": 5,
-        "ga": 15,
-        "gd": -10,
-        "points": 1,
-        "form": [
-          "L",
-          "D",
-          "L",
-          "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 22,
         "team_id": "CEU",
         "name": "AD Ceuta",
         "short_name": "Ceuta",
         "elo_rating": 1405.2,
         "off_rank": 20.0,
-        "def_rank": 22.0,
+        "def_rank": 21.0,
         "played": 9,
         "won": 1,
         "drawn": 2,
@@ -5281,6 +5241,32 @@
           "D",
           "W",
           "D",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 22,
+        "team_id": "ALB",
+        "name": "Albacete Balompié",
+        "short_name": "Albacete",
+        "elo_rating": 1396.5,
+        "off_rank": 22.0,
+        "def_rank": 22.0,
+        "played": 9,
+        "won": 0,
+        "drawn": 1,
+        "lost": 8,
+        "gf": 5,
+        "ga": 20,
+        "gd": -15,
+        "points": 1,
+        "form": [
+          "D",
+          "L",
+          "L",
+          "L",
           "L"
         ],
         "avg_cards": 2.2,
@@ -10299,17 +10285,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.3,
-            "cards_away": 2.3,
-            "cards_total": 4.6,
-            "prob_over_cards_35": 67.7,
-            "prob_over_cards_45": 48.9,
+            "cards_home": 2.5,
+            "cards_away": 2.5,
+            "cards_total": 5.0,
+            "prob_over_cards_35": 73.4,
+            "prob_over_cards_45": 55.8,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Cordero A.",
+              "is_official": true,
+              "yellow_avg": 4.8,
+              "red_avg": 0.24,
+              "fouls_avg": 25.5
             },
             "odds_1x2": {
               "1": 2.6,
@@ -11055,17 +11041,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.3,
-          "cards_away": 2.3,
-          "cards_total": 4.6,
-          "prob_over_cards_35": 67.7,
-          "prob_over_cards_45": 48.9,
+          "cards_home": 2.5,
+          "cards_away": 2.5,
+          "cards_total": 5.0,
+          "prob_over_cards_35": 73.4,
+          "prob_over_cards_45": 55.8,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Cordero A.",
+            "is_official": true,
+            "yellow_avg": 4.8,
+            "red_avg": 0.24,
+            "fouls_avg": 25.5
           },
           "odds_1x2": {
             "1": 2.6,
@@ -15997,7 +15983,7 @@
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "date": "15.08.2026 21:30",
             "home_goals": 2,
@@ -16205,7 +16191,7 @@
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "date": "16.08.2026 21:30",
             "home_goals": 2,
@@ -16513,7 +16499,7 @@
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "away_team": {
               "id": "RSB",
@@ -16623,7 +16609,7 @@
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "date": "23.08.2026 17:00",
             "home_goals": 1,
@@ -17035,7 +17021,7 @@
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "away_team": {
               "id": "ROV",
@@ -17249,7 +17235,7 @@
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "date": "30.08.2026 19:00",
             "home_goals": 1,
@@ -17713,7 +17699,7 @@
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "away_team": {
               "id": "AND",
@@ -17927,7 +17913,7 @@
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "date": "06.09.2026 18:30",
             "home_goals": 2,
@@ -18293,7 +18279,7 @@
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "date": "12.09.2026 18:30",
             "home_goals": 1,
@@ -18443,7 +18429,7 @@
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "away_team": {
               "id": "ROV",
@@ -18653,7 +18639,7 @@
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "away_team": {
               "id": "COR",
@@ -19023,7 +19009,7 @@
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "date": "20.09.2026 16:15",
             "home_goals": 1,
@@ -19233,7 +19219,7 @@
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "date": "25.09.2026 20:30",
             "home_goals": 2,
@@ -19487,7 +19473,7 @@
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "away_team": {
               "id": "COR",
@@ -19853,7 +19839,7 @@
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "away_team": {
               "id": "EIB",
@@ -20171,7 +20157,7 @@
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "date": "04.10.2026 16:30",
             "home_goals": 2,
@@ -20888,33 +20874,33 @@
             "match_id": "HYPERMOTION_J9_VLL_ALB",
             "competition_id": "HYPERMOTION",
             "jornada": 9,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "home_team": {
               "id": "VLL",
               "name": "Real Valladolid",
               "short_name": "Valladolid",
-              "elo": 1512.9
+              "elo": 1530.0
             },
             "away_team": {
               "id": "ALB",
               "name": "Albacete Balompié",
               "short_name": "Albacete",
-              "elo": 1413.6
+              "elo": 1396.5
             },
             "date": "12.10.2026 12:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 5,
+            "away_goals": 0,
+            "final_score": "5 - 0",
+            "actual_1x2": "1",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": 0,
-            "real_corners_away": 0,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": true,
+            "is_exact_score": false,
+            "xg_diff_home": 3.52,
+            "xg_diff_away": -1.02,
+            "real_corners_home": 7,
+            "real_corners_away": 5,
+            "real_cards_home": 2,
+            "real_cards_away": 4,
             "verdict": "1X (Favorit Local / Risc d'Empat)",
             "prob_1": 46.6,
             "prob_x": 28.6,
@@ -20931,17 +20917,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.4,
-            "cards_away": 2.4,
-            "cards_total": 4.9,
-            "prob_over_cards_35": 71.4,
-            "prob_over_cards_45": 53.4,
+            "cards_home": 2.8,
+            "cards_away": 2.8,
+            "cards_total": 5.7,
+            "prob_over_cards_35": 81.6,
+            "prob_over_cards_45": 66.7,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Miranda D.",
+              "is_official": true,
+              "yellow_avg": 5.2,
+              "red_avg": 0.3,
+              "fouls_avg": 26.5
             },
             "odds_1x2": {
               "1": null,
@@ -21079,17 +21065,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.4,
-            "cards_away": 2.4,
-            "cards_total": 4.9,
-            "prob_over_cards_35": 71.4,
-            "prob_over_cards_45": 53.4,
+            "cards_home": 2.8,
+            "cards_away": 2.8,
+            "cards_total": 5.7,
+            "prob_over_cards_35": 81.6,
+            "prob_over_cards_45": 66.7,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Morales P.",
+              "is_official": true,
+              "yellow_avg": 5.2,
+              "red_avg": 0.3,
+              "fouls_avg": 26.5
             },
             "odds_1x2": {
               "1": null,
@@ -21153,17 +21139,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.4,
-            "cards_away": 2.4,
-            "cards_total": 4.9,
-            "prob_over_cards_35": 71.4,
-            "prob_over_cards_45": 53.4,
+            "cards_home": 2.8,
+            "cards_away": 2.8,
+            "cards_total": 5.7,
+            "prob_over_cards_35": 81.6,
+            "prob_over_cards_45": 66.7,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Palencia D.",
+              "is_official": true,
+              "yellow_avg": 5.2,
+              "red_avg": 0.3,
+              "fouls_avg": 26.5
             },
             "odds_1x2": {
               "1": null,
@@ -21705,33 +21691,33 @@
           "match_id": "HYPERMOTION_J9_VLL_ALB",
           "competition_id": "HYPERMOTION",
           "jornada": 9,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "home_team": {
             "id": "VLL",
             "name": "Real Valladolid",
             "short_name": "Valladolid",
-            "elo": 1512.9
+            "elo": 1530.0
           },
           "away_team": {
             "id": "ALB",
             "name": "Albacete Balompié",
             "short_name": "Albacete",
-            "elo": 1413.6
+            "elo": 1396.5
           },
           "date": "12.10.2026 12:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 5,
+          "away_goals": 0,
+          "final_score": "5 - 0",
+          "actual_1x2": "1",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": 0,
-          "real_corners_away": 0,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": true,
+          "is_exact_score": false,
+          "xg_diff_home": 3.52,
+          "xg_diff_away": -1.02,
+          "real_corners_home": 7,
+          "real_corners_away": 5,
+          "real_cards_home": 2,
+          "real_cards_away": 4,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
           "prob_1": 46.6,
           "prob_x": 28.6,
@@ -21748,17 +21734,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.8,
+          "cards_away": 2.8,
+          "cards_total": 5.7,
+          "prob_over_cards_35": 81.6,
+          "prob_over_cards_45": 66.7,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Miranda D.",
+            "is_official": true,
+            "yellow_avg": 5.2,
+            "red_avg": 0.3,
+            "fouls_avg": 26.5
           },
           "odds_1x2": {
             "1": null,
@@ -21896,17 +21882,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.8,
+          "cards_away": 2.8,
+          "cards_total": 5.7,
+          "prob_over_cards_35": 81.6,
+          "prob_over_cards_45": 66.7,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Morales P.",
+            "is_official": true,
+            "yellow_avg": 5.2,
+            "red_avg": 0.3,
+            "fouls_avg": 26.5
           },
           "odds_1x2": {
             "1": null,
@@ -21970,17 +21956,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.8,
+          "cards_away": 2.8,
+          "cards_total": 5.7,
+          "prob_over_cards_35": 81.6,
+          "prob_over_cards_45": 66.7,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Palencia D.",
+            "is_official": true,
+            "yellow_avg": 5.2,
+            "red_avg": 0.3,
+            "fouls_avg": 26.5
           },
           "odds_1x2": {
             "1": null,
