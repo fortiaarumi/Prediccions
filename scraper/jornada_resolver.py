@@ -30,6 +30,14 @@ class JornadaResolver:
         # Formatar els diccionaris per compatibilitat amb el predictor
         resolved = []
         for fix in fixtures:
+            is_susp = (
+                fix.get("is_suspended", False) or
+                any(w in str(fix.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
+            )
+            sc_h = None if is_susp else fix.get("score_h")
+            sc_a = None if is_susp else fix.get("score_a")
+            m_status = "SUSPENDED" if is_susp else ("FINISHED" if sc_h is not None and str(sc_h).isdigit() else "SCHEDULED")
+
             resolved.append({
                 "competition_id": self.competition_id,
                 "home_team": fix["home"],
@@ -39,8 +47,11 @@ class JornadaResolver:
                 "date": fix["date"],
                 "url": fix["url"],
                 "match_code": fix.get("match_code"),
-                "score_h": fix.get("score_h"),
-                "score_a": fix.get("score_a"),
+                "score_h": sc_h,
+                "score_a": sc_a,
+                "is_suspended": is_susp,
+                "suspension_reason": fix.get("suspension_reason", ""),
+                "status": m_status,
                 "referee": fix.get("referee", "REF_DEFAULT")
             })
 

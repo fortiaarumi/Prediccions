@@ -70,15 +70,23 @@ class LiveCrawler:
                 if 'AA' in fields and 'AE' in fields and 'AF' in fields:
                     ts = fields.get('AD')
                     dt_str = datetime.fromtimestamp(int(ts)).strftime('%d.%m.%Y %H:%M') if ts and ts.isdigit() else 'TBD'
+                    am_note = fields.get('AM', '')
+                    ac_code = fields.get('AC', '')
+                    is_susp = (
+                        ac_code in ['37', '4', '10', '11'] or
+                        any(w in am_note.lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
+                    )
                     items.append({
                         'round_str': current_round or '',
                         'match_code': fields.get('AA'),
                         'home': fields.get('AE'),
                         'away': fields.get('AF'),
-                        'score_h': fields.get('AG'),
-                        'score_a': fields.get('AH'),
+                        'score_h': None if is_susp else fields.get('AG'),
+                        'score_a': None if is_susp else fields.get('AH'),
                         'date': dt_str,
-                        'url': f"https://www.flashscore.es/partido/{fields.get('AA')}/#/estadisticas-del-partido/0"
+                        'url': f"https://www.flashscore.es/partido/{fields.get('AA')}/#/estadisticas-del-partido/0",
+                        'is_suspended': is_susp,
+                        'suspension_reason': am_note
                     })
             return items
 
@@ -103,6 +111,7 @@ class LiveCrawler:
             if match_round_num == jornada:
                 # Evitar duplicats
                 if not any(f["home"] == m["home"] and f["away"] == m["away"] for f in fixtures):
+                    is_susp_fix = m.get("is_suspended", False)
                     fixtures.append({
                         "competition_id": comp_id,
                         "home": m["home"],
@@ -111,8 +120,10 @@ class LiveCrawler:
                         "url": m["url"],
                         "match_code": m["match_code"],
                         "jornada": jornada,
-                        "score_h": m.get("score_h"),
-                        "score_a": m.get("score_a"),
+                        "score_h": None if is_susp_fix else m.get("score_h"),
+                        "score_a": None if is_susp_fix else m.get("score_a"),
+                        "is_suspended": is_susp_fix,
+                        "suspension_reason": m.get("suspension_reason", "")
                     })
 
         print(f"[*] S'han trobat {len(fixtures)} partits oficials per a la Jornada {jornada} de {comp_id}.")
@@ -175,12 +186,33 @@ class LiveCrawler:
                 if not data:
                     data = {}
 
+                # Comprovar si el partit està suspès o ajornat
+                is_suspended = (
+                    fix.get("is_suspended", False) or
+                    any(w in str(fix.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon']) or
+                    any(w in str(data.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
+                )
+
                 # Si el feed té el marcador
                 h_goals = data.get("home_goals") if data.get("home_goals") is not None else fix.get("score_h")
                 a_goals = data.get("away_goals") if data.get("away_goals") is not None else fix.get("score_a")
 
-                is_finished = h_goals is not None and str(h_goals).isdigit()
+                # El partit NOMÉS és finalitzat si té gols i NO està suspès
+                is_finished = (not is_suspended) and (h_goals is not None and str(h_goals).isdigit())
                 ref_id = db.get_or_create_referee(data.get("referee"), competition_id=comp_id)
+
+                if is_suspended:
+                    match_status = "SUSPENDED"
+                    h_goals_val = None
+                    a_goals_val = None
+                elif is_finished:
+                    match_status = "FINISHED"
+                    h_goals_val = int(h_goals)
+                    a_goals_val = int(a_goals)
+                else:
+                    match_status = "SCHEDULED"
+                    h_goals_val = None
+                    a_goals_val = None
 
                 match_record = {
                     "id": match_id,
@@ -191,24 +223,26 @@ class LiveCrawler:
                     "home_team_id": home_id,
                     "away_team_id": away_id,
                     "referee_id": ref_id,
-                    "home_goals": int(h_goals) if is_finished else None,
-                    "away_goals": int(a_goals) if is_finished else None,
-                    "home_xg": data.get("home_xg"),
-                    "away_xg": data.get("away_xg"),
-                    "home_corners": data.get("home_corners"),
-                    "away_corners": data.get("away_corners"),
-                    "home_yellow_cards": data.get("home_yellow_cards"),
-                    "away_yellow_cards": data.get("away_yellow_cards"),
-                    "home_red_cards": data.get("home_red_cards", 0),
-                    "away_red_cards": data.get("away_red_cards", 0),
-                    "status": "FINISHED" if is_finished else "SCHEDULED",
+                    "home_goals": h_goals_val,
+                    "away_goals": a_goals_val,
+                    "home_xg": data.get("home_xg") if is_finished else None,
+                    "away_xg": data.get("away_xg") if is_finished else None,
+                    "home_corners": data.get("home_corners") if is_finished else None,
+                    "away_corners": data.get("away_corners") if is_finished else None,
+                    "home_yellow_cards": data.get("home_yellow_cards") if is_finished else None,
+                    "away_yellow_cards": data.get("away_yellow_cards") if is_finished else None,
+                    "home_red_cards": data.get("home_red_cards", 0) if is_finished else 0,
+                    "away_red_cards": data.get("away_red_cards", 0) if is_finished else 0,
+                    "status": match_status,
                     "url": url
                 }
 
                 db.save_match(match_record)
                 ingested_count += 1
 
-                if is_finished:
+                if is_suspended:
+                    print(f"   ⏸️ [PARTIT SUSPÈS] {home} vs {away} - A l'espera del resultat (no s'inventen marcadors 0-0 ni es toca l'Elo).")
+                elif is_finished:
                     h_data = db.get_team_rating(home_id)
                     a_data = db.get_team_rating(away_id)
                     d_elo_h, d_elo_a = rank_engine.calculate_elo_change(

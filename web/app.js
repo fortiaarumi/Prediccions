@@ -366,7 +366,19 @@ function renderHeaderMeta() {
   if (!badge || !appData.metadata) return;
 
   const fmt = appData.metadata.formatted_date || "Actualitzat avui";
-  badge.textContent = `Actualitzat: ${fmt}`;
+  let shortFmt = fmt;
+  const match = fmt.match(/(\d{1,2}\/\d{1,2})(?:\/\d{4})?\s*(?:a les)?\s*(\d{1,2}:\d{2})/i);
+  if (match) {
+    shortFmt = `${match[1]} · ${match[2]}`;
+  } else {
+    shortFmt = fmt.replace(/\/?\d{4}/, '').replace('a les', '').trim();
+  }
+
+  badge.innerHTML = `
+    <span class="timestamp-full">Actualitzat: ${fmt}</span>
+    <span class="timestamp-mobile">🕒 ${shortFmt}</span>
+  `;
+  badge.setAttribute('title', `Darrera actualització del model: ${fmt}`);
 }
 
 // -----------------------------------------------------------------------------
@@ -716,7 +728,73 @@ function renderPredictions() {
     }
 
     // -------------------------------------------------------------------------
-    // B) TARGETA PER A PARTITS PENDENTS DE JUGAR (SCHEDULED)
+    // B) TARGETA PER A PARTITS SUSPESOS / AJORNATS (SUSPENDED)
+    // -------------------------------------------------------------------------
+    if (m.status === 'SUSPENDED') {
+      const suspReason = m.suspension_reason || "Aquest partit ha estat suspès per incidents o causa de força major. El pronòstic i les combinades romanen congelats i a l'espera de resolució oficial, sense comptar-se com a empat a 0.";
+      return `
+        <div class="match-card match-card-suspended">
+          <div class="match-card-header">
+            <span class="match-league-tag">${m._compFlag || '⚽'} ${m._compName} · J${m.jornada}</span>
+            <span class="status-suspended-pill">⏸️ SUSPÈS · A l'espera del resultat</span>
+          </div>
+
+          <div class="matchup-row matchup-suspended-row">
+            <div class="team-box">
+              <div class="team-name">${m.home_team.name}</div>
+              <div class="team-elo-sub">Elo: ${m.home_team.elo}</div>
+            </div>
+            
+            <div class="suspended-score-box">
+              <div class="suspended-icon-val">⏸️</div>
+              <span class="suspended-score-lbl">Resultat Congelat</span>
+            </div>
+
+            <div class="team-box away">
+              <div class="team-name">${m.away_team.name}</div>
+              <div class="team-elo-sub">Elo: ${m.away_team.elo}</div>
+            </div>
+          </div>
+
+          <!-- Targeta Informativa de Suspensió -->
+          <div class="prediction-evaluation-card suspended">
+            <div class="eval-header-line">
+              <span class="eval-title">⚠️ <strong>Partit Suspès Oficialment</strong></span>
+              <span class="suspended-res-badge">Pendent de Resolució</span>
+            </div>
+            <div class="eval-body-line" style="margin-top: 6px; line-height: 1.5; font-size: 12.5px; color: var(--text-secondary);">
+              ${suspReason}
+            </div>
+          </div>
+
+          <!-- Mètriques de referència del model -->
+          <div class="match-stats-grid finished-grid" style="border-top: 1px dashed rgba(245, 158, 11, 0.25);">
+            <div>
+              <div class="stat-item-label">xG Model</div>
+              <div class="stat-item-val" style="color: var(--accent-cyan); font-size: 13.5px;">${m.xg_home} - ${m.xg_away}</div>
+            </div>
+            <div>
+              <div class="stat-item-label">Marcador Predit</div>
+              <div class="stat-item-val" style="color: #ffffff; font-size: 13px;">${m.most_likely_score || '-'}</div>
+            </div>
+            <div>
+              <div class="stat-item-label">Prob. Model 1X2</div>
+              <div class="stat-item-val" style="color: var(--text-muted); font-size: 11px; font-family: var(--font-mono);">
+                1: ${p1}% · X: ${px}% · 2: ${p2}%
+              </div>
+            </div>
+          </div>
+
+          <div class="referee-tag">
+            <span style="${refBadgeCls}">⚖️ ${ref.name}</span>
+            <span style="font-family: var(--font-mono);">${ref.yellow_avg ? `(${ref.yellow_avg} 🟨 · ${ref.fouls_avg} faltes)` : ''}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // C) TARGETA PER A PARTITS PENDENTS DE JUGAR (SCHEDULED)
     // -------------------------------------------------------------------------
     return `
       <div class="match-card">
@@ -1107,12 +1185,16 @@ function renderCombos() {
                     ${legs.map((l, lIdx) => {
                       let segCls = 'seg-pending';
                       let segTitle = `Partit ${lIdx + 1} (${l.matchup}): Pendent`;
+                      const isSuspended = l.status === 'SUSPENDED' || (l.actual_result && l.actual_result.toLowerCase().includes('suspès'));
                       if (l.status === 'WON') {
                         segCls = 'seg-won';
                         segTitle = `Partit ${lIdx + 1} (${l.matchup}): Encertat! (${l.actual_result || ''})`;
                       } else if (l.status === 'LOST') {
                         segCls = 'seg-lost';
                         segTitle = `Partit ${lIdx + 1} (${l.matchup}): Fallat (${l.actual_result || ''})`;
+                      } else if (isSuspended) {
+                        segCls = 'seg-suspended';
+                        segTitle = `Partit ${lIdx + 1} (${l.matchup}): ⏸️ Suspès (${l.actual_result || ''})`;
                       }
                       return `<div class="combo-progress-segment ${segCls}" title="${segTitle}"></div>`;
                     }).join('')}
@@ -1121,6 +1203,7 @@ function renderCombos() {
 
                 <ul class="combo-legs-list">
                   ${legs.map(l => {
+                    const isSusp = l.status === 'SUSPENDED' || (l.actual_result && l.actual_result.toLowerCase().includes('suspès'));
                     let legBadge = `<span class="leg-pill pill-pending">⏳ Pendent (${l.date || 'Properament'})</span>`;
                     let legItemCls = 'leg-pending';
                     if (l.status === 'WON') {
@@ -1129,6 +1212,9 @@ function renderCombos() {
                     } else if (l.status === 'LOST') {
                       legBadge = `<span class="leg-pill pill-lost">❌ ${l.actual_result || 'Fallat'}</span>`;
                       legItemCls = 'leg-lost';
+                    } else if (isSusp) {
+                      legBadge = `<span class="leg-pill pill-suspended" style="background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">⏸️ ${l.actual_result || 'Partit suspès (a l\'espera del resultat)'}</span>`;
+                      legItemCls = 'leg-suspended';
                     }
 
                     let catIcon = '🏷️';

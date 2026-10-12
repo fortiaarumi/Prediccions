@@ -25,6 +25,8 @@ class ComboTracker:
         Retorna (status: 'WON'|'LOST'|'PENDING', actual_result: str)
         """
         if not match or match.get("status") != "FINISHED" or match.get("home_goals") is None:
+            if match and match.get("status") == "SUSPENDED":
+                return "PENDING", "Partit suspès (a l'espera del resultat)"
             return "PENDING", "Partit pendent de disputar"
 
         h_goals = int(match["home_goals"])
@@ -180,7 +182,10 @@ class ComboTracker:
                     if not match_row or match_row.get("status") != "FINISHED":
                         all_legs_finished = False
                         leg_status = "PENDING"
-                        actual_res = "Pendent de disputar"
+                        if match_row and match_row.get("status") == "SUSPENDED":
+                            actual_res = "Partit suspès (a l'espera del resultat)"
+                        else:
+                            actual_res = "Pendent de disputar"
                     else:
                         leg_status, actual_res = self.evaluate_leg(leg, match_row)
 

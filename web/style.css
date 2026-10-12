@@ -164,6 +164,17 @@ body {
   border: 1px solid var(--border-glass);
   padding: 6px 12px;
   border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timestamp-mobile {
+  display: none;
+}
+
+.timestamp-full {
+  display: inline;
 }
 
 /* Nav Tabs */
@@ -1736,11 +1747,6 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .header-container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .matches-grid, .combos-grid, .value-bets-grid {
     grid-template-columns: 1fr;
   }
@@ -3555,12 +3561,85 @@ body {
   border: 1px solid rgba(148, 163, 184, 0.28);
 }
 
-.matchup-finished-row {
+.status-suspended-pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.16);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.match-card-suspended {
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);
+}
+
+.match-card-suspended::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent-amber);
+}
+
+.matchup-finished-row,
+.matchup-suspended-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 14px 0 12px 0;
   gap: 12px;
+}
+
+.suspended-score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-sm);
+  min-width: 90px;
+}
+
+.suspended-icon-val {
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.suspended-score-lbl {
+  font-size: 10px;
+  color: #fbbf24;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.prediction-evaluation-card.suspended {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.prediction-evaluation-card.suspended .eval-title {
+  color: #fbbf24;
+}
+
+.suspended-res-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .final-score-box {
@@ -3713,6 +3792,11 @@ body {
   background: rgba(255, 255, 255, 0.2);
 }
 
+.combo-progress-segment.seg-suspended {
+  background: var(--accent-amber);
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
 /* Combo Leg Items Status Styles */
 .combo-leg-item.leg-won {
   border-left: 3px solid var(--accent-emerald) !important;
@@ -3723,6 +3807,11 @@ body {
   border-left: 3px solid var(--accent-rose) !important;
   background: rgba(244, 63, 94, 0.04);
   opacity: 0.88;
+}
+
+.combo-leg-item.leg-suspended {
+  border-left: 3px solid var(--accent-amber) !important;
+  background: rgba(245, 158, 11, 0.06);
 }
 
 .combo-leg-item.leg-pending {
@@ -3941,17 +4030,71 @@ body {
   }
 
   .header-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     gap: 6px;
-  }
-
-  .status-badge.live-pulse span:not(.pulse-dot),
-  .timestamp-badge {
-    display: none;
+    flex-wrap: wrap;
   }
 
   .status-badge.live-pulse {
-    padding: 4px 6px;
-    border-radius: 50%;
+    display: none;
+  }
+
+  .timestamp-badge {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    color: var(--accent-cyan, #06b6d4);
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.28);
+    white-space: nowrap;
+    order: 1;
+  }
+
+  .timestamp-full {
+    display: none;
+  }
+
+  .timestamp-mobile {
+    display: inline;
+  }
+
+  .user-auth-widget {
+    order: 2;
+  }
+
+  .user-header-pill {
+    padding: 3px 8px 3px 5px;
+    gap: 5px;
+  }
+
+  .user-avatar-mini {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .user-name-mini {
+    font-size: 11.5px;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .btn-auth-header {
+    padding: 3px 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .btn-auth-header .auth-action-lbl {
+    display: none;
   }
 
   /* Desplaçament tàctil suau per al selector de lligues */

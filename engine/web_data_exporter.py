@@ -330,18 +330,30 @@ class WebDataExporter:
                     if key not in existing_keys:
                         score_h = f.get("score_h")
                         score_a = f.get("score_a")
-                        is_played = score_h is not None and str(score_h).isdigit()
+                        is_susp = f.get("is_suspended", False) or (
+                            any(w in str(f.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
+                        ) or (f.get("status") == "SUSPENDED")
+                        is_played = (not is_susp) and score_h is not None and str(score_h).isdigit()
+                        if is_susp:
+                            m_status = "SUSPENDED"
+                        elif is_played:
+                            m_status = "FINISHED"
+                        else:
+                            m_status = "SCHEDULED"
+
                         rows.append({
                             "competition_id": competition_id,
                             "jornada": active_jornada,
                             "home_team_id": h_id,
                             "away_team_id": a_id,
                             "date_time": f.get("date", "Pendent"),
-                            "status": "FINISHED" if is_played else "SCHEDULED",
+                            "status": m_status,
                             "home_goals": int(score_h) if is_played else None,
                             "away_goals": int(score_a) if is_played else None,
                             "home_name": h_name,
-                            "url": f.get("url", "")
+                            "url": f.get("url", ""),
+                            "is_suspended": is_susp,
+                            "suspension_reason": f.get("suspension_reason") or ("Partit suspès (a l'espera del resultat)" if is_susp else "")
                         })
 
         predicted_list = []
@@ -550,11 +562,26 @@ class WebDataExporter:
                 xg_diff_h = round(float(h_goals) - xg_h_val, 2)
                 xg_diff_a = round(float(a_goals) - xg_a_val, 2)
 
+            raw_status = r.get("status")
+            is_susp_match = (raw_status in ["SUSPENDED", "POSTPONED"]) or (r.get("is_suspended", False)) or ("Rayo" in home_data["name"] and "Athletic" in away_data["name"] and not is_finished)
+            if is_susp_match:
+                m_status = "SUSPENDED"
+            elif is_finished:
+                m_status = "FINISHED"
+            else:
+                m_status = "SCHEDULED"
+
+            susp_reason = r.get("suspension_reason")
+            if is_susp_match and not susp_reason:
+                susp_reason = "Partit suspès oficialment per incidents a la grada. A l'espera de resolució de LaLiga/CTA (resultat no compta com a 0-0)."
+
             predicted_list.append({
                 "match_id": f"{competition_id}_J{active_jornada}_{h_id}_{a_id}",
                 "competition_id": competition_id,
                 "jornada": active_jornada,
-                "status": "FINISHED" if is_finished else "SCHEDULED",
+                "status": m_status,
+                "is_suspended": is_susp_match,
+                "suspension_reason": susp_reason if is_susp_match else "",
                 "home_team": {
                     "id": h_id,
                     "name": home_data["name"],
@@ -578,8 +605,8 @@ class WebDataExporter:
                 "is_exact_score": is_exact_score,
                 "xg_diff_home": xg_diff_h,
                 "xg_diff_away": xg_diff_a,
-                "real_corners_home": r.get("home_corners"),
-                "real_corners_away": r.get("away_corners"),
+                "real_corners_home": r.get("home_corners") if is_finished else None,
+                "real_corners_away": r.get("away_corners") if is_finished else None,
                 "real_cards_home": r.get("home_yellow_cards"),
                 "real_cards_away": r.get("away_yellow_cards"),
                 # Prediccions del model
@@ -657,9 +684,10 @@ class WebDataExporter:
 
         matches_list = []
         for r in rows:
-            is_finished = (r.get("status") == "FINISHED" and r.get("home_goals") is not None)
-            hg = r.get("home_goals")
-            ag = r.get("away_goals")
+            is_susp_match = (r.get("status") in ["SUSPENDED", "POSTPONED"]) or bool(r.get("is_suspended")) or ("Rayo" in r.get("h_name", "") and "Athletic" in r.get("a_name", "") and r.get("status") != "FINISHED")
+            is_finished = (not is_susp_match) and (r.get("status") == "FINISHED" and r.get("home_goals") is not None)
+            hg = int(r["home_goals"]) if is_finished else None
+            ag = int(r["away_goals"]) if is_finished else None
             final_str = f"{hg} - {ag}" if is_finished else None
             actual_1x2 = "1" if (is_finished and hg > ag) else ("2" if (is_finished and ag > hg) else ("X" if is_finished else None))
 
@@ -675,11 +703,17 @@ class WebDataExporter:
             predicted_1x2 = "1" if (p1 >= px and p1 >= p2) else ("2" if (p2 >= px and p2 >= p1) else "X")
             is_hit_1x2 = (actual_1x2 == predicted_1x2) if is_finished else None
 
+            susp_reason = r.get("suspension_reason")
+            if is_susp_match and not susp_reason:
+                susp_reason = "Partit suspès oficialment per incidents a la grada. A l'espera de resolució de LaLiga/CTA (resultat no compta com a 0-0)."
+
             matches_list.append({
                 "match_id": r["id"],
                 "competition_id": competition_id,
                 "jornada": jornada,
-                "status": r.get("status", "FINISHED" if is_finished else "SCHEDULED"),
+                "status": "SUSPENDED" if is_susp_match else ("FINISHED" if is_finished else "SCHEDULED"),
+                "is_suspended": is_susp_match,
+                "suspension_reason": susp_reason if is_susp_match else "",
                 "home_team": {
                     "id": r["home_team_id"],
                     "name": r["h_name"],
@@ -786,7 +820,10 @@ class WebDataExporter:
                     if not match_row or match_row.get("status") != "FINISHED":
                         all_finished = False
                         leg_status = "PENDING"
-                        actual_res = "Pendent de disputar"
+                        if (match_row and match_row.get("status") == "SUSPENDED") or ("Rayo" in leg.get("matchup", "") and "Athletic" in leg.get("matchup", "")):
+                            actual_res = "Partit suspès (a l'espera del resultat)"
+                        else:
+                            actual_res = "Pendent de disputar"
                     else:
                         leg_status, actual_res = self.tracker.evaluate_leg(leg, match_row)
 
