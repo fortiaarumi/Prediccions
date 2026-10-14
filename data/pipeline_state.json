@@ -7,17 +7,17 @@
   "PREMIER": {
     "last_predicted_jornada": 6,
     "last_predicted_date": "2026-09-25",
-    "last_scraped_jornada": 5
+    "last_scraped_jornada": 6
   },
   "HYPERMOTION": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-09-25",
-    "last_scraped_jornada": 8
+    "last_scraped_jornada": 9
   },
   "CHAMPIONSHIP": {
     "last_predicted_jornada": 9,
     "last_predicted_date": "2026-09-25",
     "last_scraped_jornada": 9
   },
-  "updated_at": "2026-10-12T15:45:53.927195"
+  "updated_at": "2026-10-14T18:05:09.458540"
 }
