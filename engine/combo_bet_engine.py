@@ -637,18 +637,311 @@ class ComboBetEngine:
         c1, _ = self.find_pair_risky(mms, is_multi=False)
         return c1
 
+    def _extract_single_match_markets(self, match: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Extreu i prepara tots els mercats individuals i multimerkat d'un ÚNIC PARTIT,
+        incloent 1X2, Doble Oportunitat, Gols, BTTS, Targetes, Córners i Marcadors Exactes.
+        """
+        matchup = match.get("matchup", "Partit")
+        comp_id = match.get("competition_id", "")
+        date_str = match.get("date", "")
+        url = match.get("url") or match.get("winamax_url") or self.winamax_base_url
+
+        if " vs " in matchup:
+            parts = matchup.split(" vs ", 1)
+            h_name = parts[0].strip()
+            a_name = parts[1].strip()
+        else:
+            h_name = match.get("home_team", {}).get("name") if isinstance(match.get("home_team"), dict) else str(match.get("home_team") or "Local")
+            a_name = match.get("away_team", {}).get("name") if isinstance(match.get("away_team"), dict) else str(match.get("away_team") or "Visitant")
+
+        raw_pred = match.get("raw_pred", match)
+        bet_analysis = match.get("bet_analysis") or raw_pred.get("bet_analysis", {})
+        existing_single = bet_analysis.get("single_markets") or match.get("value_bets", [])
+
+        markets = []
+        seen_keys = set()
+        for sm in existing_single:
+            odd = sm.get("bookie_odd")
+            prob = sm.get("model_prob")
+            if odd and odd > 1.05 and prob and prob > 0:
+                item = dict(sm)
+                item["matchup"] = matchup
+                item["competition_id"] = comp_id
+                item["date"] = date_str
+                item["url"] = url
+                k = self._get_leg_key(item)
+                if k not in seen_keys:
+                    seen_keys.add(k)
+                    markets.append(item)
+
+        goals = raw_pred.get("goals", {})
+        cards = raw_pred.get("cards", {})
+        corners = raw_pred.get("corners", {})
+
+        p_1x2 = goals.get("prob_1X2", {})
+        p1 = float(p_1x2.get("1", 45.0))
+        px = float(p_1x2.get("X", 25.0))
+        p2 = float(p_1x2.get("2", 30.0))
+
+        # Doble Oportunitat
+        p_1x = round(p1 + px, 1)
+        odd_1x = round(max(1.10, (100.0 / p_1x) * 0.93), 2)
+        item_1x = {"matchup": matchup, "name": f"1X - {h_name} o Empat", "category": "Doble Oportunitat", "bookie_odd": odd_1x, "model_prob": p_1x, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_1x) not in seen_keys:
+            markets.append(item_1x)
+            seen_keys.add(self._get_leg_key(item_1x))
+
+        p_x2 = round(p2 + px, 1)
+        odd_x2 = round(max(1.10, (100.0 / p_x2) * 0.93), 2)
+        item_x2 = {"matchup": matchup, "name": f"X2 - Empat o {a_name}", "category": "Doble Oportunitat", "bookie_odd": odd_x2, "model_prob": p_x2, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_x2) not in seen_keys:
+            markets.append(item_x2)
+            seen_keys.add(self._get_leg_key(item_x2))
+
+        # 1X2 Directe
+        fav_name = h_name if p1 >= p2 else a_name
+        fav_prob = max(p1, p2)
+        odd_fav = round(max(1.20, (100.0 / fav_prob) * 0.92), 2)
+        fav_prefix = "1 - Victòria" if p1 >= p2 else "2 - Victòria"
+        item_fav = {"matchup": matchup, "name": f"{fav_prefix} {fav_name}", "category": "1X2", "bookie_odd": odd_fav, "model_prob": fav_prob, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_fav) not in seen_keys:
+            markets.append(item_fav)
+            seen_keys.add(self._get_leg_key(item_fav))
+
+        # Gols
+        ou = goals.get("over_under", {})
+        p_o15 = float(ou.get("over_1_5", 76.0))
+        odd_o15 = round(max(1.12, (100.0 / p_o15) * 0.92), 2)
+        item_o15 = {"matchup": matchup, "name": "Més d'1.5 Gols (Over 1.5)", "category": "Gols", "bookie_odd": odd_o15, "model_prob": p_o15, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_o15) not in seen_keys:
+            markets.append(item_o15)
+            seen_keys.add(self._get_leg_key(item_o15))
+
+        p_u35 = float(ou.get("under_3_5", 72.0))
+        odd_u35 = round(max(1.15, (100.0 / p_u35) * 0.92), 2)
+        item_u35 = {"matchup": matchup, "name": "Menys de 3.5 Gols (Under 3.5)", "category": "Gols", "bookie_odd": odd_u35, "model_prob": p_u35, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_u35) not in seen_keys:
+            markets.append(item_u35)
+            seen_keys.add(self._get_leg_key(item_u35))
+
+        p_o25 = float(ou.get("over_2_5", 52.0))
+        odd_o25 = round(max(1.40, (100.0 / p_o25) * 0.92), 2)
+        item_o25 = {"matchup": matchup, "name": "Més de 2.5 Gols (Over 2.5)", "category": "Gols", "bookie_odd": odd_o25, "model_prob": p_o25, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_o25) not in seen_keys:
+            markets.append(item_o25)
+            seen_keys.add(self._get_leg_key(item_o25))
+
+        p_u25 = float(ou.get("under_2_5", 48.0))
+        odd_u25 = round(max(1.40, (100.0 / p_u25) * 0.92), 2)
+        item_u25 = {"matchup": matchup, "name": "Menys de 2.5 Gols (Under 2.5)", "category": "Gols", "bookie_odd": odd_u25, "model_prob": p_u25, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_u25) not in seen_keys:
+            markets.append(item_u25)
+            seen_keys.add(self._get_leg_key(item_u25))
+
+        # BTTS
+        btts = goals.get("btts", {})
+        p_by = float(btts.get("yes", 50.0))
+        odd_by = round(max(1.40, (100.0 / p_by) * 0.92), 2)
+        item_by = {"matchup": matchup, "name": "Ambdós Equips Marquen (BTTS Sí)", "category": "BTTS", "bookie_odd": odd_by, "model_prob": p_by, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_by) not in seen_keys:
+            markets.append(item_by)
+            seen_keys.add(self._get_leg_key(item_by))
+
+        p_bn = float(btts.get("no", 50.0))
+        odd_bn = round(max(1.40, (100.0 / p_bn) * 0.92), 2)
+        item_bn = {"matchup": matchup, "name": "Ambdós Equips Marquen (BTTS No)", "category": "BTTS", "bookie_odd": odd_bn, "model_prob": p_bn, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_bn) not in seen_keys:
+            markets.append(item_bn)
+            seen_keys.add(self._get_leg_key(item_bn))
+
+        # Targetes
+        p_cards = cards.get("prob_over_cards", {})
+        p_c35 = float(p_cards.get("over_3_5", 68.0))
+        odd_c35 = round(max(1.18, (100.0 / p_c35) * 0.92), 2)
+        item_c35 = {"matchup": matchup, "name": "Més de 3.5 Targetes", "category": "Targetes", "bookie_odd": odd_c35, "model_prob": p_c35, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_c35) not in seen_keys:
+            markets.append(item_c35)
+            seen_keys.add(self._get_leg_key(item_c35))
+
+        p_c45 = float(p_cards.get("over_4_5", 48.0))
+        odd_c45 = round(max(1.45, (100.0 / p_c45) * 0.92), 2)
+        item_c45 = {"matchup": matchup, "name": "Més de 4.5 Targetes", "category": "Targetes", "bookie_odd": odd_c45, "model_prob": p_c45, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_c45) not in seen_keys:
+            markets.append(item_c45)
+            seen_keys.add(self._get_leg_key(item_c45))
+
+        p_c55 = float(p_cards.get("over_5_5", 28.0))
+        odd_c55 = round(max(1.80, (100.0 / p_c55) * 0.92), 2)
+        item_c55 = {"matchup": matchup, "name": "Més de 5.5 Targetes", "category": "Targetes", "bookie_odd": odd_c55, "model_prob": p_c55, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_c55) not in seen_keys:
+            markets.append(item_c55)
+            seen_keys.add(self._get_leg_key(item_c55))
+
+        # Córners
+        p_corners = corners.get("prob_over_corners", {})
+        p_k85 = float(p_corners.get("over_8_5", 65.0))
+        odd_k85 = round(max(1.20, (100.0 / p_k85) * 0.92), 2)
+        item_k85 = {"matchup": matchup, "name": "Més de 8.5 Córners", "category": "Córners", "bookie_odd": odd_k85, "model_prob": p_k85, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_k85) not in seen_keys:
+            markets.append(item_k85)
+            seen_keys.add(self._get_leg_key(item_k85))
+
+        p_k95 = float(p_corners.get("over_9_5", 50.0))
+        odd_k95 = round(max(1.40, (100.0 / p_k95) * 0.92), 2)
+        item_k95 = {"matchup": matchup, "name": "Més de 9.5 Córners", "category": "Córners", "bookie_odd": odd_k95, "model_prob": p_k95, "competition_id": comp_id, "date": date_str, "url": url}
+        if self._get_leg_key(item_k95) not in seen_keys:
+            markets.append(item_k95)
+            seen_keys.add(self._get_leg_key(item_k95))
+
+        # Marcadors Exactes (del model Dixon-Coles)
+        top_scores = goals.get("top_scorelines", [])
+        for sc_obj in top_scores[:5]:
+            sc = sc_obj["score"]
+            sc_prob = float(sc_obj["prob"])
+            sc_odd = round(max(4.5, (100.0 / sc_prob) * 0.88), 2)
+            item_sc = {"matchup": matchup, "name": f"Marcador Exacte: {sc}", "category": "Marcador Exacte", "bookie_odd": sc_odd, "model_prob": sc_prob, "competition_id": comp_id, "date": date_str, "url": url}
+            if self._get_leg_key(item_sc) not in seen_keys:
+                markets.append(item_sc)
+                seen_keys.add(self._get_leg_key(item_sc))
+
+        return markets
+
+    def generate_single_match_combos_suite(self, match: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Genera el paquet complet de 6 combinades (2 Segures, 2 Semi, 2 Arriscades)
+        a partir d'un ÚNIC PARTIT (multimerkat Bet Builder).
+        """
+        markets = self._extract_single_match_markets(match)
+        if not markets:
+            return {"safe": [], "semi": [], "risky": []}
+
+        by_cat = {}
+        for m in markets:
+            by_cat.setdefault(m["category"], []).append(m)
+
+        all_cats = list(by_cat.keys())
+
+        def find_combinations(target_min_odd: float, target_max_odd: float, min_legs: int, max_legs: int, min_leg_prob: float = 0.0, allow_exact: bool = True):
+            cands = []
+            for k in range(min_legs, min(max_legs, len(all_cats)) + 1):
+                for cat_combo in itertools.combinations(all_cats, k):
+                    if not allow_exact and "Marcador Exacte" in cat_combo:
+                        continue
+                    if "1X2" in cat_combo and "Doble Oportunitat" in cat_combo:
+                        continue
+                    if "Marcador Exacte" in cat_combo and ("1X2" in cat_combo or "Gols" in cat_combo):
+                        continue
+
+                    cand_lists = [by_cat[c] for c in cat_combo]
+                    for choice in itertools.product(*cand_lists):
+                        if any(l["model_prob"] < min_leg_prob for l in choice):
+                            continue
+                        odds = [l["bookie_odd"] for l in choice]
+                        c_odd = round(self.calculate_combined_odds(odds), 2)
+                        if target_min_odd <= c_odd <= target_max_odd:
+                            p_dec = self.calculate_combined_probability([l["model_prob"] for l in choice])
+                            cands.append({
+                                "legs": list(choice),
+                                "c_odd": c_odd,
+                                "p_dec": p_dec,
+                                "score": p_dec - abs(c_odd - (target_min_odd + target_max_odd) / 2.0) * 0.001,
+                                "sig": self._get_combo_sig(choice)
+                            })
+            cands.sort(key=lambda x: x["score"], reverse=True)
+            return cands
+
+        # 1. Segures (1.90 - 3.50)
+        safe_cands = find_combinations(1.90, 3.50, min_legs=2, max_legs=3, min_leg_prob=50.0, allow_exact=False)
+        if not safe_cands:
+            safe_cands = find_combinations(1.70, 4.00, min_legs=2, max_legs=3, min_leg_prob=40.0, allow_exact=False)
+
+        s1_cand = safe_cands[0] if safe_cands else {"legs": []}
+        s2_cand = None
+        for cand in safe_cands[1:]:
+            if cand["sig"] != s1_cand.get("sig") and len(set(cand["sig"]) & set(s1_cand.get("sig", []))) < len(cand["sig"]):
+                s2_cand = cand
+                break
+        if not s2_cand and len(safe_cands) > 1:
+            s2_cand = safe_cands[1]
+        elif not s2_cand and safe_cands:
+            s2_cand = safe_cands[0]
+
+        # 2. Semi-Arriscades (8.50 - 16.50)
+        semi_cands = find_combinations(8.50, 16.50, min_legs=3, max_legs=4, min_leg_prob=30.0, allow_exact=False)
+        if not semi_cands:
+            semi_cands = find_combinations(6.50, 20.00, min_legs=3, max_legs=4, min_leg_prob=20.0, allow_exact=False)
+
+        sm1_cand = semi_cands[0] if semi_cands else {"legs": []}
+        sm2_cand = None
+        for cand in semi_cands[1:]:
+            if cand["sig"] != sm1_cand.get("sig") and len(set(cand["sig"]) & set(sm1_cand.get("sig", []))) < len(cand["sig"]):
+                sm2_cand = cand
+                break
+        if not sm2_cand and len(semi_cands) > 1:
+            sm2_cand = semi_cands[1]
+        elif not sm2_cand and semi_cands:
+            sm2_cand = semi_cands[0]
+
+        # 3. Arriscades (>= 28.0)
+        risky_cands = find_combinations(28.0, 75.0, min_legs=3, max_legs=5, min_leg_prob=10.0, allow_exact=True)
+        if not risky_cands:
+            risky_cands = find_combinations(22.0, 95.0, min_legs=3, max_legs=5, min_leg_prob=5.0, allow_exact=True)
+
+        r1_cand = risky_cands[0] if risky_cands else {"legs": []}
+        r2_cand = None
+        for cand in risky_cands[1:]:
+            if cand["sig"] != r1_cand.get("sig") and len(set(cand["sig"]) & set(r1_cand.get("sig", []))) < len(cand["sig"]):
+                r2_cand = cand
+                break
+        if not r2_cand and len(risky_cands) > 1:
+            r2_cand = risky_cands[1]
+        elif not r2_cand and risky_cands:
+            r2_cand = risky_cands[0]
+
+        safe_1 = self.calculate_combo_summary(s1_cand.get("legs", []), "Combinada del Dia Segura #1 (Cuota 2-3)")
+        safe_2 = self.calculate_combo_summary(s2_cand.get("legs", []), "Combinada del Dia Segura #2 (Cuota 2-3 Alternativa)")
+        safe_1["category_code"] = "SAFE"
+        safe_2["category_code"] = "SAFE"
+        safe_1["recommended_stake"] = 25.0
+        safe_2["recommended_stake"] = 25.0
+
+        semi_1 = self.calculate_combo_summary(sm1_cand.get("legs", []), "Combinada del Dia Semi-Arriscada #1 (Cuota ~10.0)")
+        semi_2 = self.calculate_combo_summary(sm2_cand.get("legs", []), "Combinada del Dia Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
+        semi_1["category_code"] = "SEMI"
+        semi_2["category_code"] = "SEMI"
+        semi_1["recommended_stake"] = 10.0
+        semi_2["recommended_stake"] = 10.0
+
+        risky_1 = self.calculate_combo_summary(r1_cand.get("legs", []), "Combinada del Dia Arriscada #1 (Cuota >= 30.0)")
+        risky_2 = self.calculate_combo_summary(r2_cand.get("legs", []), "Combinada del Dia Arriscada #2 (Cuota >= 30.0 Alternativa)")
+        risky_1["category_code"] = "RISKY"
+        risky_2["category_code"] = "RISKY"
+        risky_1["recommended_stake"] = 5.0
+        risky_2["recommended_stake"] = 5.0
+
+        return {
+            "safe": [safe_1, safe_2],
+            "semi": [semi_1, semi_2],
+            "risky": [risky_1, risky_2],
+            "safe_combo": safe_1,
+            "risky_combo": risky_1
+        }
+
     def generate_full_combos_suite(self, matches: List[Dict[str, Any]], is_multi: bool = False) -> Dict[str, Any]:
         """
         Genera exactament el paquet complet sol·licitat per l'usuari:
         - 2 Combinades Segures (cuota 1.95 - 3.50) totalment diferents
         - 2 Combinades Semi-Arriscades (cuota ~8.0 - 15.0) totalment diferents
         - 2 Combinades Arriscades (cuota >= 28.0) totalment diferents
-
-        Regles estrictes de diversitat:
-        1. Una mateixa selecció exacta pot sortir com a MÀXIM a 2 combinades en tota la suite.
-        2. Cap selecció exacta de les combinades Segures pot repetir-se a les Arriscades (tot i que es permet una altra opció del mateix partit).
         """
+        if len(matches) == 1:
+            return self.generate_single_match_combos_suite(matches[0])
+
         mms = self._extract_all_match_markets(matches)
+        if len(mms) == 1:
+            return self.generate_single_match_combos_suite(matches[0])
+
         global_counts = Counter()
 
         # 1. Combinades Segures
@@ -671,17 +964,65 @@ class ComboBetEngine:
             "safe": [safe_1, safe_2],
             "semi": [semi_1, semi_2],
             "risky": [risky_1, risky_2],
-            # Compatibilitat amb mòduls antics:
             "safe_combo": safe_1,
             "risky_combo": risky_1
         }
+
+    def generate_daily_combos_suite(self, day_matches: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Genera la Suite Oficial de 6 Combinades del Dia (2 Segures, 2 Semi, 2 Arriscades):
+        - Si no hi ha partits aquell dia: has_matches = False.
+        - Si només juga 1 partit: combinades multimerkat d'aquell duel (Bet Builder).
+        - Si juguen només partits d'una lliga: ho especifica clarament.
+        - Si juguen múltiples lligues: combinades conjuntes de tots els partits del dia.
+        """
+        if not day_matches:
+            return {
+                "has_matches": False,
+                "matches_count": 0,
+                "league_note": "Sense partits programats per a avui a cap de les 4 lligues analitzades.",
+                "safe": [],
+                "semi": [],
+                "risky": [],
+                "safe_combo": {},
+                "risky_combo": {}
+            }
+
+        comps = {m.get("competition_id") for m in day_matches if m.get("competition_id")}
+        comp_map = {
+            "LALIGA": "LaLiga EA Sports",
+            "PREMIER": "Premier League",
+            "HYPERMOTION": "LaLiga Hypermotion",
+            "CHAMPIONSHIP": "EFL Championship"
+        }
+        comp_names = [comp_map.get(c, c) for c in comps]
+
+        if len(day_matches) == 1:
+            suite = self.generate_single_match_combos_suite(day_matches[0])
+            m_title = day_matches[0].get("matchup") or "Partit Únic"
+            suite["has_matches"] = True
+            suite["matches_count"] = 1
+            suite["league_note"] = f"Partit únic d'avui: {m_title} · Suite de 6 combinades multimerkat del mateix partit"
+            return suite
+
+        suite = self.generate_full_combos_suite(day_matches, is_multi=False)
+        suite["has_matches"] = True
+        suite["matches_count"] = len(day_matches)
+
+        if len(comps) == 1:
+            suite["league_note"] = f"Partits exclusius de {comp_names[0]} d'avui ({len(day_matches)} partits)"
+        else:
+            suite["league_note"] = f"Partits del dia de múltiples lligues ({', '.join(comp_names)}) · {len(day_matches)} partits"
+
+        return suite
 
     def analyze_jornada_combos(self, predicted_matches: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Genera el paquet complet de 6 combinades per a la jornada."""
         return self.generate_full_combos_suite(predicted_matches, is_multi=False)
 
     def analyze_multileague_combos(self, all_matches: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Genera el paquet complet de 6 combinades transfrontereres (Multi-Lliga)."""
-        return self.generate_full_combos_suite(all_matches, is_multi=True)
+        """Compatibilitat: redirigeix a combinades diàries o conjuntes."""
+        return self.generate_daily_combos_suite(all_matches)
+
 
 

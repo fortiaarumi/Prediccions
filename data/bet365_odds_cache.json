@@ -1,0 +1,506 @@
+{
+  "LALIGA_fcbarcelona_realmadrid": {
+    "source": "Bet365 Espanya (LALIGA)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+    "match_id": null,
+    "matched_title": "FC Barcelona vs Real Madrid",
+    "matched": true,
+    "1X2": {
+      "1": 1.91,
+      "X": 3.82,
+      "2": 3.82
+    },
+    "double_chance": {
+      "1X": 1.26,
+      "12": 1.26,
+      "X2": 1.89
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.63,
+      "under": 2.25
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.75,
+      "no": 2.05
+    },
+    "cards": {
+      "over_3_5": 1.31,
+      "under_3_5": 3.37,
+      "over_4_5": 1.82,
+      "under_4_5": 1.97
+    },
+    "corners": {
+      "over_8_5": 1.57,
+      "under_8_5": 2.36,
+      "over_9_5": 1.97,
+      "under_9_5": 1.82
+    },
+    "combos": {}
+  },
+  "LALIGA_rayovallecano_athleticclub": {
+    "source": "Bet365 Espanya (LALIGA)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+    "match_id": null,
+    "matched_title": "Rayo Vallecano vs Athletic Club",
+    "matched": true,
+    "1X2": {
+      "1": 5.65,
+      "X": 3.91,
+      "2": 1.63
+    },
+    "double_chance": {
+      "1X": 2.29,
+      "12": 1.25,
+      "X2": 1.14
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.81,
+      "under": 1.98
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.84,
+      "no": 1.94
+    },
+    "cards": {
+      "over_3_5": 1.3,
+      "under_3_5": 3.49,
+      "over_4_5": 1.71,
+      "under_4_5": 2.11
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_arsenal_leedsutd": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Arsenal vs Leeds Utd",
+    "matched": true,
+    "1X2": {
+      "1": 1.05,
+      "X": 25.13,
+      "2": 191.0
+    },
+    "double_chance": {
+      "1X": 1.02,
+      "12": 1.02,
+      "X2": 21.98
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.2,
+      "under": 4.42
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 4.24,
+      "no": 1.22
+    },
+    "cards": {
+      "over_3_5": 1.68,
+      "under_3_5": 2.15,
+      "over_4_5": 2.58,
+      "under_4_5": 1.49
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_astonvilla_brentford": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Aston Villa vs Brentford",
+    "matched": true,
+    "1X2": {
+      "1": 1.05,
+      "X": 13.44,
+      "2": 73.39
+    },
+    "double_chance": {
+      "1X": 1.02,
+      "12": 1.02,
+      "X2": 11.24
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.38,
+      "under": 3.01
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 3.66,
+      "no": 1.27
+    },
+    "cards": {
+      "over_3_5": 1.44,
+      "under_3_5": 2.76,
+      "over_4_5": 2.02,
+      "under_4_5": 1.77
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_chelsea_afcbournemouth": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Chelsea vs AFC Bournemouth",
+    "matched": true,
+    "1X2": {
+      "1": 1.32,
+      "X": 4.77,
+      "2": 12.57
+    },
+    "double_chance": {
+      "1X": 1.02,
+      "12": 1.18,
+      "X2": 3.42
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.81
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 2.57,
+      "no": 1.5
+    },
+    "cards": {
+      "over_3_5": 1.7,
+      "under_3_5": 2.13,
+      "over_4_5": 2.61,
+      "under_4_5": 1.48
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_ipswichtown_fulham": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Ipswich Town vs Fulham",
+    "matched": true,
+    "1X2": {
+      "1": 17.05,
+      "X": 6.45,
+      "2": 1.2
+    },
+    "double_chance": {
+      "1X": 4.63,
+      "12": 1.11,
+      "X2": 1.02
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.55,
+      "under": 2.41
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 2.29,
+      "no": 1.61
+    },
+    "cards": {
+      "over_3_5": 1.63,
+      "under_3_5": 2.25,
+      "over_4_5": 2.45,
+      "under_4_5": 1.54
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_sunderland_brightonhovealbion": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Sunderland vs Brighton & Hove Albion",
+    "matched": true,
+    "1X2": {
+      "1": 6.24,
+      "X": 4.15,
+      "2": 1.55
+    },
+    "double_chance": {
+      "1X": 2.47,
+      "12": 1.23,
+      "X2": 1.12
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.72,
+      "under": 2.1
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.81,
+      "no": 1.98
+    },
+    "cards": {
+      "over_3_5": 1.6,
+      "under_3_5": 2.3,
+      "over_4_5": 2.39,
+      "under_4_5": 1.56
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_manchesterutd_tottenhamhotspur": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Manchester Utd vs Tottenham Hotspur",
+    "matched": true,
+    "1X2": {
+      "1": 20.76,
+      "X": 6.92,
+      "2": 1.17
+    },
+    "double_chance": {
+      "1X": 5.14,
+      "12": 1.1,
+      "X2": 1.02
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.57,
+      "under": 2.38
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 2.5,
+      "no": 1.52
+    },
+    "cards": {
+      "over_3_5": 1.56,
+      "under_3_5": 2.4,
+      "over_4_5": 2.29,
+      "under_4_5": 1.61
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_crystalpalace_nottinghamforest": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Crystal Palace vs Nottingham Forest",
+    "matched": true,
+    "1X2": {
+      "1": 2.01,
+      "X": 3.51,
+      "2": 3.77
+    },
+    "double_chance": {
+      "1X": 1.27,
+      "12": 1.3,
+      "X2": 1.8
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.85,
+      "under": 1.93
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.72,
+      "no": 2.09
+    },
+    "cards": {
+      "over_3_5": 1.23,
+      "under_3_5": 4.07,
+      "over_4_5": 1.57,
+      "under_4_5": 2.37
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_hull_everton": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Hull vs Everton",
+    "matched": true,
+    "1X2": {
+      "1": 2.4,
+      "X": 3.32,
+      "2": 3.04
+    },
+    "double_chance": {
+      "1X": 1.38,
+      "12": 1.33,
+      "X2": 1.57
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.97,
+      "under": 1.81
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.76,
+      "no": 2.04
+    },
+    "cards": {
+      "over_3_5": 1.55,
+      "under_3_5": 2.42,
+      "over_4_5": 2.28,
+      "under_4_5": 1.62
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_liverpool_manchestercity": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Liverpool vs Manchester City",
+    "matched": true,
+    "1X2": {
+      "1": 2.15,
+      "X": 2.98,
+      "2": 4.07
+    },
+    "double_chance": {
+      "1X": 1.23,
+      "12": 1.39,
+      "X2": 1.7
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 2.79,
+      "under": 1.43
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 2.3,
+      "no": 1.6
+    },
+    "cards": {
+      "over_3_5": 1.37,
+      "under_3_5": 3.07,
+      "over_4_5": 1.86,
+      "under_4_5": 1.92
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  },
+  "PREMIER_coventry_newcastleunited": {
+    "source": "Bet365 Espanya (PREMIER)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "tournament_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+    "match_id": null,
+    "matched_title": "Coventry vs Newcastle United",
+    "matched": true,
+    "1X2": {
+      "1": 20.76,
+      "X": 6.92,
+      "2": 1.17
+    },
+    "double_chance": {
+      "1X": 5.14,
+      "12": 1.1,
+      "X2": 1.02
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.57,
+      "under": 2.38
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 2.5,
+      "no": 1.52
+    },
+    "cards": {
+      "over_3_5": 1.32,
+      "under_3_5": 3.32,
+      "over_4_5": 1.77,
+      "under_4_5": 2.03
+    },
+    "corners": {
+      "over_8_5": 1.55,
+      "under_8_5": 2.41,
+      "over_9_5": 1.98,
+      "under_9_5": 1.81
+    },
+    "combos": {}
+  }
+}

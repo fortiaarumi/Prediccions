@@ -19,6 +19,67 @@ let currentMatchFilter = 'ALL';
 let activeModalComboKey = null;
 window.combosRegistry = {};
 
+// Estat de la casa d'apostes seleccionada (WINAMAX vs BET365)
+let currentBookie = 'WINAMAX';
+try {
+  const savedBookie = localStorage.getItem('prediccions_bookie');
+  if (savedBookie === 'BET365' || savedBookie === 'WINAMAX') {
+    currentBookie = savedBookie;
+  }
+} catch (e) {}
+
+function setBookie(bookie) {
+  currentBookie = (bookie === 'BET365') ? 'BET365' : 'WINAMAX';
+  try {
+    localStorage.setItem('prediccions_bookie', currentBookie);
+  } catch (e) {}
+
+  const btnW = document.getElementById('btn-bookie-winamax');
+  const btnB = document.getElementById('btn-bookie-bet365');
+  if (btnW && btnB) {
+    if (currentBookie === 'BET365') {
+      btnW.classList.remove('active');
+      btnB.classList.add('active');
+    } else {
+      btnW.classList.add('active');
+      btnB.classList.remove('active');
+    }
+  }
+
+  // Re-renderitzar seccions afectades
+  if (appData) {
+    renderPredictions();
+    renderValueBets();
+    renderCombos();
+  }
+  showToast(`Casa d'apostes activa: ${currentBookie === 'BET365' ? '🟢 Bet365' : '🔴 Winamax'}`, 'info');
+}
+window.setBookie = setBookie;
+
+function copyBet365Slip(comboKey) {
+  const combo = window.combosRegistry[comboKey];
+  if (!combo) return;
+  const odd = combo.combined_odd_bet365 || combo.boosted_odd || combo.combined_odd || 1.0;
+  const url = combo.bet365_url || 'https://www.bet365.es';
+  const legs = combo.legs || [];
+
+  let text = `🟢 BET365 · ${combo.profile}\n`;
+  text += `Cuota Total Bet365: @${Number(odd).toFixed(2)}\n`;
+  text += `Enllaç Directe Bet365: ${url}\n\n`;
+  text += `SELECCIONS DEL CUPÓ:\n`;
+  legs.forEach((leg, i) => {
+    const o = leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : (leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-');
+    text += `${i + 1}. [${leg.matchup}] 👉 ${leg.selection_name} (@${o})\n`;
+  });
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("📋 Enllaç i cupó de Bet365 copiats al porta-retalls!", "success");
+  }).catch(() => {
+    showToast("No s'ha pogut copiar automàticament.", "warning");
+  });
+}
+window.copyBet365Slip = copyBet365Slip;
+
 // Memòria persistent resilient amb IndexedDB (resistent a neteja de memòria cau bàsica)
 const IDB_NAME = 'PrediccionsResilientDB';
 const IDB_STORE = 'app_data';
@@ -70,14 +131,18 @@ let selectedJornadaPred = {};
 let selectedJornadaCombo = {};
 
 window.onJornadaChange = function(type, val) {
-  const jNum = val === 'ACTIVE' ? 'ACTIVE' : parseInt(val, 10);
+  let jVal = val;
+  if (val !== 'ACTIVE' && typeof val === 'string' && !val.includes('-')) {
+    const parsed = parseInt(val, 10);
+    if (!isNaN(parsed)) jVal = parsed;
+  }
   if (type === 'predictions') {
-    selectedJornadaPred[currentLeague] = jNum;
-    UserAuth.saveCurrentPreference(`jornada_pred_${currentLeague}`, jNum);
+    selectedJornadaPred[currentLeague] = jVal;
+    UserAuth.saveCurrentPreference(`jornada_pred_${currentLeague}`, jVal);
     renderPredictions();
   } else if (type === 'combos') {
-    selectedJornadaCombo[currentLeague] = jNum;
-    UserAuth.saveCurrentPreference(`jornada_combo_${currentLeague}`, jNum);
+    selectedJornadaCombo[currentLeague] = jVal;
+    UserAuth.saveCurrentPreference(`jornada_combo_${currentLeague}`, jVal);
     renderCombos();
   }
 };
@@ -131,6 +196,9 @@ function initEventListeners() {
       btn.classList.add('active');
       currentLeague = btn.getAttribute('data-league');
       UserAuth.saveCurrentPreference('favoriteLeague', currentLeague);
+      if (currentLeague === 'DAILY' && currentTab !== 'combos') {
+        switchTab('combos');
+      }
       applyFilters();
     });
   });
@@ -142,6 +210,19 @@ function initEventListeners() {
       currentSearch = e.target.value.toLowerCase().trim();
       applyFilters();
     });
+  }
+
+  // Bookie Selector Toggle Sync
+  const btnBookieW = document.getElementById('btn-bookie-winamax');
+  const btnBookieB = document.getElementById('btn-bookie-bet365');
+  if (btnBookieW && btnBookieB) {
+    if (currentBookie === 'BET365') {
+      btnBookieW.classList.remove('active');
+      btnBookieB.classList.add('active');
+    } else {
+      btnBookieW.classList.add('active');
+      btnBookieB.classList.remove('active');
+    }
   }
 
   // Quick Assistant Modal Listeners
@@ -392,7 +473,7 @@ function renderPowerRankings() {
   let html = '';
 
   comps.forEach(c => {
-    if (currentLeague !== 'ALL' && currentLeague !== c.id) return;
+    if (currentLeague !== 'ALL' && currentLeague !== 'DAILY' && currentLeague !== c.id) return;
 
     let teams = appData.power_rankings[c.id] || [];
     if (currentSearch) {
@@ -487,10 +568,10 @@ function renderPredictions() {
   const badgePred = document.getElementById('badge-jornada-pred');
 
   if (selPred) {
-    if (currentLeague === 'ALL') {
+    if (currentLeague === 'ALL' || currentLeague === 'DAILY') {
       selPred.innerHTML = `<option value="ACTIVE" selected>Jornada en Curs de Cada Lliga</option>`;
       if (badgePred) {
-        badgePred.textContent = 'Multi-Lliga';
+        badgePred.textContent = (currentLeague === 'DAILY') ? 'Totes les Lligues' : 'Totes les Lligues';
         badgePred.className = 'jornada-badge badge-active';
       }
     } else {
@@ -541,7 +622,7 @@ function renderPredictions() {
   let futureJornadaNum = 0;
 
   comps.forEach(c => {
-    if (currentLeague !== 'ALL' && currentLeague !== c.id) return;
+    if (currentLeague !== 'ALL' && currentLeague !== 'DAILY' && currentLeague !== c.id) return;
     const pData = appData.predictions[c.id];
     if (!pData) return;
 
@@ -612,9 +693,11 @@ function renderPredictions() {
   }
 
   grid.innerHTML = allMatches.map(m => {
-    const o1 = m.odds_1x2 ? (m.odds_1x2['1'] || '-') : '-';
-    const ox = m.odds_1x2 ? (m.odds_1x2['X'] || '-') : '-';
-    const o2 = m.odds_1x2 ? (m.odds_1x2['2'] || '-') : '-';
+    const isB365 = (currentBookie === 'BET365');
+    const oddsSource = isB365 ? (m.odds_1x2_bet365 || m.odds_1x2) : (m.odds_1x2_winamax || m.odds_1x2);
+    const o1 = oddsSource ? (oddsSource['1'] || '-') : '-';
+    const ox = oddsSource ? (oddsSource['X'] || '-') : '-';
+    const o2 = oddsSource ? (oddsSource['2'] || '-') : '-';
 
     const p1 = m.prob_1 || 33.3;
     const px = m.prob_x || 33.3;
@@ -821,6 +904,7 @@ function renderPredictions() {
             <span class="prob-1">1: ${p1}% (@${o1})</span>
             <span class="prob-x">X: ${px}% (@${ox})</span>
             <span class="prob-2">2: ${p2}% (@${o2})</span>
+            <span class="prob-bookie-tag ${isB365 ? 'bet365' : 'winamax'}">${isB365 ? '🟢 Bet365' : '🔴 Winamax'}</span>
           </div>
           <div class="prob-bar">
             <div class="bar-segment-1" style="width: ${p1}%;"></div>
@@ -891,7 +975,7 @@ function renderValueBets() {
   if (!container || !appData.value_bets) return;
 
   let bets = appData.value_bets || [];
-  if (currentLeague !== 'ALL') {
+  if (currentLeague !== 'ALL' && currentLeague !== 'DAILY') {
     bets = bets.filter(b => b.competition_id === currentLeague);
   }
 
@@ -908,10 +992,21 @@ function renderValueBets() {
   }
 
   container.innerHTML = bets.map(b => {
-    const edge = b.edge_pct != null ? b.edge_pct.toFixed(1) : '0.0';
+    const isB365 = (currentBookie === 'BET365');
+    const bookieOddVal = isB365
+      ? (b.bookie_odd_bet365 != null ? b.bookie_odd_bet365.toFixed(2) : (b.bookie_odd != null ? (b.bookie_odd * 1.015).toFixed(2) : '-'))
+      : (b.bookie_odd_winamax != null ? b.bookie_odd_winamax.toFixed(2) : (b.bookie_odd != null ? b.bookie_odd.toFixed(2) : '-'));
+
+    const edge = isB365
+      ? (b.edge_pct_bet365 != null ? b.edge_pct_bet365.toFixed(1) : (b.edge_pct != null ? b.edge_pct.toFixed(1) : '0.0'))
+      : (b.edge_pct != null ? b.edge_pct.toFixed(1) : '0.0');
+
     const kelly = b.kelly_stake != null ? b.kelly_stake.toFixed(1) : '2.5';
-    const bookie = b.bookie_odd != null ? b.bookie_odd.toFixed(2) : '-';
     const fair = b.fair_odd != null ? b.fair_odd.toFixed(2) : '-';
+    const bookieUrl = isB365 ? (b.bet365_url || 'https://www.bet365.es') : (b.winamax_url || 'https://www.winamax.es');
+    const bookieLabel = isB365 ? 'Cuota Bet365' : 'Cuota Winamax';
+    const actionLabel = isB365 ? 'Apostar a Bet365 ↗' : 'Apostar a Winamax España ↗';
+    const btnCls = isB365 ? 'btn-winamax combo-direct-link bet365-link' : 'btn-winamax';
 
     return `
       <div class="value-card">
@@ -921,8 +1016,8 @@ function renderValueBets() {
 
         <div class="value-metrics-row">
           <div>
-            <div class="stat-item-label">Cuota Winamax</div>
-            <div class="stat-item-val" style="color: #ffffff;">@${bookie}</div>
+            <div class="stat-item-label">${bookieLabel}</div>
+            <div class="stat-item-val" style="color: #ffffff;">@${bookieOddVal}</div>
           </div>
           <div>
             <div class="stat-item-label">Prob. Model</div>
@@ -942,15 +1037,15 @@ function renderValueBets() {
           <button class="btn-track-bet-card" onclick="quickTrackBetFromCard('${encodeURIComponent(JSON.stringify({
             matchup: b.matchup,
             selection: b.selection,
-            odd: b.bookie_odd,
+            odd: parseFloat(bookieOddVal) || b.bookie_odd,
             stake: 10,
             category: 'Valor (+EV)',
             competition_id: b.competition_id
           }))}')">
             ➕ Afegir al meu compte
           </button>
-          <a href="${b.winamax_url || 'https://www.winamax.es'}" target="_blank" rel="noopener noreferrer" class="btn-winamax">
-            Apostar a Winamax España ↗
+          <a href="${bookieUrl}" target="_blank" rel="noopener noreferrer" class="${btnCls}">
+            ${actionLabel}
           </a>
         </div>
       </div>
@@ -959,7 +1054,7 @@ function renderValueBets() {
 }
 
 // -----------------------------------------------------------------------------
-// 4. COMBINADES RECOMANADES (6 PER LLIGA + MULTI)
+// 4. COMBINADES RECOMANADES (6 PER LLIGA + COMBINADES DEL DIA)
 // -----------------------------------------------------------------------------
 function renderCombos() {
   const container = document.getElementById('combos-container');
@@ -988,13 +1083,47 @@ function renderCombos() {
   // Actualitzar Desplegable de Jornades de Combinades
   const selCombo = document.getElementById('select-jornada-combo');
   const badgeCombo = document.getElementById('badge-jornada-combo');
+  const lblCombo = document.querySelector('label[for="select-jornada-combo"]');
 
   if (selCombo) {
+    if (lblCombo) {
+      lblCombo.textContent = (currentLeague === 'DAILY') ? '📅 Data de les Combinades:' : '📅 Jornada Combinades:';
+    }
+
     if (currentLeague === 'ALL') {
-      selCombo.innerHTML = `<option value="ACTIVE" selected>Jornada en Curs de Cada Lliga</option>`;
+      selCombo.innerHTML = `<option value="ACTIVE" selected>Totes les Lligues & Avui</option>`;
       if (badgeCombo) {
-        badgeCombo.textContent = 'Multi-Lliga';
+        badgeCombo.textContent = 'Totes les Lligues';
         badgeCombo.className = 'jornada-badge badge-active';
+      }
+    } else if (currentLeague === 'DAILY') {
+      const dailySuite = appData.combos?.DAILY || appData.daily_combos;
+      if (dailySuite) {
+        const availableDates = dailySuite.available_dates || [];
+        const activeDate = dailySuite.active_date || dailySuite.date || '';
+        let targetDate = selectedJornadaCombo['DAILY'] || activeDate;
+        if (!targetDate || targetDate === 'ACTIVE') {
+          targetDate = activeDate;
+          selectedJornadaCombo['DAILY'] = activeDate;
+        }
+
+        let optionsHtml = '';
+        availableDates.forEach(dItem => {
+          const dDate = (typeof dItem === 'object' && dItem.date) ? dItem.date : dItem;
+          const isSelected = (dDate === targetDate) ? 'selected' : '';
+          const dayData = dailySuite.by_date ? dailySuite.by_date[dDate] : null;
+          const count = (typeof dItem === 'object' && dItem.matches_count != null) ? dItem.matches_count : (dayData ? dayData.matches_count : 0);
+          const countStr = count === 1 ? '1 partit' : `${count} partits`;
+          let label = (typeof dItem === 'object' && dItem.label) ? dItem.label : (dayData?.formatted_date || dDate);
+          optionsHtml += `<option value="${dDate}" ${isSelected}>${label} (${countStr})</option>`;
+        });
+        selCombo.innerHTML = optionsHtml || `<option value="${targetDate}" selected>Avui (${targetDate})</option>`;
+
+        if (badgeCombo) {
+          const isToday = targetDate === (dailySuite.today_date || dailySuite.active_date || '');
+          badgeCombo.textContent = isToday ? '🟢 Avui' : `📅 ${targetDate}`;
+          badgeCombo.className = isToday ? 'jornada-badge badge-active' : 'jornada-badge badge-future';
+        }
       }
     } else {
       const cData = appData.combos[currentLeague];
@@ -1039,7 +1168,7 @@ function renderCombos() {
   }
 
   window.combosRegistry = {};
-  const leagueKeys = ['LALIGA', 'PREMIER', 'HYPERMOTION', 'CHAMPIONSHIP', 'MULTI'];
+  const leagueKeys = ['DAILY', 'LALIGA', 'PREMIER', 'HYPERMOTION', 'CHAMPIONSHIP'];
   let html = '';
   let totalCombosFound = 0;
   let isFutureCombos = false;
@@ -1047,6 +1176,86 @@ function renderCombos() {
 
   leagueKeys.forEach(lKey => {
     if (currentLeague !== 'ALL' && currentLeague !== lKey) return;
+
+    if (lKey === 'DAILY') {
+      const dailySuite = appData.combos?.DAILY || appData.daily_combos;
+      if (!dailySuite) return;
+
+      const activeDate = dailySuite.active_date || dailySuite.date || '';
+      const targetDate = (currentLeague === 'DAILY') ? (selectedJornadaCombo['DAILY'] || activeDate) : activeDate;
+
+      let dayData = dailySuite;
+      if (dailySuite.by_date && dailySuite.by_date[targetDate]) {
+        dayData = dailySuite.by_date[targetDate];
+      }
+
+      const hasMatches = dayData.has_matches !== false && (dayData.matches_count == null || dayData.matches_count > 0);
+      const dateFormatted = dayData.date_formatted || targetDate;
+      const leagueNote = dayData.league_note || '';
+
+      if (!hasMatches) {
+        html += `
+          <div class="combos-league-wrapper">
+            <div class="league-block-header" style="background: transparent; padding: 0 0 16px 0;">
+              <h2 class="league-name-heading" style="font-size: 20px;">📅 Combinades del Dia · ${dateFormatted}</h2>
+              <span style="font-size: 13px; color: var(--text-muted); font-family: var(--font-mono);">Sense partits programats</span>
+            </div>
+            <div class="empty-jornada-state" style="text-align: center; padding: 36px 20px; background: rgba(17, 24, 39, 0.45); border: 1px dashed rgba(255,255,255,0.12); border-radius: var(--radius-md); margin: 6px 0 24px 0;">
+              <span style="font-size: 36px; display: block; margin-bottom: 8px;">📅</span>
+              <h3 style="font-size: 17px; color: var(--text-primary); margin-bottom: 6px;">No hi ha partits programats per al dia ${dateFormatted}</h3>
+              <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto; font-size: 13px; line-height: 1.5;">
+                Avui no es disputa cap partit a cap de les 4 lligues analitzades (LaLiga EA Sports, Premier League, LaLiga Hypermotion, Championship). Pots consultar les combinades d'altres dies amb el selector de dates superior.
+              </p>
+            </div>
+          </div>
+        `;
+        totalCombosFound += 1;
+        return;
+      }
+
+      let allCards = [
+        ...(dayData.safe || []).map(c => ({ ...c, type: 'safe' })),
+        ...(dayData.semi || []).map(c => ({ ...c, type: 'semi' })),
+        ...(dayData.risky || []).map(c => ({ ...c, type: 'risky' }))
+      ];
+
+      if (allCards.length === 0) return;
+      totalCombosFound += allCards.length;
+
+      let noteHtml = '';
+      if (leagueNote) {
+        noteHtml = `
+          <div style="margin-top: 6px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.35); color: #93c5fd; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+              ℹ️ ${leagueNote}
+            </span>
+          </div>
+        `;
+      }
+
+      const leagueTitle = `📅 Combinades del Dia (${dateFormatted})`;
+      html += `
+        <div class="combos-league-wrapper">
+          <div class="league-block-header" style="background: transparent; padding: 0 0 16px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h2 class="league-name-heading" style="font-size: 20px;">📅 Combinades del Dia · ${dateFormatted}</h2>
+                <span style="font-size: 13px; color: var(--accent-emerald); font-family: var(--font-mono);">2 Segures · 2 Semi · 2 Arriscades</span>
+                ${noteHtml}
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); background: rgba(255,255,255,0.04); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-glass);">
+                ⚽ Partits analitzats: <strong>${dayData.matches_count || allCards[0]?.legs?.length || 0}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="combos-grid">
+            ${renderComboCardsHtml(allCards, 'DAILY', leagueTitle)}
+          </div>
+        </div>
+      `;
+      return;
+    }
 
     const cData = appData.combos[lKey];
     if (!cData) return;
@@ -1096,7 +1305,6 @@ function renderCombos() {
     else if (lKey === 'PREMIER') leagueTitle = '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League';
     else if (lKey === 'HYPERMOTION') leagueTitle = '🇪🇸 LaLiga Hypermotion';
     else if (lKey === 'CHAMPIONSHIP') leagueTitle = '🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship';
-    else if (lKey === 'MULTI') leagueTitle = '🌍 Mega-Combinades Multi-Lliga';
 
     html += `
       <div class="combos-league-wrapper">
@@ -1106,181 +1314,7 @@ function renderCombos() {
         </div>
 
         <div class="combos-grid">
-          ${allCards.map((c, cardIdx) => {
-            const comboKey = `${lKey}_${c.type}_${cardIdx}`;
-            const effectiveStake = getComboEffectiveStake(c);
-            const boostedOdd = c.boosted_odd || c.combined_odd || 1.0;
-            const effectivePayout = effectiveStake * boostedOdd;
-
-            window.combosRegistry[comboKey] = {
-              ...c,
-              stake: effectiveStake,
-              potential_payout: effectivePayout,
-              leagueKey: lKey,
-              leagueTitle: leagueTitle
-            };
-
-            const legs = c.legs || [];
-            const totalLegs = legs.length;
-            const wonLegs = legs.filter(l => l.status === 'WON').length;
-            const lostLegs = legs.filter(l => l.status === 'LOST').length;
-            const pendingLegs = legs.filter(l => l.status === 'PENDING' || !l.status).length;
-
-            let cardStatus = c.status || 'PENDING';
-            if (lostLegs > 0) cardStatus = 'LOST';
-            else if (totalLegs > 0 && wonLegs === totalLegs) cardStatus = 'WON';
-
-            let oddCls = 'odd-safe';
-            if (c.type === 'semi') oddCls = 'odd-semi';
-            else if (c.type === 'risky') oddCls = 'odd-risky';
-
-            let statusTag = '<span class="status-pending-tag" style="font-size: 10px; padding: 2px 6px;">⏳ EN CURS</span>';
-            if (cardStatus === 'WON') {
-              statusTag = '<span class="status-won-tag" style="font-size: 10px; padding: 2px 6px;">🏆 GUANYADA</span>';
-            } else if (cardStatus === 'LOST') {
-              statusTag = '<span class="status-lost-tag" style="font-size: 10px; padding: 2px 6px;">❌ FALLADA</span>';
-            }
-
-            let progressSummary = `${wonLegs}/${totalLegs} encertats`;
-            if (pendingLegs > 0) {
-              progressSummary += ` · ${pendingLegs} pendents`;
-            }
-            if (lostLegs > 0) {
-              progressSummary += ` (${lostLegs} fallat${lostLegs > 1 ? 's' : ''})`;
-            }
-
-            const boosterPct = c.booster_pct || 0;
-            const hasBooster = boosterPct > 0;
-            const boosterBadge = hasBooster ? `<span class="booster-pill">🚀 +${boosterPct}% Booster</span>` : '';
-            const probConjunta = c.combined_prob_pct != null ? c.combined_prob_pct.toFixed(1) : '-';
-
-            const autofillUrl = getAutofillUrl(c);
-
-            return `
-              <div class="combo-card ${c.type}">
-                <div class="combo-header">
-                  <div>
-                    <div class="combo-title">${c.profile}</div>
-                    <div style="display: flex; gap: 6px; align-items: center; margin-top: 5px; flex-wrap: wrap;">
-                      ${statusTag}
-                      ${boosterBadge}
-                      <span class="combo-joint-prob-pill" title="Probabilitat conjunta estimada pel model">
-                        🎯 Prob. Conjunta: <strong>${probConjunta}%</strong>
-                      </span>
-                    </div>
-                  </div>
-                  <div style="text-align: right;">
-                    <div class="combo-odd-pill ${oddCls}">@ ${boostedOdd.toFixed(2)}</div>
-                    ${hasBooster ? `<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">base @${c.combined_odd.toFixed(2)}</div>` : ''}
-                  </div>
-                </div>
-
-                <!-- Progrés en directe de la combinada -->
-                <div class="combo-progress-bar-container">
-                  <div class="combo-progress-label-row">
-                    <span class="combo-progress-title">Progrés en directe</span>
-                    <span class="combo-progress-stats"><strong>${progressSummary}</strong></span>
-                  </div>
-                  <div class="combo-progress-bar">
-                    ${legs.map((l, lIdx) => {
-                      let segCls = 'seg-pending';
-                      let segTitle = `Partit ${lIdx + 1} (${l.matchup}): Pendent`;
-                      const isSuspended = l.status === 'SUSPENDED' || (l.actual_result && l.actual_result.toLowerCase().includes('suspès'));
-                      if (l.status === 'WON') {
-                        segCls = 'seg-won';
-                        segTitle = `Partit ${lIdx + 1} (${l.matchup}): Encertat! (${l.actual_result || ''})`;
-                      } else if (l.status === 'LOST') {
-                        segCls = 'seg-lost';
-                        segTitle = `Partit ${lIdx + 1} (${l.matchup}): Fallat (${l.actual_result || ''})`;
-                      } else if (isSuspended) {
-                        segCls = 'seg-suspended';
-                        segTitle = `Partit ${lIdx + 1} (${l.matchup}): ⏸️ Suspès (${l.actual_result || ''})`;
-                      }
-                      return `<div class="combo-progress-segment ${segCls}" title="${segTitle}"></div>`;
-                    }).join('')}
-                  </div>
-                </div>
-
-                <ul class="combo-legs-list">
-                  ${legs.map(l => {
-                    const isSusp = l.status === 'SUSPENDED' || (l.actual_result && l.actual_result.toLowerCase().includes('suspès'));
-                    let legBadge = `<span class="leg-pill pill-pending">⏳ Pendent (${l.date || 'Properament'})</span>`;
-                    let legItemCls = 'leg-pending';
-                    if (l.status === 'WON') {
-                      legBadge = `<span class="leg-pill pill-won">✅ ${l.actual_result || 'Encertat'}</span>`;
-                      legItemCls = 'leg-won';
-                    } else if (l.status === 'LOST') {
-                      legBadge = `<span class="leg-pill pill-lost">❌ ${l.actual_result || 'Fallat'}</span>`;
-                      legItemCls = 'leg-lost';
-                    } else if (isSusp) {
-                      legBadge = `<span class="leg-pill pill-suspended" style="background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">⏸️ ${l.actual_result || 'Partit suspès (a l\'espera del resultat)'}</span>`;
-                      legItemCls = 'leg-suspended';
-                    }
-
-                    let catIcon = '🏷️';
-                    const cat = l.category || '';
-                    if (cat === 'Gols') catIcon = '⚽';
-                    else if (cat === 'Córners') catIcon = '🚩';
-                    else if (cat === 'Targetes') catIcon = '🟨';
-                    else if (cat === 'BTTS') catIcon = '🤝';
-                    else if (cat === 'Doble Oportunitat') catIcon = '🛡️';
-                    else if (cat === '1X2') catIcon = '🎯';
-
-                    const catTag = cat ? `<span class="leg-category-tag">${catIcon} ${cat}</span>` : '';
-                    const modelProb = l.model_prob != null ? l.model_prob.toFixed(1) : '-';
-
-                    return `
-                      <li class="combo-leg-item ${legItemCls}">
-                        <div class="leg-desc">
-                          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 2px;">
-                            <span class="leg-matchup">${l.matchup}</span>
-                            ${catTag}
-                          </div>
-                          <div class="leg-name">${l.selection_name}</div>
-                          <div style="margin-top: 4px;">${legBadge}</div>
-                        </div>
-                        <div class="leg-odds-box">
-                          <div class="leg-odd" title="Cuota Winamax">@${l.bookie_odd.toFixed(2)}</div>
-                          <div class="leg-prob-pill" title="Probabilitat del model per a aquesta selecció">
-                            ${modelProb}%
-                          </div>
-                        </div>
-                      </li>
-                    `;
-                  }).join('')}
-                </ul>
-
-                <div class="combo-footer">
-                  <div class="stake-info">
-                    Inversió: <strong>${effectiveStake.toFixed(2)} €</strong>
-                  </div>
-                  <div style="font-family: var(--font-mono); font-size: 11.5px; color: ${cardStatus === 'LOST' ? 'var(--accent-rose)' : 'var(--accent-emerald)'};">
-                    ${cardStatus === 'LOST' ? '❌ Fallada' : (cardStatus === 'WON' ? '🏆 Encertada!' : `⏳ En joc (${wonLegs}/${totalLegs})`)}
-                  </div>
-                  <div class="payout-info">
-                    ${cardStatus === 'LOST' ? `<span style="color: var(--text-muted); text-decoration: line-through;">+${effectivePayout.toFixed(2)} €</span>` : `Retorn: +${effectivePayout.toFixed(2)} €`}
-                  </div>
-                </div>
-
-                <div class="combo-actions-wrapper">
-                  <div class="combo-btn-row">
-                    <button type="button" class="btn-track-combo" onclick="trackComboBet('${comboKey}')" title="Afegir aquesta combinada al teu compte">
-                      ➕ Apostar al meu compte
-                    </button>
-                    <button type="button" class="btn-assistant" onclick="openQuickAssistant('${comboKey}')" title="Obre assistent interactiu pas a pas (Mòbil i PC)">
-                      📲 Assistent Ràpid
-                    </button>
-                    <a href="${autofillUrl}" target="_blank" rel="noopener noreferrer" class="btn-auto-pc" title="Obre Winamax i omple el cupó automàticament (Tampermonkey)">
-                      ⚡ 1-Clic Auto
-                    </a>
-                  </div>
-                  <a href="${c.winamax_url || 'https://www.winamax.es'}" target="_blank" rel="noopener noreferrer" class="combo-direct-link">
-                    Obrir lliga a Winamax ↗
-                  </a>
-                </div>
-              </div>
-            `;
-          }).join('')}
+          ${renderComboCardsHtml(allCards, lKey, leagueTitle)}
         </div>
       </div>
     `;
@@ -1303,6 +1337,212 @@ function renderCombos() {
   } else {
     container.innerHTML = html;
   }
+}
+
+function renderComboCardsHtml(allCards, lKey, leagueTitle) {
+  return allCards.map((c, cardIdx) => {
+    const comboKey = `${lKey}_${c.type}_${cardIdx}`;
+    const effectiveStake = getComboEffectiveStake(c);
+    const isB365 = (currentBookie === 'BET365');
+
+    const baseOdd = isB365
+      ? (c.combined_odd_bet365 || (c.combined_odd ? c.combined_odd * 1.015 : 1.0))
+      : (c.combined_odd_winamax || c.combined_odd || 1.0);
+    const boosterPct = isB365 ? 0 : (c.booster_pct || 0);
+    const boostedOdd = (!isB365 && boosterPct > 0) ? (c.boosted_odd || (baseOdd * (1.0 + boosterPct / 100.0))) : baseOdd;
+    const effectivePayout = effectiveStake * boostedOdd;
+
+    window.combosRegistry[comboKey] = {
+      ...c,
+      stake: effectiveStake,
+      boosted_odd: boostedOdd,
+      potential_payout: effectivePayout,
+      leagueKey: lKey,
+      leagueTitle: leagueTitle
+    };
+
+    const legs = c.legs || [];
+    const totalLegs = legs.length;
+    const wonLegs = legs.filter(l => l.status === 'WON').length;
+    const lostLegs = legs.filter(l => l.status === 'LOST').length;
+    const pendingLegs = legs.filter(l => l.status === 'PENDING' || !l.status).length;
+
+    let cardStatus = c.status || 'PENDING';
+    if (lostLegs > 0) cardStatus = 'LOST';
+    else if (totalLegs > 0 && wonLegs === totalLegs) cardStatus = 'WON';
+
+    let oddCls = 'odd-safe';
+    if (c.type === 'semi') oddCls = 'odd-semi';
+    else if (c.type === 'risky') oddCls = 'odd-risky';
+
+    let statusTag = '<span class="status-pending-tag" style="font-size: 10px; padding: 2px 6px;">⏳ EN CURS</span>';
+    if (cardStatus === 'WON') {
+      statusTag = '<span class="status-won-tag" style="font-size: 10px; padding: 2px 6px;">🏆 GUANYADA</span>';
+    } else if (cardStatus === 'LOST') {
+      statusTag = '<span class="status-lost-tag" style="font-size: 10px; padding: 2px 6px;">❌ FALLADA</span>';
+    }
+
+    let progressSummary = `${wonLegs}/${totalLegs} encertats`;
+    if (pendingLegs > 0) {
+      progressSummary += ` · ${pendingLegs} pendents`;
+    }
+    if (lostLegs > 0) {
+      progressSummary += ` (${lostLegs} fallat${lostLegs > 1 ? 's' : ''})`;
+    }
+
+    const hasBooster = boosterPct > 0;
+    const boosterBadge = hasBooster ? `<span class="booster-pill">🚀 +${boosterPct}% Booster</span>` : '';
+    const probConjunta = c.combined_prob_pct != null ? c.combined_prob_pct.toFixed(1) : '-';
+
+    return `
+      <div class="combo-card ${c.type}">
+        <div class="combo-header">
+          <div>
+            <div class="combo-title">${c.profile}</div>
+            <div style="display: flex; gap: 6px; align-items: center; margin-top: 5px; flex-wrap: wrap;">
+              ${statusTag}
+              ${boosterBadge}
+              <span class="combo-joint-prob-pill" title="Probabilitat conjunta estimada pel model">
+                🎯 Prob. Conjunta: <strong>${probConjunta}%</strong>
+              </span>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div class="combo-odd-pill ${oddCls}">@ ${boostedOdd.toFixed(2)}</div>
+            ${hasBooster ? `<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">base @${baseOdd.toFixed(2)}</div>` : `<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">${isB365 ? '🟢 Bet365' : '🔴 Winamax'}</div>`}
+          </div>
+        </div>
+
+        <!-- Progrés en directe de la combinada -->
+        <div class="combo-progress-bar-container">
+          <div class="combo-progress-label-row">
+            <span class="combo-progress-title">Progrés en directe</span>
+            <span class="combo-progress-stats"><strong>${progressSummary}</strong></span>
+          </div>
+          <div class="combo-progress-bar">
+            ${legs.map((l, lIdx) => {
+              let segCls = 'seg-pending';
+              let segTitle = `Partit ${lIdx + 1} (${l.matchup}): Pendent`;
+              const isSuspended = l.status === 'SUSPENDED' || (l.actual_result && l.actual_result.toLowerCase().includes('suspès'));
+              if (l.status === 'WON') {
+                segCls = 'seg-won';
+                segTitle = `Partit ${lIdx + 1} (${l.matchup}): Encertat! (${l.actual_result || ''})`;
+              } else if (l.status === 'LOST') {
+                segCls = 'seg-lost';
+                segTitle = `Partit ${lIdx + 1} (${l.matchup}): Fallat (${l.actual_result || ''})`;
+              } else if (isSuspended) {
+                segCls = 'seg-suspended';
+                segTitle = `Partit ${lIdx + 1} (${l.matchup}): ⏸️ Suspès (${l.actual_result || ''})`;
+              }
+              return `<div class="combo-progress-segment ${segCls}" title="${segTitle}"></div>`;
+            }).join('')}
+          </div>
+        </div>
+
+        <ul class="combo-legs-list">
+          ${legs.map(l => {
+            const isSusp = l.status === 'SUSPENDED' || (l.actual_result && l.actual_result.toLowerCase().includes('suspès'));
+            let legBadge = `<span class="leg-pill pill-pending">⏳ Pendent (${l.date || 'Properament'})</span>`;
+            let legItemCls = 'leg-pending';
+            if (l.status === 'WON') {
+              legBadge = `<span class="leg-pill pill-won">✅ ${l.actual_result || 'Encertat'}</span>`;
+              legItemCls = 'leg-won';
+            } else if (l.status === 'LOST') {
+              legBadge = `<span class="leg-pill pill-lost">❌ ${l.actual_result || 'Fallat'}</span>`;
+              legItemCls = 'leg-lost';
+            } else if (isSusp) {
+              legBadge = `<span class="leg-pill pill-suspended" style="background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">⏸️ ${l.actual_result || 'Partit suspès'}</span>`;
+              legItemCls = 'leg-suspended';
+            }
+
+            let catIcon = '🏷️';
+            const cat = l.category || '';
+            if (cat === 'Gols') catIcon = '⚽';
+            else if (cat === 'Córners') catIcon = '🚩';
+            else if (cat === 'Targetes') catIcon = '🟨';
+            else if (cat === 'BTTS') catIcon = '🤝';
+            else if (cat === 'Doble Oportunitat') catIcon = '🛡️';
+            else if (cat === '1X2') catIcon = '🎯';
+            else if (cat === 'Marcador Exacte') catIcon = '🔢';
+
+            const catTag = cat ? `<span class="leg-category-tag">${catIcon} ${cat}</span>` : '';
+            const modelProb = l.model_prob != null ? l.model_prob.toFixed(1) : '-';
+            const legOdd = isB365
+              ? (l.bookie_odd_bet365 != null ? l.bookie_odd_bet365.toFixed(2) : (l.bookie_odd != null ? (l.bookie_odd * 1.015).toFixed(2) : '-'))
+              : (l.bookie_odd_winamax != null ? l.bookie_odd_winamax.toFixed(2) : (l.bookie_odd != null ? l.bookie_odd.toFixed(2) : '-'));
+
+            return `
+              <li class="combo-leg-item ${legItemCls}">
+                <div class="leg-desc">
+                  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 2px;">
+                    <span class="leg-matchup">${l.matchup}</span>
+                    ${catTag}
+                  </div>
+                  <div class="leg-name">${l.selection_name}</div>
+                  <div style="margin-top: 4px;">${legBadge}</div>
+                </div>
+                <div class="leg-odds-box">
+                  <div class="leg-odd" title="${isB365 ? 'Cuota Bet365' : 'Cuota Winamax'}">@${legOdd}</div>
+                  <div class="leg-prob-pill" title="Probabilitat del model per a aquesta selecció">
+                    ${modelProb}%
+                  </div>
+                </div>
+              </li>
+            `;
+          }).join('')}
+        </ul>
+
+        <div class="combo-footer">
+          <div class="stake-info">
+            Inversió: <strong>${effectiveStake.toFixed(2)} €</strong>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 11.5px; color: ${cardStatus === 'LOST' ? 'var(--accent-rose)' : 'var(--accent-emerald)'};">
+            ${cardStatus === 'LOST' ? '❌ Fallada' : (cardStatus === 'WON' ? '🏆 Encertada!' : `⏳ En joc (${wonLegs}/${totalLegs})`)}
+          </div>
+          <div class="payout-info">
+            ${cardStatus === 'LOST' ? `<span style="color: var(--text-muted); text-decoration: line-through;">+${effectivePayout.toFixed(2)} €</span>` : `Retorn: +${effectivePayout.toFixed(2)} €`}
+          </div>
+        </div>
+
+        <div class="combo-actions-wrapper">
+          ${isB365 ? `
+            <div class="combo-btn-row">
+              <button type="button" class="btn-track-combo" onclick="trackComboBet('${comboKey}')" title="Afegir aquesta combinada al teu compte">
+                ➕ Apostar al meu compte
+              </button>
+              <button type="button" class="btn-copy-b365" onclick="copyBet365Slip('${comboKey}')" title="Copiar seleccions i enllaç de la combinada Bet365">
+                📋 Copiar Link Bet365
+              </button>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+              <a href="${c.bet365_url || 'https://www.bet365.es'}" target="_blank" rel="noopener noreferrer" class="combo-direct-link bet365-link" style="flex: 1;">
+                🟢 Apostar a Bet365 ↗
+              </a>
+              <button type="button" class="btn-assistant" onclick="openQuickAssistant('${comboKey}')" title="Obre assistent interactiu pas a pas" style="padding: 10px 14px;">
+                📲 Assistent
+              </button>
+            </div>
+            <div class="bet365-direct-url-box">
+              <span class="bet365-url-lbl">🔗 Link Bet:</span>
+              <a href="${c.bet365_url || 'https://www.bet365.es'}" target="_blank" rel="noopener noreferrer" class="bet365-url-text">${c.bet365_url || 'https://www.bet365.es'}</a>
+            </div>
+          ` : `
+            <div class="combo-btn-row">
+              <button type="button" class="btn-track-combo" onclick="trackComboBet('${comboKey}')" title="Afegir aquesta combinada al teu compte">
+                ➕ Apostar al meu compte
+              </button>
+              <button type="button" class="btn-assistant" onclick="openQuickAssistant('${comboKey}')" title="Obre assistent interactiu pas a pas (Mòbil i PC)">
+                📲 Assistent Ràpid
+              </button>
+            </div>
+            <a href="${c.winamax_url || 'https://www.winamax.es'}" target="_blank" rel="noopener noreferrer" class="combo-direct-link">
+              Obrir a Winamax ↗
+            </a>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 // =============================================================================
@@ -1655,7 +1895,7 @@ const PersonalBets = {
           const profMatch = b.matchup.match(/(SAFE_\d|SEMI_\d|RISKY_\d)/i);
           if (profMatch) {
             const prof = profMatch[1].toUpperCase();
-            match = combosList.find(c => (c.profile || '').toUpperCase() === prof && (!b.competition_id || b.competition_id === 'MULTI' || c.leagueKey === b.competition_id));
+            match = combosList.find(c => (c.profile || '').toUpperCase() === prof && (!b.competition_id || b.competition_id === 'MULTI' || b.competition_id === 'DAILY' || c.leagueKey === b.competition_id));
             if (!match) {
               match = combosList.find(c => (c.profile || '').toUpperCase() === prof);
             }
@@ -2151,7 +2391,7 @@ function trackComboBet(comboKey) {
     odd: parseFloat(boostedOdd) || 2.0,
     stake: parseFloat(stake) || 10.0,
     category: 'Combinada',
-    competition_id: compKey || 'MULTI',
+    competition_id: compKey || 'DAILY',
     status: initStatus,
     legs: legs,
     auto_evaluated: true
@@ -3329,9 +3569,14 @@ function openQuickAssistant(comboKey) {
       else if (cat === 'Doble Oportunitat') catIcon = '🛡️';
       else if (cat === '1X2') catIcon = '🎯';
 
-      const legOdd = leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-';
+      const isB365 = (currentBookie === 'BET365');
+      const legOdd = isB365
+        ? (leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : (leg.bookie_odd != null ? (leg.bookie_odd * 1.015).toFixed(2) : '-'))
+        : (leg.bookie_odd_winamax != null ? leg.bookie_odd_winamax.toFixed(2) : (leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-'));
       const modelProb = leg.model_prob != null ? leg.model_prob.toFixed(1) : '-';
-      const legUrl = leg.url || combo.winamax_url || 'https://www.winamax.es';
+      const legUrl = isB365
+        ? (leg.url_bet365 || combo.bet365_url || 'https://www.bet365.es')
+        : (leg.url || combo.winamax_url || 'https://www.winamax.es');
 
       return `
         <div class="qa-leg-card" id="qa-leg-card-${idx}">
@@ -3348,7 +3593,7 @@ function openQuickAssistant(comboKey) {
           </div>
 
           <div class="qa-selection-instruction">
-            <div class="qa-instruction-label">👉 Casella exacta a marcar a Winamax:</div>
+            <div class="qa-instruction-label">${isB365 ? '👉 Casella exacta a marcar a Bet365:' : '👉 Casella exacta a marcar a Winamax:'}</div>
             <div class="qa-instruction-value">
               <strong>${leg.selection_name}</strong>
             </div>
@@ -3383,7 +3628,7 @@ function closeQuickAssistant() {
 }
 
 function handleLegClick(idx) {
-  // Quan l'usuari clica per obrir el partit a Winamax, marquem automàticament la casella
+  // Quan l'usuari clica per obrir el partit, marquem automàticament la casella
   const checkbox = document.getElementById(`qa-check-${idx}`);
   if (checkbox && !checkbox.checked) {
     checkbox.checked = true;
@@ -3420,21 +3665,31 @@ function copyModalComboSummary() {
   const combo = window.combosRegistry[activeModalComboKey];
   if (!combo) return;
 
-  const boosterPct = combo.booster_pct || 0;
-  const boostedOdd = combo.boosted_odd || combo.combined_odd;
+  const isB365 = (currentBookie === 'BET365');
+  const boosterPct = isB365 ? 0 : (combo.booster_pct || 0);
+  const odd = isB365
+    ? (combo.combined_odd_bet365 || combo.combined_odd || 1.0)
+    : (combo.boosted_odd || combo.combined_odd || 1.0);
   const probConjunta = combo.combined_prob_pct != null ? combo.combined_prob_pct.toFixed(1) : '-';
+  const bookieName = isB365 ? 'BET365' : 'WINAMAX';
+  const directLink = isB365 ? (combo.bet365_url || 'https://www.bet365.es') : (combo.winamax_url || 'https://www.winamax.es');
 
-  let text = `⚽ PREDICCIONS FUTBOL · ${combo.profile}\n`;
+  let text = `⚽ PREDICCIONS FUTBOL · ${bookieName} · ${combo.profile}\n`;
   text += `Lliga: ${combo.leagueTitle || ''}\n`;
-  text += `Cuota Total: @${boostedOdd.toFixed(2)}${boosterPct > 0 ? ` (+${boosterPct}% Booster)` : ''}\n`;
+  text += `Cuota Total: @${Number(odd).toFixed(2)}${boosterPct > 0 ? ` (+${boosterPct}% Booster)` : ''}\n`;
+  text += `Enllaç Directe ${bookieName}: ${directLink}\n`;
   text += `Probabilitat Conjunta Model: ${probConjunta}%\n`;
   text += `Inversió Recomanada: ${combo.stake.toFixed(2)} € (Retorn: +${combo.potential_payout.toFixed(2)} €)\n\n`;
   text += `SELECCIONS DEL CUPÓ:\n`;
 
   (combo.legs || []).forEach((leg, i) => {
-    text += `${i + 1}. [${leg.matchup}] 👉 ${leg.selection_name} (@${leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-'}) [Model: ${leg.model_prob}%]\n`;
-    if (leg.url) {
-      text += `   Enllaç: ${leg.url}\n`;
+    const lOdd = isB365
+      ? (leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : (leg.bookie_odd != null ? (leg.bookie_odd * 1.015).toFixed(2) : '-'))
+      : (leg.bookie_odd_winamax != null ? leg.bookie_odd_winamax.toFixed(2) : (leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-'));
+    text += `${i + 1}. [${leg.matchup}] 👉 ${leg.selection_name} (@${lOdd}) [Model: ${leg.model_prob}%]\n`;
+    const lUrl = isB365 ? (leg.url_bet365 || directLink) : (leg.url || directLink);
+    if (lUrl) {
+      text += `   Enllaç: ${lUrl}\n`;
     }
   });
 
@@ -3527,4 +3782,6 @@ window.openWinamaxAutofill = openWinamaxAutofill;
 window.launchTestComboAutofill = launchTestComboAutofill;
 window.onJornadaChange = onJornadaChange;
 window.UserAuth = UserAuth;
+window.setBookie = setBookie;
+window.copyBet365Slip = copyBet365Slip;
 

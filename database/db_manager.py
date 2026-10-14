@@ -884,6 +884,113 @@ class DatabaseManager:
                 c["legs"] = [dict(l) for l in cursor.fetchall()]
             return combos
 
+    def save_daily_combo(
+        self,
+        date_str: str,
+        profile: str,
+        stake: float,
+        combo_summary: Dict[str, Any]
+    ) -> str:
+        """
+        Desa una combinada del dia (Suite de 6 per dia).
+        PROTECCIÓ: Si la combinada per a aquest dia ja s'havia generat (ex: a la 1 del matí),
+        NO la sobreescriu quan el model es torni a executar al migdia o la tarda!
+        """
+        legs = combo_summary.get("legs", [])
+        if not legs:
+            return ""
+
+        import re
+        safe_prof = re.sub(r'[^A-Za-z0-9_]', '_', profile).strip('_').upper()
+        combo_id = f"COMBO_DAILY_{date_str}_{safe_prof}"
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            existing_row = cursor.execute("SELECT id, status FROM combo_recommendations WHERE id = ?", (combo_id,)).fetchone()
+            if existing_row:
+                # Ja existeix per a aquest dia: preservar les seleccions i cuotes oficials congelades!
+                return combo_id
+
+            combined_odd = float(combo_summary.get("combined_odd", 1.0))
+            prob_pct = float(combo_summary.get("combined_prob_pct", 0.0))
+            fair_odd = float(combo_summary.get("fair_odd", 1.0))
+            ev_pct = float(combo_summary.get("ev_pct", 0.0))
+            wmx_url = combo_summary.get("winamax_url", "")
+
+            cursor.execute("""
+                INSERT OR REPLACE INTO combo_recommendations
+                (id, competition_id, season, jornada, profile, stake, combined_odd, combined_prob_pct, fair_odd, ev_pct, status, winamax_url, created_at)
+                VALUES (?, 'DAILY', '2026-2027', 0, ?, ?, ?, ?, ?, ?, 'PENDING', ?, datetime('now'))
+            """, (combo_id, profile, stake, combined_odd, prob_pct, fair_odd, ev_pct, wmx_url))
+
+            cursor.execute("DELETE FROM combo_legs WHERE combo_id = ?", (combo_id,))
+
+            for leg in legs:
+                matchup = leg.get("matchup", "")
+                parts = matchup.split(" vs ", 1)
+                h_id = leg.get("home_team_id") or (self.find_team_id(parts[0]) if len(parts) == 2 else None)
+                a_id = leg.get("away_team_id") or (self.find_team_id(parts[1]) if len(parts) == 2 else None)
+
+                cursor.execute("""
+                    INSERT INTO combo_legs
+                    (combo_id, matchup, selection_name, category, bookie_odd, model_prob, match_date, url, home_team_id, away_team_id, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')
+                """, (
+                    combo_id,
+                    matchup,
+                    leg.get("name") or leg.get("selection_name", ""),
+                    leg.get("category", ""),
+                    float(leg.get("bookie_odd", 1.0)),
+                    float(leg.get("model_prob", 0.0)),
+                    leg.get("date", date_str),
+                    leg.get("url", ""),
+                    h_id,
+                    a_id
+                ))
+
+            conn.commit()
+        return combo_id
+
+    def get_daily_combos_for_date(self, date_str: str) -> List[Dict[str, Any]]:
+        """Recupera les 6 combinades del dia per a una data específica."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT * FROM combo_recommendations
+                WHERE competition_id = 'DAILY' AND id LIKE ?
+                ORDER BY profile ASC
+            """, (f"COMBO_DAILY_{date_str}_%",))
+            combos = [dict(r) for r in cursor.fetchall()]
+            for c in combos:
+                cursor.execute("SELECT * FROM combo_legs WHERE combo_id = ?", (c["id"],))
+                c["legs"] = [dict(lr) for lr in cursor.fetchall()]
+            return combos
+
+    def has_daily_combos(self, date_str: str) -> bool:
+        """Indica si ja existeixen combinades registrades per a aquest dia."""
+        with self.get_connection() as conn:
+            c = conn.cursor().execute(
+                "SELECT COUNT(*) FROM combo_recommendations WHERE competition_id = 'DAILY' AND id LIKE ?",
+                (f"COMBO_DAILY_{date_str}_%",)
+            ).fetchone()[0]
+            return c >= 2
+
+    def get_all_daily_combo_dates(self) -> List[str]:
+        """Recupera la llista de totes les dates que tenen combinades del dia."""
+        with self.get_connection() as conn:
+            rows = conn.cursor().execute("""
+                SELECT DISTINCT id FROM combo_recommendations WHERE competition_id = 'DAILY'
+            """).fetchall()
+            dates = set()
+            for r in rows:
+                c_id = r[0]
+                # Format: COMBO_DAILY_YYYY-MM-DD_PROFILE
+                parts = c_id.split("_")
+                if len(parts) >= 3:
+                    dates.add(parts[2])
+            return sorted(list(dates))
+
+
     def purge_historical_combos_before_today(self):
         """
         Elimina totes les combinades de jornades passades anteriors a l'inici del seguiment viu (J1 a J5),

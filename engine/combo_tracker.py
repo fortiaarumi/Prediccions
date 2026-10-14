@@ -140,6 +140,16 @@ class ComboTracker:
             won = tot_corn >= 10
             return ("WON" if won else "LOST"), f"{tot_corn} córners"
 
+        # 7. Marcador Exacte (ex: "Marcador Exacte: 2-1" o "Resultat Exacte 1-0")
+        elif "marcador exacte" in sel_name or "resultat exacte" in sel_name or "resultado exacto" in sel_name:
+            import re
+            m_sc = re.search(r'(\d+)\s*[-:]\s*(\d+)', sel_name)
+            if m_sc:
+                exp_h = int(m_sc.group(1))
+                exp_a = int(m_sc.group(2))
+                won = (h_goals == exp_h and a_goals == exp_a)
+                return ("WON" if won else "LOST"), f"{h_goals}-{a_goals} ({'Marcador exacte encertat!' if won else f'Esperat {exp_h}-{exp_a}'})"
+
         # Per defecte si no es reconeix
         return "PENDING", f"{h_goals}-{a_goals}"
 
@@ -167,6 +177,13 @@ class ComboTracker:
                 for leg in legs:
                     h_id = leg.get("home_team_id")
                     a_id = leg.get("away_team_id")
+                    if not h_id or not a_id:
+                        m_str = leg.get("matchup", "")
+                        if " vs " in m_str:
+                            p_parts = m_str.split(" vs ", 1)
+                            h_id = h_id or self.db.find_team_id(p_parts[0].strip())
+                            a_id = a_id or self.db.find_team_id(p_parts[1].strip())
+
                     match_row = None
 
                     if h_id and a_id:
@@ -178,6 +195,7 @@ class ComboTracker:
                         row = cursor.fetchone()
                         if row:
                             match_row = dict(row)
+
 
                     if not match_row or match_row.get("status") != "FINISHED":
                         all_legs_finished = False

@@ -63,7 +63,7 @@
         </button>
         <button class="nav-tab" id="tab-btn-combos" role="tab" aria-selected="false" data-tab="combos">
           <span class="tab-icon">🎯</span>
-          <span class="tab-label">Combinades (6 per Lliga)</span>
+          <span class="tab-label">Combinades</span>
         </button>
         <button class="nav-tab" id="tab-btn-bankroll" role="tab" aria-selected="false" data-tab="bankroll">
           <span class="tab-icon">💰</span>
@@ -71,7 +71,7 @@
         </button>
         <button class="nav-tab" id="tab-btn-guia" role="tab" aria-selected="false" data-tab="guia">
           <span class="tab-icon">⚡</span>
-          <span class="tab-label">Guia 1-Clic Winamax</span>
+          <span class="tab-label">Guia Assistent Winamax</span>
         </button>
       </div>
     </nav>
@@ -86,12 +86,25 @@
         <button class="pill-btn" data-league="PREMIER" id="pill-premier">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</button>
         <button class="pill-btn" data-league="HYPERMOTION" id="pill-hypermotion">🇪🇸 LaLiga Hypermotion</button>
         <button class="pill-btn" data-league="CHAMPIONSHIP" id="pill-championship">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship</button>
-        <button class="pill-btn" data-league="MULTI" id="pill-multi">🌍 Multi-Lliga</button>
+        <button class="pill-btn" data-league="DAILY" id="pill-daily">📅 Combinades del Dia</button>
       </div>
 
       <div class="search-box">
         <span class="search-icon">🔍</span>
         <input type="text" id="global-search" placeholder="Cercar equip, partit o selecció..." aria-label="Cercar">
+      </div>
+
+      <!-- Selector Oficial de Casa d'Apostes (Winamax vs Bet365) -->
+      <div class="bookie-toggle-wrapper" id="bookie-toggle-wrapper" title="Selecciona la casa d'apostes per visualitzar cuotes, combinades i enllaços directes">
+        <span class="bookie-toggle-lbl">Cuotes:</span>
+        <div class="bookie-toggle-group" role="group" aria-label="Casa d'apostes">
+          <button type="button" class="bookie-pill-btn active" data-bookie="WINAMAX" id="btn-bookie-winamax" onclick="setBookie('WINAMAX')">
+            <span class="bookie-indicator-dot dot-winamax"></span>🔴 Winamax
+          </button>
+          <button type="button" class="bookie-pill-btn" data-bookie="BET365" id="btn-bookie-bet365" onclick="setBookie('BET365')">
+            <span class="bookie-indicator-dot dot-bet365"></span>🟢 Bet365
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -379,72 +392,57 @@
       </div>
     </section>
 
-    <!-- SECTION 7: GUIA D'AUTOMATITZACIÓ 1-CLIC -->
+    <!-- SECTION 7: GUIA D'ÚS ASSISTENT RÀPID -->
     <section class="tab-content" id="section-guia" role="tabpanel">
       <div class="section-hero">
         <div>
           <h1 class="section-title">⚡ Com estalviar temps a Winamax (Guia d'Ús)</h1>
-          <p class="section-subtitle">Winamax no permet enllaços públics directes a la cistella per seguretat web. Aquí t'expliquem les dues maneres més ràpides d'omplir les teves combinades des del PC i des del mòbil.</p>
+          <p class="section-subtitle">Winamax no permet enllaços públics directes a la cistella per seguretat web. Aquí t'expliquem com fer servir el nostre Assistent Ràpid tant des del mòbil com des de l'ordinador.</p>
         </div>
       </div>
 
       <div class="guide-grid">
-        <!-- Card 1: PC Automatització -->
+        <!-- Card 1: Ordinador Assistent -->
         <div class="guide-card highlight-card">
           <div class="guide-badge">💻 ORDINADOR (CHROME / EDGE / BRAVE / FIREFOX)</div>
-          <h2 class="guide-title">Mètode 1-Clic Automàtic (Mode Turbo v3.1.0 Definitiu)</h2>
-          <p class="guide-text">Sistema d'alta velocitat: Winamax detecta la combinada, activa el panell Turbo superior i va clicant autònomament les quotes oficials fins a deixar-te la combinada de 3 partits a la cistella!</p>
+          <h2 class="guide-title">Assistent Ràpid per a Ordinador</h2>
+          <p class="guide-text">Obre cada partit en una pestanya amb un sol clic i afegeix directament les seleccions recomanades pel model.</p>
           
           <div class="guide-steps">
             <div class="guide-step">
               <span class="step-num">1</span>
               <div>
-                <strong>Instal·la l'extensió oficial Tampermonkey:</strong>
-                <p>És el gestor d'scripts més segur i popular del món (amb més de 10 milions d'usuaris).</p>
-                <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener noreferrer" class="btn-subaction" style="margin-top: 6px; display: inline-block;">
-                  Descarregar Tampermonkey Oficial ↗
-                </a>
+                <strong>Clica a "📲 Assistent Ràpid":</strong>
+                <p>A qualsevol targeta de combinada, prem el botó blau de l'Assistent Ràpid per desplegar les seleccions detallades.</p>
               </div>
             </div>
 
             <div class="guide-step">
               <span class="step-num">2</span>
               <div>
-                <strong>Activa el "Mode desenvolupador" a Chrome/Edge (Molt Important):</strong>
-                <p>A Google Chrome, si no actives aquest mode, Chrome bloqueja Tampermonkey i mostra un punt vermell d'avís:</p>
-                <div style="margin-top: 8px; font-size: 12.5px; color: #f59e0b; background: rgba(245,158,11,0.1); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.3); line-height: 1.5;">
-                  👉 Obre una pestanya, escriu <code>chrome://extensions</code> a la barra d'adreces i activa l'interruptor <strong>"Modo de desarrollador"</strong> (a dalt a la dreta).
-                </div>
+                <strong>Obre els partits directament:</strong>
+                <p>Pots prémer <em>"📑 Obrir Tots els Partits"</em> per carregar totes les finestres de Winamax o prémer el botó individual de cada partit.</p>
               </div>
             </div>
 
             <div class="guide-step">
               <span class="step-num">3</span>
               <div>
-                <strong>Instal·la o Actualitza l'Script (v3.2.0 Definitiu):</strong>
-                <p>Fes clic al botó de sota. Tampermonkey t'obrirà la pestanya oficial. Prem <strong>"Actualizar"</strong> o <strong>"Reinstalar"</strong>:</p>
-                <a href="./tools/winamax_autofill.user.js?v=3.2.0" target="_blank" class="btn-action-primary" style="margin-top: 10px; display: inline-flex; font-size: 14px; font-weight: 700; padding: 12px 18px;">
-                  ⚡ Clica aquí per Actualitzar Script a v3.2.0
-                </a>
-                <div style="margin-top: 6px; font-size: 12px; color: #34d399;">
-                  👉 <em>Assegura't de prémer "Actualizar" o "Reinstalar" a la pestanya de Tampermonkey!</em>
-                </div>
+                <strong>Instrucció exacta del mercat:</strong>
+                <p>L'assistent t'indica la casella exacta a marcar (ex: <em>"FC Barcelona o Empat"</em> o <em>"Més d'1.5 gols"</em>) i la quota estimada.</p>
               </div>
             </div>
 
             <div class="guide-step">
               <span class="step-num">4</span>
               <div>
-                <strong>Com funciona (Turbo Auto-Betslip):</strong>
-                <p>En prémer <strong>"⚡ 1-Clic Auto"</strong>, Winamax s'obre i un panell HUD flotant anirà marcant les quotes de forma autònoma i saltant de partit en partit en mil·lisegons. Quan te n'adonis, tindràs el cupó complet a la cistella a punt per posar el teu import!</p>
+                <strong>Control de seleccions afegides:</strong>
+                <p>Marca el xec a mesura que les afegeixes a la teva cistella per assegurar-te que no en deixes cap.</p>
               </div>
             </div>
           </div>
 
           <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-glass); display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn-action-primary" onclick="launchTestComboAutofill()" style="flex: 1; min-width: 210px; justify-content: center; font-size: 13.5px; padding: 12px 16px; background: linear-gradient(135deg, #10b981, #059669); border: none; box-shadow: 0 4px 15px rgba(16,185,129,0.35); cursor: pointer;">
-              ⚡ Provar ara mateix a Winamax (1-Clic Auto) ↗
-            </button>
             <button class="btn-assistant" onclick="switchTab('combos')" style="flex: 1; min-width: 170px; justify-content: center; font-size: 13.5px; padding: 12px 16px; cursor: pointer;">
               🎯 Anar a les Combinades ↗
             </button>
@@ -545,9 +543,6 @@
         <button class="btn-secondary" id="qa-btn-open-all">
           📑 Obrir Tots els Partits
         </button>
-        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-winamax" id="qa-btn-auto-pc">
-          ⚡ 1-Clic Auto (PC) ↗
-        </a>
       </div>
     </div>
   </div>
@@ -659,7 +654,7 @@
                 <option value="LALIGA">🇪🇸 LaLiga EA Sports</option>
                 <option value="PREMIER">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
                 <option value="CHAMPIONSHIP">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship</option>
-                <option value="MULTI">🌍 Multi-Lliga</option>
+                <option value="DAILY">📅 Combinades del Dia</option>
                 <option value="OTHER">⚽ Altra Lliga / Copa</option>
               </select>
             </div>

@@ -33,6 +33,7 @@ from database.db_manager import DatabaseManager
 from scraper.jornada_resolver import JornadaResolver
 from scraper.referee_resolver import RefereeResolver
 from scraper.winamax_scraper import WinamaxScraper
+from scraper.bet365_scraper import Bet365Scraper
 from engine.match_predictor import MatchPredictor
 from engine.value_bet_engine import ValueBetEngine
 from engine.combo_bet_engine import ComboBetEngine
@@ -85,6 +86,7 @@ class WebDataExporter:
         self.predictor = MatchPredictor()
         self.referee_resolver = RefereeResolver(db=self.db)
         self.winamax = WinamaxScraper(headless=True)
+        self.bet365 = Bet365Scraper(headless=True)
         self.value_engine = ValueBetEngine(kelly_fraction=0.25)
         self.combo_engine = ComboBetEngine()
         self.tracker = ComboTracker(db=self.db)
@@ -402,8 +404,9 @@ class WebDataExporter:
             a_goals = r.get("away_goals")
             is_finished = (r.get("status") == "FINISHED" and h_goals is not None)
 
-            # Cuotes Winamax
+            # Cuotes Winamax & Bet365
             odds = {}
+            odds_b365 = {}
             bet_analysis = {"value_bets": []}
             if not is_finished:
                 odds = self.winamax.get_match_odds(home_data["name"], away_data["name"], competition_id=competition_id)
@@ -412,6 +415,14 @@ class WebDataExporter:
                     if m_key in existing_match_odds:
                         odds = existing_match_odds[m_key]
 
+                odds_b365 = self.bet365.get_match_odds(
+                    home_data["name"],
+                    away_data["name"],
+                    competition_id=competition_id,
+                    match_pred=pred,
+                    winamax_odds=odds
+                )
+
                 bet_analysis = self.value_engine.analyze_match_betting(pred, odds)
                 if (not bet_analysis.get("value_bets")) and existing_match_odds:
                     m_key = f"{h_id}_{a_id}"
@@ -419,6 +430,8 @@ class WebDataExporter:
                         bet_analysis["value_bets"] = existing_match_odds[m_key]["cached_value_bets"]
 
             pred["odds"] = odds
+            pred["odds_winamax"] = odds
+            pred["odds_bet365"] = odds_b365
             pred["bet_analysis"] = bet_analysis
 
             # Extracció de probabilitats netes
@@ -637,14 +650,42 @@ class WebDataExporter:
                     "X": o_1x2.get("X"),
                     "2": o_1x2.get("2")
                 },
+                "odds_1x2_winamax": {
+                    "1": o_1x2.get("1"),
+                    "X": o_1x2.get("X"),
+                    "2": o_1x2.get("2")
+                },
+                "odds_1x2_bet365": {
+                    "1": (odds_b365.get("1X2") or {}).get("1") or o_1x2.get("1"),
+                    "X": (odds_b365.get("1X2") or {}).get("X") or o_1x2.get("X"),
+                    "2": (odds_b365.get("1X2") or {}).get("2") or o_1x2.get("2")
+                },
                 "odds_ou25": {
                     "over": o_ou.get("over"),
                     "under": o_ou.get("under")
+                },
+                "odds_ou25_winamax": {
+                    "over": o_ou.get("over"),
+                    "under": o_ou.get("under")
+                },
+                "odds_ou25_bet365": {
+                    "over": (odds_b365.get("over_under_2_5") or {}).get("over") or o_ou.get("over"),
+                    "under": (odds_b365.get("over_under_2_5") or {}).get("under") or o_ou.get("under")
                 },
                 "odds_btts": {
                     "yes": o_btts.get("yes"),
                     "no": o_btts.get("no")
                 },
+                "odds_btts_winamax": {
+                    "yes": o_btts.get("yes"),
+                    "no": o_btts.get("no")
+                },
+                "odds_btts_bet365": {
+                    "yes": (odds_b365.get("btts") or {}).get("yes") or o_btts.get("yes"),
+                    "no": (odds_b365.get("btts") or {}).get("no") or o_btts.get("no")
+                },
+                "url_winamax": odds.get("url") or "https://www.winamax.es",
+                "url_bet365": odds_b365.get("url") or "https://www.bet365.es",
                 "value_bets": bet_analysis.get("value_bets", []) if not is_finished else [],
                 "raw_pred": pred # per a càlculs posteriors
             })
@@ -832,14 +873,20 @@ class WebDataExporter:
                     elif leg_status == "PENDING":
                         all_finished = False
 
+                    w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
+                    b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
                     legs_evaluated.append({
                         "matchup": leg.get("matchup", ""),
                         "selection_name": leg.get("selection_name", ""),
                         "category": leg.get("category", ""),
-                        "bookie_odd": float(leg.get("bookie_odd", 1.0)),
+                        "bookie_odd": w_odd,
+                        "bookie_odd_winamax": w_odd,
+                        "bookie_odd_bet365": b365_odd,
                         "model_prob": float(leg.get("model_prob", 0.0)),
                         "date": leg.get("match_date", leg.get("date", "")),
                         "url": leg.get("url", ""),
+                        "url_winamax": leg.get("url_winamax") or leg.get("url", "https://www.winamax.es"),
+                        "url_bet365": leg.get("url_bet365") or self.bet365.generate_combo_link([leg], competition_id),
                         "status": leg_status,
                         "actual_result": actual_res
                     })
@@ -848,6 +895,15 @@ class WebDataExporter:
                 odd = float(c.get("combined_odd", 1.0))
                 booster_pct = float(c.get("booster_pct") or self.combo_engine.calculate_winamax_booster(len(legs_evaluated)))
                 boosted_odd = round(odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else odd
+
+                b365_comb_odd = 1.0
+                for l in legs_evaluated:
+                    b365_comb_odd *= float(l.get("bookie_odd_bet365", 1.0))
+                b365_comb_odd = round(b365_comb_odd, 2)
+                b365_combo_url = self.bet365.generate_combo_link(legs_evaluated, competition_id)
+                b365_slip_text = self.bet365.format_bet365_slip_text(
+                    c.get("profile", ""), b365_comb_odd, legs_evaluated, b365_combo_url
+                )
 
                 if any_lost:
                     final_status = "LOST"
@@ -884,6 +940,8 @@ class WebDataExporter:
                     "category_code": "SAFE" if "SAFE" in c.get("profile", "").upper() or "SEGURA" in c.get("profile", "").upper() else ("SEMI" if "SEMI" in c.get("profile", "").upper() else "RISKY"),
                     "stake": stake,
                     "combined_odd": odd,
+                    "combined_odd_winamax": odd,
+                    "combined_odd_bet365": b365_comb_odd,
                     "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
                     "fair_odd": float(c.get("fair_odd", 1.0)),
                     "ev_pct": float(c.get("ev_pct", 0.0)),
@@ -893,6 +951,8 @@ class WebDataExporter:
                     "potential_profit": round((stake * boosted_odd) - stake, 2),
                     "status": final_status,
                     "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
+                    "bet365_url": b365_combo_url,
+                    "bet365_slip_text": b365_slip_text,
                     "progress": {
                         "won_count": won_cnt,
                         "lost_count": lost_cnt,
@@ -932,15 +992,23 @@ class WebDataExporter:
             if not c or not c.get("legs"):
                 return {}
             legs = []
+            b365_comb_odd = 1.0
             for leg in c.get("legs", []):
+                w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
+                b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
+                b365_comb_odd *= b365_odd
                 legs.append({
                     "matchup": leg.get("matchup", ""),
                     "selection_name": leg.get("name", ""),
                     "category": leg.get("category", ""),
-                    "bookie_odd": float(leg.get("bookie_odd", 1.0)),
+                    "bookie_odd": w_odd,
+                    "bookie_odd_winamax": w_odd,
+                    "bookie_odd_bet365": b365_odd,
                     "model_prob": float(leg.get("model_prob", 0.0)),
                     "date": leg.get("date", ""),
                     "url": leg.get("url", ""),
+                    "url_winamax": leg.get("url_winamax") or leg.get("url", "https://www.winamax.es"),
+                    "url_bet365": leg.get("url_bet365") or self.bet365.generate_combo_link([leg], competition_id),
                     "status": "PENDING",
                     "actual_result": "Pendent de disputar"
                 })
@@ -951,6 +1019,12 @@ class WebDataExporter:
             boosted_odd = float(c.get("boosted_odd") or (round(odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else odd))
             payout = round(stake * boosted_odd, 2)
             profit = round(payout - stake, 2)
+
+            b365_comb_odd = round(b365_comb_odd, 2)
+            b365_combo_url = self.bet365.generate_combo_link(legs, competition_id)
+            b365_slip_text = self.bet365.format_bet365_slip_text(
+                c.get("profile", ""), b365_comb_odd, legs, b365_combo_url
+            )
 
             # Desar a la BD per garantir persistència durant tot el cap de setmana
             cat_code = c.get("category_code", "SAFE")
@@ -973,6 +1047,8 @@ class WebDataExporter:
                 "category_code": cat_code,
                 "stake": stake,
                 "combined_odd": odd,
+                "combined_odd_winamax": odd,
+                "combined_odd_bet365": b365_comb_odd,
                 "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
                 "fair_odd": float(c.get("fair_odd", 1.0)),
                 "ev_pct": float(c.get("ev_pct", 0.0)),
@@ -982,6 +1058,8 @@ class WebDataExporter:
                 "potential_profit": profit,
                 "status": "PENDING",
                 "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
+                "bet365_url": b365_combo_url,
+                "bet365_slip_text": b365_slip_text,
                 "progress": {
                     "won_count": 0,
                     "lost_count": 0,
@@ -1003,6 +1081,441 @@ class WebDataExporter:
             "safe": [c for c in safe_list if c],
             "semi": [c for c in semi_list if c],
             "risky": [c for c in risky_list if c]
+        }
+
+    def _normalize_date_iso(self, d_str: str) -> str:
+        if not d_str:
+            return ""
+        d_clean = str(d_str).strip().split(" ")[0]
+        if "." in d_clean:
+            parts = d_clean.split(".")
+            if len(parts) == 3:
+                return f"{parts[2]}-{parts[1].zfill(2)}-{parts[0].zfill(2)}"
+        elif "-" in d_clean:
+            parts = d_clean.split("-")
+            if len(parts) == 3:
+                return f"{parts[0]}-{parts[1].zfill(2)}-{parts[2].zfill(2)}"
+        return d_clean
+
+    def _format_catalan_date(self, iso_date: str) -> str:
+        if not iso_date or len(iso_date) < 10:
+            return iso_date
+        try:
+            dt = datetime.strptime(iso_date[:10], "%Y-%m-%d")
+            dies = ["Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres", "Dissabte", "Diumenge"]
+            mesos = ["gener", "febrer", "març", "abril", "maig", "juny", "juliol", "agost", "setembre", "octubre", "novembre", "desembre"]
+            dia_setmana = dies[dt.weekday()]
+            dia_num = dt.day
+            mes_nom = mesos[dt.month - 1]
+            prep = "d'" if mes_nom[0] in "ao" else "de "
+            return f"{dia_setmana}, {dia_num} {prep}{mes_nom}"
+        except Exception:
+            return iso_date
+
+    def get_daily_combos_suite(
+        self,
+        all_predicted_matches_flat: List[Dict[str, Any]],
+        previous_data: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Retorna la Suite Oficial de 6 Combinades del Dia (2 Segures, 2 Semi, 2 Arriscades):
+        - Avalua tots els partits que es disputen el mateix dia natural.
+        - Si un dia no hi ha partits: especifica clarament que no hi ha partits.
+        - Si juguen només partits d'una lliga: ho especifica clarament.
+        - Si juga només 1 partit: elabora combinades multimerkat d'aquell partit (Bet Builder).
+        - PERSISTÈNCIA ESTRICTA: Un cop generades per a una data (ex: a la 1 del matí),
+          NO es sobreescriuen si el model es torna a executar al migdia o la tarda!
+        """
+        now = datetime.now()
+        today_iso = now.strftime("%Y-%m-%d")
+        previous_data = previous_data or {}
+
+        # 1. Trobar totes les dates candidates (avui, partits programats, combinades guardades)
+        candidate_dates = {today_iso}
+
+        # Dates des de la BD
+        with self.db.get_connection() as conn:
+            c = conn.cursor()
+            db_date_rows = c.execute("SELECT DISTINCT date_time FROM matches WHERE date_time IS NOT NULL").fetchall()
+            for r in db_date_rows:
+                iso_d = self._normalize_date_iso(r[0])
+                if iso_d and len(iso_d) == 10:
+                    candidate_dates.add(iso_d)
+
+        # Dates des de les combinades de la BD
+        for d in self.db.get_all_daily_combo_dates():
+            if d and len(d) == 10:
+                candidate_dates.add(d)
+
+        # Dates des dels partits de la memòria plana
+        for m in all_predicted_matches_flat:
+            iso_d = self._normalize_date_iso(m.get("date", ""))
+            if iso_d and len(iso_d) == 10:
+                candidate_dates.add(iso_d)
+
+        # Dates prèvies de data.json
+        prev_dates = previous_data.get("daily_combos", {}).get("available_dates", [])
+        for pd in prev_dates:
+            if pd and len(pd) == 10:
+                candidate_dates.add(pd)
+
+        # Filtrar dates raonables (des de 7 dies enrere fins a 14 dies endavant)
+        sorted_dates = []
+        for d_str in sorted(list(candidate_dates)):
+            try:
+                dt_obj = datetime.strptime(d_str, "%Y-%m-%d")
+                diff_days = (dt_obj.date() - now.date()).days
+                if -7 <= diff_days <= 14:
+                    sorted_dates.append(d_str)
+            except Exception:
+                continue
+
+        if today_iso not in sorted_dates:
+            sorted_dates.append(today_iso)
+            sorted_dates.sort()
+
+        by_date = {}
+
+        # 2. Processar cada data
+        for target_date in sorted_dates:
+            # A) Trobar partits per a aquest dia
+            day_matches = [
+                m for m in all_predicted_matches_flat
+                if self._normalize_date_iso(m.get("date", "")) == target_date
+            ]
+
+            # Si no són a la llista plana, buscar a SQLite
+            if not day_matches:
+                with self.db.get_connection() as conn:
+                    c = conn.cursor()
+                    c.execute("""
+                        SELECT m.*, th.name as home_name, ta.name as away_name
+                        FROM matches m
+                        JOIN teams th ON m.home_team_id = th.id
+                        JOIN teams ta ON m.away_team_id = ta.id
+                        WHERE substr(m.date_time, 7, 4) || '-' || substr(m.date_time, 4, 2) || '-' || substr(m.date_time, 1, 2) = ?
+                           OR substr(m.date_time, 1, 10) = ?
+                        ORDER BY m.date_time ASC
+                    """, (target_date, target_date))
+                    db_m_rows = [dict(r) for r in c.fetchall()]
+
+                    for mr in db_m_rows:
+                        try:
+                            h_data = self.db.get_team_rating(mr["home_team_id"])
+                            a_data = self.db.get_team_rating(mr["away_team_id"])
+                            ref_data = self.db.get_referee(mr.get("referee_id") or "REF_DEFAULT")
+                            single_pred = self.predictor.predict_single_match(h_data, a_data, ref_data, match_context={"date": mr["date_time"]})
+                            single_pred["competition_id"] = mr["competition_id"]
+                            single_pred["matchup"] = f"{mr['home_name']} vs {mr['away_name']}"
+                            single_pred["date"] = mr["date_time"]
+                            single_pred["home_team"] = {"id": mr["home_team_id"], "name": mr["home_name"]}
+                            single_pred["away_team"] = {"id": mr["away_team_id"], "name": mr["away_name"]}
+                            day_matches.append(single_pred)
+                        except Exception as e_pred:
+                            print(f"   [!] Error preparant predicció diària per a {mr.get('id')}: {e_pred}")
+
+            # B) Comprovar si ja existeixen combinades congelades a la BD per a aquest dia
+            existing_daily = self.db.get_daily_combos_for_date(target_date)
+
+            safe_list = []
+            semi_list = []
+            risky_list = []
+
+            has_matches = (len(day_matches) > 0 or len(existing_daily) > 0)
+            comps_involved = {m.get("competition_id") for m in day_matches if m.get("competition_id")}
+            comp_map = {
+                "LALIGA": "LaLiga EA Sports",
+                "PREMIER": "Premier League",
+                "HYPERMOTION": "LaLiga Hypermotion",
+                "CHAMPIONSHIP": "EFL Championship"
+            }
+            comp_names = [comp_map.get(c, c) for c in comps_involved]
+
+            # Determinar nota de lliga
+            if not has_matches:
+                league_note = "Sense partits programats per a avui a cap de les 4 lligues analitzades."
+            elif len(day_matches) == 1:
+                m_title = day_matches[0].get("matchup") or "Partit Únic"
+                league_note = f"Partit únic d'avui: {m_title} · Suite de combinades multimerkat del mateix partit"
+            elif len(comps_involved) == 1:
+                league_note = f"Partits exclusius de {comp_names[0]} d'avui ({len(day_matches)} partits)"
+            else:
+                league_note = f"Partits del dia de múltiples lligues ({', '.join(comp_names)}) · {len(day_matches)} partits"
+
+            if existing_daily and len(existing_daily) >= 2:
+                # 3. Ja existien: avaluar progrés en viu sense sobreescriure les seleccions
+                for c in existing_daily:
+                    legs_evaluated = []
+                    all_finished = True
+                    any_lost = False
+
+                    for leg in c.get("legs", []):
+                        h_id = leg.get("home_team_id")
+                        a_id = leg.get("away_team_id")
+                        if not h_id or not a_id:
+                            m_str = leg.get("matchup", "")
+                            if " vs " in m_str:
+                                p_parts = m_str.split(" vs ", 1)
+                                h_id = h_id or self.db.find_team_id(p_parts[0].strip())
+                                a_id = a_id or self.db.find_team_id(p_parts[1].strip())
+
+                        match_row = None
+                        if h_id and a_id:
+                            with self.db.get_connection() as conn:
+                                cursor = conn.cursor()
+                                cursor.execute(
+                                    "SELECT * FROM matches WHERE home_team_id = ? AND away_team_id = ? ORDER BY CASE WHEN status = 'FINISHED' THEN 1 ELSE 2 END, date_time DESC LIMIT 1",
+                                    (h_id, a_id)
+                                )
+                                row = cursor.fetchone()
+                                if row:
+                                    match_row = dict(row)
+
+                        if not match_row or match_row.get("status") != "FINISHED":
+                            all_finished = False
+                            leg_status = "PENDING"
+                            actual_res = "Pendent de disputar"
+                        else:
+                            leg_status, actual_res = self.tracker.evaluate_leg(leg, match_row)
+
+                        if leg_status == "LOST":
+                            any_lost = True
+                        elif leg_status == "PENDING":
+                            all_finished = False
+
+                        w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
+                        b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
+                        legs_evaluated.append({
+                            "matchup": leg.get("matchup", ""),
+                            "selection_name": leg.get("selection_name", ""),
+                            "category": leg.get("category", ""),
+                            "bookie_odd": w_odd,
+                            "bookie_odd_winamax": w_odd,
+                            "bookie_odd_bet365": b365_odd,
+                            "model_prob": float(leg.get("model_prob", 0.0)),
+                            "date": leg.get("match_date", leg.get("date", target_date)),
+                            "url": leg.get("url", ""),
+                            "url_winamax": leg.get("url_winamax") or leg.get("url", "https://www.winamax.es"),
+                            "url_bet365": leg.get("url_bet365") or self.bet365.generate_combo_link([leg], "DAILY"),
+                            "status": leg_status,
+                            "actual_result": actual_res
+                        })
+
+                    stake = float(c.get("stake", 10.0))
+                    odd = float(c.get("combined_odd", 1.0))
+                    booster_pct = float(c.get("booster_pct") or self.combo_engine.calculate_winamax_booster(len(legs_evaluated)))
+                    boosted_odd = round(odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else odd
+
+                    b365_comb_odd = 1.0
+                    for l in legs_evaluated:
+                        b365_comb_odd *= float(l.get("bookie_odd_bet365", 1.0))
+                    b365_comb_odd = round(b365_comb_odd, 2)
+                    b365_combo_url = self.bet365.generate_combo_link(legs_evaluated, "DAILY")
+                    b365_slip_text = self.bet365.format_bet365_slip_text(
+                        c.get("profile", ""), b365_comb_odd, legs_evaluated, b365_combo_url
+                    )
+
+                    if any_lost:
+                        final_status = "LOST"
+                        payout = 0.0
+                        profit = -stake
+                    elif all_finished:
+                        final_status = "WON"
+                        payout = round(stake * boosted_odd, 2)
+                        profit = round(payout - stake, 2)
+                    else:
+                        final_status = "PENDING"
+                        payout = round(stake * boosted_odd, 2)
+                        profit = round(payout - stake, 2)
+
+                    if final_status != c.get("status") and final_status in ["WON", "LOST"]:
+                        self.db.update_combo_evaluation(
+                            combo_id=c["id"],
+                            status=final_status,
+                            payout=payout,
+                            profit=profit,
+                            legs_evaluation=legs_evaluated
+                        )
+
+                    won_cnt = sum(1 for l in legs_evaluated if l["status"] == "WON")
+                    lost_cnt = sum(1 for l in legs_evaluated if l["status"] == "LOST")
+                    pending_cnt = sum(1 for l in legs_evaluated if l["status"] == "PENDING")
+                    total_cnt = len(legs_evaluated)
+                    progress_pct = round((won_cnt + lost_cnt) / total_cnt * 100.0, 1) if total_cnt > 0 else 0.0
+
+                    combo_obj = {
+                        "id": c.get("id"),
+                        "profile": c.get("profile", ""),
+                        "category_code": "SAFE" if "SAFE" in c.get("profile", "").upper() or "SEGURA" in c.get("profile", "").upper() else ("SEMI" if "SEMI" in c.get("profile", "").upper() else "RISKY"),
+                        "stake": stake,
+                        "combined_odd": odd,
+                        "combined_odd_winamax": odd,
+                        "combined_odd_bet365": b365_comb_odd,
+                        "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
+                        "fair_odd": float(c.get("fair_odd", 1.0)),
+                        "ev_pct": float(c.get("ev_pct", 0.0)),
+                        "booster_pct": booster_pct,
+                        "boosted_odd": boosted_odd,
+                        "potential_payout": payout,
+                        "potential_profit": profit,
+                        "status": final_status,
+                        "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
+                        "bet365_url": b365_combo_url,
+                        "bet365_slip_text": b365_slip_text,
+                        "progress": {
+                            "won_count": won_cnt,
+                            "lost_count": lost_cnt,
+                            "pending_count": pending_cnt,
+                            "total_count": total_cnt,
+                            "progress_pct": progress_pct,
+                            "summary": f"{won_cnt}/{total_cnt} encertats" + (f" · {pending_cnt} pendents" if pending_cnt > 0 else "")
+                        },
+                        "legs": legs_evaluated
+                    }
+
+                    prof_upper = c.get("profile", "").upper()
+                    if "SAFE" in prof_upper or "SEGURA" in prof_upper:
+                        safe_list.append(combo_obj)
+                    elif "SEMI" in prof_upper:
+                        semi_list.append(combo_obj)
+                    else:
+                        risky_list.append(combo_obj)
+
+            elif day_matches:
+                # 4. Generar noves combinades per a aquest dia i CONGELAR-LES a la BD
+                combos_data = self.combo_engine.generate_daily_combos_suite(day_matches)
+
+                def format_and_save_daily_combo(c: Dict[str, Any], prof_idx: int) -> Dict[str, Any]:
+                    if not c or not c.get("legs"):
+                        return {}
+                    legs = []
+                    b365_comb_odd = 1.0
+                    for leg in c.get("legs", []):
+                        w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
+                        b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
+                        b365_comb_odd *= b365_odd
+                        legs.append({
+                            "matchup": leg.get("matchup", ""),
+                            "selection_name": leg.get("name") or leg.get("selection_name", ""),
+                            "category": leg.get("category", ""),
+                            "bookie_odd": w_odd,
+                            "bookie_odd_winamax": w_odd,
+                            "bookie_odd_bet365": b365_odd,
+                            "model_prob": float(leg.get("model_prob", 0.0)),
+                            "date": leg.get("date", target_date),
+                            "url": leg.get("url", ""),
+                            "url_winamax": leg.get("url_winamax") or leg.get("url", "https://www.winamax.es"),
+                            "url_bet365": leg.get("url_bet365") or self.bet365.generate_combo_link([leg], "DAILY"),
+                            "status": "PENDING",
+                            "actual_result": "Pendent de disputar"
+                        })
+
+                    stake = float(c.get("recommended_stake", 10.0))
+                    odd = float(c.get("combined_odd", 1.0))
+                    booster_pct = float(c.get("booster_pct") or self.combo_engine.calculate_winamax_booster(len(legs)))
+                    boosted_odd = float(c.get("boosted_odd") or (round(odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else odd))
+                    payout = round(stake * boosted_odd, 2)
+                    profit = round(payout - stake, 2)
+
+                    b365_comb_odd = round(b365_comb_odd, 2)
+                    b365_combo_url = self.bet365.generate_combo_link(legs, "DAILY")
+                    b365_slip_text = self.bet365.format_bet365_slip_text(
+                        c.get("profile", ""), b365_comb_odd, legs, b365_combo_url
+                    )
+
+                    cat_code = c.get("category_code", "SAFE")
+                    profile_name = f"{cat_code}_{prof_idx}"
+                    c_to_save = dict(c)
+                    c_to_save["booster_pct"] = booster_pct
+                    c_to_save["boosted_odd"] = boosted_odd
+
+                    # Desa a la BD amb clau COMBO_DAILY_{target_date}_{profile_name}
+                    self.db.save_daily_combo(
+                        date_str=target_date,
+                        profile=profile_name,
+                        stake=stake,
+                        combo_summary=c_to_save
+                    )
+
+                    total_cnt = len(legs)
+                    return {
+                        "id": f"COMBO_DAILY_{target_date}_{profile_name}",
+                        "profile": c.get("profile", ""),
+                        "category_code": cat_code,
+                        "stake": stake,
+                        "combined_odd": odd,
+                        "combined_odd_winamax": odd,
+                        "combined_odd_bet365": b365_comb_odd,
+                        "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
+                        "fair_odd": float(c.get("fair_odd", 1.0)),
+                        "ev_pct": float(c.get("ev_pct", 0.0)),
+                        "booster_pct": booster_pct,
+                        "boosted_odd": boosted_odd,
+                        "potential_payout": payout,
+                        "potential_profit": profit,
+                        "status": "PENDING",
+                        "winamax_url": c.get("winamax_url", "https://www.winamax.es"),
+                        "bet365_url": b365_combo_url,
+                        "bet365_slip_text": b365_slip_text,
+                        "progress": {
+                            "won_count": 0,
+                            "lost_count": 0,
+                            "pending_count": total_cnt,
+                            "total_count": total_cnt,
+                            "progress_pct": 0.0,
+                            "summary": f"0/{total_cnt} encertats · {total_cnt} pendents"
+                        },
+                        "legs": legs
+                    }
+
+                safe_list = [format_and_save_daily_combo(c, idx) for idx, c in enumerate(combos_data.get("safe", []), 1) if c]
+                semi_list = [format_and_save_daily_combo(c, idx) for idx, c in enumerate(combos_data.get("semi", []), 1) if c]
+                risky_list = [format_and_save_daily_combo(c, idx) for idx, c in enumerate(combos_data.get("risky", []), 1) if c]
+
+            by_date[target_date] = {
+                "date": target_date,
+                "formatted_date": self._format_catalan_date(target_date),
+                "has_matches": has_matches,
+                "matches_count": len(day_matches),
+                "league_note": league_note,
+                "safe": [c for c in safe_list if c],
+                "semi": [c for c in semi_list if c],
+                "risky": [c for c in risky_list if c]
+            }
+
+        # 3. Preparar available_dates amb metadades riques
+        available_dates_info = []
+        for d in sorted_dates:
+            d_info = by_date.get(d, {})
+            m_cnt = d_info.get("matches_count", 0)
+            is_tod = (d == today_iso)
+            cat_lbl = self._format_catalan_date(d)
+            display_lbl = f"Avui ({cat_lbl})" if is_tod else cat_lbl
+            available_dates_info.append({
+                "date": d,
+                "formatted_date": cat_lbl,
+                "label": display_lbl,
+                "matches_count": m_cnt,
+                "has_matches": d_info.get("has_matches", False),
+                "is_today": is_tod
+            })
+
+        # 4. active_date és sempre el dia d'avui (per veure l'estat d'avui primer)
+        active_date = today_iso
+        active_suite = by_date.get(today_iso, {})
+
+        return {
+            "competition_id": "DAILY",
+            "active_date": active_date,
+            "today_date": today_iso,
+            "available_dates": available_dates_info,
+            "by_date": by_date,
+            "has_matches": active_suite.get("has_matches", False),
+            "matches_count": active_suite.get("matches_count", 0),
+            "league_note": active_suite.get("league_note", ""),
+            "safe": active_suite.get("safe", []),
+            "semi": active_suite.get("semi", []),
+            "risky": active_suite.get("risky", [])
         }
 
     def get_financial_ledger(self) -> Dict[str, Any]:
@@ -1310,17 +1823,22 @@ class WebDataExporter:
             for m in pred_data["matches"]:
                 all_predicted_matches_flat.append(m)
                 for vb in m.get("value_bets", []):
+                    p_calc = float(vb.get("model_prob", 0.0)) / 100.0
                     edge_val = vb.get("ev_pct")
                     if edge_val is None:
                         edge_val = vb.get("edge")
                     if edge_val is None:
-                        p_calc = float(vb.get("model_prob", 0.0)) / 100.0
                         b_calc = float(vb.get("bookie_odd", 1.0))
                         edge_val = (p_calc * b_calc - 1.0) * 100.0
 
                     stake_val = vb.get("kelly_pct")
                     if stake_val is None:
                         stake_val = vb.get("stake_pct", 2.5)
+
+                    w_odd = float(vb.get("bookie_odd", 1.0))
+                    b365_odd = float(vb.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
+                    edge_w = round(float(edge_val), 1)
+                    edge_b365 = round((p_calc * b365_odd - 1.0) * 100.0, 1)
 
                     all_value_bets.append({
                         "competition_id": cid,
@@ -1329,12 +1847,17 @@ class WebDataExporter:
                         "date": m["date"],
                         "selection": vb.get("name"),
                         "category": vb.get("category"),
-                        "bookie_odd": float(vb.get("bookie_odd", 1.0)),
+                        "bookie_odd": w_odd,
+                        "bookie_odd_winamax": w_odd,
+                        "bookie_odd_bet365": b365_odd,
                         "model_prob": float(vb.get("model_prob", 0.0)),
                         "fair_odd": float(vb.get("fair_odd", 1.0)),
-                        "edge_pct": round(float(edge_val), 1),
+                        "edge_pct": edge_w,
+                        "edge_pct_winamax": edge_w,
+                        "edge_pct_bet365": edge_b365,
                         "kelly_stake": round(float(stake_val), 1),
-                        "winamax_url": vb.get("url", m.get("odds", {}).get("match_url", "https://www.winamax.es"))
+                        "winamax_url": vb.get("url", m.get("odds", {}).get("match_url", "https://www.winamax.es")),
+                        "bet365_url": m.get("url_bet365") or self.bet365.generate_combo_link([], cid)
                     })
 
             # C) 6 Combinades per lliga i seguiment multijornada
@@ -1394,38 +1917,11 @@ class WebDataExporter:
                 "matches_count": len(pred_data["matches"])
             })
 
-        # 2. Mega-Combinades Multi-Lliga (6 combinades)
-        print("[*] Generant les 6 combinades Multi-Lliga...")
-        active_multi_j = max(c["active_jornada"] for c in active_comps_meta)
-        multi_combos = self.get_full_combos_suite(all_predicted_matches_flat, "MULTI", active_multi_j)
-        if (not multi_combos.get("safe")) and previous_data.get("combos", {}).get("MULTI", {}).get("safe"):
-            print("   🛡️ PROTECCIÓ: Preservant combinades Multi-Lliga de la memòria cau.")
-            multi_combos = previous_data["combos"]["MULTI"]
+        # 2. Combinades del Dia (Suite de 6 combinades del dia per a totes les dates)
+        print("[*] Generant i avaluant les Combinades del Dia...")
+        daily_combos = self.get_daily_combos_suite(all_predicted_matches_flat, previous_data=previous_data)
+        combos["DAILY"] = daily_combos
 
-        with self.db.get_connection() as conn:
-            m_j_rows = conn.cursor().execute(
-                "SELECT DISTINCT jornada FROM combo_recommendations WHERE competition_id = 'MULTI' ORDER BY jornada ASC"
-            ).fetchall()
-            multi_jornadas = [int(r[0]) for r in m_j_rows if r[0]]
-        if active_multi_j not in multi_jornadas:
-            multi_jornadas.append(active_multi_j)
-        multi_jornadas.sort()
-
-        by_jornada_multi = {}
-        for mj in multi_jornadas:
-            if mj == active_multi_j:
-                by_jornada_multi[str(mj)] = {
-                    "safe": list(multi_combos.get("safe", [])),
-                    "semi": list(multi_combos.get("semi", [])),
-                    "risky": list(multi_combos.get("risky", []))
-                }
-            else:
-                by_jornada_multi[str(mj)] = self.get_full_combos_suite([], "MULTI", mj)
-
-        multi_combos["by_jornada"] = by_jornada_multi
-        multi_combos["available_jornadas"] = multi_jornadas
-        multi_combos["active_jornada"] = active_multi_j
-        combos["MULTI"] = multi_combos
 
         # Protecció de Value bets si el scraper de Winamax ha estat bloquejat al núvol
         if len(all_value_bets) == 0 and previous_data.get("value_bets"):
@@ -1480,6 +1976,7 @@ class WebDataExporter:
             "predictions": predictions,
             "value_bets": all_value_bets,
             "combos": combos,
+            "daily_combos": daily_combos,
             "bankroll_simulation": financial_ledger
         }
 

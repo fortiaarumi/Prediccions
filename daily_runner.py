@@ -315,48 +315,47 @@ def run_daily_autonomous_check(force: bool = False):
                 print(f"   [!] Error predient {comp} J{j}: {e}")
 
         # -----------------------------------------------------------------
-        # FASE 4: MULTI-LLIGA COMBINADES (NOMÉS SI JUGUEN MÚLTIPLES LLIGUES)
+        # FASE 4: COMBINADES DEL DIA (SUITE DE 6 COMBINADES DIÀRIES)
         # -----------------------------------------------------------------
-        multiple_leagues_active = len(leagues_to_predict) >= 2
+        print("\n[*] FASE 4: Processament i avaluació de les Combinades del Dia...")
+        today_iso = now.strftime("%Y-%m-%d")
+        combo_engine = ComboBetEngine()
 
-        if multiple_leagues_active and all_predicted_matches:
-            print("\n[*] FASE 4: Múltiples lligues en joc simultani. Generant Mega-Combinada Multi-Lliga...")
-            combo_engine = ComboBetEngine()
-            multileague_combos = combo_engine.analyze_multileague_combos(all_predicted_matches)
+        def _norm_date(d_val):
+            if not d_val: return ""
+            dc = str(d_val).strip().split(" ")[0]
+            if "." in dc:
+                p = dc.split(".")
+                if len(p) == 3: return f"{p[2]}-{p[1].zfill(2)}-{p[0].zfill(2)}"
+            return dc
 
-            main_j = max(round_infos[c]["jornada"] for c in leagues_to_predict)
+        today_matches = [
+            m for m in all_predicted_matches
+            if _norm_date(m.get("date", "")) == today_iso
+        ]
 
-            for idx, sc in enumerate(multileague_combos.get("safe", []), 1):
-                if sc and sc.get("legs"):
-                    db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SAFE_{idx}", 25.0, sc)
-                    all_new_combos.append({"competition_id": "MULTI", "jornada": main_j, "profile": f"SAFE_{idx}", "odd": sc.get("combined_odd", 1.0)})
-            for idx, sm in enumerate(multileague_combos.get("semi", []), 1):
-                if sm and sm.get("legs"):
-                    db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"SEMI_{idx}", 10.0, sm)
-                    all_new_combos.append({"competition_id": "MULTI", "jornada": main_j, "profile": f"SEMI_{idx}", "odd": sm.get("combined_odd", 1.0)})
-            for idx, rc in enumerate(multileague_combos.get("risky", []), 1):
-                if rc and rc.get("legs"):
-                    db.save_combo_recommendation("MULTI", "2026-2027", main_j, f"RISKY_{idx}", 5.0, rc)
-                    all_new_combos.append({"competition_id": "MULTI", "jornada": main_j, "profile": f"RISKY_{idx}", "odd": rc.get("combined_odd", 1.0)})
-
-            highlight_matches = sorted(
-                all_predicted_matches,
-                key=lambda x: max(x.get("goals", {}).get("prob_1X2", {}).values() or [0]),
-                reverse=True
-            )[:5]
-
-            pdf_gen = PDFReportGenerator()
-            sim_summary = tracker.get_simulation_summary()
-            multi_pdf = pdf_gen.generate_multileague_report(
-                jornada=main_j,
-                multileague_combos=multileague_combos,
-                simulation_summary=sim_summary,
-                highlight_matches=highlight_matches
-            )
-            generated_pdfs.append(multi_pdf)
-            print(f"   [+] Informe Multi-Lliga generat amb èxit: {multi_pdf.name}")
-        else:
-            print("\n[*] FASE 4: Jornada individual o sense lligues simultànies. S'omet la mega-combinada.")
+        if not today_matches and all_predicted_matches:
+            earliest_dates = sorted(list({_norm_date(m.get("date", "")) for m in all_predicted_matches if m.get("date")}))
+            print(f"   • Avui ({today_iso}) no hi ha partits programats. Propers dies amb partits: {', '.join(earliest_dates[:3])}")
+        elif today_matches:
+            print(f"   • S'han detectat {len(today_matches)} partits per al dia d'avui ({today_iso}).")
+            if not db.has_daily_combos(today_iso):
+                daily_suite = combo_engine.generate_daily_combos_suite(today_matches)
+                for idx, sc in enumerate(daily_suite.get("safe", []), 1):
+                    if sc and sc.get("legs"):
+                        db.save_daily_combo(today_iso, f"SAFE_{idx}", 25.0, sc)
+                        all_new_combos.append({"competition_id": "DAILY", "jornada": 0, "profile": f"SAFE_{idx}", "odd": sc.get("combined_odd", 1.0)})
+                for idx, sm in enumerate(daily_suite.get("semi", []), 1):
+                    if sm and sm.get("legs"):
+                        db.save_daily_combo(today_iso, f"SEMI_{idx}", 10.0, sm)
+                        all_new_combos.append({"competition_id": "DAILY", "jornada": 0, "profile": f"SEMI_{idx}", "odd": sm.get("combined_odd", 1.0)})
+                for idx, rc in enumerate(daily_suite.get("risky", []), 1):
+                    if rc and rc.get("legs"):
+                        db.save_daily_combo(today_iso, f"RISKY_{idx}", 5.0, rc)
+                        all_new_combos.append({"competition_id": "DAILY", "jornada": 0, "profile": f"RISKY_{idx}", "odd": rc.get("combined_odd", 1.0)})
+                print(f"   [+] Combinades del dia generades i congelades oficials per a {today_iso}!")
+            else:
+                print(f"   🔒 [JA GENERADES AVUI] Les combinades del dia per a {today_iso} ja estaven congelades oficialment. Es preserven sense sobreescriure.")
 
     # -----------------------------------------------------------------
     # FASE 5: EXPORTACIÓ PER A LA WEB I SECCIÓ DE NOVETATS (SEMPRE S'EXECUTA)
