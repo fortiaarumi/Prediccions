@@ -1,5 +1,466 @@
 [
   {
+    "date": "2026-10-14",
+    "timestamp": "2026-10-14T01:18:26.861879",
+    "title": "Actualització Diària del Model · 14/10/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ S'han ingesta resultats oficials i mètriques de 8 partit(s) disputat(s):",
+      "   • [CHAMPIONSHIP J10] Birmingham 4 - 0 Preston | xG: 2.24-0.50 | Targetes: 4 🟨 | Córners: 8 🚩 | Àrbitre: Allison S.",
+      "   • [CHAMPIONSHIP J10] Stoke 2 - 3 Middlesbrough | xG: 0.66-2.57 | Targetes: 2 🟨 | Córners: 7 🚩 | Àrbitre: Bell E.",
+      "   • [CHAMPIONSHIP J10] Bristol City 0 - 1 Blackburn | xG: 1.96-0.15 | Targetes: 0 🟨 | Córners: 15 🚩 | Àrbitre: Webb D.",
+      "   • [CHAMPIONSHIP J10] Burnley 2 - 2 Charlton | xG: 1.09-2.12 | Targetes: 3 🟨 | Córners: 14 🚩 | Àrbitre: Backhouse A.",
+      "   • [CHAMPIONSHIP J10] Cardiff 5 - 1 Watford | xG: 3.67-1.46 | Targetes: 5 🟨 | Córners: 7 🚩 | Àrbitre: Busby J.",
+      "   • [CHAMPIONSHIP J10] Millwall 0 - 1 Swansea | xG: 1.05-1.82 | Targetes: 5 🟨 | Córners: 14 🚩 | Àrbitre: Duckworth E.",
+      "   • [CHAMPIONSHIP J10] Wolves 1 - 3 Bolton | xG: 2.23-1.62 | Targetes: 5 🟨 | Córners: 12 🚩 | Àrbitre: Robinson T.",
+      "   • [CHAMPIONSHIP J10] Wrexham 1 - 2 West Brom | xG: 0.38-0.95 | Targetes: 2 🟨 | Córners: 10 🚩 | Àrbitre: Bell J.",
+      "📊 Actualització de Power Rànquings Elo:",
+      "   • Birmingham (+16.6 ➔ 1507.7) | Preston (-16.6 ➔ 1395.0)",
+      "   • Stoke (-9.9 ➔ 1484.9) | Middlesbrough (+9.9 ➔ 1593.3)",
+      "   • Bristol City (-12.9 ➔ 1460.8) | Blackburn (+12.9 ➔ 1480.5)",
+      "   • Burnley (-4.2 ➔ 1490.3) | Charlton (+4.2 ➔ 1411.6)",
+      "   • Cardiff (+27.6 ➔ 1472.6) | Watford (-27.6 ➔ 1492.1)",
+      "   • Millwall (-10.8 ➔ 1462.0) | Swansea (+10.8 ➔ 1542.8)",
+      "   • Wolves (-28.5 ➔ 1578.1) | Bolton (+28.5 ➔ 1432.0)",
+      "   • Wrexham (-10.1 ➔ 1478.7) | West Brom (+10.1 ➔ 1579.7)",
+      "📈 S'han resolt 1 combinades pendents (0 encertades, 1 fallades):",
+      "   • [CHAMPIONSHIP J10] SAFE_1: ❌ NO ENCERTADA (Cuota @2.67 · Balanç: -25.00 €)",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
+      "   • [EFL Championship J10] Norwich City vs Southampton: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Martin S.'",
+      "     └ Impacte model: Targetes >4.5: 45.9% ➔ 38.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 97.6% ➔ 97.6% (+0.0%)",
+      "   • [EFL Championship J10] Portsmouth vs Sheffield United: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Langford O.'",
+      "     └ Impacte model: Targetes >4.5: 45.9% ➔ 38.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 1.1% ➔ 1.1% (+0.0%)",
+      "   • [EFL Championship J10] Queens Park Rangers vs Derby County: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Corlett M.'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 46.2% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 47.6% ➔ 47.6% (+0.0%)",
+      "   • [EFL Championship J10] Lincoln City vs West Ham United: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Madley R.'",
+      "     └ Impacte model: Targetes >4.5: 45.9% ➔ 38.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 4.6% ➔ 4.6% (+0.0%)"
+    ],
+    "matches": [
+      {
+        "match_id": "CHAMPIONSHIP_J10_BIR_PNE",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 10,
+        "home_team": "Birmingham",
+        "away_team": "Preston",
+        "home_team_id": "BIR",
+        "away_team_id": "PNE",
+        "home_goals": 4,
+        "away_goals": 0,
+        "score": "4 - 0",
+        "home_xg": 2.24,
+        "away_xg": 0.5,
+        "home_yellow_cards": 1,
+        "away_yellow_cards": 2,
+        "home_red_cards": 0,
+        "away_red_cards": 1,
+        "home_corners": 5,
+        "away_corners": 3,
+        "referee": "Allison S.",
+        "elo_change_home": 16.6,
+        "elo_change_away": -16.6,
+        "new_elo_home": 1507.7,
+        "new_elo_away": 1395.0,
+        "date": "13.10.2026 19:00"
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_STK_MID",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 10,
+        "home_team": "Stoke",
+        "away_team": "Middlesbrough",
+        "home_team_id": "STK",
+        "away_team_id": "MID",
+        "home_goals": 2,
+        "away_goals": 3,
+        "score": "2 - 3",
+        "home_xg": 0.66,
+        "away_xg": 2.57,
+        "home_yellow_cards": 1,
+        "away_yellow_cards": 1,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 4,
+        "away_corners": 3,
+        "referee": "Bell E.",
+        "elo_change_home": -9.9,
+        "elo_change_away": 9.9,
+        "new_elo_home": 1484.9,
+        "new_elo_away": 1593.3,
+        "date": "13.10.2026 19:00"
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_BRC_BLA",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 10,
+        "home_team": "Bristol City",
+        "away_team": "Blackburn",
+        "home_team_id": "BRC",
+        "away_team_id": "BLA",
+        "home_goals": 0,
+        "away_goals": 1,
+        "score": "0 - 1",
+        "home_xg": 1.96,
+        "away_xg": 0.15,
+        "home_yellow_cards": null,
+        "away_yellow_cards": null,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 10,
+        "away_corners": 5,
+        "referee": "Webb D.",
+        "elo_change_home": -12.9,
+        "elo_change_away": 12.9,
+        "new_elo_home": 1460.8,
+        "new_elo_away": 1480.5,
+        "date": "13.10.2026 18:45"
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_BNL_CHA",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 10,
+        "home_team": "Burnley",
+        "away_team": "Charlton",
+        "home_team_id": "BNL",
+        "away_team_id": "CHA",
+        "home_goals": 2,
+        "away_goals": 2,
+        "score": "2 - 2",
+        "home_xg": 1.09,
+        "away_xg": 2.12,
+        "home_yellow_cards": 2,
+        "away_yellow_cards": 1,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 7,
+        "away_corners": 7,
+        "referee": "Backhouse A.",
+        "elo_change_home": -4.2,
+        "elo_change_away": 4.2,
+        "new_elo_home": 1490.3,
+        "new_elo_away": 1411.6,
+        "date": "13.10.2026 18:45"
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_CDF_WAT",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 10,
+        "home_team": "Cardiff",
+        "away_team": "Watford",
+        "home_team_id": "CDF",
+        "away_team_id": "WAT",
+        "home_goals": 5,
+        "away_goals": 1,
+        "score": "5 - 1",
+        "home_xg": 3.67,
+        "away_xg": 1.46,
+        "home_yellow_cards": 1,
+        "away_yellow_cards": 4,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 6,
+        "away_corners": 1,
+        "referee": "Busby J.",
+        "elo_change_home": 27.6,
+        "elo_change_away": -27.6,
+        "new_elo_home": 1472.6,
+        "new_elo_away": 1492.1,
+        "date": "13.10.2026 18:45"
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_MIL_SWA",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 10,
+        "home_team": "Millwall",
+        "away_team": "Swansea",
+        "home_team_id": "MIL",
+        "away_team_id": "SWA",
+        "home_goals": 0,
+        "away_goals": 1,
+        "score": "0 - 1",
+        "home_xg": 1.05,
+        "away_xg": 1.82,
+        "home_yellow_cards": 3,
+        "away_yellow_cards": 2,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 13,
+        "away_corners": 1,
+        "referee": "Duckworth E.",
+        "elo_change_home": -10.8,
+        "elo_change_away": 10.8,
+        "new_elo_home": 1462.0,
+        "new_elo_away": 1542.8,
+        "date": "13.10.2026 18:45"
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_WOL_BOL",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 10,
+        "home_team": "Wolves",
+        "away_team": "Bolton",
+        "home_team_id": "WOL",
+        "away_team_id": "BOL",
+        "home_goals": 1,
+        "away_goals": 3,
+        "score": "1 - 3",
+        "home_xg": 2.23,
+        "away_xg": 1.62,
+        "home_yellow_cards": 3,
+        "away_yellow_cards": 2,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 9,
+        "away_corners": 3,
+        "referee": "Robinson T.",
+        "elo_change_home": -28.5,
+        "elo_change_away": 28.5,
+        "new_elo_home": 1578.1,
+        "new_elo_away": 1432.0,
+        "date": "13.10.2026 18:45"
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_WRE_WBA",
+        "competition_id": "CHAMPIONSHIP",
+        "jornada": 10,
+        "home_team": "Wrexham",
+        "away_team": "West Brom",
+        "home_team_id": "WRE",
+        "away_team_id": "WBA",
+        "home_goals": 1,
+        "away_goals": 2,
+        "score": "1 - 2",
+        "home_xg": 0.38,
+        "away_xg": 0.95,
+        "home_yellow_cards": 1,
+        "away_yellow_cards": 1,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 3,
+        "away_corners": 7,
+        "referee": "Bell J.",
+        "elo_change_home": -10.1,
+        "elo_change_away": 10.1,
+        "new_elo_home": 1478.7,
+        "new_elo_away": 1579.7,
+        "date": "13.10.2026 18:45"
+      }
+    ],
+    "combos_evaluated": [
+      {
+        "id": "COMBO_2026-2027_CHAMPIONSHIP_J10_SAFE_1",
+        "competition_id": "CHAMPIONSHIP",
+        "season": "2026-2027",
+        "jornada": 10,
+        "profile": "SAFE_1",
+        "stake": 25.0,
+        "combined_odd": 2.67,
+        "combined_prob_pct": 56.1,
+        "fair_odd": 1.78,
+        "ev_pct": 49.8,
+        "status": "LOST",
+        "payout": 0.0,
+        "profit": -25.0,
+        "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+        "created_at": "2026-10-13 03:05:58",
+        "evaluated_at": null,
+        "legs": [
+          {
+            "id": 1140,
+            "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J10_SAFE_1",
+            "matchup": "Wolverhampton Wanderers vs Bolton Wanderers",
+            "selection_name": "1 - Victòria Local (Wolverhampton Wanderers)",
+            "category": "1X2",
+            "bookie_odd": 1.39,
+            "model_prob": 77.6,
+            "match_date": "13.10.2026 18:45",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/72339900",
+            "home_team_id": "WOL",
+            "away_team_id": "BOL",
+            "status": "LOST",
+            "actual_result": "1-3 (no victòria local)",
+            "evaluated_at": null
+          },
+          {
+            "id": 1141,
+            "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J10_SAFE_1",
+            "matchup": "Stoke City vs Middlesbrough",
+            "selection_name": "2 - Victòria Visitant (Middlesbrough)",
+            "category": "1X2",
+            "bookie_odd": 1.92,
+            "model_prob": 72.3,
+            "match_date": "13.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/72339898",
+            "home_team_id": "STK",
+            "away_team_id": "MID",
+            "status": "WON",
+            "actual_result": "2-3 (2 encertat)",
+            "evaluated_at": null
+          }
+        ]
+      }
+    ],
+    "combos_generated": [],
+    "referee_updates": [
+      {
+        "match_id": "CHAMPIONSHIP_J10_NOR_SOU",
+        "matchup": "Norwich City vs Southampton",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 10,
+        "date": "14.10.2026 18:45",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Martin S.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 45.9,
+            "after": 38.5,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 97.6,
+            "after": 97.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Martin S. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_POR_SHU",
+        "matchup": "Portsmouth vs Sheffield United",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 10,
+        "date": "14.10.2026 18:45",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Langford O.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 45.9,
+            "after": 38.5,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 1.1,
+            "after": 1.1,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Langford O. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_QPR_DER",
+        "matchup": "Queens Park Rangers vs Derby County",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 10,
+        "date": "14.10.2026 18:45",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Corlett M.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 46.2,
+            "delta": -7.2
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 47.6,
+            "after": 47.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Corlett M. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "CHAMPIONSHIP_J10_LIN_WHU",
+        "matchup": "Lincoln City vs West Ham United",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 10,
+        "date": "14.10.2026 19:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Madley R.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 45.9,
+            "after": 38.5,
+            "delta": -7.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 4.6,
+            "after": 4.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Madley R. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      }
+    ]
+  },
+  {
     "date": "2026-10-13",
     "timestamp": "2026-10-13T14:24:51.933006",
     "title": "Actualització Diària del Model · 13/10/2026",

@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-13T14:24:47.605379",
-    "formatted_date": "13/10/2026 a les 14:24",
+    "generated_at": "2026-10-14T01:18:23.546607",
+    "formatted_date": "14/10/2026 a les 01:18",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -41,6 +41,467 @@
     ]
   },
   "changelog": [
+    {
+      "date": "2026-10-14",
+      "timestamp": "2026-10-14T01:18:26.861879",
+      "title": "Actualització Diària del Model · 14/10/2026",
+      "badge": "Diari (08:00 UTC)",
+      "badge_type": "primary",
+      "items": [
+        "⚽ S'han ingesta resultats oficials i mètriques de 8 partit(s) disputat(s):",
+        "   • [CHAMPIONSHIP J10] Birmingham 4 - 0 Preston | xG: 2.24-0.50 | Targetes: 4 🟨 | Córners: 8 🚩 | Àrbitre: Allison S.",
+        "   • [CHAMPIONSHIP J10] Stoke 2 - 3 Middlesbrough | xG: 0.66-2.57 | Targetes: 2 🟨 | Córners: 7 🚩 | Àrbitre: Bell E.",
+        "   • [CHAMPIONSHIP J10] Bristol City 0 - 1 Blackburn | xG: 1.96-0.15 | Targetes: 0 🟨 | Córners: 15 🚩 | Àrbitre: Webb D.",
+        "   • [CHAMPIONSHIP J10] Burnley 2 - 2 Charlton | xG: 1.09-2.12 | Targetes: 3 🟨 | Córners: 14 🚩 | Àrbitre: Backhouse A.",
+        "   • [CHAMPIONSHIP J10] Cardiff 5 - 1 Watford | xG: 3.67-1.46 | Targetes: 5 🟨 | Córners: 7 🚩 | Àrbitre: Busby J.",
+        "   • [CHAMPIONSHIP J10] Millwall 0 - 1 Swansea | xG: 1.05-1.82 | Targetes: 5 🟨 | Córners: 14 🚩 | Àrbitre: Duckworth E.",
+        "   • [CHAMPIONSHIP J10] Wolves 1 - 3 Bolton | xG: 2.23-1.62 | Targetes: 5 🟨 | Córners: 12 🚩 | Àrbitre: Robinson T.",
+        "   • [CHAMPIONSHIP J10] Wrexham 1 - 2 West Brom | xG: 0.38-0.95 | Targetes: 2 🟨 | Córners: 10 🚩 | Àrbitre: Bell J.",
+        "📊 Actualització de Power Rànquings Elo:",
+        "   • Birmingham (+16.6 ➔ 1507.7) | Preston (-16.6 ➔ 1395.0)",
+        "   • Stoke (-9.9 ➔ 1484.9) | Middlesbrough (+9.9 ➔ 1593.3)",
+        "   • Bristol City (-12.9 ➔ 1460.8) | Blackburn (+12.9 ➔ 1480.5)",
+        "   • Burnley (-4.2 ➔ 1490.3) | Charlton (+4.2 ➔ 1411.6)",
+        "   • Cardiff (+27.6 ➔ 1472.6) | Watford (-27.6 ➔ 1492.1)",
+        "   • Millwall (-10.8 ➔ 1462.0) | Swansea (+10.8 ➔ 1542.8)",
+        "   • Wolves (-28.5 ➔ 1578.1) | Bolton (+28.5 ➔ 1432.0)",
+        "   • Wrexham (-10.1 ➔ 1478.7) | West Brom (+10.1 ➔ 1579.7)",
+        "📈 S'han resolt 1 combinades pendents (0 encertades, 1 fallades):",
+        "   • [CHAMPIONSHIP J10] SAFE_1: ❌ NO ENCERTADA (Cuota @2.67 · Balanç: -25.00 €)",
+        "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
+        "   • [EFL Championship J10] Norwich City vs Southampton: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Martin S.'",
+        "     └ Impacte model: Targetes >4.5: 45.9% ➔ 38.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 97.6% ➔ 97.6% (+0.0%)",
+        "   • [EFL Championship J10] Portsmouth vs Sheffield United: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Langford O.'",
+        "     └ Impacte model: Targetes >4.5: 45.9% ➔ 38.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 1.1% ➔ 1.1% (+0.0%)",
+        "   • [EFL Championship J10] Queens Park Rangers vs Derby County: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Corlett M.'",
+        "     └ Impacte model: Targetes >4.5: 53.4% ➔ 46.2% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 47.6% ➔ 47.6% (+0.0%)",
+        "   • [EFL Championship J10] Lincoln City vs West Ham United: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Madley R.'",
+        "     └ Impacte model: Targetes >4.5: 45.9% ➔ 38.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 4.6% ➔ 4.6% (+0.0%)"
+      ],
+      "matches": [
+        {
+          "match_id": "CHAMPIONSHIP_J10_BIR_PNE",
+          "competition_id": "CHAMPIONSHIP",
+          "jornada": 10,
+          "home_team": "Birmingham",
+          "away_team": "Preston",
+          "home_team_id": "BIR",
+          "away_team_id": "PNE",
+          "home_goals": 4,
+          "away_goals": 0,
+          "score": "4 - 0",
+          "home_xg": 2.24,
+          "away_xg": 0.5,
+          "home_yellow_cards": 1,
+          "away_yellow_cards": 2,
+          "home_red_cards": 0,
+          "away_red_cards": 1,
+          "home_corners": 5,
+          "away_corners": 3,
+          "referee": "Allison S.",
+          "elo_change_home": 16.6,
+          "elo_change_away": -16.6,
+          "new_elo_home": 1507.7,
+          "new_elo_away": 1395.0,
+          "date": "13.10.2026 19:00"
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_STK_MID",
+          "competition_id": "CHAMPIONSHIP",
+          "jornada": 10,
+          "home_team": "Stoke",
+          "away_team": "Middlesbrough",
+          "home_team_id": "STK",
+          "away_team_id": "MID",
+          "home_goals": 2,
+          "away_goals": 3,
+          "score": "2 - 3",
+          "home_xg": 0.66,
+          "away_xg": 2.57,
+          "home_yellow_cards": 1,
+          "away_yellow_cards": 1,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 4,
+          "away_corners": 3,
+          "referee": "Bell E.",
+          "elo_change_home": -9.9,
+          "elo_change_away": 9.9,
+          "new_elo_home": 1484.9,
+          "new_elo_away": 1593.3,
+          "date": "13.10.2026 19:00"
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_BRC_BLA",
+          "competition_id": "CHAMPIONSHIP",
+          "jornada": 10,
+          "home_team": "Bristol City",
+          "away_team": "Blackburn",
+          "home_team_id": "BRC",
+          "away_team_id": "BLA",
+          "home_goals": 0,
+          "away_goals": 1,
+          "score": "0 - 1",
+          "home_xg": 1.96,
+          "away_xg": 0.15,
+          "home_yellow_cards": null,
+          "away_yellow_cards": null,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 10,
+          "away_corners": 5,
+          "referee": "Webb D.",
+          "elo_change_home": -12.9,
+          "elo_change_away": 12.9,
+          "new_elo_home": 1460.8,
+          "new_elo_away": 1480.5,
+          "date": "13.10.2026 18:45"
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_BNL_CHA",
+          "competition_id": "CHAMPIONSHIP",
+          "jornada": 10,
+          "home_team": "Burnley",
+          "away_team": "Charlton",
+          "home_team_id": "BNL",
+          "away_team_id": "CHA",
+          "home_goals": 2,
+          "away_goals": 2,
+          "score": "2 - 2",
+          "home_xg": 1.09,
+          "away_xg": 2.12,
+          "home_yellow_cards": 2,
+          "away_yellow_cards": 1,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 7,
+          "away_corners": 7,
+          "referee": "Backhouse A.",
+          "elo_change_home": -4.2,
+          "elo_change_away": 4.2,
+          "new_elo_home": 1490.3,
+          "new_elo_away": 1411.6,
+          "date": "13.10.2026 18:45"
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_CDF_WAT",
+          "competition_id": "CHAMPIONSHIP",
+          "jornada": 10,
+          "home_team": "Cardiff",
+          "away_team": "Watford",
+          "home_team_id": "CDF",
+          "away_team_id": "WAT",
+          "home_goals": 5,
+          "away_goals": 1,
+          "score": "5 - 1",
+          "home_xg": 3.67,
+          "away_xg": 1.46,
+          "home_yellow_cards": 1,
+          "away_yellow_cards": 4,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 6,
+          "away_corners": 1,
+          "referee": "Busby J.",
+          "elo_change_home": 27.6,
+          "elo_change_away": -27.6,
+          "new_elo_home": 1472.6,
+          "new_elo_away": 1492.1,
+          "date": "13.10.2026 18:45"
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_MIL_SWA",
+          "competition_id": "CHAMPIONSHIP",
+          "jornada": 10,
+          "home_team": "Millwall",
+          "away_team": "Swansea",
+          "home_team_id": "MIL",
+          "away_team_id": "SWA",
+          "home_goals": 0,
+          "away_goals": 1,
+          "score": "0 - 1",
+          "home_xg": 1.05,
+          "away_xg": 1.82,
+          "home_yellow_cards": 3,
+          "away_yellow_cards": 2,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 13,
+          "away_corners": 1,
+          "referee": "Duckworth E.",
+          "elo_change_home": -10.8,
+          "elo_change_away": 10.8,
+          "new_elo_home": 1462.0,
+          "new_elo_away": 1542.8,
+          "date": "13.10.2026 18:45"
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_WOL_BOL",
+          "competition_id": "CHAMPIONSHIP",
+          "jornada": 10,
+          "home_team": "Wolves",
+          "away_team": "Bolton",
+          "home_team_id": "WOL",
+          "away_team_id": "BOL",
+          "home_goals": 1,
+          "away_goals": 3,
+          "score": "1 - 3",
+          "home_xg": 2.23,
+          "away_xg": 1.62,
+          "home_yellow_cards": 3,
+          "away_yellow_cards": 2,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 9,
+          "away_corners": 3,
+          "referee": "Robinson T.",
+          "elo_change_home": -28.5,
+          "elo_change_away": 28.5,
+          "new_elo_home": 1578.1,
+          "new_elo_away": 1432.0,
+          "date": "13.10.2026 18:45"
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_WRE_WBA",
+          "competition_id": "CHAMPIONSHIP",
+          "jornada": 10,
+          "home_team": "Wrexham",
+          "away_team": "West Brom",
+          "home_team_id": "WRE",
+          "away_team_id": "WBA",
+          "home_goals": 1,
+          "away_goals": 2,
+          "score": "1 - 2",
+          "home_xg": 0.38,
+          "away_xg": 0.95,
+          "home_yellow_cards": 1,
+          "away_yellow_cards": 1,
+          "home_red_cards": 0,
+          "away_red_cards": 0,
+          "home_corners": 3,
+          "away_corners": 7,
+          "referee": "Bell J.",
+          "elo_change_home": -10.1,
+          "elo_change_away": 10.1,
+          "new_elo_home": 1478.7,
+          "new_elo_away": 1579.7,
+          "date": "13.10.2026 18:45"
+        }
+      ],
+      "combos_evaluated": [
+        {
+          "id": "COMBO_2026-2027_CHAMPIONSHIP_J10_SAFE_1",
+          "competition_id": "CHAMPIONSHIP",
+          "season": "2026-2027",
+          "jornada": 10,
+          "profile": "SAFE_1",
+          "stake": 25.0,
+          "combined_odd": 2.67,
+          "combined_prob_pct": 56.1,
+          "fair_odd": 1.78,
+          "ev_pct": 49.8,
+          "status": "LOST",
+          "payout": 0.0,
+          "profit": -25.0,
+          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+          "created_at": "2026-10-13 03:05:58",
+          "evaluated_at": null,
+          "legs": [
+            {
+              "id": 1140,
+              "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J10_SAFE_1",
+              "matchup": "Wolverhampton Wanderers vs Bolton Wanderers",
+              "selection_name": "1 - Victòria Local (Wolverhampton Wanderers)",
+              "category": "1X2",
+              "bookie_odd": 1.39,
+              "model_prob": 77.6,
+              "match_date": "13.10.2026 18:45",
+              "url": "https://www.winamax.es/apuestas-deportivas/match/72339900",
+              "home_team_id": "WOL",
+              "away_team_id": "BOL",
+              "status": "LOST",
+              "actual_result": "1-3 (no victòria local)",
+              "evaluated_at": null
+            },
+            {
+              "id": 1141,
+              "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J10_SAFE_1",
+              "matchup": "Stoke City vs Middlesbrough",
+              "selection_name": "2 - Victòria Visitant (Middlesbrough)",
+              "category": "1X2",
+              "bookie_odd": 1.92,
+              "model_prob": 72.3,
+              "match_date": "13.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/match/72339898",
+              "home_team_id": "STK",
+              "away_team_id": "MID",
+              "status": "WON",
+              "actual_result": "2-3 (2 encertat)",
+              "evaluated_at": null
+            }
+          ]
+        }
+      ],
+      "combos_generated": [],
+      "referee_updates": [
+        {
+          "match_id": "CHAMPIONSHIP_J10_NOR_SOU",
+          "matchup": "Norwich City vs Southampton",
+          "competition_id": "CHAMPIONSHIP",
+          "competition_name": "EFL Championship",
+          "jornada": 10,
+          "date": "14.10.2026 18:45",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Martin S.",
+          "ref_stats": {
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0,
+            "strictness_index": 1.0
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 45.9,
+              "after": 38.5,
+              "delta": -7.4
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 11.3,
+              "delta": -10.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 21.0,
+              "delta": -3.5
+            },
+            "home_win_prob": {
+              "before": 97.6,
+              "after": 97.6,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Martin S. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_POR_SHU",
+          "matchup": "Portsmouth vs Sheffield United",
+          "competition_id": "CHAMPIONSHIP",
+          "competition_name": "EFL Championship",
+          "jornada": 10,
+          "date": "14.10.2026 18:45",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Langford O.",
+          "ref_stats": {
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0,
+            "strictness_index": 1.0
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 45.9,
+              "after": 38.5,
+              "delta": -7.4
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 11.3,
+              "delta": -10.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 21.0,
+              "delta": -3.5
+            },
+            "home_win_prob": {
+              "before": 1.1,
+              "after": 1.1,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Langford O. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_QPR_DER",
+          "matchup": "Queens Park Rangers vs Derby County",
+          "competition_id": "CHAMPIONSHIP",
+          "competition_name": "EFL Championship",
+          "jornada": 10,
+          "date": "14.10.2026 18:45",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Corlett M.",
+          "ref_stats": {
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0,
+            "strictness_index": 1.0
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 53.4,
+              "after": 46.2,
+              "delta": -7.2
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 11.3,
+              "delta": -10.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 21.0,
+              "delta": -3.5
+            },
+            "home_win_prob": {
+              "before": 47.6,
+              "after": 47.6,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Corlett M. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+          }
+        },
+        {
+          "match_id": "CHAMPIONSHIP_J10_LIN_WHU",
+          "matchup": "Lincoln City vs West Ham United",
+          "competition_id": "CHAMPIONSHIP",
+          "competition_name": "EFL Championship",
+          "jornada": 10,
+          "date": "14.10.2026 19:00",
+          "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+          "new_referee": "Madley R.",
+          "ref_stats": {
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0,
+            "strictness_index": 1.0
+          },
+          "changes": {
+            "cards_over_45": {
+              "before": 45.9,
+              "after": 38.5,
+              "delta": -7.4
+            },
+            "red_card_prob": {
+              "before": 22.1,
+              "after": 11.3,
+              "delta": -10.8
+            },
+            "fouls_exp": {
+              "before": 24.5,
+              "after": 21.0,
+              "delta": -3.5
+            },
+            "home_win_prob": {
+              "before": 4.6,
+              "after": 4.6,
+              "delta": 0.0
+            },
+            "summary": "Designació oficial de Madley R. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+          }
+        }
+      ]
+    },
     {
       "date": "2026-10-13",
       "timestamp": "2026-10-13T14:24:51.933006",
@@ -3442,7 +3903,7 @@
         "short_name": "West Ham",
         "elo_rating": 1688.9,
         "off_rank": 1.0,
-        "def_rank": 8.0,
+        "def_rank": 9.0,
         "played": 8,
         "won": 4,
         "drawn": 3,
@@ -3463,25 +3924,25 @@
       },
       {
         "rank": 2,
-        "team_id": "WOL",
-        "name": "Wolverhampton Wanderers",
-        "short_name": "Wolves",
-        "elo_rating": 1606.6,
+        "team_id": "MID",
+        "name": "Middlesbrough",
+        "short_name": "Middlesbrough",
+        "elo_rating": 1593.3,
         "off_rank": 3.0,
-        "def_rank": 11.0,
-        "played": 7,
-        "won": 4,
-        "drawn": 2,
+        "def_rank": 14.0,
+        "played": 9,
+        "won": 5,
+        "drawn": 3,
         "lost": 1,
-        "gf": 15,
-        "ga": 10,
+        "gf": 19,
+        "ga": 14,
         "gd": 5,
-        "points": 14,
+        "points": 18,
         "form": [
           "W",
-          "L",
-          "D",
           "W",
+          "D",
+          "D",
           "W"
         ],
         "avg_cards": 2.2,
@@ -3489,51 +3950,51 @@
       },
       {
         "rank": 3,
-        "team_id": "MID",
-        "name": "Middlesbrough",
-        "short_name": "Middlesbrough",
-        "elo_rating": 1583.4,
-        "off_rank": 4.0,
-        "def_rank": 13.0,
-        "played": 8,
-        "won": 4,
-        "drawn": 3,
-        "lost": 1,
-        "gf": 16,
-        "ga": 12,
-        "gd": 4,
-        "points": 15,
+        "team_id": "WBA",
+        "name": "West Bromwich Albion",
+        "short_name": "West Brom",
+        "elo_rating": 1579.7,
+        "off_rank": 13.0,
+        "def_rank": 4.0,
+        "played": 9,
+        "won": 5,
+        "drawn": 2,
+        "lost": 2,
+        "gf": 12,
+        "ga": 9,
+        "gd": 3,
+        "points": 17,
         "form": [
-          "D",
           "W",
           "W",
           "D",
-          "D"
+          "L",
+          "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
         "rank": 4,
-        "team_id": "WBA",
-        "name": "West Bromwich Albion",
-        "short_name": "West Brom",
-        "elo_rating": 1569.6,
-        "off_rank": 14.0,
-        "def_rank": 3.0,
+        "team_id": "WOL",
+        "name": "Wolverhampton Wanderers",
+        "short_name": "Wolves",
+        "elo_rating": 1578.1,
+        "off_rank": 4.0,
+        "def_rank": 16.0,
         "played": 8,
         "won": 4,
         "drawn": 2,
         "lost": 2,
-        "gf": 10,
-        "ga": 8,
-        "gd": 2,
+        "gf": 16,
+        "ga": 13,
+        "gd": 3,
         "points": 14,
         "form": [
+          "L",
           "D",
           "W",
           "W",
-          "D",
           "L"
         ],
         "avg_cards": 2.2,
@@ -3541,12 +4002,38 @@
       },
       {
         "rank": 5,
+        "team_id": "SWA",
+        "name": "Swansea City",
+        "short_name": "Swansea",
+        "elo_rating": 1542.8,
+        "off_rank": 10.0,
+        "def_rank": 1.0,
+        "played": 9,
+        "won": 6,
+        "drawn": 2,
+        "lost": 1,
+        "gf": 14,
+        "ga": 6,
+        "gd": 8,
+        "points": 20,
+        "form": [
+          "D",
+          "L",
+          "W",
+          "W",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 6,
         "team_id": "SOU",
         "name": "Southampton",
         "short_name": "Southampton",
         "elo_rating": 1536.8,
         "off_rank": 2.0,
-        "def_rank": 5.0,
+        "def_rank": 6.0,
         "played": 8,
         "won": 4,
         "drawn": 2,
@@ -3566,13 +4053,13 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 6,
+        "rank": 7,
         "team_id": "NOR",
         "name": "Norwich City",
         "short_name": "Norwich",
         "elo_rating": 1534.7,
         "off_rank": 5.0,
-        "def_rank": 23.0,
+        "def_rank": 24.0,
         "played": 8,
         "won": 3,
         "drawn": 0,
@@ -3592,39 +4079,13 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 7,
-        "team_id": "SWA",
-        "name": "Swansea City",
-        "short_name": "Swansea",
-        "elo_rating": 1532.0,
-        "off_rank": 7.0,
-        "def_rank": 1.0,
-        "played": 8,
-        "won": 5,
-        "drawn": 2,
-        "lost": 1,
-        "gf": 13,
-        "ga": 6,
-        "gd": 7,
-        "points": 17,
-        "form": [
-          "W",
-          "D",
-          "L",
-          "W",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
         "rank": 8,
         "team_id": "SHU",
         "name": "Sheffield United",
         "short_name": "Sheffield Utd",
         "elo_rating": 1525.4,
-        "off_rank": 17.0,
-        "def_rank": 9.0,
+        "off_rank": 18.0,
+        "def_rank": 10.0,
         "played": 8,
         "won": 2,
         "drawn": 3,
@@ -3645,84 +4106,32 @@
       },
       {
         "rank": 9,
-        "team_id": "WAT",
-        "name": "Watford",
-        "short_name": "Watford",
-        "elo_rating": 1519.7,
-        "off_rank": 21.0,
-        "def_rank": 6.0,
-        "played": 8,
-        "won": 2,
-        "drawn": 2,
-        "lost": 4,
-        "gf": 7,
-        "ga": 10,
-        "gd": -3,
-        "points": 8,
+        "team_id": "BIR",
+        "name": "Birmingham City",
+        "short_name": "Birmingham",
+        "elo_rating": 1507.7,
+        "off_rank": 6.0,
+        "def_rank": 5.0,
+        "played": 9,
+        "won": 3,
+        "drawn": 5,
+        "lost": 1,
+        "gf": 16,
+        "ga": 11,
+        "gd": 5,
+        "points": 14,
         "form": [
+          "D",
           "L",
-          "L",
-          "W",
-          "L",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 10,
-        "team_id": "STK",
-        "name": "Stoke City",
-        "short_name": "Stoke",
-        "elo_rating": 1494.8,
-        "off_rank": 8.0,
-        "def_rank": 14.0,
-        "played": 8,
-        "won": 4,
-        "drawn": 1,
-        "lost": 3,
-        "gf": 13,
-        "ga": 12,
-        "gd": 1,
-        "points": 13,
-        "form": [
-          "W",
           "W",
           "D",
-          "W",
           "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
-        "rank": 11,
-        "team_id": "BNL",
-        "name": "Burnley",
-        "short_name": "Burnley",
-        "elo_rating": 1494.5,
-        "off_rank": 18.0,
-        "def_rank": 24.0,
-        "played": 8,
-        "won": 0,
-        "drawn": 4,
-        "lost": 4,
-        "gf": 9,
-        "ga": 17,
-        "gd": -8,
-        "points": 4,
-        "form": [
-          "D",
-          "L",
-          "D",
-          "L",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 12,
+        "rank": 10,
         "team_id": "QPR",
         "name": "Queens Park Rangers",
         "short_name": "QPR",
@@ -3748,52 +4157,104 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 13,
-        "team_id": "BIR",
-        "name": "Birmingham City",
-        "short_name": "Birmingham",
-        "elo_rating": 1491.1,
-        "off_rank": 9.0,
-        "def_rank": 10.0,
-        "played": 8,
+        "rank": 11,
+        "team_id": "WAT",
+        "name": "Watford",
+        "short_name": "Watford",
+        "elo_rating": 1492.1,
+        "off_rank": 21.0,
+        "def_rank": 17.0,
+        "played": 9,
         "won": 2,
-        "drawn": 5,
-        "lost": 1,
-        "gf": 12,
-        "ga": 11,
-        "gd": 1,
-        "points": 11,
+        "drawn": 2,
+        "lost": 5,
+        "gf": 8,
+        "ga": 15,
+        "gd": -7,
+        "points": 8,
         "form": [
-          "D",
-          "D",
           "L",
           "W",
+          "L",
+          "L",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 12,
+        "team_id": "BNL",
+        "name": "Burnley",
+        "short_name": "Burnley",
+        "elo_rating": 1490.3,
+        "off_rank": 16.0,
+        "def_rank": 22.0,
+        "played": 9,
+        "won": 0,
+        "drawn": 5,
+        "lost": 4,
+        "gf": 11,
+        "ga": 19,
+        "gd": -8,
+        "points": 5,
+        "form": [
+          "L",
+          "D",
+          "L",
+          "D",
           "D"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
-        "rank": 14,
-        "team_id": "WRE",
-        "name": "Wrexham",
-        "short_name": "Wrexham",
-        "elo_rating": 1488.8,
-        "off_rank": 19.0,
-        "def_rank": 15.0,
-        "played": 8,
-        "won": 2,
-        "drawn": 4,
-        "lost": 2,
-        "gf": 9,
-        "ga": 12,
-        "gd": -3,
-        "points": 10,
+        "rank": 13,
+        "team_id": "STK",
+        "name": "Stoke City",
+        "short_name": "Stoke",
+        "elo_rating": 1484.9,
+        "off_rank": 7.0,
+        "def_rank": 18.0,
+        "played": 9,
+        "won": 4,
+        "drawn": 1,
+        "lost": 4,
+        "gf": 15,
+        "ga": 15,
+        "gd": 0,
+        "points": 13,
         "form": [
           "W",
           "D",
-          "D",
+          "W",
+          "W",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 14,
+        "team_id": "BLA",
+        "name": "Blackburn Rovers",
+        "short_name": "Blackburn",
+        "elo_rating": 1480.5,
+        "off_rank": 12.0,
+        "def_rank": 7.0,
+        "played": 9,
+        "won": 3,
+        "drawn": 3,
+        "lost": 3,
+        "gf": 13,
+        "ga": 12,
+        "gd": 1,
+        "points": 12,
+        "form": [
           "L",
+          "L",
+          "W",
+          "D",
           "W"
         ],
         "avg_cards": 2.2,
@@ -3801,115 +4262,141 @@
       },
       {
         "rank": 15,
-        "team_id": "BRC",
-        "name": "Bristol City",
-        "short_name": "Bristol City",
-        "elo_rating": 1473.6,
-        "off_rank": 11.0,
-        "def_rank": 16.0,
-        "played": 8,
-        "won": 4,
-        "drawn": 1,
+        "team_id": "WRE",
+        "name": "Wrexham",
+        "short_name": "Wrexham",
+        "elo_rating": 1478.7,
+        "off_rank": 19.0,
+        "def_rank": 15.0,
+        "played": 9,
+        "won": 2,
+        "drawn": 4,
         "lost": 3,
-        "gf": 11,
-        "ga": 12,
-        "gd": -1,
-        "points": 13,
+        "gf": 10,
+        "ga": 14,
+        "gd": -4,
+        "points": 10,
         "form": [
-          "W",
-          "W",
+          "D",
+          "D",
           "L",
-          "L",
-          "W"
+          "W",
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
         "rank": 16,
-        "team_id": "MIL",
-        "name": "Millwall",
-        "short_name": "Millwall",
-        "elo_rating": 1472.8,
-        "off_rank": 6.0,
-        "def_rank": 20.0,
-        "played": 8,
-        "won": 3,
-        "drawn": 2,
-        "lost": 3,
-        "gf": 15,
-        "ga": 15,
-        "gd": 0,
-        "points": 11,
-        "form": [
-          "L",
-          "W",
-          "L",
-          "D",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 17,
-        "team_id": "BLA",
-        "name": "Blackburn Rovers",
-        "short_name": "Blackburn",
-        "elo_rating": 1467.7,
-        "off_rank": 10.0,
-        "def_rank": 17.0,
-        "played": 8,
-        "won": 2,
-        "drawn": 3,
-        "lost": 3,
-        "gf": 12,
-        "ga": 12,
-        "gd": 0,
-        "points": 9,
-        "form": [
-          "D",
-          "L",
-          "L",
-          "W",
-          "D"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 18,
         "team_id": "CDF",
         "name": "Cardiff City",
         "short_name": "Cardiff",
-        "elo_rating": 1445.0,
-        "off_rank": 16.0,
-        "def_rank": 18.0,
-        "played": 8,
-        "won": 1,
+        "elo_rating": 1472.6,
+        "off_rank": 8.0,
+        "def_rank": 12.0,
+        "played": 9,
+        "won": 2,
         "drawn": 4,
         "lost": 3,
-        "gf": 10,
-        "ga": 12,
-        "gd": -2,
-        "points": 7,
+        "gf": 15,
+        "ga": 13,
+        "gd": 2,
+        "points": 10,
         "form": [
-          "L",
           "L",
           "D",
           "L",
+          "W",
           "W"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
       },
       {
+        "rank": 17,
+        "team_id": "MIL",
+        "name": "Millwall",
+        "short_name": "Millwall",
+        "elo_rating": 1462.0,
+        "off_rank": 9.0,
+        "def_rank": 20.0,
+        "played": 9,
+        "won": 3,
+        "drawn": 2,
+        "lost": 4,
+        "gf": 15,
+        "ga": 16,
+        "gd": -1,
+        "points": 11,
+        "form": [
+          "W",
+          "L",
+          "D",
+          "D",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 18,
+        "team_id": "BRC",
+        "name": "Bristol City",
+        "short_name": "Bristol City",
+        "elo_rating": 1460.8,
+        "off_rank": 17.0,
+        "def_rank": 13.0,
+        "played": 9,
+        "won": 4,
+        "drawn": 1,
+        "lost": 4,
+        "gf": 11,
+        "ga": 13,
+        "gd": -2,
+        "points": 13,
+        "form": [
+          "W",
+          "L",
+          "L",
+          "W",
+          "L"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
         "rank": 19,
+        "team_id": "BOL",
+        "name": "Bolton Wanderers",
+        "short_name": "Bolton",
+        "elo_rating": 1432.0,
+        "off_rank": 11.0,
+        "def_rank": 21.0,
+        "played": 9,
+        "won": 4,
+        "drawn": 1,
+        "lost": 4,
+        "gf": 14,
+        "ga": 16,
+        "gd": -2,
+        "points": 13,
+        "form": [
+          "L",
+          "L",
+          "W",
+          "W",
+          "W"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 20,
         "team_id": "DER",
         "name": "Derby County",
         "short_name": "Derby",
         "elo_rating": 1427.7,
-        "off_rank": 22.0,
+        "off_rank": 23.0,
         "def_rank": 19.0,
         "played": 8,
         "won": 1,
@@ -3930,25 +4417,25 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 20,
-        "team_id": "PNE",
-        "name": "Preston North End",
-        "short_name": "Preston",
+        "rank": 21,
+        "team_id": "CHA",
+        "name": "Charlton Athletic",
+        "short_name": "Charlton",
         "elo_rating": 1411.6,
         "off_rank": 20.0,
-        "def_rank": 21.0,
-        "played": 8,
-        "won": 1,
-        "drawn": 1,
-        "lost": 6,
-        "gf": 8,
-        "ga": 15,
-        "gd": -7,
-        "points": 4,
+        "def_rank": 8.0,
+        "played": 9,
+        "won": 3,
+        "drawn": 4,
+        "lost": 2,
+        "gf": 9,
+        "ga": 12,
+        "gd": -3,
+        "points": 13,
         "form": [
           "L",
-          "W",
-          "L",
+          "D",
+          "D",
           "L",
           "D"
         ],
@@ -3956,13 +4443,13 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 21,
+        "rank": 22,
         "team_id": "LIN",
         "name": "Lincoln City",
         "short_name": "Lincoln",
         "elo_rating": 1411.1,
-        "off_rank": 23.0,
-        "def_rank": 4.0,
+        "off_rank": 24.0,
+        "def_rank": 3.0,
         "played": 8,
         "won": 3,
         "drawn": 2,
@@ -3982,65 +4469,13 @@
         "avg_corners": 5.0
       },
       {
-        "rank": 22,
-        "team_id": "CHA",
-        "name": "Charlton Athletic",
-        "short_name": "Charlton",
-        "elo_rating": 1407.5,
-        "off_rank": 24.0,
-        "def_rank": 7.0,
-        "played": 8,
-        "won": 3,
-        "drawn": 3,
-        "lost": 2,
-        "gf": 7,
-        "ga": 10,
-        "gd": -3,
-        "points": 12,
-        "form": [
-          "D",
-          "L",
-          "D",
-          "D",
-          "L"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
         "rank": 23,
-        "team_id": "BOL",
-        "name": "Bolton Wanderers",
-        "short_name": "Bolton",
-        "elo_rating": 1403.4,
-        "off_rank": 12.0,
-        "def_rank": 22.0,
-        "played": 8,
-        "won": 3,
-        "drawn": 1,
-        "lost": 4,
-        "gf": 11,
-        "ga": 15,
-        "gd": -4,
-        "points": 10,
-        "form": [
-          "L",
-          "L",
-          "L",
-          "W",
-          "W"
-        ],
-        "avg_cards": 2.2,
-        "avg_corners": 5.0
-      },
-      {
-        "rank": 24,
         "team_id": "POR",
         "name": "Portsmouth",
         "short_name": "Portsmouth",
         "elo_rating": 1400.2,
-        "off_rank": 13.0,
-        "def_rank": 12.0,
+        "off_rank": 14.0,
+        "def_rank": 11.0,
         "played": 7,
         "won": 2,
         "drawn": 2,
@@ -4055,6 +4490,32 @@
           "W",
           "D",
           "D"
+        ],
+        "avg_cards": 2.2,
+        "avg_corners": 5.0
+      },
+      {
+        "rank": 24,
+        "team_id": "PNE",
+        "name": "Preston North End",
+        "short_name": "Preston",
+        "elo_rating": 1395.0,
+        "off_rank": 22.0,
+        "def_rank": 23.0,
+        "played": 9,
+        "won": 1,
+        "drawn": 1,
+        "lost": 7,
+        "gf": 8,
+        "ga": 19,
+        "gd": -11,
+        "points": 4,
+        "form": [
+          "W",
+          "L",
+          "L",
+          "D",
+          "L"
         ],
         "avg_cards": 2.2,
         "avg_corners": 5.0
@@ -20967,13 +21428,13 @@
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "away_team": {
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "date": "14.08.2026 21:00",
             "home_goals": 2,
@@ -21021,13 +21482,13 @@
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "away_team": {
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "date": "15.08.2026 13:30",
             "home_goals": 2,
@@ -21075,13 +21536,13 @@
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "away_team": {
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "date": "15.08.2026 16:00",
             "home_goals": 0,
@@ -21129,7 +21590,7 @@
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "away_team": {
               "id": "DER",
@@ -21183,7 +21644,7 @@
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "away_team": {
               "id": "LIN",
@@ -21243,7 +21704,7 @@
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "date": "15.08.2026 16:00",
             "home_goals": 1,
@@ -21345,13 +21806,13 @@
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "away_team": {
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "date": "15.08.2026 16:00",
             "home_goals": 1,
@@ -21405,7 +21866,7 @@
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "date": "15.08.2026 18:30",
             "home_goals": 0,
@@ -21453,7 +21914,7 @@
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "away_team": {
               "id": "SOU",
@@ -21507,7 +21968,7 @@
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "away_team": {
               "id": "WHU",
@@ -21561,13 +22022,13 @@
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "away_team": {
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "date": "17.08.2026 21:00",
             "home_goals": 1,
@@ -21617,13 +22078,13 @@
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "away_team": {
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "date": "22.08.2026 13:30",
             "home_goals": 2,
@@ -21725,7 +22186,7 @@
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "away_team": {
               "id": "NOR",
@@ -21779,13 +22240,13 @@
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "away_team": {
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "date": "22.08.2026 16:00",
             "home_goals": 2,
@@ -21839,7 +22300,7 @@
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "date": "22.08.2026 16:00",
             "home_goals": 2,
@@ -21887,13 +22348,13 @@
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "away_team": {
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "date": "22.08.2026 16:00",
             "home_goals": 1,
@@ -21947,7 +22408,7 @@
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "date": "22.08.2026 16:00",
             "home_goals": 0,
@@ -22001,7 +22462,7 @@
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "date": "22.08.2026 16:00",
             "home_goals": 3,
@@ -22049,7 +22510,7 @@
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "away_team": {
               "id": "SHU",
@@ -22109,7 +22570,7 @@
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "date": "22.08.2026 16:00",
             "home_goals": 1,
@@ -22157,13 +22618,13 @@
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "away_team": {
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "date": "22.08.2026 16:00",
             "home_goals": 1,
@@ -22211,13 +22672,13 @@
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "away_team": {
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "date": "23.08.2026 13:00",
             "home_goals": 3,
@@ -22267,13 +22728,13 @@
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "away_team": {
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "date": "28.08.2026 21:00",
             "home_goals": 1,
@@ -22327,7 +22788,7 @@
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "date": "29.08.2026 13:30",
             "home_goals": 0,
@@ -22375,13 +22836,13 @@
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "away_team": {
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "date": "29.08.2026 13:30",
             "home_goals": 3,
@@ -22429,13 +22890,13 @@
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "away_team": {
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "date": "29.08.2026 13:30",
             "home_goals": 4,
@@ -22483,7 +22944,7 @@
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "away_team": {
               "id": "QPR",
@@ -22537,7 +22998,7 @@
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "away_team": {
               "id": "LIN",
@@ -22591,7 +23052,7 @@
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "away_team": {
               "id": "POR",
@@ -22645,7 +23106,7 @@
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "away_team": {
               "id": "SHU",
@@ -22699,13 +23160,13 @@
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "away_team": {
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "date": "29.08.2026 16:00",
             "home_goals": 1,
@@ -22759,7 +23220,7 @@
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "date": "29.08.2026 16:00",
             "home_goals": 4,
@@ -22813,7 +23274,7 @@
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "date": "29.08.2026 16:00",
             "home_goals": 5,
@@ -22861,7 +23322,7 @@
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "away_team": {
               "id": "WHU",
@@ -22923,7 +23384,7 @@
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "date": "01.09.2026 20:45",
             "home_goals": 0,
@@ -23025,13 +23486,13 @@
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "away_team": {
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "date": "01.09.2026 20:45",
             "home_goals": 1,
@@ -23085,7 +23546,7 @@
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "date": "01.09.2026 20:45",
             "home_goals": 3,
@@ -23133,13 +23594,13 @@
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "away_team": {
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "date": "01.09.2026 20:45",
             "home_goals": 2,
@@ -23193,7 +23654,7 @@
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "date": "01.09.2026 20:45",
             "home_goals": 4,
@@ -23241,7 +23702,7 @@
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "away_team": {
               "id": "SOU",
@@ -23295,7 +23756,7 @@
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "away_team": {
               "id": "NOR",
@@ -23349,13 +23810,13 @@
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "away_team": {
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "date": "02.09.2026 20:45",
             "home_goals": 0,
@@ -23409,7 +23870,7 @@
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "date": "02.09.2026 20:45",
             "home_goals": 2,
@@ -23457,13 +23918,13 @@
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "away_team": {
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "date": "02.09.2026 20:45",
             "home_goals": 1,
@@ -23511,13 +23972,13 @@
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "away_team": {
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "date": "02.09.2026 21:00",
             "home_goals": 1,
@@ -23621,13 +24082,13 @@
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "away_team": {
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "date": "05.09.2026 13:30",
             "home_goals": 2,
@@ -23675,13 +24136,13 @@
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "away_team": {
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "date": "05.09.2026 13:30",
             "home_goals": 4,
@@ -23729,13 +24190,13 @@
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "away_team": {
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "date": "05.09.2026 16:00",
             "home_goals": 1,
@@ -23783,13 +24244,13 @@
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "away_team": {
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "date": "05.09.2026 16:00",
             "home_goals": 4,
@@ -23843,7 +24304,7 @@
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "date": "05.09.2026 16:00",
             "home_goals": 2,
@@ -23897,7 +24358,7 @@
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "date": "05.09.2026 16:00",
             "home_goals": 0,
@@ -23999,13 +24460,13 @@
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "away_team": {
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "date": "05.09.2026 16:00",
             "home_goals": 1,
@@ -24107,13 +24568,13 @@
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "away_team": {
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "date": "05.09.2026 21:00",
             "home_goals": 0,
@@ -24161,13 +24622,13 @@
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "away_team": {
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "date": "06.09.2026 13:00",
             "home_goals": 2,
@@ -24217,7 +24678,7 @@
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "away_team": {
               "id": "SHU",
@@ -24271,13 +24732,13 @@
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "away_team": {
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "date": "08.09.2026 20:45",
             "home_goals": 1,
@@ -24331,7 +24792,7 @@
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "date": "08.09.2026 20:45",
             "home_goals": 3,
@@ -24379,13 +24840,13 @@
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "away_team": {
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "date": "08.09.2026 20:45",
             "home_goals": 2,
@@ -24433,13 +24894,13 @@
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "away_team": {
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "date": "08.09.2026 20:45",
             "home_goals": 1,
@@ -24487,7 +24948,7 @@
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "away_team": {
               "id": "WHU",
@@ -24547,7 +25008,7 @@
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "date": "09.09.2026 20:45",
             "home_goals": 0,
@@ -24601,7 +25062,7 @@
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "date": "09.09.2026 20:45",
             "home_goals": 2,
@@ -24649,7 +25110,7 @@
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "away_team": {
               "id": "QPR",
@@ -24703,7 +25164,7 @@
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "away_team": {
               "id": "LIN",
@@ -24757,13 +25218,13 @@
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "away_team": {
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "date": "15.09.2026 20:45",
             "home_goals": 2,
@@ -24811,7 +25272,7 @@
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "away_team": {
               "id": "POR",
@@ -24873,7 +25334,7 @@
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "date": "11.09.2026 21:00",
             "home_goals": 6,
@@ -24921,13 +25382,13 @@
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "away_team": {
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "date": "12.09.2026 13:30",
             "home_goals": 1,
@@ -24981,7 +25442,7 @@
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "date": "12.09.2026 13:30",
             "home_goals": 1,
@@ -25029,7 +25490,7 @@
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "away_team": {
               "id": "QPR",
@@ -25083,13 +25544,13 @@
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "away_team": {
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "date": "12.09.2026 16:00",
             "home_goals": 3,
@@ -25137,7 +25598,7 @@
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "away_team": {
               "id": "POR",
@@ -25191,7 +25652,7 @@
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "away_team": {
               "id": "NOR",
@@ -25245,7 +25706,7 @@
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "away_team": {
               "id": "LIN",
@@ -25305,7 +25766,7 @@
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "date": "12.09.2026 16:00",
             "home_goals": 4,
@@ -25353,13 +25814,13 @@
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "away_team": {
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "date": "12.09.2026 16:00",
             "home_goals": 3,
@@ -25407,13 +25868,13 @@
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "away_team": {
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "date": "12.09.2026 16:00",
             "home_goals": 1,
@@ -25467,7 +25928,7 @@
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "date": "13.09.2026 13:00",
             "home_goals": 0,
@@ -25517,13 +25978,13 @@
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "away_team": {
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "date": "18.09.2026 21:00",
             "home_goals": 1,
@@ -25571,13 +26032,13 @@
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "away_team": {
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "date": "19.09.2026 13:30",
             "home_goals": 3,
@@ -25625,7 +26086,7 @@
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "away_team": {
               "id": "WHU",
@@ -25679,7 +26140,7 @@
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "away_team": {
               "id": "SHU",
@@ -25733,13 +26194,13 @@
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "away_team": {
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "date": "19.09.2026 16:00",
             "home_goals": 2,
@@ -25787,7 +26248,7 @@
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "away_team": {
               "id": "DER",
@@ -25847,7 +26308,7 @@
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "date": "19.09.2026 16:00",
             "home_goals": 1,
@@ -25901,7 +26362,7 @@
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "date": "19.09.2026 16:00",
             "home_goals": 2,
@@ -25955,7 +26416,7 @@
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "date": "19.09.2026 16:00",
             "home_goals": 2,
@@ -26003,7 +26464,7 @@
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "away_team": {
               "id": "SOU",
@@ -26057,13 +26518,13 @@
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "away_team": {
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "date": "20.09.2026 13:00",
             "home_goals": 1,
@@ -26117,7 +26578,7 @@
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "date": "20.09.2026 14:30",
             "home_goals": 3,
@@ -26160,33 +26621,33 @@
             "match_id": "CHAMPIONSHIP_J10_BRC_BLA",
             "competition_id": "CHAMPIONSHIP",
             "jornada": 10,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
               "id": "BRC",
               "name": "Bristol City",
               "short_name": "Bristol City",
-              "elo": 1473.6
+              "elo": 1460.8
             },
             "away_team": {
               "id": "BLA",
               "name": "Blackburn Rovers",
               "short_name": "Blackburn",
-              "elo": 1467.7
+              "elo": 1480.5
             },
             "date": "13.10.2026 18:45",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 0,
+            "away_goals": 1,
+            "final_score": "0 - 1",
+            "actual_1x2": "2",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": null,
-            "real_corners_away": null,
+            "is_hit_1x2": false,
+            "is_exact_score": false,
+            "xg_diff_home": -1.62,
+            "xg_diff_away": -0.13,
+            "real_corners_home": 10,
+            "real_corners_away": 5,
             "real_cards_home": null,
             "real_cards_away": null,
             "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -26205,22 +26666,22 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.4,
-            "cards_away": 2.4,
-            "cards_total": 4.9,
-            "prob_over_cards_35": 71.4,
-            "prob_over_cards_45": 53.4,
+            "cards_home": 2.2,
+            "cards_away": 2.2,
+            "cards_total": 4.5,
+            "prob_over_cards_35": 65.3,
+            "prob_over_cards_45": 46.2,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Webb D.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
-              "1": 2.0,
-              "X": 3.35,
-              "2": 3.3
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -26236,35 +26697,35 @@
             "match_id": "CHAMPIONSHIP_J10_BNL_CHA",
             "competition_id": "CHAMPIONSHIP",
             "jornada": 10,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
               "id": "BNL",
               "name": "Burnley",
               "short_name": "Burnley",
-              "elo": 1494.5
+              "elo": 1490.3
             },
             "away_team": {
               "id": "CHA",
               "name": "Charlton Athletic",
               "short_name": "Charlton",
-              "elo": 1407.5
+              "elo": 1411.6
             },
             "date": "13.10.2026 18:45",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 2,
+            "away_goals": 2,
+            "final_score": "2 - 2",
+            "actual_1x2": "X",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": null,
-            "real_corners_away": null,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": false,
+            "is_exact_score": false,
+            "xg_diff_home": -2.83,
+            "xg_diff_away": 1.85,
+            "real_corners_home": 7,
+            "real_corners_away": 7,
+            "real_cards_home": 2,
+            "real_cards_away": 1,
             "verdict": "Victòria Local (Burnley)",
             "prob_1": 98.3,
             "prob_x": 1.6,
@@ -26281,17 +26742,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.2,
-            "cards_away": 2.2,
-            "cards_total": 4.5,
-            "prob_over_cards_35": 65.0,
-            "prob_over_cards_45": 45.9,
+            "cards_home": 2.0,
+            "cards_away": 2.0,
+            "cards_total": 4.1,
+            "prob_over_cards_35": 58.0,
+            "prob_over_cards_45": 38.5,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Backhouse A.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
               "1": null,
@@ -26312,35 +26773,35 @@
             "match_id": "CHAMPIONSHIP_J10_CDF_WAT",
             "competition_id": "CHAMPIONSHIP",
             "jornada": 10,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
               "id": "CDF",
               "name": "Cardiff City",
               "short_name": "Cardiff",
-              "elo": 1445.0
+              "elo": 1472.6
             },
             "away_team": {
               "id": "WAT",
               "name": "Watford",
               "short_name": "Watford",
-              "elo": 1519.7
+              "elo": 1492.1
             },
             "date": "13.10.2026 18:45",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 5,
+            "away_goals": 1,
+            "final_score": "5 - 1",
+            "actual_1x2": "1",
             "predicted_1x2": "2",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": null,
-            "real_corners_away": null,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": false,
+            "is_exact_score": false,
+            "xg_diff_home": 4.38,
+            "xg_diff_away": -1.18,
+            "real_corners_home": 6,
+            "real_corners_away": 1,
+            "real_cards_home": 1,
+            "real_cards_away": 4,
             "verdict": "Victòria Visitant (Watford)",
             "prob_1": 8.4,
             "prob_x": 19.3,
@@ -26357,17 +26818,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.3,
-            "cards_away": 2.3,
-            "cards_total": 4.5,
-            "prob_over_cards_35": 66.3,
-            "prob_over_cards_45": 47.4,
+            "cards_home": 2.1,
+            "cards_away": 2.1,
+            "cards_total": 4.2,
+            "prob_over_cards_35": 59.5,
+            "prob_over_cards_45": 40.0,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Busby J.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
               "1": null,
@@ -26388,35 +26849,35 @@
             "match_id": "CHAMPIONSHIP_J10_MIL_SWA",
             "competition_id": "CHAMPIONSHIP",
             "jornada": 10,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
               "id": "MIL",
               "name": "Millwall",
               "short_name": "Millwall",
-              "elo": 1472.8
+              "elo": 1462.0
             },
             "away_team": {
               "id": "SWA",
               "name": "Swansea City",
               "short_name": "Swansea",
-              "elo": 1532.0
+              "elo": 1542.8
             },
             "date": "13.10.2026 18:45",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 0,
+            "away_goals": 1,
+            "final_score": "0 - 1",
+            "actual_1x2": "2",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": null,
-            "real_corners_away": null,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": false,
+            "is_exact_score": false,
+            "xg_diff_home": -1.62,
+            "xg_diff_away": -0.13,
+            "real_corners_home": 13,
+            "real_corners_away": 1,
+            "real_cards_home": 3,
+            "real_cards_away": 2,
             "verdict": "1X (Favorit Local / Risc d'Empat)",
             "prob_1": 47.6,
             "prob_x": 27.0,
@@ -26433,22 +26894,22 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.4,
-            "cards_away": 2.4,
-            "cards_total": 4.9,
-            "prob_over_cards_35": 71.4,
-            "prob_over_cards_45": 53.4,
+            "cards_home": 2.2,
+            "cards_away": 2.2,
+            "cards_total": 4.5,
+            "prob_over_cards_35": 65.3,
+            "prob_over_cards_45": 46.2,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Duckworth E.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
-              "1": 1.82,
-              "X": 3.6,
-              "2": 3.65
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -26464,35 +26925,35 @@
             "match_id": "CHAMPIONSHIP_J10_WOL_BOL",
             "competition_id": "CHAMPIONSHIP",
             "jornada": 10,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
               "id": "WOL",
               "name": "Wolverhampton Wanderers",
               "short_name": "Wolves",
-              "elo": 1606.6
+              "elo": 1578.1
             },
             "away_team": {
               "id": "BOL",
               "name": "Bolton Wanderers",
               "short_name": "Bolton",
-              "elo": 1403.4
+              "elo": 1432.0
             },
             "date": "13.10.2026 18:45",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 1,
+            "away_goals": 3,
+            "final_score": "1 - 3",
+            "actual_1x2": "2",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": null,
-            "real_corners_away": null,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": false,
+            "is_exact_score": false,
+            "xg_diff_home": -1.34,
+            "xg_diff_away": 2.48,
+            "real_corners_home": 9,
+            "real_corners_away": 3,
+            "real_cards_home": 3,
+            "real_cards_away": 2,
             "verdict": "Victòria Local (Wolverhampton Wanderers)",
             "prob_1": 77.6,
             "prob_x": 16.5,
@@ -26509,22 +26970,22 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.3,
-            "cards_away": 2.3,
-            "cards_total": 4.6,
-            "prob_over_cards_35": 67.0,
-            "prob_over_cards_45": 48.2,
+            "cards_home": 2.4,
+            "cards_away": 2.4,
+            "cards_total": 4.8,
+            "prob_over_cards_35": 70.5,
+            "prob_over_cards_45": 52.2,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Tim Robinson",
+              "is_official": true,
+              "yellow_avg": 4.15,
+              "red_avg": 0.14,
+              "fouls_avg": 22.6
             },
             "odds_1x2": {
-              "1": 1.39,
-              "X": 4.8,
-              "2": 6.0
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -26534,54 +26995,41 @@
               "yes": null,
               "no": null
             },
-            "value_bets": [
-              {
-                "model_prob": 77.6,
-                "bookie_odd": 1.39,
-                "fair_odd": 1.29,
-                "implied_prob": 71.9,
-                "ev_pct": 7.9,
-                "kelly_pct": 5.0,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "1 - Victòria Local (Wolverhampton Wanderers)",
-                "category": "1X2"
-              }
-            ]
+            "value_bets": []
           },
           {
             "match_id": "CHAMPIONSHIP_J10_WRE_WBA",
             "competition_id": "CHAMPIONSHIP",
             "jornada": 10,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
               "id": "WRE",
               "name": "Wrexham",
               "short_name": "Wrexham",
-              "elo": 1488.8
+              "elo": 1478.7
             },
             "away_team": {
               "id": "WBA",
               "name": "West Bromwich Albion",
               "short_name": "West Brom",
-              "elo": 1569.6
+              "elo": 1579.7
             },
             "date": "13.10.2026 18:45",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 1,
+            "away_goals": 2,
+            "final_score": "1 - 2",
+            "actual_1x2": "2",
             "predicted_1x2": "2",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": null,
-            "real_corners_away": null,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": true,
+            "is_exact_score": false,
+            "xg_diff_home": 0.38,
+            "xg_diff_away": -0.18,
+            "real_corners_home": 3,
+            "real_corners_away": 7,
+            "real_cards_home": 1,
+            "real_cards_away": 1,
             "verdict": "Victòria Visitant (West Bromwich Albion)",
             "prob_1": 8.4,
             "prob_x": 19.3,
@@ -26598,22 +27046,22 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.3,
-            "cards_away": 2.3,
-            "cards_total": 4.5,
-            "prob_over_cards_35": 66.3,
-            "prob_over_cards_45": 47.4,
+            "cards_home": 2.1,
+            "cards_away": 2.1,
+            "cards_total": 4.2,
+            "prob_over_cards_35": 59.5,
+            "prob_over_cards_45": 40.0,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Bell J.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
-              "1": 2.2,
-              "X": 3.3,
-              "2": 2.95
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -26623,54 +27071,41 @@
               "yes": null,
               "no": null
             },
-            "value_bets": [
-              {
-                "model_prob": 72.3,
-                "bookie_odd": 2.95,
-                "fair_odd": 1.38,
-                "implied_prob": 33.9,
-                "ev_pct": 113.3,
-                "kelly_pct": 14.5,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "2 - Victòria Visitant (West Bromwich Albion)",
-                "category": "1X2"
-              }
-            ]
+            "value_bets": []
           },
           {
             "match_id": "CHAMPIONSHIP_J10_BIR_PNE",
             "competition_id": "CHAMPIONSHIP",
             "jornada": 10,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
               "id": "BIR",
               "name": "Birmingham City",
               "short_name": "Birmingham",
-              "elo": 1491.1
+              "elo": 1507.7
             },
             "away_team": {
               "id": "PNE",
               "name": "Preston North End",
               "short_name": "Preston",
-              "elo": 1411.6
+              "elo": 1395.0
             },
             "date": "13.10.2026 19:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 4,
+            "away_goals": 0,
+            "final_score": "4 - 0",
+            "actual_1x2": "1",
             "predicted_1x2": "1",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": null,
-            "real_corners_away": null,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": true,
+            "is_exact_score": false,
+            "xg_diff_home": 2.38,
+            "xg_diff_away": -1.13,
+            "real_corners_home": 5,
+            "real_corners_away": 3,
+            "real_cards_home": 1,
+            "real_cards_away": 2,
             "verdict": "1X (Favorit Local / Risc d'Empat)",
             "prob_1": 47.6,
             "prob_x": 27.0,
@@ -26687,17 +27122,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.4,
-            "cards_away": 2.4,
-            "cards_total": 4.9,
-            "prob_over_cards_35": 71.4,
-            "prob_over_cards_45": 53.4,
+            "cards_home": 2.2,
+            "cards_away": 2.2,
+            "cards_total": 4.5,
+            "prob_over_cards_35": 65.3,
+            "prob_over_cards_45": 46.2,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Allison S.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
               "1": null,
@@ -26718,35 +27153,35 @@
             "match_id": "CHAMPIONSHIP_J10_STK_MID",
             "competition_id": "CHAMPIONSHIP",
             "jornada": 10,
-            "status": "SCHEDULED",
+            "status": "FINISHED",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
               "id": "STK",
               "name": "Stoke City",
               "short_name": "Stoke",
-              "elo": 1494.8
+              "elo": 1484.9
             },
             "away_team": {
               "id": "MID",
               "name": "Middlesbrough",
               "short_name": "Middlesbrough",
-              "elo": 1583.4
+              "elo": 1593.3
             },
             "date": "13.10.2026 19:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
-            "actual_1x2": null,
+            "home_goals": 2,
+            "away_goals": 3,
+            "final_score": "2 - 3",
+            "actual_1x2": "2",
             "predicted_1x2": "2",
-            "is_hit_1x2": null,
-            "is_exact_score": null,
-            "xg_diff_home": null,
-            "xg_diff_away": null,
-            "real_corners_home": null,
-            "real_corners_away": null,
-            "real_cards_home": null,
-            "real_cards_away": null,
+            "is_hit_1x2": true,
+            "is_exact_score": false,
+            "xg_diff_home": 1.38,
+            "xg_diff_away": 0.82,
+            "real_corners_home": 4,
+            "real_corners_away": 3,
+            "real_cards_home": 1,
+            "real_cards_away": 1,
             "verdict": "Victòria Visitant (Middlesbrough)",
             "prob_1": 8.4,
             "prob_x": 19.3,
@@ -26763,22 +27198,22 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.3,
-            "cards_away": 2.3,
-            "cards_total": 4.5,
-            "prob_over_cards_35": 66.3,
-            "prob_over_cards_45": 47.4,
+            "cards_home": 2.1,
+            "cards_away": 2.1,
+            "cards_total": 4.2,
+            "prob_over_cards_35": 59.5,
+            "prob_over_cards_45": 40.0,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Bell E.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
-              "1": 3.3,
-              "X": 3.65,
-              "2": 1.92
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_ou25": {
               "over": null,
@@ -26788,20 +27223,7 @@
               "yes": null,
               "no": null
             },
-            "value_bets": [
-              {
-                "model_prob": 72.3,
-                "bookie_odd": 1.92,
-                "fair_odd": 1.38,
-                "implied_prob": 52.1,
-                "ev_pct": 38.8,
-                "kelly_pct": 10.5,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "2 - Victòria Visitant (Middlesbrough)",
-                "category": "1X2"
-              }
-            ]
+            "value_bets": []
           },
           {
             "match_id": "CHAMPIONSHIP_J10_NOR_SOU",
@@ -26852,17 +27274,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.2,
-            "cards_away": 2.2,
-            "cards_total": 4.5,
-            "prob_over_cards_35": 65.0,
-            "prob_over_cards_45": 45.9,
+            "cards_home": 2.0,
+            "cards_away": 2.0,
+            "cards_total": 4.1,
+            "prob_over_cards_35": 58.0,
+            "prob_over_cards_45": 38.5,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Martin S.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
               "1": null,
@@ -26928,17 +27350,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.2,
-            "cards_away": 2.2,
-            "cards_total": 4.5,
-            "prob_over_cards_35": 65.0,
-            "prob_over_cards_45": 45.9,
+            "cards_home": 2.0,
+            "cards_away": 2.0,
+            "cards_total": 4.1,
+            "prob_over_cards_35": 58.0,
+            "prob_over_cards_45": 38.5,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Langford O.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
               "1": 2.1,
@@ -27017,17 +27439,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.4,
-            "cards_away": 2.4,
-            "cards_total": 4.9,
-            "prob_over_cards_35": 71.4,
-            "prob_over_cards_45": 53.4,
+            "cards_home": 2.2,
+            "cards_away": 2.2,
+            "cards_total": 4.5,
+            "prob_over_cards_35": 65.3,
+            "prob_over_cards_45": 46.2,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Corlett M.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
               "1": 1.7,
@@ -27106,17 +27528,17 @@
             "corners_total": 9.5,
             "prob_over_corners_85": 60.8,
             "prob_over_corners_95": 47.8,
-            "cards_home": 2.2,
-            "cards_away": 2.2,
-            "cards_total": 4.5,
-            "prob_over_cards_35": 65.0,
-            "prob_over_cards_45": 45.9,
+            "cards_home": 2.0,
+            "cards_away": 2.0,
+            "cards_total": 4.1,
+            "prob_over_cards_35": 58.0,
+            "prob_over_cards_45": 38.5,
             "referee": {
-              "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-              "is_official": false,
-              "yellow_avg": 4.5,
-              "red_avg": 0.25,
-              "fouls_avg": 25.0
+              "name": "Madley R.",
+              "is_official": true,
+              "yellow_avg": 3.8,
+              "red_avg": 0.12,
+              "fouls_avg": 21.0
             },
             "odds_1x2": {
               "1": null,
@@ -27140,33 +27562,33 @@
           "match_id": "CHAMPIONSHIP_J10_BRC_BLA",
           "competition_id": "CHAMPIONSHIP",
           "jornada": 10,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
             "id": "BRC",
             "name": "Bristol City",
             "short_name": "Bristol City",
-            "elo": 1473.6
+            "elo": 1460.8
           },
           "away_team": {
             "id": "BLA",
             "name": "Blackburn Rovers",
             "short_name": "Blackburn",
-            "elo": 1467.7
+            "elo": 1480.5
           },
           "date": "13.10.2026 18:45",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 0,
+          "away_goals": 1,
+          "final_score": "0 - 1",
+          "actual_1x2": "2",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
+          "is_hit_1x2": false,
+          "is_exact_score": false,
+          "xg_diff_home": -1.62,
+          "xg_diff_away": -0.13,
+          "real_corners_home": 10,
+          "real_corners_away": 5,
           "real_cards_home": null,
           "real_cards_away": null,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
@@ -27185,22 +27607,22 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.2,
+          "cards_away": 2.2,
+          "cards_total": 4.5,
+          "prob_over_cards_35": 65.3,
+          "prob_over_cards_45": 46.2,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Webb D.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
-            "1": 2.0,
-            "X": 3.35,
-            "2": 3.3
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -27216,35 +27638,35 @@
           "match_id": "CHAMPIONSHIP_J10_BNL_CHA",
           "competition_id": "CHAMPIONSHIP",
           "jornada": 10,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
             "id": "BNL",
             "name": "Burnley",
             "short_name": "Burnley",
-            "elo": 1494.5
+            "elo": 1490.3
           },
           "away_team": {
             "id": "CHA",
             "name": "Charlton Athletic",
             "short_name": "Charlton",
-            "elo": 1407.5
+            "elo": 1411.6
           },
           "date": "13.10.2026 18:45",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 2,
+          "away_goals": 2,
+          "final_score": "2 - 2",
+          "actual_1x2": "X",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": false,
+          "is_exact_score": false,
+          "xg_diff_home": -2.83,
+          "xg_diff_away": 1.85,
+          "real_corners_home": 7,
+          "real_corners_away": 7,
+          "real_cards_home": 2,
+          "real_cards_away": 1,
           "verdict": "Victòria Local (Burnley)",
           "prob_1": 98.3,
           "prob_x": 1.6,
@@ -27261,17 +27683,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.2,
-          "cards_away": 2.2,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 65.0,
-          "prob_over_cards_45": 45.9,
+          "cards_home": 2.0,
+          "cards_away": 2.0,
+          "cards_total": 4.1,
+          "prob_over_cards_35": 58.0,
+          "prob_over_cards_45": 38.5,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Backhouse A.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
             "1": null,
@@ -27292,35 +27714,35 @@
           "match_id": "CHAMPIONSHIP_J10_CDF_WAT",
           "competition_id": "CHAMPIONSHIP",
           "jornada": 10,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
             "id": "CDF",
             "name": "Cardiff City",
             "short_name": "Cardiff",
-            "elo": 1445.0
+            "elo": 1472.6
           },
           "away_team": {
             "id": "WAT",
             "name": "Watford",
             "short_name": "Watford",
-            "elo": 1519.7
+            "elo": 1492.1
           },
           "date": "13.10.2026 18:45",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 5,
+          "away_goals": 1,
+          "final_score": "5 - 1",
+          "actual_1x2": "1",
           "predicted_1x2": "2",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": false,
+          "is_exact_score": false,
+          "xg_diff_home": 4.38,
+          "xg_diff_away": -1.18,
+          "real_corners_home": 6,
+          "real_corners_away": 1,
+          "real_cards_home": 1,
+          "real_cards_away": 4,
           "verdict": "Victòria Visitant (Watford)",
           "prob_1": 8.4,
           "prob_x": 19.3,
@@ -27337,17 +27759,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.3,
-          "cards_away": 2.3,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 66.3,
-          "prob_over_cards_45": 47.4,
+          "cards_home": 2.1,
+          "cards_away": 2.1,
+          "cards_total": 4.2,
+          "prob_over_cards_35": 59.5,
+          "prob_over_cards_45": 40.0,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Busby J.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
             "1": null,
@@ -27368,35 +27790,35 @@
           "match_id": "CHAMPIONSHIP_J10_MIL_SWA",
           "competition_id": "CHAMPIONSHIP",
           "jornada": 10,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
             "id": "MIL",
             "name": "Millwall",
             "short_name": "Millwall",
-            "elo": 1472.8
+            "elo": 1462.0
           },
           "away_team": {
             "id": "SWA",
             "name": "Swansea City",
             "short_name": "Swansea",
-            "elo": 1532.0
+            "elo": 1542.8
           },
           "date": "13.10.2026 18:45",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 0,
+          "away_goals": 1,
+          "final_score": "0 - 1",
+          "actual_1x2": "2",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": false,
+          "is_exact_score": false,
+          "xg_diff_home": -1.62,
+          "xg_diff_away": -0.13,
+          "real_corners_home": 13,
+          "real_corners_away": 1,
+          "real_cards_home": 3,
+          "real_cards_away": 2,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
           "prob_1": 47.6,
           "prob_x": 27.0,
@@ -27413,22 +27835,22 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.2,
+          "cards_away": 2.2,
+          "cards_total": 4.5,
+          "prob_over_cards_35": 65.3,
+          "prob_over_cards_45": 46.2,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Duckworth E.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
-            "1": 1.82,
-            "X": 3.6,
-            "2": 3.65
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -27444,35 +27866,35 @@
           "match_id": "CHAMPIONSHIP_J10_WOL_BOL",
           "competition_id": "CHAMPIONSHIP",
           "jornada": 10,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
             "id": "WOL",
             "name": "Wolverhampton Wanderers",
             "short_name": "Wolves",
-            "elo": 1606.6
+            "elo": 1578.1
           },
           "away_team": {
             "id": "BOL",
             "name": "Bolton Wanderers",
             "short_name": "Bolton",
-            "elo": 1403.4
+            "elo": 1432.0
           },
           "date": "13.10.2026 18:45",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 1,
+          "away_goals": 3,
+          "final_score": "1 - 3",
+          "actual_1x2": "2",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": false,
+          "is_exact_score": false,
+          "xg_diff_home": -1.34,
+          "xg_diff_away": 2.48,
+          "real_corners_home": 9,
+          "real_corners_away": 3,
+          "real_cards_home": 3,
+          "real_cards_away": 2,
           "verdict": "Victòria Local (Wolverhampton Wanderers)",
           "prob_1": 77.6,
           "prob_x": 16.5,
@@ -27489,22 +27911,22 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.3,
-          "cards_away": 2.3,
-          "cards_total": 4.6,
-          "prob_over_cards_35": 67.0,
-          "prob_over_cards_45": 48.2,
+          "cards_home": 2.4,
+          "cards_away": 2.4,
+          "cards_total": 4.8,
+          "prob_over_cards_35": 70.5,
+          "prob_over_cards_45": 52.2,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Tim Robinson",
+            "is_official": true,
+            "yellow_avg": 4.15,
+            "red_avg": 0.14,
+            "fouls_avg": 22.6
           },
           "odds_1x2": {
-            "1": 1.39,
-            "X": 4.8,
-            "2": 6.0
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -27514,54 +27936,41 @@
             "yes": null,
             "no": null
           },
-          "value_bets": [
-            {
-              "model_prob": 77.6,
-              "bookie_odd": 1.39,
-              "fair_odd": 1.29,
-              "implied_prob": 71.9,
-              "ev_pct": 7.9,
-              "kelly_pct": 5.0,
-              "is_value": true,
-              "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-              "name": "1 - Victòria Local (Wolverhampton Wanderers)",
-              "category": "1X2"
-            }
-          ]
+          "value_bets": []
         },
         {
           "match_id": "CHAMPIONSHIP_J10_WRE_WBA",
           "competition_id": "CHAMPIONSHIP",
           "jornada": 10,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
             "id": "WRE",
             "name": "Wrexham",
             "short_name": "Wrexham",
-            "elo": 1488.8
+            "elo": 1478.7
           },
           "away_team": {
             "id": "WBA",
             "name": "West Bromwich Albion",
             "short_name": "West Brom",
-            "elo": 1569.6
+            "elo": 1579.7
           },
           "date": "13.10.2026 18:45",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 1,
+          "away_goals": 2,
+          "final_score": "1 - 2",
+          "actual_1x2": "2",
           "predicted_1x2": "2",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": true,
+          "is_exact_score": false,
+          "xg_diff_home": 0.38,
+          "xg_diff_away": -0.18,
+          "real_corners_home": 3,
+          "real_corners_away": 7,
+          "real_cards_home": 1,
+          "real_cards_away": 1,
           "verdict": "Victòria Visitant (West Bromwich Albion)",
           "prob_1": 8.4,
           "prob_x": 19.3,
@@ -27578,22 +27987,22 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.3,
-          "cards_away": 2.3,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 66.3,
-          "prob_over_cards_45": 47.4,
+          "cards_home": 2.1,
+          "cards_away": 2.1,
+          "cards_total": 4.2,
+          "prob_over_cards_35": 59.5,
+          "prob_over_cards_45": 40.0,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Bell J.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
-            "1": 2.2,
-            "X": 3.3,
-            "2": 2.95
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -27603,54 +28012,41 @@
             "yes": null,
             "no": null
           },
-          "value_bets": [
-            {
-              "model_prob": 72.3,
-              "bookie_odd": 2.95,
-              "fair_odd": 1.38,
-              "implied_prob": 33.9,
-              "ev_pct": 113.3,
-              "kelly_pct": 14.5,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "2 - Victòria Visitant (West Bromwich Albion)",
-              "category": "1X2"
-            }
-          ]
+          "value_bets": []
         },
         {
           "match_id": "CHAMPIONSHIP_J10_BIR_PNE",
           "competition_id": "CHAMPIONSHIP",
           "jornada": 10,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
             "id": "BIR",
             "name": "Birmingham City",
             "short_name": "Birmingham",
-            "elo": 1491.1
+            "elo": 1507.7
           },
           "away_team": {
             "id": "PNE",
             "name": "Preston North End",
             "short_name": "Preston",
-            "elo": 1411.6
+            "elo": 1395.0
           },
           "date": "13.10.2026 19:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 4,
+          "away_goals": 0,
+          "final_score": "4 - 0",
+          "actual_1x2": "1",
           "predicted_1x2": "1",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": true,
+          "is_exact_score": false,
+          "xg_diff_home": 2.38,
+          "xg_diff_away": -1.13,
+          "real_corners_home": 5,
+          "real_corners_away": 3,
+          "real_cards_home": 1,
+          "real_cards_away": 2,
           "verdict": "1X (Favorit Local / Risc d'Empat)",
           "prob_1": 47.6,
           "prob_x": 27.0,
@@ -27667,17 +28063,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.2,
+          "cards_away": 2.2,
+          "cards_total": 4.5,
+          "prob_over_cards_35": 65.3,
+          "prob_over_cards_45": 46.2,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Allison S.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
             "1": null,
@@ -27698,35 +28094,35 @@
           "match_id": "CHAMPIONSHIP_J10_STK_MID",
           "competition_id": "CHAMPIONSHIP",
           "jornada": 10,
-          "status": "SCHEDULED",
+          "status": "FINISHED",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
             "id": "STK",
             "name": "Stoke City",
             "short_name": "Stoke",
-            "elo": 1494.8
+            "elo": 1484.9
           },
           "away_team": {
             "id": "MID",
             "name": "Middlesbrough",
             "short_name": "Middlesbrough",
-            "elo": 1583.4
+            "elo": 1593.3
           },
           "date": "13.10.2026 19:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
-          "actual_1x2": null,
+          "home_goals": 2,
+          "away_goals": 3,
+          "final_score": "2 - 3",
+          "actual_1x2": "2",
           "predicted_1x2": "2",
-          "is_hit_1x2": null,
-          "is_exact_score": null,
-          "xg_diff_home": null,
-          "xg_diff_away": null,
-          "real_corners_home": null,
-          "real_corners_away": null,
-          "real_cards_home": null,
-          "real_cards_away": null,
+          "is_hit_1x2": true,
+          "is_exact_score": false,
+          "xg_diff_home": 1.38,
+          "xg_diff_away": 0.82,
+          "real_corners_home": 4,
+          "real_corners_away": 3,
+          "real_cards_home": 1,
+          "real_cards_away": 1,
           "verdict": "Victòria Visitant (Middlesbrough)",
           "prob_1": 8.4,
           "prob_x": 19.3,
@@ -27743,22 +28139,22 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.3,
-          "cards_away": 2.3,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 66.3,
-          "prob_over_cards_45": 47.4,
+          "cards_home": 2.1,
+          "cards_away": 2.1,
+          "cards_total": 4.2,
+          "prob_over_cards_35": 59.5,
+          "prob_over_cards_45": 40.0,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Bell E.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
-            "1": 3.3,
-            "X": 3.65,
-            "2": 1.92
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_ou25": {
             "over": null,
@@ -27768,20 +28164,7 @@
             "yes": null,
             "no": null
           },
-          "value_bets": [
-            {
-              "model_prob": 72.3,
-              "bookie_odd": 1.92,
-              "fair_odd": 1.38,
-              "implied_prob": 52.1,
-              "ev_pct": 38.8,
-              "kelly_pct": 10.5,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "2 - Victòria Visitant (Middlesbrough)",
-              "category": "1X2"
-            }
-          ]
+          "value_bets": []
         },
         {
           "match_id": "CHAMPIONSHIP_J10_NOR_SOU",
@@ -27832,17 +28215,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.2,
-          "cards_away": 2.2,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 65.0,
-          "prob_over_cards_45": 45.9,
+          "cards_home": 2.0,
+          "cards_away": 2.0,
+          "cards_total": 4.1,
+          "prob_over_cards_35": 58.0,
+          "prob_over_cards_45": 38.5,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Martin S.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
             "1": null,
@@ -27908,17 +28291,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.2,
-          "cards_away": 2.2,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 65.0,
-          "prob_over_cards_45": 45.9,
+          "cards_home": 2.0,
+          "cards_away": 2.0,
+          "cards_total": 4.1,
+          "prob_over_cards_35": 58.0,
+          "prob_over_cards_45": 38.5,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Langford O.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
             "1": 2.1,
@@ -27997,17 +28380,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.4,
-          "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.4,
-          "prob_over_cards_45": 53.4,
+          "cards_home": 2.2,
+          "cards_away": 2.2,
+          "cards_total": 4.5,
+          "prob_over_cards_35": 65.3,
+          "prob_over_cards_45": 46.2,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Corlett M.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
             "1": 1.7,
@@ -28086,17 +28469,17 @@
           "corners_total": 9.5,
           "prob_over_corners_85": 60.8,
           "prob_over_corners_95": 47.8,
-          "cards_home": 2.2,
-          "cards_away": 2.2,
-          "cards_total": 4.5,
-          "prob_over_cards_35": 65.0,
-          "prob_over_cards_45": 45.9,
+          "cards_home": 2.0,
+          "cards_away": 2.0,
+          "cards_total": 4.1,
+          "prob_over_cards_35": 58.0,
+          "prob_over_cards_45": 38.5,
           "referee": {
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
-            "is_official": false,
-            "yellow_avg": 4.5,
-            "red_avg": 0.25,
-            "fouls_avg": 25.0
+            "name": "Madley R.",
+            "is_official": true,
+            "yellow_avg": 3.8,
+            "red_avg": 0.12,
+            "fouls_avg": 21.0
           },
           "odds_1x2": {
             "1": null,
@@ -28129,20 +28512,6 @@
       "fair_odd": 1.07,
       "edge_pct": 175.2,
       "kelly_stake": 22.5,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Wrexham vs West Bromwich Albion",
-      "date": "13.10.2026 18:45",
-      "selection": "2 - Victòria Visitant (West Bromwich Albion)",
-      "category": "1X2",
-      "bookie_odd": 2.95,
-      "model_prob": 72.3,
-      "fair_odd": 1.38,
-      "edge_pct": 113.3,
-      "kelly_stake": 14.5,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -28185,20 +28554,6 @@
       "fair_odd": 1.3,
       "edge_pct": 61.3,
       "kelly_stake": 13.9,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Stoke City vs Middlesbrough",
-      "date": "13.10.2026 19:00",
-      "selection": "2 - Victòria Visitant (Middlesbrough)",
-      "category": "1X2",
-      "bookie_odd": 1.92,
-      "model_prob": 72.3,
-      "fair_odd": 1.38,
-      "edge_pct": 38.8,
-      "kelly_stake": 10.5,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -28297,20 +28652,6 @@
       "fair_odd": 2.15,
       "edge_pct": 11.8,
       "kelly_stake": 2.1,
-      "winamax_url": "https://www.winamax.es"
-    },
-    {
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Wolverhampton Wanderers vs Bolton Wanderers",
-      "date": "13.10.2026 18:45",
-      "selection": "1 - Victòria Local (Wolverhampton Wanderers)",
-      "category": "1X2",
-      "bookie_odd": 1.39,
-      "model_prob": 77.6,
-      "fair_odd": 1.29,
-      "edge_pct": 7.9,
-      "kelly_stake": 5.0,
       "winamax_url": "https://www.winamax.es"
     },
     {
@@ -31705,15 +32046,15 @@
           "boosted_odd": 2.67,
           "potential_payout": 66.75,
           "potential_profit": 41.75,
-          "status": "PENDING",
+          "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 0,
-            "lost_count": 0,
-            "pending_count": 2,
+            "won_count": 1,
+            "lost_count": 1,
+            "pending_count": 0,
             "total_count": 2,
-            "progress_pct": 0.0,
-            "summary": "0/2 encertats · 2 pendents"
+            "progress_pct": 100.0,
+            "summary": "1/2 encertats"
           },
           "legs": [
             {
@@ -31724,8 +32065,8 @@
               "model_prob": 77.6,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339900",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "LOST",
+              "actual_result": "1-3 (no victòria local)"
             },
             {
               "matchup": "Stoke City vs Middlesbrough",
@@ -31735,8 +32076,8 @@
               "model_prob": 72.3,
               "date": "13.10.2026 19:00",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339898",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "2-3 (2 encertat)"
             }
           ]
         },
@@ -31753,15 +32094,15 @@
           "boosted_odd": 2.36,
           "potential_payout": 59.0,
           "potential_profit": 34.0,
-          "status": "PENDING",
+          "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
             "won_count": 0,
-            "lost_count": 0,
-            "pending_count": 2,
+            "lost_count": 1,
+            "pending_count": 1,
             "total_count": 2,
-            "progress_pct": 0.0,
-            "summary": "0/2 encertats · 2 pendents"
+            "progress_pct": 50.0,
+            "summary": "0/2 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -31772,8 +32113,8 @@
               "model_prob": 77.6,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339900",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "LOST",
+              "actual_result": "1-3 (no victòria local)"
             },
             {
               "matchup": "Queens Park Rangers vs Derby County",
@@ -31803,15 +32144,15 @@
           "boosted_odd": 15.84,
           "potential_payout": 158.4,
           "potential_profit": 148.4,
-          "status": "PENDING",
+          "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 0,
-            "lost_count": 0,
-            "pending_count": 3,
+            "won_count": 1,
+            "lost_count": 1,
+            "pending_count": 1,
             "total_count": 3,
-            "progress_pct": 0.0,
-            "summary": "0/3 encertats · 3 pendents"
+            "progress_pct": 66.7,
+            "summary": "1/3 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -31822,8 +32163,8 @@
               "model_prob": 47.6,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339922",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "LOST",
+              "actual_result": "0-1 (no victòria local)"
             },
             {
               "matchup": "Wrexham vs West Bromwich Albion",
@@ -31833,8 +32174,8 @@
               "model_prob": 72.3,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339902",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "1-2 (2 encertat)"
             },
             {
               "matchup": "Portsmouth vs Sheffield United",
@@ -31862,15 +32203,15 @@
           "boosted_odd": 11.33,
           "potential_payout": 113.3,
           "potential_profit": 103.3,
-          "status": "PENDING",
+          "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 0,
-            "lost_count": 0,
-            "pending_count": 3,
+            "won_count": 1,
+            "lost_count": 1,
+            "pending_count": 1,
             "total_count": 3,
-            "progress_pct": 0.0,
-            "summary": "0/3 encertats · 3 pendents"
+            "progress_pct": 66.7,
+            "summary": "1/3 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -31881,8 +32222,8 @@
               "model_prob": 47.6,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339890",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "LOST",
+              "actual_result": "0-1 (no victòria local)"
             },
             {
               "matchup": "Stoke City vs Middlesbrough",
@@ -31892,8 +32233,8 @@
               "model_prob": 72.3,
               "date": "13.10.2026 19:00",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339898",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "2-3 (2 encertat)"
             },
             {
               "matchup": "Portsmouth vs Sheffield United",
@@ -31923,15 +32264,15 @@
           "boosted_odd": 41.72,
           "potential_payout": 208.6,
           "potential_profit": 203.6,
-          "status": "PENDING",
+          "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 0,
-            "lost_count": 0,
-            "pending_count": 4,
+            "won_count": 1,
+            "lost_count": 2,
+            "pending_count": 1,
             "total_count": 4,
-            "progress_pct": 0.0,
-            "summary": "0/4 encertats · 4 pendents"
+            "progress_pct": 75.0,
+            "summary": "1/4 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -31942,8 +32283,8 @@
               "model_prob": 47.6,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339890",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "LOST",
+              "actual_result": "0-1 (no victòria local)"
             },
             {
               "matchup": "Millwall vs Swansea City",
@@ -31953,8 +32294,8 @@
               "model_prob": 47.6,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339922",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "LOST",
+              "actual_result": "0-1 (no victòria local)"
             },
             {
               "matchup": "Wrexham vs West Bromwich Albion",
@@ -31964,8 +32305,8 @@
               "model_prob": 72.3,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339902",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "1-2 (2 encertat)"
             },
             {
               "matchup": "Queens Park Rangers vs Derby County",
@@ -31993,15 +32334,15 @@
           "boosted_odd": 41.72,
           "potential_payout": 208.6,
           "potential_profit": 203.6,
-          "status": "PENDING",
+          "status": "LOST",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "progress": {
-            "won_count": 0,
-            "lost_count": 0,
-            "pending_count": 4,
+            "won_count": 1,
+            "lost_count": 2,
+            "pending_count": 1,
             "total_count": 4,
-            "progress_pct": 0.0,
-            "summary": "0/4 encertats · 4 pendents"
+            "progress_pct": 75.0,
+            "summary": "1/4 encertats · 1 pendents"
           },
           "legs": [
             {
@@ -32012,8 +32353,8 @@
               "model_prob": 47.6,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339890",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "LOST",
+              "actual_result": "0-1 (no victòria local)"
             },
             {
               "matchup": "Millwall vs Swansea City",
@@ -32023,8 +32364,8 @@
               "model_prob": 47.6,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339922",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "LOST",
+              "actual_result": "0-1 (no victòria local)"
             },
             {
               "matchup": "Wrexham vs West Bromwich Albion",
@@ -32034,8 +32375,8 @@
               "model_prob": 72.3,
               "date": "13.10.2026 18:45",
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339902",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "status": "WON",
+              "actual_result": "1-2 (2 encertat)"
             },
             {
               "matchup": "Queens Park Rangers vs Derby County",
@@ -32576,15 +32917,15 @@
               "boosted_odd": 2.67,
               "potential_payout": 66.75,
               "potential_profit": 41.75,
-              "status": "PENDING",
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 2,
+                "won_count": 1,
+                "lost_count": 1,
+                "pending_count": 0,
                 "total_count": 2,
-                "progress_pct": 0.0,
-                "summary": "0/2 encertats · 2 pendents"
+                "progress_pct": 100.0,
+                "summary": "1/2 encertats"
               },
               "legs": [
                 {
@@ -32595,8 +32936,8 @@
                   "model_prob": 77.6,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339900",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "1-3 (no victòria local)"
                 },
                 {
                   "matchup": "Stoke City vs Middlesbrough",
@@ -32606,8 +32947,8 @@
                   "model_prob": 72.3,
                   "date": "13.10.2026 19:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339898",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "2-3 (2 encertat)"
                 }
               ]
             },
@@ -32624,15 +32965,15 @@
               "boosted_odd": 2.36,
               "potential_payout": 59.0,
               "potential_profit": 34.0,
-              "status": "PENDING",
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
                 "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 2,
+                "lost_count": 1,
+                "pending_count": 1,
                 "total_count": 2,
-                "progress_pct": 0.0,
-                "summary": "0/2 encertats · 2 pendents"
+                "progress_pct": 50.0,
+                "summary": "0/2 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -32643,8 +32984,8 @@
                   "model_prob": 77.6,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339900",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "1-3 (no victòria local)"
                 },
                 {
                   "matchup": "Queens Park Rangers vs Derby County",
@@ -32674,15 +33015,15 @@
               "boosted_odd": 15.84,
               "potential_payout": 158.4,
               "potential_profit": 148.4,
-              "status": "PENDING",
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 3,
+                "won_count": 1,
+                "lost_count": 1,
+                "pending_count": 1,
                 "total_count": 3,
-                "progress_pct": 0.0,
-                "summary": "0/3 encertats · 3 pendents"
+                "progress_pct": 66.7,
+                "summary": "1/3 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -32693,8 +33034,8 @@
                   "model_prob": 47.6,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339922",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0-1 (no victòria local)"
                 },
                 {
                   "matchup": "Wrexham vs West Bromwich Albion",
@@ -32704,8 +33045,8 @@
                   "model_prob": 72.3,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339902",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-2 (2 encertat)"
                 },
                 {
                   "matchup": "Portsmouth vs Sheffield United",
@@ -32733,15 +33074,15 @@
               "boosted_odd": 11.33,
               "potential_payout": 113.3,
               "potential_profit": 103.3,
-              "status": "PENDING",
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 3,
+                "won_count": 1,
+                "lost_count": 1,
+                "pending_count": 1,
                 "total_count": 3,
-                "progress_pct": 0.0,
-                "summary": "0/3 encertats · 3 pendents"
+                "progress_pct": 66.7,
+                "summary": "1/3 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -32752,8 +33093,8 @@
                   "model_prob": 47.6,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339890",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0-1 (no victòria local)"
                 },
                 {
                   "matchup": "Stoke City vs Middlesbrough",
@@ -32763,8 +33104,8 @@
                   "model_prob": 72.3,
                   "date": "13.10.2026 19:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339898",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "2-3 (2 encertat)"
                 },
                 {
                   "matchup": "Portsmouth vs Sheffield United",
@@ -32794,15 +33135,15 @@
               "boosted_odd": 41.72,
               "potential_payout": 208.6,
               "potential_profit": 203.6,
-              "status": "PENDING",
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 4,
+                "won_count": 1,
+                "lost_count": 2,
+                "pending_count": 1,
                 "total_count": 4,
-                "progress_pct": 0.0,
-                "summary": "0/4 encertats · 4 pendents"
+                "progress_pct": 75.0,
+                "summary": "1/4 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -32813,8 +33154,8 @@
                   "model_prob": 47.6,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339890",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0-1 (no victòria local)"
                 },
                 {
                   "matchup": "Millwall vs Swansea City",
@@ -32824,8 +33165,8 @@
                   "model_prob": 47.6,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339922",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0-1 (no victòria local)"
                 },
                 {
                   "matchup": "Wrexham vs West Bromwich Albion",
@@ -32835,8 +33176,8 @@
                   "model_prob": 72.3,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339902",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-2 (2 encertat)"
                 },
                 {
                   "matchup": "Queens Park Rangers vs Derby County",
@@ -32864,15 +33205,15 @@
               "boosted_odd": 41.72,
               "potential_payout": 208.6,
               "potential_profit": 203.6,
-              "status": "PENDING",
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 4,
+                "won_count": 1,
+                "lost_count": 2,
+                "pending_count": 1,
                 "total_count": 4,
-                "progress_pct": 0.0,
-                "summary": "0/4 encertats · 4 pendents"
+                "progress_pct": 75.0,
+                "summary": "1/4 encertats · 1 pendents"
               },
               "legs": [
                 {
@@ -32883,8 +33224,8 @@
                   "model_prob": 47.6,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339890",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0-1 (no victòria local)"
                 },
                 {
                   "matchup": "Millwall vs Swansea City",
@@ -32894,8 +33235,8 @@
                   "model_prob": 47.6,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339922",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0-1 (no victòria local)"
                 },
                 {
                   "matchup": "Wrexham vs West Bromwich Albion",
@@ -32905,8 +33246,8 @@
                   "model_prob": 72.3,
                   "date": "13.10.2026 18:45",
                   "url": "https://www.winamax.es/apuestas-deportivas/match/72339902",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-2 (2 encertat)"
                 },
                 {
                   "matchup": "Queens Park Rangers vs Derby County",
@@ -34525,44 +34866,44 @@
   },
   "bankroll_simulation": {
     "kpis": {
-      "total_invested": 310.0,
+      "total_invested": 390.0,
       "total_payout": 652.1,
-      "net_pnl": 342.1,
-      "roi_pct": 110.35,
-      "total_bets": 23,
+      "net_pnl": 262.1,
+      "roi_pct": 67.21,
+      "total_bets": 29,
       "won_bets": 5,
-      "lost_bets": 18,
-      "pending_bets": 19,
-      "win_rate_pct": 21.7
+      "lost_bets": 24,
+      "pending_bets": 13,
+      "win_rate_pct": 17.2
     },
     "by_profile": {
       "safe": {
         "label": "Combinades Segures",
         "unit_stake": 25.0,
-        "total_invested": 200.0,
+        "total_invested": 250.0,
         "total_payout": 156.5,
-        "net_pnl": -43.5,
-        "total": 8,
+        "net_pnl": -93.5,
+        "total": 10,
         "won": 5,
-        "win_rate_pct": 62.5
+        "win_rate_pct": 50.0
       },
       "semi": {
         "label": "Combinades Semi-Arriscades",
         "unit_stake": 10.0,
-        "total_invested": 70.0,
+        "total_invested": 90.0,
         "total_payout": 98.7,
-        "net_pnl": 28.7,
-        "total": 7,
+        "net_pnl": 8.7,
+        "total": 9,
         "won": 0,
         "win_rate_pct": 0.0
       },
       "risky": {
         "label": "Combinades Arriscades",
         "unit_stake": 5.0,
-        "total_invested": 40.0,
+        "total_invested": 50.0,
         "total_payout": 396.9,
-        "net_pnl": 356.9,
-        "total": 8,
+        "net_pnl": 346.9,
+        "total": 10,
         "won": 0,
         "win_rate_pct": 0.0
       }
@@ -38251,10 +38592,10 @@
         "jornada": 10,
         "season": "2026-2027",
         "created_at": "2026-10-13 03:05:58",
-        "total_stake": 0.0,
+        "total_stake": 80.0,
         "total_payout": 0.0,
-        "net_profit": 0.0,
-        "status_summary": "PENDING",
+        "net_profit": -80.0,
+        "status_summary": "LOST",
         "combos": [
           {
             "id": "COMBO_2026-2027_CHAMPIONSHIP_J10_RISKY_1",
@@ -38267,12 +38608,12 @@
             "combined_prob_pct": 4.4,
             "fair_odd": 22.61,
             "ev_pct": 75.7,
-            "status": "PENDING",
+            "status": "LOST",
             "payout": 0.0,
-            "profit": 0.0,
+            "profit": -5.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "created_at": "2026-10-13 03:05:58",
-            "evaluated_at": null,
+            "evaluated_at": "2026-10-14 01:18:26",
             "legs": [
               {
                 "id": 1150,
@@ -38351,12 +38692,12 @@
             "combined_prob_pct": 4.4,
             "fair_odd": 22.61,
             "ev_pct": 75.7,
-            "status": "PENDING",
+            "status": "LOST",
             "payout": 0.0,
-            "profit": 0.0,
+            "profit": -5.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "created_at": "2026-10-13 03:05:58",
-            "evaluated_at": null,
+            "evaluated_at": "2026-10-14 01:18:26",
             "legs": [
               {
                 "id": 1154,
@@ -38435,12 +38776,12 @@
             "combined_prob_pct": 56.1,
             "fair_odd": 1.78,
             "ev_pct": 49.8,
-            "status": "PENDING",
+            "status": "LOST",
             "payout": 0.0,
-            "profit": 0.0,
+            "profit": -25.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "created_at": "2026-10-13 03:05:58",
-            "evaluated_at": null,
+            "evaluated_at": "2026-10-14 01:18:21",
             "legs": [
               {
                 "id": 1140,
@@ -38454,9 +38795,9 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/match/72339900",
                 "home_team_id": "WOL",
                 "away_team_id": "BOL",
-                "status": "PENDING",
-                "actual_result": null,
-                "evaluated_at": null
+                "status": "LOST",
+                "actual_result": "1-3 (no victòria local)",
+                "evaluated_at": "2026-10-14 01:18:21"
               },
               {
                 "id": 1141,
@@ -38470,9 +38811,9 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/match/72339898",
                 "home_team_id": "STK",
                 "away_team_id": "MID",
-                "status": "PENDING",
-                "actual_result": null,
-                "evaluated_at": null
+                "status": "WON",
+                "actual_result": "2-3 (2 encertat)",
+                "evaluated_at": "2026-10-14 01:18:21"
               }
             ]
           },
@@ -38487,12 +38828,12 @@
             "combined_prob_pct": 36.9,
             "fair_odd": 2.71,
             "ev_pct": -12.8,
-            "status": "PENDING",
+            "status": "LOST",
             "payout": 0.0,
-            "profit": 0.0,
+            "profit": -25.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "created_at": "2026-10-13 03:05:58",
-            "evaluated_at": null,
+            "evaluated_at": "2026-10-14 01:18:26",
             "legs": [
               {
                 "id": 1142,
@@ -38539,12 +38880,12 @@
             "combined_prob_pct": 32.1,
             "fair_odd": 3.11,
             "ev_pct": 408.6,
-            "status": "PENDING",
+            "status": "LOST",
             "payout": 0.0,
-            "profit": 0.0,
+            "profit": -10.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "created_at": "2026-10-13 03:05:58",
-            "evaluated_at": null,
+            "evaluated_at": "2026-10-14 01:18:26",
             "legs": [
               {
                 "id": 1144,
@@ -38607,12 +38948,12 @@
             "combined_prob_pct": 32.1,
             "fair_odd": 3.11,
             "ev_pct": 263.8,
-            "status": "PENDING",
+            "status": "LOST",
             "payout": 0.0,
-            "profit": 0.0,
+            "profit": -10.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "created_at": "2026-10-13 03:05:58",
-            "evaluated_at": null,
+            "evaluated_at": "2026-10-14 01:18:26",
             "legs": [
               {
                 "id": 1147,
@@ -38665,7 +39006,7 @@
             ]
           }
         ],
-        "roi_pct": 0.0
+        "roi_pct": -100.0
       }
     ],
     "all_combos": [
@@ -42280,12 +42621,12 @@
         "combined_prob_pct": 4.4,
         "fair_odd": 22.61,
         "ev_pct": 75.7,
-        "status": "PENDING",
+        "status": "LOST",
         "payout": 0.0,
-        "profit": 0.0,
+        "profit": -5.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "created_at": "2026-10-13 03:05:58",
-        "evaluated_at": null,
+        "evaluated_at": "2026-10-14 01:18:26",
         "legs": [
           {
             "id": 1150,
@@ -42364,12 +42705,12 @@
         "combined_prob_pct": 4.4,
         "fair_odd": 22.61,
         "ev_pct": 75.7,
-        "status": "PENDING",
+        "status": "LOST",
         "payout": 0.0,
-        "profit": 0.0,
+        "profit": -5.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "created_at": "2026-10-13 03:05:58",
-        "evaluated_at": null,
+        "evaluated_at": "2026-10-14 01:18:26",
         "legs": [
           {
             "id": 1154,
@@ -42448,12 +42789,12 @@
         "combined_prob_pct": 56.1,
         "fair_odd": 1.78,
         "ev_pct": 49.8,
-        "status": "PENDING",
+        "status": "LOST",
         "payout": 0.0,
-        "profit": 0.0,
+        "profit": -25.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "created_at": "2026-10-13 03:05:58",
-        "evaluated_at": null,
+        "evaluated_at": "2026-10-14 01:18:21",
         "legs": [
           {
             "id": 1140,
@@ -42467,9 +42808,9 @@
             "url": "https://www.winamax.es/apuestas-deportivas/match/72339900",
             "home_team_id": "WOL",
             "away_team_id": "BOL",
-            "status": "PENDING",
-            "actual_result": null,
-            "evaluated_at": null
+            "status": "LOST",
+            "actual_result": "1-3 (no victòria local)",
+            "evaluated_at": "2026-10-14 01:18:21"
           },
           {
             "id": 1141,
@@ -42483,9 +42824,9 @@
             "url": "https://www.winamax.es/apuestas-deportivas/match/72339898",
             "home_team_id": "STK",
             "away_team_id": "MID",
-            "status": "PENDING",
-            "actual_result": null,
-            "evaluated_at": null
+            "status": "WON",
+            "actual_result": "2-3 (2 encertat)",
+            "evaluated_at": "2026-10-14 01:18:21"
           }
         ]
       },
@@ -42500,12 +42841,12 @@
         "combined_prob_pct": 36.9,
         "fair_odd": 2.71,
         "ev_pct": -12.8,
-        "status": "PENDING",
+        "status": "LOST",
         "payout": 0.0,
-        "profit": 0.0,
+        "profit": -25.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "created_at": "2026-10-13 03:05:58",
-        "evaluated_at": null,
+        "evaluated_at": "2026-10-14 01:18:26",
         "legs": [
           {
             "id": 1142,
@@ -42552,12 +42893,12 @@
         "combined_prob_pct": 32.1,
         "fair_odd": 3.11,
         "ev_pct": 408.6,
-        "status": "PENDING",
+        "status": "LOST",
         "payout": 0.0,
-        "profit": 0.0,
+        "profit": -10.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "created_at": "2026-10-13 03:05:58",
-        "evaluated_at": null,
+        "evaluated_at": "2026-10-14 01:18:26",
         "legs": [
           {
             "id": 1144,
@@ -42620,12 +42961,12 @@
         "combined_prob_pct": 32.1,
         "fair_odd": 3.11,
         "ev_pct": 263.8,
-        "status": "PENDING",
+        "status": "LOST",
         "payout": 0.0,
-        "profit": 0.0,
+        "profit": -10.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "created_at": "2026-10-13 03:05:58",
-        "evaluated_at": null,
+        "evaluated_at": "2026-10-14 01:18:26",
         "legs": [
           {
             "id": 1147,
