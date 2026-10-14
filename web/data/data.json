@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-14T12:08:00.429817",
-    "formatted_date": "14/10/2026 a les 12:08",
+    "generated_at": "2026-10-14T18:05:07.012041",
+    "formatted_date": "14/10/2026 a les 18:05",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,7 +43,7 @@
   "changelog": [
     {
       "date": "2026-10-14",
-      "timestamp": "2026-10-14T12:08:03.990432",
+      "timestamp": "2026-10-14T18:05:09.408385",
       "title": "Actualització Diària del Model · 14/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
