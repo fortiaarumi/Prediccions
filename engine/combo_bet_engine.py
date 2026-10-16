@@ -536,7 +536,7 @@ class ComboBetEngine:
                     continue
                 league_bonus = 0.10 if is_multi and len(comps) >= 3 else (0.04 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"][:2] for m in match_combo]
+                cand_lists = [m["markets"][:4] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
@@ -567,7 +567,7 @@ class ComboBetEngine:
             # Fallback si el rang estricte no es compleix amb el filtre
             for k in range(4, min(n_pools, 7) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
-                    cand_lists = [m["markets"][:2] for m in match_combo]
+                    cand_lists = [m["markets"][:4] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
