@@ -251,6 +251,101 @@ class ComboBetEngine:
                     })
         return pools
 
+    def _pick_diverse_c2(
+        self,
+        candidates: List[Dict[str, Any]],
+        c1_cand: Dict[str, Any],
+        pools: List[Dict[str, Any]],
+        temp_counts: Dict[str, int],
+        max_usage: int = 2,
+        forbidden_exact: Optional[Set[str]] = None,
+        max_overlap_ratio: float = 0.5,
+        target_k: int = 2
+    ) -> Dict[str, Any]:
+        """
+        Selecciona un candidat c2 que sigui significativament diferent de c1:
+        - Rebutja candidats amb la mateixa signatura de combinada.
+        - Limita l'encavalcament de partits (matchups) a un màxim de la meitat dels partits (o 0/1 si k<=2).
+        - Penalitza fortament l'encavalcament i dóna prioritat a combinacions de partits i mercats nous.
+        - Mai clona c1_cand. Si cap candidat existent compleix el llindar estricte, tria el de menor
+          encavalcament o construeix una alternativa a partir dels partits no utilitzats del pool.
+        """
+        forbidden_exact = forbidden_exact or set()
+        c1_legs = c1_cand.get("legs", [])
+        c1_matchups = c1_cand.get("matchups", set())
+        c1_sig = c1_cand.get("sig", frozenset())
+        c1_leg_keys = {self._get_leg_key(l) for l in c1_legs}
+
+        k_len = max(len(c1_legs), target_k)
+        if k_len <= 2:
+            max_allowed_overlap = 0 if len(pools) >= 4 else 1
+        elif k_len <= 4:
+            max_allowed_overlap = 1
+        else:
+            max_allowed_overlap = max(1, int(k_len * max_overlap_ratio))
+
+        scored_cands = []
+        for cand in candidates:
+            if cand.get("sig") == c1_sig:
+                continue
+            cand_legs = cand.get("legs", [])
+            if any(temp_counts.get(self._get_leg_key(l), 0) >= max_usage for l in cand_legs):
+                continue
+            if any(self._get_leg_key(l) in forbidden_exact for l in cand_legs):
+                continue
+
+            cand_matchups = cand.get("matchups", set())
+            overlap_matches = len(cand_matchups & c1_matchups)
+            overlap_exact_legs = sum(1 for l in cand_legs if self._get_leg_key(l) in c1_leg_keys)
+
+            penalty = (overlap_matches * 0.15) + (overlap_exact_legs * 0.20)
+            adjusted_score = cand["score"] - penalty
+
+            scored_cands.append({
+                "cand": cand,
+                "overlap_matches": overlap_matches,
+                "overlap_exact_legs": overlap_exact_legs,
+                "adj_score": adjusted_score,
+                "is_within_limit": overlap_matches <= max_allowed_overlap
+            })
+
+        # Fase 1: Candidats que respecten el màxim d'encavalcament permès
+        within_limit = [x for x in scored_cands if x["is_within_limit"]]
+        if within_limit:
+            within_limit.sort(key=lambda x: (x["overlap_matches"], -x["adj_score"]))
+            return within_limit[0]["cand"]
+
+        # Fase 2: Si cap no compleix el màxim estricte, agafar el que tingui MENOR encavalcament possible
+        if scored_cands:
+            scored_cands.sort(key=lambda x: (x["overlap_matches"], x["overlap_exact_legs"], -x["adj_score"]))
+            return scored_cands[0]["cand"]
+
+        # Fase 3: Relaxar temporalment temp_counts si era per saturació de quotes
+        for cand in candidates:
+            if cand.get("sig") == c1_sig:
+                continue
+            cand_matchups = cand.get("matchups", set())
+            overlap_matches = len(cand_matchups & c1_matchups)
+            if overlap_matches < len(c1_matchups):
+                return cand
+
+        # Fase 4: Construir combinada a partir dels partits del pool no utilitzats a c1
+        alt_legs = []
+        for p in pools:
+            if p["matchup"] not in c1_matchups:
+                for m in p["markets"]:
+                    k = self._get_leg_key(m)
+                    if k not in forbidden_exact and k not in c1_leg_keys:
+                        alt_legs.append(m)
+                        break
+                if len(alt_legs) >= k_len:
+                    break
+
+        if len(alt_legs) >= 2:
+            return {"legs": alt_legs, "sig": self._get_combo_sig(alt_legs)}
+
+        return {"legs": [], "sig": frozenset()}
+
     def find_pair_safe(
         self,
         match_markets: List[Dict[str, Any]],
@@ -337,33 +432,16 @@ class ComboBetEngine:
             k = self._get_leg_key(l)
             temp_counts[k] = temp_counts.get(k, 0) + 1
 
-        c2_cand = None
-        best_c2_score = -999999.0
-        for cand in candidates[1:]:
-            if cand["sig"] == c1_cand["sig"]:
-                continue
-            if any(temp_counts.get(self._get_leg_key(l), 0) >= max_usage for l in cand["legs"]):
-                continue
-            overlap = len(cand["matchups"] & c1_cand.get("matchups", set()))
-            adj_score = cand["score"] - (overlap * 0.10)
-            if adj_score > best_c2_score:
-                best_c2_score = adj_score
-                c2_cand = cand
-
-        if not c2_cand or c2_cand["sig"] == c1_cand.get("sig"):
-            alt_legs = []
-            for p in pools:
-                if p["matchup"] not in c1_cand.get("matchups", set()):
-                    for m in p["markets"]:
-                        k = self._get_leg_key(m)
-                        if temp_counts.get(k, 0) < max_usage and k not in forbidden_exact:
-                            alt_legs.append(m)
-                            break
-                    if len(alt_legs) >= len(c1_cand.get("legs", [])):
-                        break
-            if len(alt_legs) < 2 and c1_cand.get("legs"):
-                alt_legs = list(c1_cand["legs"])
-            c2_cand = {"legs": alt_legs, "sig": self._get_combo_sig(alt_legs)}
+        c2_cand = self._pick_diverse_c2(
+            candidates=candidates,
+            c1_cand=c1_cand,
+            pools=pools,
+            temp_counts=temp_counts,
+            max_usage=max_usage,
+            forbidden_exact=forbidden_exact,
+            max_overlap_ratio=0.5,
+            target_k=2
+        )
 
         # Actualitzar el registre global d'usos
         for l in c1_cand.get("legs", []):
@@ -470,22 +548,16 @@ class ComboBetEngine:
             k = self._get_leg_key(l)
             temp_counts[k] = temp_counts.get(k, 0) + 1
 
-        c2_cand = None
-        best_c2_score = -999999.0
-        for cand in candidates[1:]:
-            if cand["sig"] == c1_cand["sig"]:
-                continue
-            if any(temp_counts.get(self._get_leg_key(l), 0) >= max_usage for l in cand["legs"]):
-                continue
-            overlap = len(cand["matchups"] & c1_cand.get("matchups", set()))
-            adj_score = cand["score"] - (overlap * 0.04)
-            if adj_score > best_c2_score:
-                best_c2_score = adj_score
-                c2_cand = cand
-
-        if not c2_cand or c2_cand["sig"] == c1_cand.get("sig"):
-            alt_legs = list(c1_cand.get("legs", []))
-            c2_cand = {"legs": alt_legs, "sig": self._get_combo_sig(alt_legs)}
+        c2_cand = self._pick_diverse_c2(
+            candidates=candidates,
+            c1_cand=c1_cand,
+            pools=pools,
+            temp_counts=temp_counts,
+            max_usage=max_usage,
+            forbidden_exact=forbidden_exact,
+            max_overlap_ratio=0.5,
+            target_k=3
+        )
 
         for l in c1_cand.get("legs", []):
             global_counts[self._get_leg_key(l)] = global_counts.get(self._get_leg_key(l), 0) + 1
@@ -529,14 +601,14 @@ class ComboBetEngine:
 
         candidates = []
         n_pools = min(len(pools), 10)
-        for k in range(5, min(n_pools, 7) + 1):
+        for k in range(4, min(n_pools, 6) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
                 comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                 if is_multi and len(comps) < 2:
                     continue
                 league_bonus = 0.10 if is_multi and len(comps) >= 3 else (0.04 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"][:4] for m in match_combo]
+                cand_lists = [m["markets"][:3] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
@@ -567,7 +639,7 @@ class ComboBetEngine:
             # Fallback si el rang estricte no es compleix amb el filtre
             for k in range(4, min(n_pools, 7) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
-                    cand_lists = [m["markets"][:4] for m in match_combo]
+                    cand_lists = [m["markets"][:3] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
@@ -589,22 +661,16 @@ class ComboBetEngine:
             k = self._get_leg_key(l)
             temp_counts[k] = temp_counts.get(k, 0) + 1
 
-        c2_cand = None
-        best_c2_score = -999999.0
-        for cand in candidates[1:]:
-            if cand["sig"] == c1_cand["sig"]:
-                continue
-            if any(temp_counts.get(self._get_leg_key(l), 0) >= max_usage for l in cand["legs"]):
-                continue
-            overlap = len(cand["matchups"] & c1_cand.get("matchups", set()))
-            adj_score = cand["score"] - (overlap * 0.005)
-            if adj_score > best_c2_score:
-                best_c2_score = adj_score
-                c2_cand = cand
-
-        if not c2_cand or c2_cand["sig"] == c1_cand.get("sig"):
-            alt_legs = list(c1_cand.get("legs", []))
-            c2_cand = {"legs": alt_legs, "sig": self._get_combo_sig(alt_legs)}
+        c2_cand = self._pick_diverse_c2(
+            candidates=candidates,
+            c1_cand=c1_cand,
+            pools=pools,
+            temp_counts=temp_counts,
+            max_usage=max_usage,
+            forbidden_exact=forbidden_exact,
+            max_overlap_ratio=0.5,
+            target_k=5
+        )
 
         for l in c1_cand.get("legs", []):
             global_counts[self._get_leg_key(l)] = global_counts.get(self._get_leg_key(l), 0) + 1

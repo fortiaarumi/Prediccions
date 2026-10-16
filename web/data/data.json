@@ -12251,7 +12251,8 @@
               "bookie_odd_winamax": 2.25,
               "bookie_odd_bet365": 2.28
             }
-          ]
+          ],
+          "matchup": "RC Deportivo de La Coruña vs Levante UD"
         },
         {
           "match_id": "LALIGA_J9_ESP_ATM",
@@ -12440,7 +12441,8 @@
               "bookie_odd_winamax": 1.29,
               "bookie_odd_bet365": 1.18
             }
-          ]
+          ],
+          "matchup": "RCD Espanyol vs Atlético de Madrid"
         },
         {
           "match_id": "LALIGA_J9_VIL_ELC",
@@ -12671,7 +12673,8 @@
               "bookie_odd_winamax": 1.47,
               "bookie_odd_bet365": 1.37
             }
-          ]
+          ],
+          "matchup": "Villarreal CF vs Elche CF"
         },
         {
           "match_id": "LALIGA_J9_BET_FCB",
@@ -12986,7 +12989,8 @@
               "bookie_odd_winamax": 1.23,
               "bookie_odd_bet365": 1.25
             }
-          ]
+          ],
+          "matchup": "Real Betis vs FC Barcelona"
         },
         {
           "match_id": "LALIGA_J9_VAL_ATH",
@@ -13231,7 +13235,8 @@
               "bookie_odd_winamax": 4.8,
               "bookie_odd_bet365": 4.9
             }
-          ]
+          ],
+          "matchup": "Valencia CF vs Athletic Club"
         },
         {
           "match_id": "LALIGA_J9_OSA_RDS",
@@ -13448,7 +13453,8 @@
               "bookie_odd_winamax": 1.14,
               "bookie_odd_bet365": 1.15
             }
-          ]
+          ],
+          "matchup": "CA Osasuna vs Racing de Santander"
         },
         {
           "match_id": "LALIGA_J9_CEL_ALA",
@@ -13693,7 +13699,8 @@
               "bookie_odd_winamax": 1.37,
               "bookie_odd_bet365": 1.28
             }
-          ]
+          ],
+          "matchup": "RC Celta de Vigo vs Deportivo Alavés"
         },
         {
           "match_id": "LALIGA_J9_MAL_RSO",
@@ -13896,7 +13903,8 @@
               "bookie_odd_winamax": 1.25,
               "bookie_odd_bet365": 1.26
             }
-          ]
+          ],
+          "matchup": "Málaga CF vs Real Sociedad"
         },
         {
           "match_id": "LALIGA_J9_RMA_SEV",
@@ -14043,7 +14051,8 @@
               "bookie_odd_winamax": 1.13,
               "bookie_odd_bet365": 1.03
             }
-          ]
+          ],
+          "matchup": "Real Madrid vs Sevilla FC"
         },
         {
           "match_id": "LALIGA_J9_GET_RAY",
@@ -14288,7 +14297,8 @@
               "bookie_odd_winamax": 1.42,
               "bookie_odd_bet365": 1.28
             }
-          ]
+          ],
+          "matchup": "Getafe CF vs Rayo Vallecano"
         }
       ]
     },
@@ -20452,7 +20462,8 @@
               "bookie_odd_winamax": 2.6,
               "bookie_odd_bet365": 2.64
             }
-          ]
+          ],
+          "matchup": "Everton vs Chelsea"
         },
         {
           "match_id": "PREMIER_J7_BRE_LIV",
@@ -20781,7 +20792,8 @@
               "bookie_odd_winamax": 1.88,
               "bookie_odd_bet365": 1.91
             }
-          ]
+          ],
+          "matchup": "Brentford vs Liverpool"
         },
         {
           "match_id": "PREMIER_J7_FUL_HUL",
@@ -21082,7 +21094,8 @@
               "bookie_odd_winamax": 1.23,
               "bookie_odd_bet365": 1.24
             }
-          ]
+          ],
+          "matchup": "Fulham vs Hull"
         },
         {
           "match_id": "PREMIER_J7_MCI_IPS",
@@ -21397,7 +21410,8 @@
               "bookie_odd_winamax": 1.03,
               "bookie_odd_bet365": 1.04
             }
-          ]
+          ],
+          "matchup": "Manchester City vs Ipswich Town"
         },
         {
           "match_id": "PREMIER_J7_NEW_AVL",
@@ -21684,7 +21698,8 @@
               "bookie_odd_winamax": 1.24,
               "bookie_odd_bet365": 1.26
             }
-          ]
+          ],
+          "matchup": "Newcastle United vs Aston Villa"
         },
         {
           "match_id": "PREMIER_J7_BOU_SUN",
@@ -21943,7 +21958,8 @@
               "bookie_odd_winamax": 1.27,
               "bookie_odd_bet365": 1.28
             }
-          ]
+          ],
+          "matchup": "AFC Bournemouth vs Sunderland"
         },
         {
           "match_id": "PREMIER_J7_BHA_CRY",
@@ -22146,7 +22162,8 @@
               "bookie_odd_winamax": 1.22,
               "bookie_odd_bet365": 1.12
             }
-          ]
+          ],
+          "matchup": "Brighton & Hove Albion vs Crystal Palace"
         },
         {
           "match_id": "PREMIER_J7_LEE_MAN",
@@ -22363,7 +22380,8 @@
               "bookie_odd_winamax": 3.65,
               "bookie_odd_bet365": 3.34
             }
-          ]
+          ],
+          "matchup": "Leeds Utd vs Manchester Utd"
         },
         {
           "match_id": "PREMIER_J7_NFO_ARS",
@@ -22636,7 +22654,8 @@
               "bookie_odd_winamax": 1.82,
               "bookie_odd_bet365": 1.62
             }
-          ]
+          ],
+          "matchup": "Nottingham Forest vs Arsenal"
         },
         {
           "match_id": "PREMIER_J7_TOT_COV",
@@ -22853,7 +22872,8 @@
               "bookie_odd_winamax": 1.07,
               "bookie_odd_bet365": 1.08
             }
-          ]
+          ],
+          "matchup": "Tottenham Hotspur vs Coventry"
         }
       ]
     },
@@ -29693,7 +29713,8 @@
               "bookie_odd_winamax": 1.92,
               "bookie_odd_bet365": 1.95
             }
-          ]
+          ],
+          "matchup": "CD Leganés vs Córdoba CF"
         },
         {
           "match_id": "HYPERMOTION_J10_RSB_ALM",
@@ -29896,7 +29917,8 @@
               "bookie_odd_winamax": 1.16,
               "bookie_odd_bet365": 1.17
             }
-          ]
+          ],
+          "matchup": "Real Sociedad B vs UD Almería"
         },
         {
           "match_id": "HYPERMOTION_J10_EIB_MLL",
@@ -30211,7 +30233,8 @@
               "bookie_odd_winamax": 2.6,
               "bookie_odd_bet365": 2.64
             }
-          ]
+          ],
+          "matchup": "SD Eibar vs RCD Mallorca"
         },
         {
           "match_id": "HYPERMOTION_J10_SPG_ALB",
@@ -30442,7 +30465,8 @@
               "bookie_odd_winamax": 1.02,
               "bookie_odd_bet365": 1.02
             }
-          ]
+          ],
+          "matchup": "Real Sporting vs Albacete Balompié"
         },
         {
           "match_id": "HYPERMOTION_J10_LAS_CAS",
@@ -30687,7 +30711,8 @@
               "bookie_odd_winamax": 1.3,
               "bookie_odd_bet365": 1.31
             }
-          ]
+          ],
+          "matchup": "UD Las Palmas vs CD Castellón"
         },
         {
           "match_id": "HYPERMOTION_J10_CEU_ROV",
@@ -30918,7 +30943,8 @@
               "bookie_odd_winamax": 1.32,
               "bookie_odd_bet365": 1.33
             }
-          ]
+          ],
+          "matchup": "AD Ceuta vs Real Oviedo"
         },
         {
           "match_id": "HYPERMOTION_J10_GRA_CAD",
@@ -31121,7 +31147,8 @@
               "bookie_odd_winamax": 1.88,
               "bookie_odd_bet365": 1.7
             }
-          ]
+          ],
+          "matchup": "Granada CF vs Cádiz CF"
         },
         {
           "match_id": "HYPERMOTION_J10_GIR_AND",
@@ -31324,7 +31351,8 @@
               "bookie_odd_winamax": 1.92,
               "bookie_odd_bet365": 1.77
             }
-          ]
+          ],
+          "matchup": "Girona FC vs FC Andorra"
         },
         {
           "match_id": "HYPERMOTION_J10_VLL_ELD",
@@ -31443,7 +31471,8 @@
               "bookie_odd_winamax": 3.4,
               "bookie_odd_bet365": 3.43
             }
-          ]
+          ],
+          "matchup": "Real Valladolid vs CD Eldense"
         },
         {
           "match_id": "HYPERMOTION_J10_BUR_SAB",
@@ -31674,7 +31703,8 @@
               "bookie_odd_winamax": 2.05,
               "bookie_odd_bet365": 1.86
             }
-          ]
+          ],
+          "matchup": "Burgos CF vs CE Sabadell"
         },
         {
           "match_id": "HYPERMOTION_J10_CDV_TEN",
@@ -31849,7 +31879,8 @@
               "bookie_odd_winamax": 1.31,
               "bookie_odd_bet365": 1.32
             }
-          ]
+          ],
+          "matchup": "Celta de Vigo B vs CD Tenerife"
         }
       ]
     },
@@ -39975,7 +40006,8 @@
               "bookie_odd_winamax": 1.21,
               "bookie_odd_bet365": 1.22
             }
-          ]
+          ],
+          "matchup": "Burnley vs Wolverhampton Wanderers"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_MID_CDF",
@@ -40079,7 +40111,8 @@
           },
           "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
           "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-          "value_bets": []
+          "value_bets": [],
+          "matchup": "Middlesbrough vs Cardiff City"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_MIL_LIN",
@@ -40394,7 +40427,8 @@
               "bookie_odd_winamax": 1.68,
               "bookie_odd_bet365": 1.71
             }
-          ]
+          ],
+          "matchup": "Millwall vs Lincoln City"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_WAT_CHA",
@@ -40541,7 +40575,8 @@
               "bookie_odd_winamax": 1.02,
               "bookie_odd_bet365": 1.02
             }
-          ]
+          ],
+          "matchup": "Watford vs Charlton Athletic"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_BIR_QPR",
@@ -40645,7 +40680,8 @@
           },
           "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
           "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-          "value_bets": []
+          "value_bets": [],
+          "matchup": "Birmingham City vs Queens Park Rangers"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_BRC_SHU",
@@ -40904,7 +40940,8 @@
               "bookie_odd_winamax": 1.29,
               "bookie_odd_bet365": 1.17
             }
-          ]
+          ],
+          "matchup": "Bristol City vs Sheffield United"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_DER_STK",
@@ -41093,7 +41130,8 @@
               "bookie_odd_winamax": 1.22,
               "bookie_odd_bet365": 1.24
             }
-          ]
+          ],
+          "matchup": "Derby County vs Stoke City"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_NOR_POR",
@@ -41240,7 +41278,8 @@
               "bookie_odd_winamax": 1.02,
               "bookie_odd_bet365": 1.02
             }
-          ]
+          ],
+          "matchup": "Norwich City vs Portsmouth"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_SOU_BOL",
@@ -41555,7 +41594,8 @@
               "bookie_odd_winamax": 2.4,
               "bookie_odd_bet365": 2.44
             }
-          ]
+          ],
+          "matchup": "Southampton vs Bolton Wanderers"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_SWA_WHU",
@@ -41814,7 +41854,8 @@
               "bookie_odd_winamax": 2.4,
               "bookie_odd_bet365": 2.44
             }
-          ]
+          ],
+          "matchup": "Swansea City vs West Ham United"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_WBA_BLA",
@@ -42073,7 +42114,8 @@
               "bookie_odd_winamax": 1.26,
               "bookie_odd_bet365": 1.28
             }
-          ]
+          ],
+          "matchup": "West Bromwich Albion vs Blackburn Rovers"
         },
         {
           "match_id": "CHAMPIONSHIP_J11_WRE_PNE",
@@ -42360,7 +42402,8 @@
               "bookie_odd_winamax": 1.82,
               "bookie_odd_bet365": 1.7
             }
-          ]
+          ],
+          "matchup": "Wrexham vs Preston North End"
         }
       ]
     }
@@ -50167,20 +50210,20 @@
           "profile": "RISKY_2",
           "category_code": "RISKY",
           "stake": 5.0,
-          "combined_odd": 37.0,
-          "combined_odd_winamax": 37.0,
-          "combined_odd_bet365": 39.71,
-          "combined_prob_pct": 3.5,
-          "fair_odd": 28.85,
-          "ev_pct": 28.3,
+          "combined_odd": 33.38,
+          "combined_odd_winamax": 33.38,
+          "combined_odd_bet365": 35.05,
+          "combined_prob_pct": 25.1,
+          "fair_odd": 3.98,
+          "ev_pct": 738.7,
           "booster_pct": 7.5,
-          "boosted_odd": 39.77,
-          "potential_payout": 198.85,
-          "potential_profit": 193.85,
+          "boosted_odd": 35.88,
+          "potential_payout": 179.4,
+          "potential_profit": 174.4,
           "status": "PENDING",
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+          "winamax_url": "https://www.winamax.es",
           "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-          "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @39.71\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Real Betis vs FC Barcelona] 👉 2 - Victòria Visitant (FC Barcelona) (@1.45)\n2. [Valencia CF vs Athletic Club] 👉 2 - Victòria Visitant (Athletic Club) (@2.23)\n3. [CA Osasuna vs Racing de Santander] 👉 1 - Victòria Local (CA Osasuna) (@2.03)\n4. [RC Celta de Vigo vs Deportivo Alavés] 👉 1 - Victòria Local (RC Celta de Vigo) (@2.13)\n5. [Getafe CF vs Rayo Vallecano] 👉 1 - Victòria Local (Getafe CF) (@2.84)\n",
+          "bet365_slip_text": "",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -50191,76 +50234,76 @@
           },
           "legs": [
             {
-              "matchup": "Real Betis vs FC Barcelona",
-              "selection_name": "2 - Victòria Visitant (FC Barcelona)",
+              "matchup": "RC Deportivo de La Coruña vs Levante UD",
+              "selection_name": "2 - Victòria Visitant (Levante UD)",
               "category": "1X2",
-              "bookie_odd": 1.43,
-              "bookie_odd_winamax": 1.43,
-              "bookie_odd_bet365": 1.45,
-              "model_prob": 38.6,
-              "date": "17.10.2026 16:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478626",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478626",
+              "bookie_odd": 3.3,
+              "bookie_odd_winamax": 3.3,
+              "bookie_odd_bet365": 3.37,
+              "model_prob": 77.0,
+              "date": "16.10.2026 21:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Valencia CF vs Athletic Club",
-              "selection_name": "2 - Victòria Visitant (Athletic Club)",
+              "matchup": "RCD Espanyol vs Atlético de Madrid",
+              "selection_name": "2 - Victòria Visitant (Atlético de Madrid)",
               "category": "1X2",
-              "bookie_odd": 2.2,
-              "bookie_odd_winamax": 2.2,
-              "bookie_odd_bet365": 2.23,
-              "model_prob": 58.7,
-              "date": "17.10.2026 19:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478642",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478642",
+              "bookie_odd": 1.7,
+              "bookie_odd_winamax": 1.7,
+              "bookie_odd_bet365": 1.73,
+              "model_prob": 70.4,
+              "date": "17.10.2026 14:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "CA Osasuna vs Racing de Santander",
-              "selection_name": "1 - Victòria Local (CA Osasuna)",
-              "category": "1X2",
-              "bookie_odd": 2.0,
-              "bookie_odd_winamax": 2.0,
-              "bookie_odd_bet365": 2.03,
-              "model_prob": 66.4,
-              "date": "18.10.2026 12:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478638",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478638",
+              "matchup": "Villarreal CF vs Elche CF",
+              "selection_name": "Ambdós Equips Marquen (BTTS No)",
+              "category": "BTTS",
+              "bookie_odd": 2.25,
+              "bookie_odd_winamax": 2.25,
+              "bookie_odd_bet365": 2.29,
+              "model_prob": 69.3,
+              "date": "17.10.2026 16:15",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "RC Celta de Vigo vs Deportivo Alavés",
-              "selection_name": "1 - Victòria Local (RC Celta de Vigo)",
+              "matchup": "Málaga CF vs Real Sociedad",
+              "selection_name": "2 - Victòria Visitant (Real Sociedad)",
               "category": "1X2",
-              "bookie_odd": 2.1,
-              "bookie_odd_winamax": 2.1,
-              "bookie_odd_bet365": 2.13,
-              "model_prob": 48.0,
-              "date": "18.10.2026 14:15",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478628",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478628",
+              "bookie_odd": 2.15,
+              "bookie_odd_winamax": 2.15,
+              "bookie_odd_bet365": 2.19,
+              "model_prob": 74.6,
+              "date": "18.10.2026 18:30",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Getafe CF vs Rayo Vallecano",
-              "selection_name": "1 - Victòria Local (Getafe CF)",
+              "matchup": "Real Madrid vs Sevilla FC",
+              "selection_name": "1 - Victòria Local (Real Madrid)",
               "category": "1X2",
-              "bookie_odd": 2.8,
-              "bookie_odd_winamax": 2.8,
-              "bookie_odd_bet365": 2.84,
-              "model_prob": 48.0,
-              "date": "19.10.2026 19:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478634",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478634",
+              "bookie_odd": 1.23,
+              "bookie_odd_winamax": 1.23,
+              "bookie_odd_bet365": 1.25,
+              "model_prob": 89.4,
+              "date": "18.10.2026 21:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
@@ -51133,20 +51176,20 @@
               "profile": "RISKY_2",
               "category_code": "RISKY",
               "stake": 5.0,
-              "combined_odd": 37.0,
-              "combined_odd_winamax": 37.0,
-              "combined_odd_bet365": 39.71,
-              "combined_prob_pct": 3.5,
-              "fair_odd": 28.85,
-              "ev_pct": 28.3,
+              "combined_odd": 33.38,
+              "combined_odd_winamax": 33.38,
+              "combined_odd_bet365": 35.05,
+              "combined_prob_pct": 25.1,
+              "fair_odd": 3.98,
+              "ev_pct": 738.7,
               "booster_pct": 7.5,
-              "boosted_odd": 39.77,
-              "potential_payout": 198.85,
-              "potential_profit": 193.85,
+              "boosted_odd": 35.88,
+              "potential_payout": 179.4,
+              "potential_profit": 174.4,
               "status": "PENDING",
-              "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "winamax_url": "https://www.winamax.es",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @39.71\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Real Betis vs FC Barcelona] 👉 2 - Victòria Visitant (FC Barcelona) (@1.45)\n2. [Valencia CF vs Athletic Club] 👉 2 - Victòria Visitant (Athletic Club) (@2.23)\n3. [CA Osasuna vs Racing de Santander] 👉 1 - Victòria Local (CA Osasuna) (@2.03)\n4. [RC Celta de Vigo vs Deportivo Alavés] 👉 1 - Victòria Local (RC Celta de Vigo) (@2.13)\n5. [Getafe CF vs Rayo Vallecano] 👉 1 - Victòria Local (Getafe CF) (@2.84)\n",
+              "bet365_slip_text": "",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -51157,76 +51200,76 @@
               },
               "legs": [
                 {
-                  "matchup": "Real Betis vs FC Barcelona",
-                  "selection_name": "2 - Victòria Visitant (FC Barcelona)",
+                  "matchup": "RC Deportivo de La Coruña vs Levante UD",
+                  "selection_name": "2 - Victòria Visitant (Levante UD)",
                   "category": "1X2",
-                  "bookie_odd": 1.43,
-                  "bookie_odd_winamax": 1.43,
-                  "bookie_odd_bet365": 1.45,
-                  "model_prob": 38.6,
-                  "date": "17.10.2026 16:30",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72478626",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478626",
+                  "bookie_odd": 3.3,
+                  "bookie_odd_winamax": 3.3,
+                  "bookie_odd_bet365": 3.37,
+                  "model_prob": 77.0,
+                  "date": "16.10.2026 21:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Valencia CF vs Athletic Club",
-                  "selection_name": "2 - Victòria Visitant (Athletic Club)",
+                  "matchup": "RCD Espanyol vs Atlético de Madrid",
+                  "selection_name": "2 - Victòria Visitant (Atlético de Madrid)",
                   "category": "1X2",
-                  "bookie_odd": 2.2,
-                  "bookie_odd_winamax": 2.2,
-                  "bookie_odd_bet365": 2.23,
-                  "model_prob": 58.7,
-                  "date": "17.10.2026 19:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72478642",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478642",
+                  "bookie_odd": 1.7,
+                  "bookie_odd_winamax": 1.7,
+                  "bookie_odd_bet365": 1.73,
+                  "model_prob": 70.4,
+                  "date": "17.10.2026 14:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "CA Osasuna vs Racing de Santander",
-                  "selection_name": "1 - Victòria Local (CA Osasuna)",
-                  "category": "1X2",
-                  "bookie_odd": 2.0,
-                  "bookie_odd_winamax": 2.0,
-                  "bookie_odd_bet365": 2.03,
-                  "model_prob": 66.4,
-                  "date": "18.10.2026 12:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72478638",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478638",
+                  "matchup": "Villarreal CF vs Elche CF",
+                  "selection_name": "Ambdós Equips Marquen (BTTS No)",
+                  "category": "BTTS",
+                  "bookie_odd": 2.25,
+                  "bookie_odd_winamax": 2.25,
+                  "bookie_odd_bet365": 2.29,
+                  "model_prob": 69.3,
+                  "date": "17.10.2026 16:15",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "RC Celta de Vigo vs Deportivo Alavés",
-                  "selection_name": "1 - Victòria Local (RC Celta de Vigo)",
+                  "matchup": "Málaga CF vs Real Sociedad",
+                  "selection_name": "2 - Victòria Visitant (Real Sociedad)",
                   "category": "1X2",
-                  "bookie_odd": 2.1,
-                  "bookie_odd_winamax": 2.1,
-                  "bookie_odd_bet365": 2.13,
-                  "model_prob": 48.0,
-                  "date": "18.10.2026 14:15",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72478628",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478628",
+                  "bookie_odd": 2.15,
+                  "bookie_odd_winamax": 2.15,
+                  "bookie_odd_bet365": 2.19,
+                  "model_prob": 74.6,
+                  "date": "18.10.2026 18:30",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Getafe CF vs Rayo Vallecano",
-                  "selection_name": "1 - Victòria Local (Getafe CF)",
+                  "matchup": "Real Madrid vs Sevilla FC",
+                  "selection_name": "1 - Victòria Local (Real Madrid)",
                   "category": "1X2",
-                  "bookie_odd": 2.8,
-                  "bookie_odd_winamax": 2.8,
-                  "bookie_odd_bet365": 2.84,
-                  "model_prob": 48.0,
-                  "date": "19.10.2026 19:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72478634",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72478634",
+                  "bookie_odd": 1.23,
+                  "bookie_odd_winamax": 1.23,
+                  "bookie_odd_bet365": 1.25,
+                  "model_prob": 89.4,
+                  "date": "18.10.2026 21:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
@@ -51646,56 +51689,71 @@
           "profile": "RISKY_2",
           "category_code": "RISKY",
           "stake": 5.0,
-          "combined_odd": 33.11,
-          "combined_odd_winamax": 33.11,
-          "combined_odd_bet365": 35.45,
-          "combined_prob_pct": 9.5,
-          "fair_odd": 10.57,
-          "ev_pct": 213.1,
-          "booster_pct": 7.5,
-          "boosted_odd": 35.59,
-          "potential_payout": 177.95,
-          "potential_profit": 172.95,
+          "combined_odd": 31.71,
+          "combined_odd_winamax": 31.71,
+          "combined_odd_bet365": 33.3,
+          "combined_prob_pct": 40.0,
+          "fair_odd": 2.5,
+          "ev_pct": 1168.4,
+          "booster_pct": 10.0,
+          "boosted_odd": 34.88,
+          "potential_payout": 174.4,
+          "potential_profit": 169.4,
           "status": "PENDING",
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
-          "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @35.45\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Everton vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (@2.13)\n2. [Newcastle United vs Aston Villa] 👉 1 - Victòria Local (Newcastle United) (@2.23)\n3. [AFC Bournemouth vs Sunderland] 👉 1 - Victòria Local (AFC Bournemouth) (@2.08)\n4. [Brighton & Hove Albion vs Crystal Palace] 👉 1 - Victòria Local (Brighton & Hove Albion) (@1.54)\n5. [Leeds Utd vs Manchester Utd] 👉 1 - Victòria Local (Leeds Utd) (@2.33)\n",
+          "winamax_url": "https://www.winamax.es",
+          "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+          "bet365_slip_text": "",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
-            "pending_count": 5,
-            "total_count": 5,
+            "pending_count": 6,
+            "total_count": 6,
             "progress_pct": 0.0,
-            "summary": "0/5 encertats · 5 pendents"
+            "summary": "0/6 encertats · 6 pendents"
           },
           "legs": [
             {
               "matchup": "Everton vs Chelsea",
               "selection_name": "2 - Victòria Visitant (Chelsea)",
               "category": "1X2",
-              "bookie_odd": 2.1,
-              "bookie_odd_winamax": 2.1,
-              "bookie_odd_bet365": 2.13,
-              "model_prob": 76.8,
-              "date": "17.10.2026 11:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72221318",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221318",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+              "bookie_odd": 2.15,
+              "bookie_odd_winamax": 2.15,
+              "bookie_odd_bet365": 2.19,
+              "model_prob": 77.5,
+              "date": "17.10.2026 13:30",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Newcastle United vs Aston Villa",
-              "selection_name": "1 - Victòria Local (Newcastle United)",
-              "category": "1X2",
-              "bookie_odd": 2.2,
-              "bookie_odd_winamax": 2.2,
-              "bookie_odd_bet365": 2.23,
-              "model_prob": 42.7,
-              "date": "17.10.2026 16:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72221326",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221326",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+              "matchup": "Brentford vs Liverpool",
+              "selection_name": "X2 - Empat o Liverpool",
+              "category": "Doble Oportunitat",
+              "bookie_odd": 1.58,
+              "bookie_odd_winamax": 1.58,
+              "bookie_odd_bet365": 1.61,
+              "model_prob": 95.2,
+              "date": "17.10.2026 16:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "Manchester City vs Ipswich Town",
+              "selection_name": "Ambdós Equips Marquen (BTTS No)",
+              "category": "BTTS",
+              "bookie_odd": 1.94,
+              "bookie_odd_winamax": 1.94,
+              "bookie_odd_bet365": 1.98,
+              "model_prob": 86.1,
+              "date": "17.10.2026 16:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
@@ -51703,44 +51761,44 @@
               "matchup": "AFC Bournemouth vs Sunderland",
               "selection_name": "1 - Victòria Local (AFC Bournemouth)",
               "category": "1X2",
-              "bookie_odd": 2.05,
-              "bookie_odd_winamax": 2.05,
-              "bookie_odd_bet365": 2.08,
-              "model_prob": 80.9,
-              "date": "18.10.2026 13:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72221312",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221312",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+              "bookie_odd": 2.1,
+              "bookie_odd_winamax": 2.1,
+              "bookie_odd_bet365": 2.14,
+              "model_prob": 81.7,
+              "date": "18.10.2026 15:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Brighton & Hove Albion vs Crystal Palace",
-              "selection_name": "1 - Victòria Local (Brighton & Hove Albion)",
+              "matchup": "Nottingham Forest vs Arsenal",
+              "selection_name": "2 - Victòria Visitant (Arsenal)",
               "category": "1X2",
-              "bookie_odd": 1.52,
-              "bookie_odd_winamax": 1.52,
-              "bookie_odd_bet365": 1.54,
-              "model_prob": 76.5,
-              "date": "18.10.2026 13:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72221316",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221316",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+              "bookie_odd": 1.58,
+              "bookie_odd_winamax": 1.58,
+              "bookie_odd_bet365": 1.61,
+              "model_prob": 82.3,
+              "date": "18.10.2026 17:30",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Leeds Utd vs Manchester Utd",
-              "selection_name": "1 - Victòria Local (Leeds Utd)",
+              "matchup": "Tottenham Hotspur vs Coventry",
+              "selection_name": "1 - Victòria Local (Tottenham Hotspur)",
               "category": "1X2",
-              "bookie_odd": 2.3,
-              "bookie_odd_winamax": 2.3,
-              "bookie_odd_bet365": 2.33,
-              "model_prob": 46.6,
-              "date": "18.10.2026 13:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72221322",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221322",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+              "bookie_odd": 1.45,
+              "bookie_odd_winamax": 1.45,
+              "bookie_odd_bet365": 1.48,
+              "model_prob": 93.7,
+              "date": "19.10.2026 21:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             }
@@ -52687,56 +52745,71 @@
               "profile": "RISKY_2",
               "category_code": "RISKY",
               "stake": 5.0,
-              "combined_odd": 33.11,
-              "combined_odd_winamax": 33.11,
-              "combined_odd_bet365": 35.45,
-              "combined_prob_pct": 9.5,
-              "fair_odd": 10.57,
-              "ev_pct": 213.1,
-              "booster_pct": 7.5,
-              "boosted_odd": 35.59,
-              "potential_payout": 177.95,
-              "potential_profit": 172.95,
+              "combined_odd": 31.71,
+              "combined_odd_winamax": 31.71,
+              "combined_odd_bet365": 33.3,
+              "combined_prob_pct": 40.0,
+              "fair_odd": 2.5,
+              "ev_pct": 1168.4,
+              "booster_pct": 10.0,
+              "boosted_odd": 34.88,
+              "potential_payout": 174.4,
+              "potential_profit": 169.4,
               "status": "PENDING",
-              "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
-              "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @35.45\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Everton vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (@2.13)\n2. [Newcastle United vs Aston Villa] 👉 1 - Victòria Local (Newcastle United) (@2.23)\n3. [AFC Bournemouth vs Sunderland] 👉 1 - Victòria Local (AFC Bournemouth) (@2.08)\n4. [Brighton & Hove Albion vs Crystal Palace] 👉 1 - Victòria Local (Brighton & Hove Albion) (@1.54)\n5. [Leeds Utd vs Manchester Utd] 👉 1 - Victòria Local (Leeds Utd) (@2.33)\n",
+              "winamax_url": "https://www.winamax.es",
+              "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "bet365_slip_text": "",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
-                "pending_count": 5,
-                "total_count": 5,
+                "pending_count": 6,
+                "total_count": 6,
                 "progress_pct": 0.0,
-                "summary": "0/5 encertats · 5 pendents"
+                "summary": "0/6 encertats · 6 pendents"
               },
               "legs": [
                 {
                   "matchup": "Everton vs Chelsea",
                   "selection_name": "2 - Victòria Visitant (Chelsea)",
                   "category": "1X2",
-                  "bookie_odd": 2.1,
-                  "bookie_odd_winamax": 2.1,
-                  "bookie_odd_bet365": 2.13,
-                  "model_prob": 76.8,
-                  "date": "17.10.2026 11:30",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72221318",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221318",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+                  "bookie_odd": 2.15,
+                  "bookie_odd_winamax": 2.15,
+                  "bookie_odd_bet365": 2.19,
+                  "model_prob": 77.5,
+                  "date": "17.10.2026 13:30",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Newcastle United vs Aston Villa",
-                  "selection_name": "1 - Victòria Local (Newcastle United)",
-                  "category": "1X2",
-                  "bookie_odd": 2.2,
-                  "bookie_odd_winamax": 2.2,
-                  "bookie_odd_bet365": 2.23,
-                  "model_prob": 42.7,
-                  "date": "17.10.2026 16:30",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72221326",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221326",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+                  "matchup": "Brentford vs Liverpool",
+                  "selection_name": "X2 - Empat o Liverpool",
+                  "category": "Doble Oportunitat",
+                  "bookie_odd": 1.58,
+                  "bookie_odd_winamax": 1.58,
+                  "bookie_odd_bet365": 1.61,
+                  "model_prob": 95.2,
+                  "date": "17.10.2026 16:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+                  "status": "PENDING",
+                  "actual_result": "Pendent de disputar"
+                },
+                {
+                  "matchup": "Manchester City vs Ipswich Town",
+                  "selection_name": "Ambdós Equips Marquen (BTTS No)",
+                  "category": "BTTS",
+                  "bookie_odd": 1.94,
+                  "bookie_odd_winamax": 1.94,
+                  "bookie_odd_bet365": 1.98,
+                  "model_prob": 86.1,
+                  "date": "17.10.2026 16:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
@@ -52744,44 +52817,44 @@
                   "matchup": "AFC Bournemouth vs Sunderland",
                   "selection_name": "1 - Victòria Local (AFC Bournemouth)",
                   "category": "1X2",
-                  "bookie_odd": 2.05,
-                  "bookie_odd_winamax": 2.05,
-                  "bookie_odd_bet365": 2.08,
-                  "model_prob": 80.9,
-                  "date": "18.10.2026 13:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72221312",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221312",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+                  "bookie_odd": 2.1,
+                  "bookie_odd_winamax": 2.1,
+                  "bookie_odd_bet365": 2.14,
+                  "model_prob": 81.7,
+                  "date": "18.10.2026 15:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Brighton & Hove Albion vs Crystal Palace",
-                  "selection_name": "1 - Victòria Local (Brighton & Hove Albion)",
+                  "matchup": "Nottingham Forest vs Arsenal",
+                  "selection_name": "2 - Victòria Visitant (Arsenal)",
                   "category": "1X2",
-                  "bookie_odd": 1.52,
-                  "bookie_odd_winamax": 1.52,
-                  "bookie_odd_bet365": 1.54,
-                  "model_prob": 76.5,
-                  "date": "18.10.2026 13:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72221316",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221316",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+                  "bookie_odd": 1.58,
+                  "bookie_odd_winamax": 1.58,
+                  "bookie_odd_bet365": 1.61,
+                  "model_prob": 82.3,
+                  "date": "18.10.2026 17:30",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Leeds Utd vs Manchester Utd",
-                  "selection_name": "1 - Victòria Local (Leeds Utd)",
+                  "matchup": "Tottenham Hotspur vs Coventry",
+                  "selection_name": "1 - Victòria Local (Tottenham Hotspur)",
                   "category": "1X2",
-                  "bookie_odd": 2.3,
-                  "bookie_odd_winamax": 2.3,
-                  "bookie_odd_bet365": 2.33,
-                  "model_prob": 46.6,
-                  "date": "18.10.2026 13:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72221322",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221322",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+                  "bookie_odd": 1.45,
+                  "bookie_odd_winamax": 1.45,
+                  "bookie_odd_bet365": 1.48,
+                  "model_prob": 93.7,
+                  "date": "19.10.2026 21:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 }
@@ -53170,86 +53243,101 @@
           "profile": "RISKY_2",
           "category_code": "RISKY",
           "stake": 5.0,
-          "combined_odd": 42.35,
-          "combined_odd_winamax": 42.35,
-          "combined_odd_bet365": 45.02,
-          "combined_prob_pct": 3.2,
-          "fair_odd": 30.78,
-          "ev_pct": 37.6,
-          "booster_pct": 5.0,
-          "boosted_odd": 44.47,
-          "potential_payout": 222.35,
-          "potential_profit": 217.35,
+          "combined_odd": 31.06,
+          "combined_odd_winamax": 31.06,
+          "combined_odd_bet365": 32.61,
+          "combined_prob_pct": 36.4,
+          "fair_odd": 2.75,
+          "ev_pct": 1029.5,
+          "booster_pct": 7.5,
+          "boosted_odd": 33.39,
+          "potential_payout": 166.95,
+          "potential_profit": 161.95,
           "status": "PENDING",
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
-          "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @45.02\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Granada CF vs Cádiz CF] 👉 X - Empat (@3.45)\n2. [Real Valladolid vs CD Eldense] 👉 1 - Victòria Local (Real Valladolid) (@1.91)\n3. [Burgos CF vs CE Sabadell] 👉 1 - Victòria Local (Burgos CF) (@2.69)\n4. [Celta de Vigo B vs CD Tenerife] 👉 1 - Victòria Local (Celta de Vigo B) (@2.54)\n",
+          "winamax_url": "https://www.winamax.es",
+          "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+          "bet365_slip_text": "",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
-            "pending_count": 4,
-            "total_count": 4,
+            "pending_count": 5,
+            "total_count": 5,
             "progress_pct": 0.0,
-            "summary": "0/4 encertats · 4 pendents"
+            "summary": "0/5 encertats · 5 pendents"
           },
           "legs": [
             {
-              "matchup": "Granada CF vs Cádiz CF",
-              "selection_name": "X - Empat",
+              "matchup": "Real Sociedad B vs UD Almería",
+              "selection_name": "2 - Victòria Visitant (UD Almería)",
               "category": "1X2",
-              "bookie_odd": 3.4,
-              "bookie_odd_winamax": 3.4,
-              "bookie_odd_bet365": 3.45,
-              "model_prob": 32.1,
-              "date": "18.10.2026 14:15",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477504",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72477504",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+              "bookie_odd": 1.98,
+              "bookie_odd_winamax": 1.98,
+              "bookie_odd_bet365": 2.02,
+              "model_prob": 76.3,
+              "date": "17.10.2026 14:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Real Valladolid vs CD Eldense",
-              "selection_name": "1 - Victòria Local (Real Valladolid)",
+              "matchup": "SD Eibar vs RCD Mallorca",
+              "selection_name": "1 - Victòria Local (SD Eibar)",
               "category": "1X2",
-              "bookie_odd": 1.88,
-              "bookie_odd_winamax": 1.88,
-              "bookie_odd_bet365": 1.91,
-              "model_prob": 46.6,
-              "date": "18.10.2026 16:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477514",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72477514",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+              "bookie_odd": 2.45,
+              "bookie_odd_winamax": 2.45,
+              "bookie_odd_bet365": 2.5,
+              "model_prob": 90.9,
+              "date": "17.10.2026 16:15",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Burgos CF vs CE Sabadell",
-              "selection_name": "1 - Victòria Local (Burgos CF)",
+              "matchup": "Real Sporting vs Albacete Balompié",
+              "selection_name": "1 - Victòria Local (Real Sporting)",
               "category": "1X2",
-              "bookie_odd": 2.65,
-              "bookie_odd_winamax": 2.65,
-              "bookie_odd_bet365": 2.69,
-              "model_prob": 46.6,
-              "date": "18.10.2026 19:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477494",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72477494",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+              "bookie_odd": 1.92,
+              "bookie_odd_winamax": 1.92,
+              "bookie_odd_bet365": 1.96,
+              "model_prob": 90.9,
+              "date": "17.10.2026 18:30",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Celta de Vigo B vs CD Tenerife",
-              "selection_name": "1 - Victòria Local (Celta de Vigo B)",
+              "matchup": "AD Ceuta vs Real Oviedo",
+              "selection_name": "2 - Victòria Visitant (Real Oviedo)",
               "category": "1X2",
-              "bookie_odd": 2.5,
-              "bookie_odd_winamax": 2.5,
-              "bookie_odd_bet365": 2.54,
-              "model_prob": 46.6,
-              "date": "19.10.2026 18:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72477496",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72477496",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+              "bookie_odd": 2.3,
+              "bookie_odd_winamax": 2.3,
+              "bookie_odd_bet365": 2.35,
+              "model_prob": 76.3,
+              "date": "18.10.2026 14:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "Girona FC vs FC Andorra",
+              "selection_name": "Menys de 3.5 Gols (Under 3.5)",
+              "category": "Gols",
+              "bookie_odd": 1.45,
+              "bookie_odd_winamax": 1.45,
+              "bookie_odd_bet365": 1.48,
+              "model_prob": 75.7,
+              "date": "18.10.2026 18:30",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             }
@@ -54361,86 +54449,101 @@
               "profile": "RISKY_2",
               "category_code": "RISKY",
               "stake": 5.0,
-              "combined_odd": 42.35,
-              "combined_odd_winamax": 42.35,
-              "combined_odd_bet365": 45.02,
-              "combined_prob_pct": 3.2,
-              "fair_odd": 30.78,
-              "ev_pct": 37.6,
-              "booster_pct": 5.0,
-              "boosted_odd": 44.47,
-              "potential_payout": 222.35,
-              "potential_profit": 217.35,
+              "combined_odd": 31.06,
+              "combined_odd_winamax": 31.06,
+              "combined_odd_bet365": 32.61,
+              "combined_prob_pct": 36.4,
+              "fair_odd": 2.75,
+              "ev_pct": 1029.5,
+              "booster_pct": 7.5,
+              "boosted_odd": 33.39,
+              "potential_payout": 166.95,
+              "potential_profit": 161.95,
               "status": "PENDING",
-              "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
-              "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @45.02\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Granada CF vs Cádiz CF] 👉 X - Empat (@3.45)\n2. [Real Valladolid vs CD Eldense] 👉 1 - Victòria Local (Real Valladolid) (@1.91)\n3. [Burgos CF vs CE Sabadell] 👉 1 - Victòria Local (Burgos CF) (@2.69)\n4. [Celta de Vigo B vs CD Tenerife] 👉 1 - Victòria Local (Celta de Vigo B) (@2.54)\n",
+              "winamax_url": "https://www.winamax.es",
+              "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "bet365_slip_text": "",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
-                "pending_count": 4,
-                "total_count": 4,
+                "pending_count": 5,
+                "total_count": 5,
                 "progress_pct": 0.0,
-                "summary": "0/4 encertats · 4 pendents"
+                "summary": "0/5 encertats · 5 pendents"
               },
               "legs": [
                 {
-                  "matchup": "Granada CF vs Cádiz CF",
-                  "selection_name": "X - Empat",
+                  "matchup": "Real Sociedad B vs UD Almería",
+                  "selection_name": "2 - Victòria Visitant (UD Almería)",
                   "category": "1X2",
-                  "bookie_odd": 3.4,
-                  "bookie_odd_winamax": 3.4,
-                  "bookie_odd_bet365": 3.45,
-                  "model_prob": 32.1,
-                  "date": "18.10.2026 14:15",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72477504",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72477504",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+                  "bookie_odd": 1.98,
+                  "bookie_odd_winamax": 1.98,
+                  "bookie_odd_bet365": 2.02,
+                  "model_prob": 76.3,
+                  "date": "17.10.2026 14:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Real Valladolid vs CD Eldense",
-                  "selection_name": "1 - Victòria Local (Real Valladolid)",
+                  "matchup": "SD Eibar vs RCD Mallorca",
+                  "selection_name": "1 - Victòria Local (SD Eibar)",
                   "category": "1X2",
-                  "bookie_odd": 1.88,
-                  "bookie_odd_winamax": 1.88,
-                  "bookie_odd_bet365": 1.91,
-                  "model_prob": 46.6,
-                  "date": "18.10.2026 16:30",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72477514",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72477514",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+                  "bookie_odd": 2.45,
+                  "bookie_odd_winamax": 2.45,
+                  "bookie_odd_bet365": 2.5,
+                  "model_prob": 90.9,
+                  "date": "17.10.2026 16:15",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Burgos CF vs CE Sabadell",
-                  "selection_name": "1 - Victòria Local (Burgos CF)",
+                  "matchup": "Real Sporting vs Albacete Balompié",
+                  "selection_name": "1 - Victòria Local (Real Sporting)",
                   "category": "1X2",
-                  "bookie_odd": 2.65,
-                  "bookie_odd_winamax": 2.65,
-                  "bookie_odd_bet365": 2.69,
-                  "model_prob": 46.6,
-                  "date": "18.10.2026 19:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72477494",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72477494",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+                  "bookie_odd": 1.92,
+                  "bookie_odd_winamax": 1.92,
+                  "bookie_odd_bet365": 1.96,
+                  "model_prob": 90.9,
+                  "date": "17.10.2026 18:30",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Celta de Vigo B vs CD Tenerife",
-                  "selection_name": "1 - Victòria Local (Celta de Vigo B)",
+                  "matchup": "AD Ceuta vs Real Oviedo",
+                  "selection_name": "2 - Victòria Visitant (Real Oviedo)",
                   "category": "1X2",
-                  "bookie_odd": 2.5,
-                  "bookie_odd_winamax": 2.5,
-                  "bookie_odd_bet365": 2.54,
-                  "model_prob": 46.6,
-                  "date": "19.10.2026 18:30",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72477496",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72477496",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+                  "bookie_odd": 2.3,
+                  "bookie_odd_winamax": 2.3,
+                  "bookie_odd_bet365": 2.35,
+                  "model_prob": 76.3,
+                  "date": "18.10.2026 14:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+                  "status": "PENDING",
+                  "actual_result": "Pendent de disputar"
+                },
+                {
+                  "matchup": "Girona FC vs FC Andorra",
+                  "selection_name": "Menys de 3.5 Gols (Under 3.5)",
+                  "category": "Gols",
+                  "bookie_odd": 1.45,
+                  "bookie_odd_winamax": 1.45,
+                  "bookie_odd_bet365": 1.48,
+                  "model_prob": 75.7,
+                  "date": "18.10.2026 18:30",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 }
@@ -54925,30 +55028,31 @@
           ]
         },
         {
-          "profile": "Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)",
+          "id": "COMBO_2026-2027_CHAMPIONSHIP_J11_RISKY_2",
+          "profile": "RISKY_2",
           "category_code": "RISKY",
           "stake": 5.0,
-          "combined_odd": 29.8,
-          "combined_odd_winamax": 29.8,
-          "combined_odd_bet365": 11.54,
-          "combined_prob_pct": 9.0,
-          "fair_odd": 11.08,
-          "ev_pct": 169.0,
-          "booster_pct": 12.5,
-          "boosted_odd": 33.52,
-          "potential_payout": 167.6,
-          "potential_profit": 162.6,
+          "combined_odd": 28.72,
+          "combined_odd_winamax": 28.72,
+          "combined_odd_bet365": 30.16,
+          "combined_prob_pct": 27.8,
+          "fair_odd": 3.6,
+          "ev_pct": 697.8,
+          "booster_pct": 7.5,
+          "boosted_odd": 30.87,
+          "potential_payout": 154.35,
+          "potential_profit": 149.35,
           "status": "PENDING",
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: @11.54\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@1.05)\n2. [Middlesbrough vs Cardiff City] 👉 Més de 2.5 Gols (Over 2.5) (@1.49)\n3. [Watford vs Charlton Athletic] 👉 Menys de 4.5 Targetes (@1.48)\n4. [Birmingham City vs Queens Park Rangers] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.70)\n5. [Bristol City vs Sheffield United] 👉 Sheffield United marca (+0.5 gols) (@1.38)\n6. [Norwich City vs Portsmouth] 👉 Menys de 4.5 Targetes (@1.54)\n7. [Swansea City vs West Ham United] 👉 West Ham United marca (+0.5 gols) (@1.38)\n",
+          "winamax_url": "https://www.winamax.es",
+          "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+          "bet365_slip_text": "",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
-            "pending_count": 7,
-            "total_count": 7,
+            "pending_count": 5,
+            "total_count": 5,
             "progress_pct": 0.0,
-            "summary": "0/7 encertats · 7 pendents"
+            "summary": "0/5 encertats · 5 pendents"
           },
           "legs": [
             {
@@ -54957,102 +55061,72 @@
               "category": "1X2",
               "bookie_odd": 2.75,
               "bookie_odd_winamax": 2.75,
-              "bookie_odd_bet365": 1.05,
+              "bookie_odd_bet365": 2.81,
               "model_prob": 91.2,
               "date": "16.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339916",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72339916",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Middlesbrough vs Cardiff City",
-              "selection_name": "Més de 2.5 Gols (Over 2.5)",
-              "category": "Gols",
-              "bookie_odd": 1.49,
-              "bookie_odd_winamax": 1.49,
-              "bookie_odd_bet365": 1.49,
-              "model_prob": 63.5,
+              "matchup": "Millwall vs Lincoln City",
+              "selection_name": "1X - Millwall o Empat",
+              "category": "Doble Oportunitat",
+              "bookie_odd": 1.16,
+              "bookie_odd_winamax": 1.16,
+              "bookie_odd_bet365": 1.18,
+              "model_prob": 95.9,
               "date": "17.10.2026 13:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
-              "matchup": "Watford vs Charlton Athletic",
-              "selection_name": "Menys de 4.5 Targetes",
-              "category": "Targetes",
-              "bookie_odd": 1.48,
-              "bookie_odd_winamax": 1.48,
-              "bookie_odd_bet365": 1.48,
-              "model_prob": 63.7,
-              "date": "17.10.2026 13:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
-            },
-            {
-              "matchup": "Birmingham City vs Queens Park Rangers",
-              "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
-              "category": "BTTS",
-              "bookie_odd": 1.7,
-              "bookie_odd_winamax": 1.7,
-              "bookie_odd_bet365": 1.7,
-              "model_prob": 55.5,
+              "matchup": "Derby County vs Stoke City",
+              "selection_name": "1 - Victòria Local (Derby County)",
+              "category": "1X2",
+              "bookie_odd": 2.75,
+              "bookie_odd_winamax": 2.75,
+              "bookie_odd_bet365": 2.81,
+              "model_prob": 47.6,
               "date": "17.10.2026 16:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
-            },
-            {
-              "matchup": "Bristol City vs Sheffield United",
-              "selection_name": "Sheffield United marca (+0.5 gols)",
-              "category": "Gols",
-              "bookie_odd": 1.37,
-              "bookie_odd_winamax": 1.37,
-              "bookie_odd_bet365": 1.38,
-              "model_prob": 88.6,
-              "date": "17.10.2026 16:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339914",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72339914",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar"
-            },
-            {
-              "matchup": "Norwich City vs Portsmouth",
-              "selection_name": "Menys de 4.5 Targetes",
-              "category": "Targetes",
-              "bookie_odd": 1.54,
-              "bookie_odd_winamax": 1.54,
-              "bookie_odd_bet365": 1.54,
-              "model_prob": 61.5,
-              "date": "17.10.2026 16:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             },
             {
               "matchup": "Swansea City vs West Ham United",
-              "selection_name": "West Ham United marca (+0.5 gols)",
-              "category": "Gols",
-              "bookie_odd": 1.37,
-              "bookie_odd_winamax": 1.37,
-              "bookie_odd_bet365": 1.38,
-              "model_prob": 80.9,
+              "selection_name": "X2 - Empat o West Ham United",
+              "category": "Doble Oportunitat",
+              "bookie_odd": 1.76,
+              "bookie_odd_winamax": 1.76,
+              "bookie_odd_bet365": 1.8,
+              "model_prob": 75.3,
               "date": "17.10.2026 16:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339914",
-              "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72339914",
-              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "West Bromwich Albion vs Blackburn Rovers",
+              "selection_name": "1 - Victòria Local (West Bromwich Albion)",
+              "category": "1X2",
+              "bookie_odd": 1.86,
+              "bookie_odd_winamax": 1.86,
+              "bookie_odd_bet365": 1.9,
+              "model_prob": 88.6,
+              "date": "17.10.2026 16:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
               "status": "PENDING",
               "actual_result": "Pendent de disputar"
             }
@@ -55529,30 +55603,31 @@
               ]
             },
             {
-              "profile": "Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)",
+              "id": "COMBO_2026-2027_CHAMPIONSHIP_J11_RISKY_2",
+              "profile": "RISKY_2",
               "category_code": "RISKY",
               "stake": 5.0,
-              "combined_odd": 29.8,
-              "combined_odd_winamax": 29.8,
-              "combined_odd_bet365": 11.54,
-              "combined_prob_pct": 9.0,
-              "fair_odd": 11.08,
-              "ev_pct": 169.0,
-              "booster_pct": 12.5,
-              "boosted_odd": 33.52,
-              "potential_payout": 167.6,
-              "potential_profit": 162.6,
+              "combined_odd": 28.72,
+              "combined_odd_winamax": 28.72,
+              "combined_odd_bet365": 30.16,
+              "combined_prob_pct": 27.8,
+              "fair_odd": 3.6,
+              "ev_pct": 697.8,
+              "booster_pct": 7.5,
+              "boosted_odd": 30.87,
+              "potential_payout": 154.35,
+              "potential_profit": 149.35,
               "status": "PENDING",
-              "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: @11.54\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@1.05)\n2. [Middlesbrough vs Cardiff City] 👉 Més de 2.5 Gols (Over 2.5) (@1.49)\n3. [Watford vs Charlton Athletic] 👉 Menys de 4.5 Targetes (@1.48)\n4. [Birmingham City vs Queens Park Rangers] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.70)\n5. [Bristol City vs Sheffield United] 👉 Sheffield United marca (+0.5 gols) (@1.38)\n6. [Norwich City vs Portsmouth] 👉 Menys de 4.5 Targetes (@1.54)\n7. [Swansea City vs West Ham United] 👉 West Ham United marca (+0.5 gols) (@1.38)\n",
+              "winamax_url": "https://www.winamax.es",
+              "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "bet365_slip_text": "",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
-                "pending_count": 7,
-                "total_count": 7,
+                "pending_count": 5,
+                "total_count": 5,
                 "progress_pct": 0.0,
-                "summary": "0/7 encertats · 7 pendents"
+                "summary": "0/5 encertats · 5 pendents"
               },
               "legs": [
                 {
@@ -55561,102 +55636,72 @@
                   "category": "1X2",
                   "bookie_odd": 2.75,
                   "bookie_odd_winamax": 2.75,
-                  "bookie_odd_bet365": 1.05,
+                  "bookie_odd_bet365": 2.81,
                   "model_prob": 91.2,
                   "date": "16.10.2026 21:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72339916",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72339916",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Middlesbrough vs Cardiff City",
-                  "selection_name": "Més de 2.5 Gols (Over 2.5)",
-                  "category": "Gols",
-                  "bookie_odd": 1.49,
-                  "bookie_odd_winamax": 1.49,
-                  "bookie_odd_bet365": 1.49,
-                  "model_prob": 63.5,
+                  "matchup": "Millwall vs Lincoln City",
+                  "selection_name": "1X - Millwall o Empat",
+                  "category": "Doble Oportunitat",
+                  "bookie_odd": 1.16,
+                  "bookie_odd_winamax": 1.16,
+                  "bookie_odd_bet365": 1.18,
+                  "model_prob": 95.9,
                   "date": "17.10.2026 13:30",
-                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
-                  "matchup": "Watford vs Charlton Athletic",
-                  "selection_name": "Menys de 4.5 Targetes",
-                  "category": "Targetes",
-                  "bookie_odd": 1.48,
-                  "bookie_odd_winamax": 1.48,
-                  "bookie_odd_bet365": 1.48,
-                  "model_prob": 63.7,
-                  "date": "17.10.2026 13:30",
-                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
-                },
-                {
-                  "matchup": "Birmingham City vs Queens Park Rangers",
-                  "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
-                  "category": "BTTS",
-                  "bookie_odd": 1.7,
-                  "bookie_odd_winamax": 1.7,
-                  "bookie_odd_bet365": 1.7,
-                  "model_prob": 55.5,
+                  "matchup": "Derby County vs Stoke City",
+                  "selection_name": "1 - Victòria Local (Derby County)",
+                  "category": "1X2",
+                  "bookie_odd": 2.75,
+                  "bookie_odd_winamax": 2.75,
+                  "bookie_odd_bet365": 2.81,
+                  "model_prob": 47.6,
                   "date": "17.10.2026 16:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
-                },
-                {
-                  "matchup": "Bristol City vs Sheffield United",
-                  "selection_name": "Sheffield United marca (+0.5 gols)",
-                  "category": "Gols",
-                  "bookie_odd": 1.37,
-                  "bookie_odd_winamax": 1.37,
-                  "bookie_odd_bet365": 1.38,
-                  "model_prob": 88.6,
-                  "date": "17.10.2026 16:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72339914",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72339914",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
-                },
-                {
-                  "matchup": "Norwich City vs Portsmouth",
-                  "selection_name": "Menys de 4.5 Targetes",
-                  "category": "Targetes",
-                  "bookie_odd": 1.54,
-                  "bookie_odd_winamax": 1.54,
-                  "bookie_odd_bet365": 1.54,
-                  "model_prob": 61.5,
-                  "date": "17.10.2026 16:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/1",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 },
                 {
                   "matchup": "Swansea City vs West Ham United",
-                  "selection_name": "West Ham United marca (+0.5 gols)",
-                  "category": "Gols",
-                  "bookie_odd": 1.37,
-                  "bookie_odd_winamax": 1.37,
-                  "bookie_odd_bet365": 1.38,
-                  "model_prob": 80.9,
+                  "selection_name": "X2 - Empat o West Ham United",
+                  "category": "Doble Oportunitat",
+                  "bookie_odd": 1.76,
+                  "bookie_odd_winamax": 1.76,
+                  "bookie_odd_bet365": 1.8,
+                  "model_prob": 75.3,
                   "date": "17.10.2026 16:00",
-                  "url": "https://www.winamax.es/apuestas-deportivas/match/72339914",
-                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72339914",
-                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+                  "status": "PENDING",
+                  "actual_result": "Pendent de disputar"
+                },
+                {
+                  "matchup": "West Bromwich Albion vs Blackburn Rovers",
+                  "selection_name": "1 - Victòria Local (West Bromwich Albion)",
+                  "category": "1X2",
+                  "bookie_odd": 1.86,
+                  "bookie_odd_winamax": 1.86,
+                  "bookie_odd_bet365": 1.9,
+                  "model_prob": 88.6,
+                  "date": "17.10.2026 16:00",
+                  "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+                  "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
                   "status": "PENDING",
                   "actual_result": "Pendent de disputar"
                 }
