@@ -1263,7 +1263,7 @@ function renderCombos() {
     const activeJ = cData.active_jornada || (appData.predictions[lKey]?.active_jornada) || 8;
     const targetJ = (currentLeague === 'ALL') ? activeJ : (selectedJornadaCombo[lKey] || activeJ);
 
-    if (targetJ > activeJ) {
+    if (targetJ > activeJ || (targetJ === activeJ && cData.has_started === false)) {
       isFutureCombos = true;
       futureComboJ = targetJ;
     }
@@ -1271,7 +1271,7 @@ function renderCombos() {
     let leagueCombos = null;
     if (targetJ === activeJ) {
       leagueCombos = cData;
-      if (!leagueCombos || (!leagueCombos.safe?.length && !leagueCombos.semi?.length && !leagueCombos.risky?.length)) {
+      if (cData.has_started !== false && (!leagueCombos || (!leagueCombos.safe?.length && !leagueCombos.semi?.length && !leagueCombos.risky?.length))) {
         if (window._cachedCombos && window._cachedCombos[lKey]) {
           leagueCombos = window._cachedCombos[lKey];
         }
@@ -1288,7 +1288,7 @@ function renderCombos() {
       ...(leagueCombos.risky || []).map(c => ({ ...c, type: 'risky' }))
     ];
 
-    if (allCards.length === 0 && targetJ === activeJ && window._cachedCombos && window._cachedCombos[lKey]) {
+    if (cData.has_started !== false && allCards.length === 0 && targetJ === activeJ && window._cachedCombos && window._cachedCombos[lKey]) {
       const cached = window._cachedCombos[lKey];
       allCards = [
         ...(cached.safe || []).map(c => ({ ...c, type: 'safe' })),

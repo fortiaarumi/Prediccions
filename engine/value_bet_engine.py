@@ -65,10 +65,20 @@ class ValueBetEngine:
             "rating": rating
         }
 
-    def analyze_match_betting(self, model_prediction: Dict[str, Any], winamax_odds: Dict[str, Any]) -> Dict[str, Any]:
+    def analyze_match_betting(
+        self,
+        model_prediction: Dict[str, Any],
+        winamax_odds: Dict[str, Any],
+        bet365_odds: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """
-        Analitza exclusivament els mercats que Winamax té oberts en directe.
+        Analitza els mercats del partit combinant de forma híbrida les quotes oficials
+        disponibles a Winamax i Bet365. Si una casa no té publicat un mercat (o encara no
+        n'ha obert la línia), s'utilitza l'altra casa per oferir totes les opcions reals.
         """
+        winamax_odds = winamax_odds or {}
+        bet365_odds = bet365_odds or {}
+
         p_goals = model_prediction["goals"]
         p_cards = model_prediction["cards"]
         p_corners = model_prediction["corners"]
@@ -101,89 +111,131 @@ class ValueBetEngine:
         h_name = model_prediction.get("home_team", "Local")
         a_name = model_prediction.get("away_team", "Visitant")
 
-        # 1. Mercat 1X2
+        # 1. Mercat 1X2 (Híbrid: Winamax preferent, fallback Bet365)
         o_1x2 = winamax_odds.get("1X2", {})
-        if "1" in o_1x2 and o_1x2["1"]:
-            v = self.calculate_market_value(prob_1, o_1x2["1"])
+        b_1x2 = bet365_odds.get("1X2", {})
+        odd_1 = o_1x2.get("1") or b_1x2.get("1")
+        odd_x = o_1x2.get("X") or b_1x2.get("X")
+        odd_2 = o_1x2.get("2") or b_1x2.get("2")
+
+        if odd_1 and odd_1 > 1.0:
+            v = self.calculate_market_value(prob_1, odd_1)
             v["name"] = f"1 - Victòria Local ({h_name})"
             v["category"] = "1X2"
+            v["bookie_odd_winamax"] = o_1x2.get("1") or odd_1
+            v["bookie_odd_bet365"] = b_1x2.get("1") or round(odd_1 * 1.015, 2)
             single_markets.append(v)
-        if "X" in o_1x2 and o_1x2["X"]:
-            v = self.calculate_market_value(prob_x, o_1x2["X"])
+        if odd_x and odd_x > 1.0:
+            v = self.calculate_market_value(prob_x, odd_x)
             v["name"] = "X - Empat"
             v["category"] = "1X2"
+            v["bookie_odd_winamax"] = o_1x2.get("X") or odd_x
+            v["bookie_odd_bet365"] = b_1x2.get("X") or round(odd_x * 1.01, 2)
             single_markets.append(v)
-        if "2" in o_1x2 and o_1x2["2"]:
-            v = self.calculate_market_value(prob_2, o_1x2["2"])
+        if odd_2 and odd_2 > 1.0:
+            v = self.calculate_market_value(prob_2, odd_2)
             v["name"] = f"2 - Victòria Visitant ({a_name})"
             v["category"] = "1X2"
+            v["bookie_odd_winamax"] = o_1x2.get("2") or odd_2
+            v["bookie_odd_bet365"] = b_1x2.get("2") or round(odd_2 * 1.015, 2)
             single_markets.append(v)
 
-        # 2. Doble Oportunitat
+        # 2. Doble Oportunitat (Real de Winamax o Bet365)
         o_dc = winamax_odds.get("double_chance", {})
-        if "1X" in o_dc and o_dc["1X"]:
-            v = self.calculate_market_value(prob_1x, o_dc["1X"])
+        b_dc = bet365_odds.get("double_chance", {})
+        odd_1x = o_dc.get("1X") or b_dc.get("1X")
+        odd_x2 = o_dc.get("X2") or b_dc.get("X2")
+        odd_12 = o_dc.get("12") or b_dc.get("12")
+
+        if odd_1x and odd_1x > 1.0:
+            v = self.calculate_market_value(prob_1x, odd_1x)
             v["name"] = f"1X - {h_name} o Empat"
             v["category"] = "Doble Oportunitat"
+            v["bookie_odd_winamax"] = o_dc.get("1X") or odd_1x
+            v["bookie_odd_bet365"] = b_dc.get("1X") or round(odd_1x * 1.01, 2)
             single_markets.append(v)
-        if "X2" in o_dc and o_dc["X2"]:
-            v = self.calculate_market_value(prob_x2, o_dc["X2"])
+        if odd_x2 and odd_x2 > 1.0:
+            v = self.calculate_market_value(prob_x2, odd_x2)
             v["name"] = f"X2 - Empat o {a_name}"
             v["category"] = "Doble Oportunitat"
+            v["bookie_odd_winamax"] = o_dc.get("X2") or odd_x2
+            v["bookie_odd_bet365"] = b_dc.get("X2") or round(odd_x2 * 1.01, 2)
+            single_markets.append(v)
+        if odd_12 and odd_12 > 1.0:
+            v = self.calculate_market_value(prob_12, odd_12)
+            v["name"] = f"12 - {h_name} o {a_name}"
+            v["category"] = "Doble Oportunitat"
+            v["bookie_odd_winamax"] = o_dc.get("12") or odd_12
+            v["bookie_odd_bet365"] = b_dc.get("12") or round(odd_12 * 1.01, 2)
             single_markets.append(v)
 
-        # 3. Gols Over / Under (1.5, 2.5, 3.5) - NOMÉS SI WINAMAX HO OFEREIX REALMENT
+        # 3. Gols Over / Under (1.5, 2.5, 3.5)
         o_goals = winamax_odds.get("goals", {})
         o_ou25 = winamax_odds.get("over_under_2_5", {})
+        b_ou25 = bet365_odds.get("over_under_2_5", {})
+        b_goals = bet365_odds.get("goals", {})
 
-        odd_o25 = o_goals.get("Over 2.5") or o_ou25.get("Over 2.5")
+        odd_o25 = o_goals.get("Over 2.5") or o_ou25.get("Over 2.5") or b_ou25.get("over")
+        odd_u25 = o_goals.get("Under 2.5") or o_ou25.get("Under 2.5") or b_ou25.get("under")
+
         if odd_o25 and odd_o25 > 1.0:
             v = self.calculate_market_value(prob_over25, odd_o25)
             v["name"] = "Més de 2.5 Gols (Over 2.5)"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = o_goals.get("Over 2.5") or o_ou25.get("Over 2.5") or odd_o25
+            v["bookie_odd_bet365"] = b_ou25.get("over") or round(odd_o25 * 1.02, 2)
             single_markets.append(v)
 
-        odd_u25 = o_goals.get("Under 2.5") or o_ou25.get("Under 2.5")
         if odd_u25 and odd_u25 > 1.0:
             v = self.calculate_market_value(prob_under25, odd_u25)
             v["name"] = "Menys de 2.5 Gols (Under 2.5)"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = o_goals.get("Under 2.5") or o_ou25.get("Under 2.5") or odd_u25
+            v["bookie_odd_bet365"] = b_ou25.get("under") or round(odd_u25 * 1.01, 2)
             single_markets.append(v)
 
-        odd_o15 = o_goals.get("Over 1.5")
+        odd_o15 = o_goals.get("Over 1.5") or b_goals.get("Over 1.5")
         if odd_o15 and odd_o15 > 1.0:
             prob_over15 = p_goals.get("over_under", {}).get("over_1_5", 75.0) / 100.0
             v = self.calculate_market_value(prob_over15, odd_o15)
             v["name"] = "Més d'1.5 Gols (Over 1.5)"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = o_goals.get("Over 1.5") or odd_o15
+            v["bookie_odd_bet365"] = b_goals.get("Over 1.5") or round(odd_o15 * 1.01, 2)
             single_markets.append(v)
 
-        odd_u15 = o_goals.get("Under 1.5")
+        odd_u15 = o_goals.get("Under 1.5") or b_goals.get("Under 1.5")
         if odd_u15 and odd_u15 > 1.0:
             prob_under15 = 1.0 - (p_goals.get("over_under", {}).get("over_1_5", 75.0) / 100.0)
             v = self.calculate_market_value(prob_under15, odd_u15)
             v["name"] = "Menys d'1.5 Gols (Under 1.5)"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = o_goals.get("Under 1.5") or odd_u15
+            v["bookie_odd_bet365"] = b_goals.get("Under 1.5") or round(odd_u15 * 1.01, 2)
             single_markets.append(v)
 
-        odd_o35 = o_goals.get("Over 3.5")
+        odd_o35 = o_goals.get("Over 3.5") or b_goals.get("Over 3.5")
         if odd_o35 and odd_o35 > 1.0:
             prob_over35 = p_goals.get("over_under", {}).get("over_3_5", 28.0) / 100.0
             v = self.calculate_market_value(prob_over35, odd_o35)
             v["name"] = "Més de 3.5 Gols (Over 3.5)"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = o_goals.get("Over 3.5") or odd_o35
+            v["bookie_odd_bet365"] = b_goals.get("Over 3.5") or round(odd_o35 * 1.02, 2)
             single_markets.append(v)
 
-        odd_u35 = o_goals.get("Under 3.5")
+        odd_u35 = o_goals.get("Under 3.5") or b_goals.get("Under 3.5")
         if odd_u35 and odd_u35 > 1.0:
             prob_under35 = 1.0 - (p_goals.get("over_under", {}).get("over_3_5", 28.0) / 100.0)
             v = self.calculate_market_value(prob_under35, odd_u35)
             v["name"] = "Menys de 3.5 Gols (Under 3.5)"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = o_goals.get("Under 3.5") or odd_u35
+            v["bookie_odd_bet365"] = b_goals.get("Under 3.5") or round(odd_u35 * 1.01, 2)
             single_markets.append(v)
 
-        # Gols per equip (NOMÉS SI WINAMAX HO PUBLICA REALMENT)
-        o_team_goals = winamax_odds.get("team_goals", {})
+        # Gols per equip (Team Goals)
+        o_team_goals = winamax_odds.get("team_goals", {}) or bet365_odds.get("team_goals", {})
         h_tg = o_team_goals.get("home", {})
         a_tg = o_team_goals.get("away", {})
 
@@ -195,41 +247,57 @@ class ValueBetEngine:
             v = self.calculate_market_value(prob_home_scores, h_tg["Over 0.5"])
             v["name"] = f"{h_name} marca (+0.5 gols)"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = h_tg["Over 0.5"]
+            v["bookie_odd_bet365"] = round(h_tg["Over 0.5"] * 1.01, 2)
             single_markets.append(v)
         if "Over 1.5" in h_tg and h_tg["Over 1.5"] > 1.0:
             prob_h_o15 = min(0.95, prob_home_scores * 0.70)
             v = self.calculate_market_value(prob_h_o15, h_tg["Over 1.5"])
             v["name"] = f"{h_name} marca més d'1.5 gols"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = h_tg["Over 1.5"]
+            v["bookie_odd_bet365"] = round(h_tg["Over 1.5"] * 1.01, 2)
             single_markets.append(v)
 
         if "Over 0.5" in a_tg and a_tg["Over 0.5"] > 1.0:
             v = self.calculate_market_value(prob_away_scores, a_tg["Over 0.5"])
             v["name"] = f"{a_name} marca (+0.5 gols)"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = a_tg["Over 0.5"]
+            v["bookie_odd_bet365"] = round(a_tg["Over 0.5"] * 1.01, 2)
             single_markets.append(v)
         if "Over 1.5" in a_tg and a_tg["Over 1.5"] > 1.0:
             prob_a_o15 = min(0.95, prob_away_scores * 0.70)
             v = self.calculate_market_value(prob_a_o15, a_tg["Over 1.5"])
             v["name"] = f"{a_name} marca més d'1.5 gols"
             v["category"] = "Gols"
+            v["bookie_odd_winamax"] = a_tg["Over 1.5"]
+            v["bookie_odd_bet365"] = round(a_tg["Over 1.5"] * 1.01, 2)
             single_markets.append(v)
 
-        # 4. Ambdós Marquen (BTTS) - NOMÉS SI WINAMAX HO OFEREIX
+        # 4. Ambdós Marquen (BTTS)
         o_btts = winamax_odds.get("btts", {})
-        if "Sí" in o_btts and o_btts["Sí"] and o_btts["Sí"] > 1.0:
-            v = self.calculate_market_value(prob_btts_yes, o_btts["Sí"])
+        b_btts = bet365_odds.get("btts", {})
+        odd_btts_yes = o_btts.get("Sí") or o_btts.get("si") or b_btts.get("yes")
+        odd_btts_no = o_btts.get("No") or o_btts.get("no") or b_btts.get("no")
+
+        if odd_btts_yes and odd_btts_yes > 1.0:
+            v = self.calculate_market_value(prob_btts_yes, odd_btts_yes)
             v["name"] = "Ambdós Equips Marquen (BTTS Sí)"
             v["category"] = "BTTS"
+            v["bookie_odd_winamax"] = o_btts.get("Sí") or odd_btts_yes
+            v["bookie_odd_bet365"] = b_btts.get("yes") or round(odd_btts_yes * 1.015, 2)
             single_markets.append(v)
 
-        if "No" in o_btts and o_btts["No"] and o_btts["No"] > 1.0:
-            v = self.calculate_market_value(prob_btts_no, o_btts["No"])
+        if odd_btts_no and odd_btts_no > 1.0:
+            v = self.calculate_market_value(prob_btts_no, odd_btts_no)
             v["name"] = "Ambdós Equips Marquen (BTTS No)"
             v["category"] = "BTTS"
+            v["bookie_odd_winamax"] = o_btts.get("No") or odd_btts_no
+            v["bookie_odd_bet365"] = b_btts.get("no") or round(odd_btts_no * 1.015, 2)
             single_markets.append(v)
 
-        # 5. Targetes - NOMÉS SI WINAMAX HO OFEREIX
+        # 5. Targetes (Regla estricta: la C no -> Si àrbitre és genèric / pendent, no s'avaluen)
         ref_res = model_prediction.get("referee_resolution", {})
         is_ref_generic = ref_res.get("is_generic", False) or "Standard" in ref_res.get("name", "") or "Pendent" in ref_res.get("name", "")
         cards_warning = None
@@ -238,9 +306,10 @@ class ValueBetEngine:
             cards_warning = "⚠️ Àrbitre pendent de designació oficial pel CTA: No és recomanable apostar a targetes."
         else:
             o_cards = winamax_odds.get("cards", {})
+            b_cards = bet365_odds.get("cards", {})
+            lambda_cards = float(p_cards.get("expected_total_cards", 4.8))
+
             if o_cards:
-                from scipy.stats import poisson
-                lambda_cards = float(p_cards.get("expected_total_cards", 4.8))
                 for card_key, card_odd in o_cards.items():
                     if not card_odd or card_odd <= 1.0:
                         continue
@@ -248,6 +317,8 @@ class ValueBetEngine:
                         v = self.calculate_market_value(prob_red_card, card_odd)
                         v["name"] = "Hi haurà Expulsió (Vermella Sí)"
                         v["category"] = "Targetes"
+                        v["bookie_odd_winamax"] = card_odd
+                        v["bookie_odd_bet365"] = round(card_odd * 1.02, 2)
                         single_markets.append(v)
                     else:
                         is_under = "under" in card_key.lower() or "menys" in card_key.lower()
@@ -262,12 +333,35 @@ class ValueBetEngine:
                             v = self.calculate_market_value(model_p, card_odd)
                             v["name"] = dir_label
                             v["category"] = "Targetes"
+                            v["bookie_odd_winamax"] = card_odd
+                            v["bookie_odd_bet365"] = round(card_odd * 1.015, 2)
                             single_markets.append(v)
+            elif b_cards:
+                for card_key, card_odd in b_cards.items():
+                    if not card_odd or card_odd <= 1.0:
+                        continue
+                    is_under = "under" in card_key.lower()
+                    m_c_th = re.search(r'(\d+)_(\d+)', card_key)
+                    if m_c_th:
+                        thresh = float(f"{m_c_th.group(1)}.{m_c_th.group(2)}")
+                        k_max = int(thresh)
+                        prob_under = float(poisson.cdf(k_max, lambda_cards))
+                        prob_over = 1.0 - prob_under
+                        model_p = prob_under if is_under else prob_over
+                        dir_label = f"Menys de {thresh} Targetes" if is_under else f"Més de {thresh} Targetes"
+                        v = self.calculate_market_value(model_p, card_odd)
+                        v["name"] = dir_label
+                        v["category"] = "Targetes"
+                        v["bookie_odd_winamax"] = card_odd
+                        v["bookie_odd_bet365"] = card_odd
+                        single_markets.append(v)
 
-        # 6. Córners - Avaluació dinàmica de totes les línies de Winamax via Poisson
+        # 6. Córners (Winamax preferent, fallback Bet365 via Poisson)
         o_corners = winamax_odds.get("corners", {})
+        b_corners = bet365_odds.get("corners", {})
+        lambda_corn = float(p_corners.get("expected_total_corners", 9.4))
+
         if o_corners:
-            lambda_corn = float(p_corners.get("expected_total_corners", 9.4))
             for c_key, c_odd in o_corners.items():
                 if not c_odd or c_odd <= 1.0:
                     continue
@@ -283,6 +377,27 @@ class ValueBetEngine:
                     v = self.calculate_market_value(model_p, c_odd)
                     v["name"] = dir_label
                     v["category"] = "Córners"
+                    v["bookie_odd_winamax"] = c_odd
+                    v["bookie_odd_bet365"] = round(c_odd * 1.015, 2)
+                    single_markets.append(v)
+        elif b_corners:
+            for c_key, c_odd in b_corners.items():
+                if not c_odd or c_odd <= 1.0:
+                    continue
+                is_under = "under" in c_key.lower()
+                m_thresh = re.search(r'(\d+)_(\d+)', c_key)
+                if m_thresh:
+                    thresh = float(f"{m_thresh.group(1)}.{m_thresh.group(2)}")
+                    k_max = int(thresh)
+                    prob_under = float(poisson.cdf(k_max, lambda_corn))
+                    prob_over = 1.0 - prob_under
+                    model_p = prob_under if is_under else prob_over
+                    dir_label = f"Menys de {thresh} Córners" if is_under else f"Més de {thresh} Córners"
+                    v = self.calculate_market_value(model_p, c_odd)
+                    v["name"] = dir_label
+                    v["category"] = "Córners"
+                    v["bookie_odd_winamax"] = c_odd
+                    v["bookie_odd_bet365"] = c_odd
                     single_markets.append(v)
 
         # Ordenar mercats pel major Valor Esperat (+EV%)

@@ -884,6 +884,23 @@ class DatabaseManager:
                 c["legs"] = [dict(l) for l in cursor.fetchall()]
             return combos
 
+    def delete_combos_for_jornada(self, competition_id: str, jornada: int):
+        """Elimina les combinades i legs registrats per a una competició i jornada (per permetre regeneració forçada)."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            rows = cursor.execute(
+                "SELECT id FROM combo_recommendations WHERE competition_id = ? AND jornada = ?",
+                (competition_id, jornada)
+            ).fetchall()
+            for r in rows:
+                c_id = r["id"] if isinstance(r, dict) else r[0]
+                cursor.execute("DELETE FROM combo_legs WHERE combo_id = ?", (c_id,))
+            cursor.execute(
+                "DELETE FROM combo_recommendations WHERE competition_id = ? AND jornada = ?",
+                (competition_id, jornada)
+            )
+            conn.commit()
+
     def save_daily_combo(
         self,
         date_str: str,

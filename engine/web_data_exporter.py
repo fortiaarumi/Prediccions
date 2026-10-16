@@ -272,31 +272,36 @@ class WebDataExporter:
             except Exception:
                 pass
 
-        # 3. Comprovar a matches quina jornada té partits SCHEDULED
+        # 3. Comprovar la darrera jornada jugada a SQLite (ignorant partits aplaçats aïllats del passat)
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("""
-                SELECT jornada, 
-                       SUM(CASE WHEN status = 'FINISHED' THEN 1 ELSE 0 END) as f_cnt,
-                       SUM(CASE WHEN status = 'SCHEDULED' THEN 1 ELSE 0 END) as s_cnt
-                FROM matches 
-                WHERE competition_id = ?
-                GROUP BY jornada
-                HAVING s_cnt > 0
-                ORDER BY jornada ASC
-            """, (comp,))
-            rows = cursor.fetchall()
-            if rows:
-                for r in rows:
-                    if r["s_cnt"] >= 3 or (r["f_cnt"] > 0 and r["s_cnt"] > 0):
-                        return r["jornada"]
-                return rows[0]["jornada"]
-
-            # Fallback estàndard si tot està finalitzat
             max_f = cursor.execute(
-                "SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status = 'FINISHED'",
+                "SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status IN ('FINISHED', 'SUSPENDED')",
                 (comp,)
             ).fetchone()[0] or 0
+
+            # Si la jornada max_f encara està en curs de jugar-se (té >= 2 partits SCHEDULED)
+            if max_f > 0:
+                sched_in_max_f = cursor.execute(
+                    "SELECT COUNT(*) FROM matches WHERE competition_id = ? AND jornada = ? AND status = 'SCHEDULED'",
+                    (comp, max_f)
+                ).fetchone()[0] or 0
+                if sched_in_max_f >= 2:
+                    return max_f
+
+            # Comprovar si hi ha una jornada posterior amb partits SCHEDULED
+            next_sched = cursor.execute("""
+                SELECT jornada, COUNT(*) as s_cnt
+                FROM matches
+                WHERE competition_id = ? AND jornada > ? AND status = 'SCHEDULED'
+                GROUP BY jornada
+                ORDER BY jornada ASC
+                LIMIT 1
+            """, (comp, max_f)).fetchone()
+            if next_sched and next_sched[1] >= 2:
+                return next_sched[0]
+
+            # La jornada activa és la propera jornada natural
             return max_f + 1
 
     def get_upcoming_predictions(self, competition_id: str, max_matches: int = 12, existing_match_odds: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -423,7 +428,7 @@ class WebDataExporter:
                     winamax_odds=odds
                 )
 
-                bet_analysis = self.value_engine.analyze_match_betting(pred, odds)
+                bet_analysis = self.value_engine.analyze_match_betting(pred, odds, bet365_odds=odds_b365)
                 if (not bet_analysis.get("value_bets")) and existing_match_odds:
                     m_key = f"{h_id}_{a_id}"
                     if m_key in existing_match_odds and existing_match_odds[m_key].get("cached_value_bets"):
@@ -804,26 +809,97 @@ class WebDataExporter:
             })
         return matches_list
 
-    def get_full_combos_suite(self, predicted_matches: List[Dict[str, Any]], competition_id: str, jornada: int) -> Dict[str, Any]:
+    def _parse_match_date(self, date_val: Any) -> Optional[datetime]:
+        if not date_val:
+            return None
+        date_str = str(date_val).strip()
+        for fmt in ['%d.%m.%Y %H:%M', '%d.%m.%Y', '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M', '%Y-%m-%d', '%d/%m/%Y %H:%M', '%d/%m/%Y']:
+            try:
+                return datetime.strptime(date_str[:16].strip(), fmt).date()
+            except ValueError:
+                continue
+        m = re.search(r'(\d{1,2})[\./-](\d{1,2})[\./-](\d{4})', date_str)
+        if m:
+            try:
+                return datetime(int(m.group(3)), int(m.group(2)), int(m.group(1))).date()
+            except Exception:
+                pass
+        return None
+
+    def _get_jornada_cluster_start_date(self, dates: List[Any]) -> Optional[Any]:
+        if not dates:
+            return None
+        valid_dates = sorted([d for d in dates if d is not None])
+        if not valid_dates:
+            return None
+        if len(valid_dates) == 1:
+            return valid_dates[0]
+
+        # 1. Agrupar per dates contigües (gap <= 1 dia)
+        daily_counts = {}
+        for d in valid_dates:
+            daily_counts[d] = daily_counts.get(d, 0) + 1
+
+        unique_dates = sorted(list(daily_counts.keys()))
+        raw_clusters = []
+        curr = [unique_dates[0]]
+        for d in unique_dates[1:]:
+            if (d - curr[-1]).days <= 1:
+                curr.append(d)
+            else:
+                raw_clusters.append(curr)
+                curr = [d]
+        if curr:
+            raw_clusters.append(curr)
+
+        # 2. Fusionar clústers adjacents si el gap és de 2 dies i tots dos tenen volum significatiu (>= 25% o >= 3 partits)
+        total_matches = len(valid_dates)
+        merged_clusters = []
+        idx = 0
+        while idx < len(raw_clusters):
+            c1 = raw_clusters[idx]
+            matches_c1 = sum(daily_counts[d] for d in c1)
+            if idx + 1 < len(raw_clusters):
+                c2 = raw_clusters[idx + 1]
+                gap = (c2[0] - c1[-1]).days
+                matches_c2 = sum(daily_counts[d] for d in c2)
+                c1_pct = matches_c1 / total_matches
+                c2_pct = matches_c2 / total_matches
+                if gap <= 2 and (matches_c1 >= 3 or c1_pct >= 0.25) and (matches_c2 >= 3 or c2_pct >= 0.25):
+                    merged_clusters.append(c1 + c2)
+                    idx += 2
+                    continue
+            merged_clusters.append(c1)
+            idx += 1
+
+        # 3. El clúster principal és el que conté més partits (el gruix de la jornada)
+        cluster_scores = []
+        for c in merged_clusters:
+            m_count = sum(daily_counts[d] for d in c)
+            cluster_scores.append((m_count, min(c), c))
+
+        cluster_scores.sort(key=lambda x: x[0], reverse=True)
+        main_cluster = cluster_scores[0]
+        return main_cluster[1]
+
+    def get_full_combos_suite(self, predicted_matches: List[Dict[str, Any]], competition_id: str, jornada: int, force_regenerate: bool = False) -> Dict[str, Any]:
         """
         Retorna el paquet oficial de 6 combinades per lliga o multi-lliga.
         Si la jornada ja s'havia generat (ex: divendres), NO regenera les combinades
         sinó que les preserva i n'avalua dinàmicament l'estat de cada partit i el progrés en viu.
-        """
-        existing_combos = self.db.get_combos_for_jornada(competition_id, jornada)
 
-        # Si per a aquesta jornada no hi ha combinades a la BD, buscar la jornada activa més recent que en tingui
-        if not existing_combos or len(existing_combos) < 2:
-            with self.db.get_connection() as conn:
-                cursor = conn.cursor()
-                cand_j = cursor.execute(
-                    "SELECT MAX(jornada) FROM combo_recommendations WHERE competition_id = ?",
-                    (competition_id,)
-                ).fetchone()[0]
-                if cand_j and cand_j != jornada:
-                    print(f"   ℹ️ [COMBINADES] Preservant les 6 combinades de la Jornada {cand_j} per a {competition_id} (seguiment en directe).")
-                    existing_combos = self.db.get_combos_for_jornada(competition_id, cand_j)
-                    jornada = cand_j
+        Si no s'havia generat a la BD:
+        - Detecta el dia d'inici del gruix de la jornada (clúster principal, ignorant partits avançats aïllats).
+        - Si avui encara NO és el dia d'inici (today < cluster_start_date) i no és forçat:
+          Retorna buit (pendent de generar) per esperar al dia que comenci amb totes les quotes i info.
+        - Si avui ja comença la jornada (today >= cluster_start_date) o force_regenerate:
+          Genera la suite de 6 combinades híbrides Winamax + Bet365 i les congela a la BD.
+        """
+        if force_regenerate:
+            self.db.delete_combos_for_jornada(competition_id, jornada)
+            existing_combos = []
+        else:
+            existing_combos = self.db.get_combos_for_jornada(competition_id, jornada)
 
         if existing_combos and len(existing_combos) >= 2:
             safe_list = []
@@ -975,15 +1051,37 @@ class WebDataExporter:
             return {
                 "competition_id": competition_id,
                 "jornada": jornada,
+                "has_started": True,
                 "safe": safe_list,
                 "semi": semi_list,
                 "risky": risky_list
             }
 
-        # 2. Si no hi ha combinades prèvies, generar-les amb el motor de combinades
+        # 2. Si no hi ha combinades prèvies a la BD, comprovar si la jornada ja ha de començar
         raw_preds = [m.get("raw_pred", m) for m in predicted_matches]
         if not raw_preds:
-            return {"competition_id": competition_id, "jornada": jornada, "safe": [], "semi": [], "risky": []}
+            return {"competition_id": competition_id, "jornada": jornada, "has_started": False, "safe": [], "semi": [], "risky": []}
+
+        today = datetime.now().date()
+        match_dates = [
+            self._parse_match_date(m.get("date") or m.get("date_time") or (m.get("raw_pred") or {}).get("date"))
+            for m in predicted_matches
+        ]
+        match_dates = [d for d in match_dates if d is not None]
+        cluster_start = self._get_jornada_cluster_start_date(match_dates)
+
+        if cluster_start and today < cluster_start and not force_regenerate:
+            print(f"   ⏳ [JORNADA EN ESPERA] {competition_id} J{jornada}: El gruix de la jornada comença el {cluster_start.strftime('%d/%m/%Y')} (avui és {today.strftime('%d/%m/%Y')}).")
+            print(f"      No es generen les combinades oficials encara per esperar al dia que comenci el primer partit, quan ja hi haurà totes les quotes i àrbitres.")
+            return {
+                "competition_id": competition_id,
+                "jornada": jornada,
+                "has_started": False,
+                "start_date": cluster_start.strftime("%Y-%m-%d"),
+                "safe": [],
+                "semi": [],
+                "risky": []
+            }
 
         is_multi = (competition_id == "MULTI")
         combos_data = self.combo_engine.generate_full_combos_suite(raw_preds, is_multi=is_multi)
@@ -1078,6 +1176,7 @@ class WebDataExporter:
         return {
             "competition_id": competition_id,
             "jornada": jornada,
+            "has_started": True,
             "safe": [c for c in safe_list if c],
             "semi": [c for c in semi_list if c],
             "risky": [c for c in risky_list if c]
@@ -1723,7 +1822,7 @@ class WebDataExporter:
             print(f"   [!] Error recuperant partits jugats de la jornada activa: {e}")
         return finished_matches
 
-    def export_all(self, ingested_matches=None, evaluated_combos=None, new_combos=None) -> Path:
+    def export_all(self, ingested_matches=None, evaluated_combos=None, new_combos=None, force_combos: bool = False) -> Path:
         """Executa la canalització completa i genera 'web/data/data.json'."""
         print("\n" + "=" * 75)
         print("   🌐 EXPORTANT DADES PER A L'APP WEB (VERCEL) · data.json")
@@ -1861,10 +1960,14 @@ class WebDataExporter:
                     })
 
             # C) 6 Combinades per lliga i seguiment multijornada
-            league_combos = self.get_full_combos_suite(pred_data["matches"], cid, pred_data["jornada"])
-            if (not league_combos.get("safe")) and previous_data.get("combos", {}).get(cid, {}).get("safe"):
-                print(f"   🛡️ PROTECCIÓ: Preservant combinades prèvies de {cid} de la memòria cau.")
-                league_combos = previous_data["combos"][cid]
+            league_combos = self.get_full_combos_suite(pred_data["matches"], cid, pred_data["jornada"], force_regenerate=force_combos)
+            if not force_combos and (not league_combos.get("safe")) and previous_data.get("combos", {}).get(cid, {}).get("safe"):
+                # Si la jornada actual no ha començat encara, NO hem de sobreescriure amb combinades antigues
+                if league_combos.get("has_started") is False:
+                    pass
+                else:
+                    print(f"   🛡️ PROTECCIÓ: Preservant combinades prèvies de {cid} de la memòria cau.")
+                    league_combos = previous_data["combos"][cid]
 
             # Obtenir totes les jornades de combinades disponibles a la BD per a aquesta lliga
             with self.db.get_connection() as conn:
@@ -1993,5 +2096,6 @@ class WebDataExporter:
         return WEB_DATA_FILE
 
 if __name__ == "__main__":
+    force_run = "--force" in sys.argv
     exporter = WebDataExporter()
-    exporter.export_all()
+    exporter.export_all(force_combos=force_run)

@@ -27,6 +27,7 @@ from engine.match_predictor import MatchPredictor
 from engine.value_bet_engine import ValueBetEngine
 from engine.combo_bet_engine import ComboBetEngine
 from engine.pdf_report_generator import PDFReportGenerator
+from scraper.bet365_scraper import Bet365Scraper
 
 COMPETITION_NAMES = {
     "LALIGA": "LaLiga EA Sports",
@@ -42,6 +43,7 @@ class JornadaPredictor:
         self.match_scraper = MatchScraper(headless=True)
         self.predictor = MatchPredictor()
         self.winamax = WinamaxScraper(headless=True)
+        self.bet365 = Bet365Scraper(headless=True)
         self.value_engine = ValueBetEngine(kelly_fraction=0.25)
         self.combo_engine = ComboBetEngine()
         self.pdf_generator = PDFReportGenerator()
@@ -122,14 +124,24 @@ class JornadaPredictor:
             match_pred["date"] = match_date
             match_pred["referee_resolution"] = ref_resolution
 
-            # Extracció de cuotes Winamax i valor esperat
+            # Extracció de cuotes híbrides Winamax + Bet365 i valor esperat
             bet_analysis = {"value_bets": [], "single_markets": []}
             odds = {}
+            odds_b365 = {}
             if include_odds:
                 odds = self.winamax.get_match_odds(home_data["name"], away_data["name"], competition_id=comp_id)
-                bet_analysis = self.value_engine.analyze_match_betting(match_pred, odds)
+                odds_b365 = self.bet365.get_match_odds(
+                    home_data["name"],
+                    away_data["name"],
+                    competition_id=comp_id,
+                    match_pred=match_pred,
+                    winamax_odds=odds
+                )
+                bet_analysis = self.value_engine.analyze_match_betting(match_pred, odds, bet365_odds=odds_b365)
 
             match_pred["odds"] = odds
+            match_pred["odds_winamax"] = odds
+            match_pred["odds_bet365"] = odds_b365
             match_pred["bet_analysis"] = bet_analysis
             predicted_matches.append(match_pred)
 

@@ -149,17 +149,36 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
         if not round_matches:
             return None
 
-        # Ordenar cronològicament
-        round_matches.sort(key=lambda x: x["datetime"])
-        first_match = round_matches[0]
-        active_jornada = first_match["jornada"]
-        earliest_matches = [m for m in round_matches if m["jornada"] == active_jornada]
+        # Determinar quina és la jornada regular immediata següent
+        upcoming_jornadas = sorted(list({m["jornada"] for m in round_matches if m["jornada"] > max_finished}))
+        if not upcoming_jornadas:
+            upcoming_jornadas = sorted(list({m["jornada"] for m in round_matches}))
+        if not upcoming_jornadas:
+            return None
+
+        # La jornada activa és la més propera en ordre numèric (evita salts a partits avançats aïllats de jornades llunyanes)
+        target_jornada = upcoming_jornadas[0]
+        j_matches = [m for m in round_matches if m["jornada"] == target_jornada]
+        j_matches.sort(key=lambda x: x["datetime"])
+
+        # Detectar el clúster principal de la jornada (ignorant partits avançats/aplaçats aïllats)
+        from engine.web_data_exporter import WebDataExporter
+        exporter_helper = WebDataExporter(db=_db)
+        match_dates = [m["datetime"].date() for m in j_matches]
+        cluster_start_date = exporter_helper._get_jornada_cluster_start_date(match_dates)
+
+        if cluster_start_date:
+            cluster_matches = [m for m in j_matches if m["datetime"].date() >= cluster_start_date]
+            first_dt = min(m["datetime"] for m in cluster_matches) if cluster_matches else j_matches[0]["datetime"]
+        else:
+            first_dt = j_matches[0]["datetime"]
 
         return {
             "competition_id": comp,
-            "jornada": active_jornada,
-            "first_match_dt": earliest_matches[0]["datetime"],
-            "matches_count": len(earliest_matches)
+            "jornada": target_jornada,
+            "first_match_dt": first_dt,
+            "cluster_start_date": cluster_start_date,
+            "matches_count": len(j_matches)
         }
     except Exception as e:
         print(f"   [!] Error analitzant calendari Flashscore per a {comp_id}: {e}")
@@ -367,7 +386,8 @@ def run_daily_autonomous_check(force: bool = False):
         exported_path = exporter.export_all(
             ingested_matches=all_newly_ingested_matches,
             evaluated_combos=all_evaluated_combos,
-            new_combos=all_new_combos
+            new_combos=all_new_combos,
+            force_combos=force
         )
         print(f"   [+] Web actualitzada amb èxit: {exported_path}")
     except Exception as e:
