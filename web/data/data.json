@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-15T17:49:37.486526",
-    "formatted_date": "15/10/2026 a les 17:49",
+    "generated_at": "2026-10-16T00:30:31.607876",
+    "formatted_date": "16/10/2026 a les 00:30",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -41,6 +41,24 @@
     ]
   },
   "changelog": [
+    {
+      "date": "2026-10-16",
+      "timestamp": "2026-10-16T00:30:36.379796",
+      "title": "Actualització Diària del Model · 16/10/2026",
+      "badge": "Diari (08:00 UTC)",
+      "badge_type": "primary",
+      "items": [
+        "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+        "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+        "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+        "ℹ️ Sincronització de les darreres dades i mètriques del model."
+      ],
+      "matches": [],
+      "combos_evaluated": [],
+      "combos_generated": [],
+      "referee_updates": []
+    },
     {
       "date": "2026-10-15",
       "timestamp": "2026-10-15T17:49:41.358802",
@@ -38809,8 +38827,8 @@
     },
     "DAILY": {
       "competition_id": "DAILY",
-      "active_date": "2026-10-15",
-      "today_date": "2026-10-15",
+      "active_date": "2026-10-16",
+      "today_date": "2026-10-16",
       "available_dates": [
         {
           "date": "2026-10-09",
@@ -38861,20 +38879,12 @@
           "is_today": false
         },
         {
-          "date": "2026-10-15",
-          "formatted_date": "Dijous, 15 d'octubre",
-          "label": "Avui (Dijous, 15 d'octubre)",
-          "matches_count": 0,
-          "has_matches": false,
-          "is_today": true
-        },
-        {
           "date": "2026-10-16",
           "formatted_date": "Divendres, 16 d'octubre",
-          "label": "Divendres, 16 d'octubre",
+          "label": "Avui (Divendres, 16 d'octubre)",
           "matches_count": 3,
           "has_matches": true,
-          "is_today": false
+          "is_today": true
         },
         {
           "date": "2026-10-17",
@@ -38927,7 +38937,7 @@
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-09_SAFE_1",
-              "profile": "Combinada del Dia Segura #1 (Cuota 2-3)",
+              "profile": "SAFE_1",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 1.94,
@@ -38940,17 +38950,17 @@
               "boosted_odd": 1.94,
               "potential_payout": 48.5,
               "potential_profit": 23.5,
-              "status": "PENDING",
+              "status": "WON",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada del Dia Segura #1 (Cuota 2-3)\nCuota Total Bet365: @2.00\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 1X - Málaga CF o Empat (@1.65)\n2. [Málaga CF vs RCD Espanyol] 👉 Més d'1.5 Gols (Over 1.5) (@1.21)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @2.00\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 1X - Málaga CF o Empat (@1.65)\n2. [Málaga CF vs RCD Espanyol] 👉 Més d'1.5 Gols (Over 1.5) (@1.21)\n",
               "progress": {
-                "won_count": 0,
+                "won_count": 2,
                 "lost_count": 0,
-                "pending_count": 2,
+                "pending_count": 0,
                 "total_count": 2,
-                "progress_pct": 0.0,
-                "summary": "0/2 encertats · 2 pendents"
+                "progress_pct": 100.0,
+                "summary": "2/2 encertats"
               },
               "legs": [
                 {
@@ -38965,8 +38975,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-1 (1X encertat)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -38980,14 +38990,14 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "2 gols (Over 1.5 encertat)"
                 }
               ]
             },
             {
               "id": "COMBO_DAILY_2026-10-09_SAFE_2",
-              "profile": "Combinada del Dia Segura #2 (Cuota 2-3 Alternativa)",
+              "profile": "SAFE_2",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 1.95,
@@ -39000,17 +39010,17 @@
               "boosted_odd": 1.95,
               "potential_payout": 48.75,
               "potential_profit": 23.75,
-              "status": "PENDING",
+              "status": "WON",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada del Dia Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: @2.01\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 Més d'1.5 Gols (Over 1.5) (@1.21)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.66)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @2.01\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 Més d'1.5 Gols (Over 1.5) (@1.21)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.66)\n",
               "progress": {
-                "won_count": 0,
+                "won_count": 2,
                 "lost_count": 0,
-                "pending_count": 2,
+                "pending_count": 0,
                 "total_count": 2,
-                "progress_pct": 0.0,
-                "summary": "0/2 encertats · 2 pendents"
+                "progress_pct": 100.0,
+                "summary": "2/2 encertats"
               },
               "legs": [
                 {
@@ -39025,8 +39035,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "2 gols (Over 1.5 encertat)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39040,8 +39050,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-1 (BTTS Sí encertat)"
                 }
               ]
             }
@@ -39049,7 +39059,7 @@
           "semi": [
             {
               "id": "COMBO_DAILY_2026-10-09_SEMI_1",
-              "profile": "Combinada del Dia Semi-Arriscada #1 (Cuota ~10.0)",
+              "profile": "SEMI_1",
               "category_code": "SEMI",
               "stake": 10.0,
               "combined_odd": 8.51,
@@ -39060,19 +39070,19 @@
               "ev_pct": -21.6,
               "booster_pct": 0.0,
               "boosted_odd": 8.51,
-              "potential_payout": 85.1,
-              "potential_profit": 75.1,
-              "status": "PENDING",
+              "potential_payout": 0.0,
+              "potential_profit": -10.0,
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada del Dia Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: @8.88\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 1X - Málaga CF o Empat (@1.65)\n2. [Málaga CF vs RCD Espanyol] 👉 Més de 5.5 Targetes (@2.76)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 9.5 Córners (@1.95)\n",
+              "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: @8.88\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 1X - Málaga CF o Empat (@1.65)\n2. [Málaga CF vs RCD Espanyol] 👉 Més de 5.5 Targetes (@2.76)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 9.5 Córners (@1.95)\n",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 3,
+                "won_count": 1,
+                "lost_count": 2,
+                "pending_count": 0,
                 "total_count": 3,
-                "progress_pct": 0.0,
-                "summary": "0/3 encertats · 3 pendents"
+                "progress_pct": 100.0,
+                "summary": "1/3 encertats"
               },
               "legs": [
                 {
@@ -39087,8 +39097,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-1 (1X encertat)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39102,8 +39112,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0 targetes (Menys de 5.5)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39117,14 +39127,14 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0 córners (Menys de 9.5)"
                 }
               ]
             },
             {
               "id": "COMBO_DAILY_2026-10-09_SEMI_2",
-              "profile": "Combinada del Dia Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+              "profile": "SEMI_2",
               "category_code": "SEMI",
               "stake": 10.0,
               "combined_odd": 8.54,
@@ -39135,19 +39145,19 @@
               "ev_pct": -22.0,
               "booster_pct": 0.0,
               "boosted_odd": 8.54,
-              "potential_payout": 85.4,
-              "potential_profit": 75.4,
-              "status": "PENDING",
+              "potential_payout": 0.0,
+              "potential_profit": -10.0,
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada del Dia Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: @8.92\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 2 - Victòria RCD Espanyol (@2.17)\n2. [Málaga CF vs RCD Espanyol] 👉 Menys de 2.5 Gols (Under 2.5) (@1.93)\n3. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n",
+              "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: @8.92\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 2 - Victòria RCD Espanyol (@2.17)\n2. [Málaga CF vs RCD Espanyol] 👉 Menys de 2.5 Gols (Under 2.5) (@1.93)\n3. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 3,
+                "won_count": 1,
+                "lost_count": 2,
+                "pending_count": 0,
                 "total_count": 3,
-                "progress_pct": 0.0,
-                "summary": "0/3 encertats · 3 pendents"
+                "progress_pct": 100.0,
+                "summary": "1/3 encertats"
               },
               "legs": [
                 {
@@ -39162,8 +39172,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "1-1 (no victòria visitant)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39177,8 +39187,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "2 gols (Under 2.5 encertat)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39192,8 +39202,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "1-1 (han marcat ambdós)"
                 }
               ]
             }
@@ -39201,7 +39211,7 @@
           "risky": [
             {
               "id": "COMBO_DAILY_2026-10-09_RISKY_1",
-              "profile": "Combinada del Dia Arriscada #1 (Cuota >= 30.0)",
+              "profile": "RISKY_1",
               "category_code": "RISKY",
               "stake": 5.0,
               "combined_odd": 50.29,
@@ -39212,19 +39222,19 @@
               "ev_pct": -30.6,
               "booster_pct": 5.0,
               "boosted_odd": 52.8,
-              "potential_payout": 264.0,
-              "potential_profit": 259.0,
-              "status": "PENDING",
+              "potential_payout": 0.0,
+              "potential_profit": -5.0,
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada del Dia Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: @53.33\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 X2 - Empat o RCD Espanyol (@1.34)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 5.5 Targetes (@2.76)\n4. [Málaga CF vs RCD Espanyol] 👉 Marcador Exacte: 1-1 (@6.77)\n",
+              "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: @53.33\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 X2 - Empat o RCD Espanyol (@1.34)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 5.5 Targetes (@2.76)\n4. [Málaga CF vs RCD Espanyol] 👉 Marcador Exacte: 1-1 (@6.77)\n",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 4,
+                "won_count": 2,
+                "lost_count": 2,
+                "pending_count": 0,
                 "total_count": 4,
-                "progress_pct": 0.0,
-                "summary": "0/4 encertats · 4 pendents"
+                "progress_pct": 100.0,
+                "summary": "2/4 encertats"
               },
               "legs": [
                 {
@@ -39239,8 +39249,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-1 (X2 encertat)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39254,8 +39264,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "1-1 (han marcat ambdós)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39269,8 +39279,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0 targetes (Menys de 5.5)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39284,14 +39294,14 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-1 (Marcador exacte encertat!)"
                 }
               ]
             },
             {
               "id": "COMBO_DAILY_2026-10-09_RISKY_2",
-              "profile": "Combinada del Dia Arriscada #2 (Cuota >= 30.0 Alternativa)",
+              "profile": "RISKY_2",
               "category_code": "RISKY",
               "stake": 5.0,
               "combined_odd": 50.25,
@@ -39302,19 +39312,19 @@
               "ev_pct": -36.1,
               "booster_pct": 7.5,
               "boosted_odd": 54.02,
-              "potential_payout": 270.1,
-              "potential_profit": 265.1,
-              "status": "PENDING",
+              "potential_payout": 0.0,
+              "potential_profit": -5.0,
+              "status": "LOST",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada del Dia Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: @54.10\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 X2 - Empat o RCD Espanyol (@1.34)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 4.5 Targetes (@1.83)\n4. [Málaga CF vs RCD Espanyol] 👉 Més de 8.5 Córners (@1.53)\n5. [Málaga CF vs RCD Espanyol] 👉 Marcador Exacte: 1-1 (@6.77)\n",
+              "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @54.10\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 X2 - Empat o RCD Espanyol (@1.34)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 4.5 Targetes (@1.83)\n4. [Málaga CF vs RCD Espanyol] 👉 Més de 8.5 Córners (@1.53)\n5. [Málaga CF vs RCD Espanyol] 👉 Marcador Exacte: 1-1 (@6.77)\n",
               "progress": {
-                "won_count": 0,
-                "lost_count": 0,
-                "pending_count": 5,
+                "won_count": 2,
+                "lost_count": 3,
+                "pending_count": 0,
                 "total_count": 5,
-                "progress_pct": 0.0,
-                "summary": "0/5 encertats · 5 pendents"
+                "progress_pct": 100.0,
+                "summary": "2/5 encertats"
               },
               "legs": [
                 {
@@ -39329,8 +39339,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-1 (X2 encertat)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39344,8 +39354,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "1-1 (han marcat ambdós)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39359,8 +39369,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0 targetes (Menys de 4.5)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39374,8 +39384,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "LOST",
+                  "actual_result": "0 córners (Menys de 8.5)"
                 },
                 {
                   "matchup": "Málaga CF vs RCD Espanyol",
@@ -39389,8 +39399,8 @@
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                  "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "status": "WON",
+                  "actual_result": "1-1 (Marcador exacte encertat!)"
                 }
               ]
             }
@@ -39401,7 +39411,7 @@
           "formatted_date": "Dissabte, 10 d'octubre",
           "has_matches": true,
           "matches_count": 10,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 10 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 10 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-10_SAFE_1",
@@ -39683,7 +39693,7 @@
           "formatted_date": "Diumenge, 11 d'octubre",
           "has_matches": true,
           "matches_count": 7,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 7 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 7 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-11_SAFE_1",
@@ -39814,7 +39824,7 @@
           "formatted_date": "Dilluns, 12 d'octubre",
           "has_matches": true,
           "matches_count": 2,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 2 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-12_SAFE_1",
@@ -40292,26 +40302,16 @@
           "semi": [],
           "risky": []
         },
-        "2026-10-15": {
-          "date": "2026-10-15",
-          "formatted_date": "Dijous, 15 d'octubre",
-          "has_matches": false,
-          "matches_count": 0,
-          "league_note": "Sense partits programats per a avui a cap de les 4 lligues analitzades.",
-          "safe": [],
-          "semi": [],
-          "risky": []
-        },
         "2026-10-16": {
           "date": "2026-10-16",
           "formatted_date": "Divendres, 16 d'octubre",
           "has_matches": true,
           "matches_count": 3,
-          "league_note": "Partits del dia de múltiples lligues (EFL Championship, LaLiga EA Sports, LaLiga Hypermotion) · 3 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 3 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-16_SAFE_1",
-              "profile": "Combinada Segura #1 (Cuota 2-3)",
+              "profile": "SAFE_1",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 9.35,
@@ -40327,7 +40327,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Segura #1 (Cuota 2-3)\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -40371,7 +40371,7 @@
             },
             {
               "id": "COMBO_DAILY_2026-10-16_SAFE_2",
-              "profile": "Combinada Segura #2 (Cuota 2-3 Alternativa)",
+              "profile": "SAFE_2",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 9.35,
@@ -40387,7 +40387,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -40438,7 +40438,7 @@
           "formatted_date": "Dissabte, 17 d'octubre",
           "has_matches": true,
           "matches_count": 24,
-          "league_note": "Partits del dia de múltiples lligues (EFL Championship, Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 24 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, LaLiga EA Sports, Premier League) · 24 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -40720,7 +40720,7 @@
           "formatted_date": "Diumenge, 18 d'octubre",
           "has_matches": true,
           "matches_count": 13,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 13 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Premier League) · 13 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -41002,7 +41002,7 @@
           "formatted_date": "Dilluns, 19 d'octubre",
           "has_matches": true,
           "matches_count": 3,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 3 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Premier League) · 3 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -42492,18 +42492,139 @@
           ]
         }
       },
-      "has_matches": false,
-      "matches_count": 0,
-      "league_note": "Sense partits programats per a avui a cap de les 4 lligues analitzades.",
-      "safe": [],
+      "has_matches": true,
+      "matches_count": 3,
+      "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 3 partits",
+      "safe": [
+        {
+          "id": "COMBO_DAILY_2026-10-16_SAFE_1",
+          "profile": "SAFE_1",
+          "category_code": "SAFE",
+          "stake": 25.0,
+          "combined_odd": 9.35,
+          "combined_odd_winamax": 9.35,
+          "combined_odd_bet365": 9.63,
+          "combined_prob_pct": 70.2,
+          "fair_odd": 1.42,
+          "ev_pct": 556.6,
+          "booster_pct": 0.0,
+          "boosted_odd": 9.35,
+          "potential_payout": 233.75,
+          "potential_profit": 208.75,
+          "status": "PENDING",
+          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+          "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+          "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
+          "progress": {
+            "won_count": 0,
+            "lost_count": 0,
+            "pending_count": 2,
+            "total_count": 2,
+            "progress_pct": 0.0,
+            "summary": "0/2 encertats · 2 pendents"
+          },
+          "legs": [
+            {
+              "matchup": "RC Deportivo de La Coruña vs Levante UD",
+              "selection_name": "2 - Victòria Visitant (Levante UD)",
+              "category": "1X2",
+              "bookie_odd": 3.4,
+              "bookie_odd_winamax": 3.4,
+              "bookie_odd_bet365": 3.45,
+              "model_prob": 77.0,
+              "date": "16.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "Burnley vs Wolverhampton Wanderers",
+              "selection_name": "1 - Victòria Local (Burnley)",
+              "category": "1X2",
+              "bookie_odd": 2.75,
+              "bookie_odd_winamax": 2.75,
+              "bookie_odd_bet365": 2.79,
+              "model_prob": 91.2,
+              "date": "16.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            }
+          ]
+        },
+        {
+          "id": "COMBO_DAILY_2026-10-16_SAFE_2",
+          "profile": "SAFE_2",
+          "category_code": "SAFE",
+          "stake": 25.0,
+          "combined_odd": 9.35,
+          "combined_odd_winamax": 9.35,
+          "combined_odd_bet365": 9.63,
+          "combined_prob_pct": 70.2,
+          "fair_odd": 1.42,
+          "ev_pct": 556.6,
+          "booster_pct": 0.0,
+          "boosted_odd": 9.35,
+          "potential_payout": 233.75,
+          "potential_profit": 208.75,
+          "status": "PENDING",
+          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+          "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+          "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
+          "progress": {
+            "won_count": 0,
+            "lost_count": 0,
+            "pending_count": 2,
+            "total_count": 2,
+            "progress_pct": 0.0,
+            "summary": "0/2 encertats · 2 pendents"
+          },
+          "legs": [
+            {
+              "matchup": "RC Deportivo de La Coruña vs Levante UD",
+              "selection_name": "2 - Victòria Visitant (Levante UD)",
+              "category": "1X2",
+              "bookie_odd": 3.4,
+              "bookie_odd_winamax": 3.4,
+              "bookie_odd_bet365": 3.45,
+              "model_prob": 77.0,
+              "date": "16.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            },
+            {
+              "matchup": "Burnley vs Wolverhampton Wanderers",
+              "selection_name": "1 - Victòria Local (Burnley)",
+              "category": "1X2",
+              "bookie_odd": 2.75,
+              "bookie_odd_winamax": 2.75,
+              "bookie_odd_bet365": 2.79,
+              "model_prob": 91.2,
+              "date": "16.10.2026 19:00",
+              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+              "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+              "status": "PENDING",
+              "actual_result": "Pendent de disputar"
+            }
+          ]
+        }
+      ],
       "semi": [],
       "risky": []
     }
   },
   "daily_combos": {
     "competition_id": "DAILY",
-    "active_date": "2026-10-15",
-    "today_date": "2026-10-15",
+    "active_date": "2026-10-16",
+    "today_date": "2026-10-16",
     "available_dates": [
       {
         "date": "2026-10-09",
@@ -42554,20 +42675,12 @@
         "is_today": false
       },
       {
-        "date": "2026-10-15",
-        "formatted_date": "Dijous, 15 d'octubre",
-        "label": "Avui (Dijous, 15 d'octubre)",
-        "matches_count": 0,
-        "has_matches": false,
-        "is_today": true
-      },
-      {
         "date": "2026-10-16",
         "formatted_date": "Divendres, 16 d'octubre",
-        "label": "Divendres, 16 d'octubre",
+        "label": "Avui (Divendres, 16 d'octubre)",
         "matches_count": 3,
         "has_matches": true,
-        "is_today": false
+        "is_today": true
       },
       {
         "date": "2026-10-17",
@@ -42620,7 +42733,7 @@
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-09_SAFE_1",
-            "profile": "Combinada del Dia Segura #1 (Cuota 2-3)",
+            "profile": "SAFE_1",
             "category_code": "SAFE",
             "stake": 25.0,
             "combined_odd": 1.94,
@@ -42633,17 +42746,17 @@
             "boosted_odd": 1.94,
             "potential_payout": 48.5,
             "potential_profit": 23.5,
-            "status": "PENDING",
+            "status": "WON",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-            "bet365_slip_text": "🟢 BET365 · Combinada del Dia Segura #1 (Cuota 2-3)\nCuota Total Bet365: @2.00\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 1X - Málaga CF o Empat (@1.65)\n2. [Málaga CF vs RCD Espanyol] 👉 Més d'1.5 Gols (Over 1.5) (@1.21)\n",
+            "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @2.00\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 1X - Málaga CF o Empat (@1.65)\n2. [Málaga CF vs RCD Espanyol] 👉 Més d'1.5 Gols (Over 1.5) (@1.21)\n",
             "progress": {
-              "won_count": 0,
+              "won_count": 2,
               "lost_count": 0,
-              "pending_count": 2,
+              "pending_count": 0,
               "total_count": 2,
-              "progress_pct": 0.0,
-              "summary": "0/2 encertats · 2 pendents"
+              "progress_pct": 100.0,
+              "summary": "2/2 encertats"
             },
             "legs": [
               {
@@ -42658,8 +42771,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "1-1 (1X encertat)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42673,14 +42786,14 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "2 gols (Over 1.5 encertat)"
               }
             ]
           },
           {
             "id": "COMBO_DAILY_2026-10-09_SAFE_2",
-            "profile": "Combinada del Dia Segura #2 (Cuota 2-3 Alternativa)",
+            "profile": "SAFE_2",
             "category_code": "SAFE",
             "stake": 25.0,
             "combined_odd": 1.95,
@@ -42693,17 +42806,17 @@
             "boosted_odd": 1.95,
             "potential_payout": 48.75,
             "potential_profit": 23.75,
-            "status": "PENDING",
+            "status": "WON",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-            "bet365_slip_text": "🟢 BET365 · Combinada del Dia Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: @2.01\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 Més d'1.5 Gols (Over 1.5) (@1.21)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.66)\n",
+            "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @2.01\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 Més d'1.5 Gols (Over 1.5) (@1.21)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.66)\n",
             "progress": {
-              "won_count": 0,
+              "won_count": 2,
               "lost_count": 0,
-              "pending_count": 2,
+              "pending_count": 0,
               "total_count": 2,
-              "progress_pct": 0.0,
-              "summary": "0/2 encertats · 2 pendents"
+              "progress_pct": 100.0,
+              "summary": "2/2 encertats"
             },
             "legs": [
               {
@@ -42718,8 +42831,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "2 gols (Over 1.5 encertat)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42733,8 +42846,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "1-1 (BTTS Sí encertat)"
               }
             ]
           }
@@ -42742,7 +42855,7 @@
         "semi": [
           {
             "id": "COMBO_DAILY_2026-10-09_SEMI_1",
-            "profile": "Combinada del Dia Semi-Arriscada #1 (Cuota ~10.0)",
+            "profile": "SEMI_1",
             "category_code": "SEMI",
             "stake": 10.0,
             "combined_odd": 8.51,
@@ -42753,19 +42866,19 @@
             "ev_pct": -21.6,
             "booster_pct": 0.0,
             "boosted_odd": 8.51,
-            "potential_payout": 85.1,
-            "potential_profit": 75.1,
-            "status": "PENDING",
+            "potential_payout": 0.0,
+            "potential_profit": -10.0,
+            "status": "LOST",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-            "bet365_slip_text": "🟢 BET365 · Combinada del Dia Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: @8.88\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 1X - Málaga CF o Empat (@1.65)\n2. [Málaga CF vs RCD Espanyol] 👉 Més de 5.5 Targetes (@2.76)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 9.5 Córners (@1.95)\n",
+            "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: @8.88\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 1X - Málaga CF o Empat (@1.65)\n2. [Málaga CF vs RCD Espanyol] 👉 Més de 5.5 Targetes (@2.76)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 9.5 Córners (@1.95)\n",
             "progress": {
-              "won_count": 0,
-              "lost_count": 0,
-              "pending_count": 3,
+              "won_count": 1,
+              "lost_count": 2,
+              "pending_count": 0,
               "total_count": 3,
-              "progress_pct": 0.0,
-              "summary": "0/3 encertats · 3 pendents"
+              "progress_pct": 100.0,
+              "summary": "1/3 encertats"
             },
             "legs": [
               {
@@ -42780,8 +42893,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "1-1 (1X encertat)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42795,8 +42908,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "0 targetes (Menys de 5.5)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42810,14 +42923,14 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "0 córners (Menys de 9.5)"
               }
             ]
           },
           {
             "id": "COMBO_DAILY_2026-10-09_SEMI_2",
-            "profile": "Combinada del Dia Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+            "profile": "SEMI_2",
             "category_code": "SEMI",
             "stake": 10.0,
             "combined_odd": 8.54,
@@ -42828,19 +42941,19 @@
             "ev_pct": -22.0,
             "booster_pct": 0.0,
             "boosted_odd": 8.54,
-            "potential_payout": 85.4,
-            "potential_profit": 75.4,
-            "status": "PENDING",
+            "potential_payout": 0.0,
+            "potential_profit": -10.0,
+            "status": "LOST",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-            "bet365_slip_text": "🟢 BET365 · Combinada del Dia Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: @8.92\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 2 - Victòria RCD Espanyol (@2.17)\n2. [Málaga CF vs RCD Espanyol] 👉 Menys de 2.5 Gols (Under 2.5) (@1.93)\n3. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n",
+            "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: @8.92\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 2 - Victòria RCD Espanyol (@2.17)\n2. [Málaga CF vs RCD Espanyol] 👉 Menys de 2.5 Gols (Under 2.5) (@1.93)\n3. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n",
             "progress": {
-              "won_count": 0,
-              "lost_count": 0,
-              "pending_count": 3,
+              "won_count": 1,
+              "lost_count": 2,
+              "pending_count": 0,
               "total_count": 3,
-              "progress_pct": 0.0,
-              "summary": "0/3 encertats · 3 pendents"
+              "progress_pct": 100.0,
+              "summary": "1/3 encertats"
             },
             "legs": [
               {
@@ -42855,8 +42968,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "1-1 (no victòria visitant)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42870,8 +42983,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "2 gols (Under 2.5 encertat)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42885,8 +42998,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "1-1 (han marcat ambdós)"
               }
             ]
           }
@@ -42894,7 +43007,7 @@
         "risky": [
           {
             "id": "COMBO_DAILY_2026-10-09_RISKY_1",
-            "profile": "Combinada del Dia Arriscada #1 (Cuota >= 30.0)",
+            "profile": "RISKY_1",
             "category_code": "RISKY",
             "stake": 5.0,
             "combined_odd": 50.29,
@@ -42905,19 +43018,19 @@
             "ev_pct": -30.6,
             "booster_pct": 5.0,
             "boosted_odd": 52.8,
-            "potential_payout": 264.0,
-            "potential_profit": 259.0,
-            "status": "PENDING",
+            "potential_payout": 0.0,
+            "potential_profit": -5.0,
+            "status": "LOST",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-            "bet365_slip_text": "🟢 BET365 · Combinada del Dia Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: @53.33\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 X2 - Empat o RCD Espanyol (@1.34)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 5.5 Targetes (@2.76)\n4. [Málaga CF vs RCD Espanyol] 👉 Marcador Exacte: 1-1 (@6.77)\n",
+            "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: @53.33\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 X2 - Empat o RCD Espanyol (@1.34)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 5.5 Targetes (@2.76)\n4. [Málaga CF vs RCD Espanyol] 👉 Marcador Exacte: 1-1 (@6.77)\n",
             "progress": {
-              "won_count": 0,
-              "lost_count": 0,
-              "pending_count": 4,
+              "won_count": 2,
+              "lost_count": 2,
+              "pending_count": 0,
               "total_count": 4,
-              "progress_pct": 0.0,
-              "summary": "0/4 encertats · 4 pendents"
+              "progress_pct": 100.0,
+              "summary": "2/4 encertats"
             },
             "legs": [
               {
@@ -42932,8 +43045,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "1-1 (X2 encertat)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42947,8 +43060,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "1-1 (han marcat ambdós)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42962,8 +43075,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "0 targetes (Menys de 5.5)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -42977,14 +43090,14 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "1-1 (Marcador exacte encertat!)"
               }
             ]
           },
           {
             "id": "COMBO_DAILY_2026-10-09_RISKY_2",
-            "profile": "Combinada del Dia Arriscada #2 (Cuota >= 30.0 Alternativa)",
+            "profile": "RISKY_2",
             "category_code": "RISKY",
             "stake": 5.0,
             "combined_odd": 50.25,
@@ -42995,19 +43108,19 @@
             "ev_pct": -36.1,
             "booster_pct": 7.5,
             "boosted_odd": 54.02,
-            "potential_payout": 270.1,
-            "potential_profit": 265.1,
-            "status": "PENDING",
+            "potential_payout": 0.0,
+            "potential_profit": -5.0,
+            "status": "LOST",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-            "bet365_slip_text": "🟢 BET365 · Combinada del Dia Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: @54.10\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 X2 - Empat o RCD Espanyol (@1.34)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 4.5 Targetes (@1.83)\n4. [Málaga CF vs RCD Espanyol] 👉 Més de 8.5 Córners (@1.53)\n5. [Málaga CF vs RCD Espanyol] 👉 Marcador Exacte: 1-1 (@6.77)\n",
+            "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @54.10\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [Málaga CF vs RCD Espanyol] 👉 X2 - Empat o RCD Espanyol (@1.34)\n2. [Málaga CF vs RCD Espanyol] 👉 Ambdós Equips Marquen (BTTS No) (@2.13)\n3. [Málaga CF vs RCD Espanyol] 👉 Més de 4.5 Targetes (@1.83)\n4. [Málaga CF vs RCD Espanyol] 👉 Més de 8.5 Córners (@1.53)\n5. [Málaga CF vs RCD Espanyol] 👉 Marcador Exacte: 1-1 (@6.77)\n",
             "progress": {
-              "won_count": 0,
-              "lost_count": 0,
-              "pending_count": 5,
+              "won_count": 2,
+              "lost_count": 3,
+              "pending_count": 0,
               "total_count": 5,
-              "progress_pct": 0.0,
-              "summary": "0/5 encertats · 5 pendents"
+              "progress_pct": 100.0,
+              "summary": "2/5 encertats"
             },
             "legs": [
               {
@@ -43022,8 +43135,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "1-1 (X2 encertat)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -43037,8 +43150,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "1-1 (han marcat ambdós)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -43052,8 +43165,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "0 targetes (Menys de 4.5)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -43067,8 +43180,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "LOST",
+                "actual_result": "0 córners (Menys de 8.5)"
               },
               {
                 "matchup": "Málaga CF vs RCD Espanyol",
@@ -43082,8 +43195,8 @@
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                 "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-                "status": "PENDING",
-                "actual_result": "Pendent de disputar"
+                "status": "WON",
+                "actual_result": "1-1 (Marcador exacte encertat!)"
               }
             ]
           }
@@ -43094,7 +43207,7 @@
         "formatted_date": "Dissabte, 10 d'octubre",
         "has_matches": true,
         "matches_count": 10,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 10 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 10 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-10_SAFE_1",
@@ -43376,7 +43489,7 @@
         "formatted_date": "Diumenge, 11 d'octubre",
         "has_matches": true,
         "matches_count": 7,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 7 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 7 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-11_SAFE_1",
@@ -43507,7 +43620,7 @@
         "formatted_date": "Dilluns, 12 d'octubre",
         "has_matches": true,
         "matches_count": 2,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 2 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-12_SAFE_1",
@@ -43985,26 +44098,16 @@
         "semi": [],
         "risky": []
       },
-      "2026-10-15": {
-        "date": "2026-10-15",
-        "formatted_date": "Dijous, 15 d'octubre",
-        "has_matches": false,
-        "matches_count": 0,
-        "league_note": "Sense partits programats per a avui a cap de les 4 lligues analitzades.",
-        "safe": [],
-        "semi": [],
-        "risky": []
-      },
       "2026-10-16": {
         "date": "2026-10-16",
         "formatted_date": "Divendres, 16 d'octubre",
         "has_matches": true,
         "matches_count": 3,
-        "league_note": "Partits del dia de múltiples lligues (EFL Championship, LaLiga EA Sports, LaLiga Hypermotion) · 3 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 3 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-16_SAFE_1",
-            "profile": "Combinada Segura #1 (Cuota 2-3)",
+            "profile": "SAFE_1",
             "category_code": "SAFE",
             "stake": 25.0,
             "combined_odd": 9.35,
@@ -44020,7 +44123,7 @@
             "status": "PENDING",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-            "bet365_slip_text": "🟢 BET365 · Combinada Segura #1 (Cuota 2-3)\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
+            "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
             "progress": {
               "won_count": 0,
               "lost_count": 0,
@@ -44064,7 +44167,7 @@
           },
           {
             "id": "COMBO_DAILY_2026-10-16_SAFE_2",
-            "profile": "Combinada Segura #2 (Cuota 2-3 Alternativa)",
+            "profile": "SAFE_2",
             "category_code": "SAFE",
             "stake": 25.0,
             "combined_odd": 9.35,
@@ -44080,7 +44183,7 @@
             "status": "PENDING",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
-            "bet365_slip_text": "🟢 BET365 · Combinada Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
+            "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
             "progress": {
               "won_count": 0,
               "lost_count": 0,
@@ -44131,7 +44234,7 @@
         "formatted_date": "Dissabte, 17 d'octubre",
         "has_matches": true,
         "matches_count": 24,
-        "league_note": "Partits del dia de múltiples lligues (EFL Championship, Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 24 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, LaLiga EA Sports, Premier League) · 24 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -44413,7 +44516,7 @@
         "formatted_date": "Diumenge, 18 d'octubre",
         "has_matches": true,
         "matches_count": 13,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 13 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Premier League) · 13 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -44695,7 +44798,7 @@
         "formatted_date": "Dilluns, 19 d'octubre",
         "has_matches": true,
         "matches_count": 3,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 3 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Premier League) · 3 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -46185,10 +46288,131 @@
         ]
       }
     },
-    "has_matches": false,
-    "matches_count": 0,
-    "league_note": "Sense partits programats per a avui a cap de les 4 lligues analitzades.",
-    "safe": [],
+    "has_matches": true,
+    "matches_count": 3,
+    "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 3 partits",
+    "safe": [
+      {
+        "id": "COMBO_DAILY_2026-10-16_SAFE_1",
+        "profile": "SAFE_1",
+        "category_code": "SAFE",
+        "stake": 25.0,
+        "combined_odd": 9.35,
+        "combined_odd_winamax": 9.35,
+        "combined_odd_bet365": 9.63,
+        "combined_prob_pct": 70.2,
+        "fair_odd": 1.42,
+        "ev_pct": 556.6,
+        "booster_pct": 0.0,
+        "boosted_odd": 9.35,
+        "potential_payout": 233.75,
+        "potential_profit": 208.75,
+        "status": "PENDING",
+        "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+        "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+        "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
+        "progress": {
+          "won_count": 0,
+          "lost_count": 0,
+          "pending_count": 2,
+          "total_count": 2,
+          "progress_pct": 0.0,
+          "summary": "0/2 encertats · 2 pendents"
+        },
+        "legs": [
+          {
+            "matchup": "RC Deportivo de La Coruña vs Levante UD",
+            "selection_name": "2 - Victòria Visitant (Levante UD)",
+            "category": "1X2",
+            "bookie_odd": 3.4,
+            "bookie_odd_winamax": 3.4,
+            "bookie_odd_bet365": 3.45,
+            "model_prob": 77.0,
+            "date": "16.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+            "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+            "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+            "status": "PENDING",
+            "actual_result": "Pendent de disputar"
+          },
+          {
+            "matchup": "Burnley vs Wolverhampton Wanderers",
+            "selection_name": "1 - Victòria Local (Burnley)",
+            "category": "1X2",
+            "bookie_odd": 2.75,
+            "bookie_odd_winamax": 2.75,
+            "bookie_odd_bet365": 2.79,
+            "model_prob": 91.2,
+            "date": "16.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+            "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+            "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+            "status": "PENDING",
+            "actual_result": "Pendent de disputar"
+          }
+        ]
+      },
+      {
+        "id": "COMBO_DAILY_2026-10-16_SAFE_2",
+        "profile": "SAFE_2",
+        "category_code": "SAFE",
+        "stake": 25.0,
+        "combined_odd": 9.35,
+        "combined_odd_winamax": 9.35,
+        "combined_odd_bet365": 9.63,
+        "combined_prob_pct": 70.2,
+        "fair_odd": 1.42,
+        "ev_pct": 556.6,
+        "booster_pct": 0.0,
+        "boosted_odd": 9.35,
+        "potential_payout": 233.75,
+        "potential_profit": 208.75,
+        "status": "PENDING",
+        "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+        "bet365_url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+        "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @9.63\nEnllaç directe: https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/\n\nSELECCIONS DEL CUPÓ:\n1. [RC Deportivo de La Coruña vs Levante UD] 👉 2 - Victòria Visitant (Levante UD) (@3.45)\n2. [Burnley vs Wolverhampton Wanderers] 👉 1 - Victòria Local (Burnley) (@2.79)\n",
+        "progress": {
+          "won_count": 0,
+          "lost_count": 0,
+          "pending_count": 2,
+          "total_count": 2,
+          "progress_pct": 0.0,
+          "summary": "0/2 encertats · 2 pendents"
+        },
+        "legs": [
+          {
+            "matchup": "RC Deportivo de La Coruña vs Levante UD",
+            "selection_name": "2 - Victòria Visitant (Levante UD)",
+            "category": "1X2",
+            "bookie_odd": 3.4,
+            "bookie_odd_winamax": 3.4,
+            "bookie_odd_bet365": 3.45,
+            "model_prob": 77.0,
+            "date": "16.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+            "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+            "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+            "status": "PENDING",
+            "actual_result": "Pendent de disputar"
+          },
+          {
+            "matchup": "Burnley vs Wolverhampton Wanderers",
+            "selection_name": "1 - Victòria Local (Burnley)",
+            "category": "1X2",
+            "bookie_odd": 2.75,
+            "bookie_odd_winamax": 2.75,
+            "bookie_odd_bet365": 2.79,
+            "model_prob": 91.2,
+            "date": "16.10.2026 19:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+            "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+            "url_bet365": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+            "status": "PENDING",
+            "actual_result": "Pendent de disputar"
+          }
+        ]
+      }
+    ],
     "semi": [],
     "risky": []
   },
