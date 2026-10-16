@@ -244,6 +244,16 @@ class WebDataExporter:
         Només avança a la jornada següent (J+1) quan la jornada actual s'ha completat al 100%.
         """
         comp = competition_id.upper()
+
+        # 0. Consultar el calendari viu de Flashscore (font de la veritat en temps real)
+        try:
+            from daily_runner import get_upcoming_round_info
+            u_info = get_upcoming_round_info(comp, db=self.db)
+            if u_info and u_info.get("jornada"):
+                return int(u_info["jornada"])
+        except Exception:
+            pass
+
         # 1. Comprovar si hi ha combinades recomanades pendents a SQLite
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
@@ -1214,7 +1224,8 @@ class WebDataExporter:
     def get_daily_combos_suite(
         self,
         all_predicted_matches_flat: List[Dict[str, Any]],
-        previous_data: Optional[Dict[str, Any]] = None
+        previous_data: Optional[Dict[str, Any]] = None,
+        force_regenerate: bool = False
     ) -> Dict[str, Any]:
         """
         Retorna la Suite Oficial de 6 Combinades del Dia (2 Segures, 2 Semi, 2 Arriscades):
@@ -1277,44 +1288,55 @@ class WebDataExporter:
 
         # 2. Processar cada data
         for target_date in sorted_dates:
-            # A) Trobar partits per a aquest dia
+            # A) Trobar partits per a aquest dia des de la llista plana
             day_matches = [
                 m for m in all_predicted_matches_flat
                 if self._normalize_date_iso(m.get("date", "")) == target_date
             ]
 
-            # Si no són a la llista plana, buscar a SQLite
-            if not day_matches:
-                with self.db.get_connection() as conn:
-                    c = conn.cursor()
-                    c.execute("""
-                        SELECT m.*, th.name as home_name, ta.name as away_name
-                        FROM matches m
-                        JOIN teams th ON m.home_team_id = th.id
-                        JOIN teams ta ON m.away_team_id = ta.id
-                        WHERE substr(m.date_time, 7, 4) || '-' || substr(m.date_time, 4, 2) || '-' || substr(m.date_time, 1, 2) = ?
-                           OR substr(m.date_time, 1, 10) = ?
-                        ORDER BY m.date_time ASC
-                    """, (target_date, target_date))
-                    db_m_rows = [dict(r) for r in c.fetchall()]
+            # També comprovar si hi ha partits a SQLite per a aquesta data que no estiguin a all_predicted_matches_flat
+            existing_matchup_keys = {
+                f"{m.get('home_team', {}).get('id')}_{m.get('away_team', {}).get('id')}"
+                for m in day_matches
+            }
+            with self.db.get_connection() as conn:
+                c = conn.cursor()
+                c.execute("""
+                    SELECT m.*, th.name as home_name, ta.name as away_name
+                    FROM matches m
+                    JOIN teams th ON m.home_team_id = th.id
+                    JOIN teams ta ON m.away_team_id = ta.id
+                    WHERE substr(m.date_time, 7, 4) || '-' || substr(m.date_time, 4, 2) || '-' || substr(m.date_time, 1, 2) = ?
+                       OR substr(m.date_time, 1, 10) = ?
+                    ORDER BY m.date_time ASC
+                """, (target_date, target_date))
+                db_m_rows = [dict(r) for r in c.fetchall()]
 
-                    for mr in db_m_rows:
-                        try:
-                            h_data = self.db.get_team_rating(mr["home_team_id"])
-                            a_data = self.db.get_team_rating(mr["away_team_id"])
-                            ref_data = self.db.get_referee(mr.get("referee_id") or "REF_DEFAULT")
-                            single_pred = self.predictor.predict_single_match(h_data, a_data, ref_data, match_context={"date": mr["date_time"]})
-                            single_pred["competition_id"] = mr["competition_id"]
-                            single_pred["matchup"] = f"{mr['home_name']} vs {mr['away_name']}"
-                            single_pred["date"] = mr["date_time"]
-                            single_pred["home_team"] = {"id": mr["home_team_id"], "name": mr["home_name"]}
-                            single_pred["away_team"] = {"id": mr["away_team_id"], "name": mr["away_name"]}
-                            day_matches.append(single_pred)
-                        except Exception as e_pred:
-                            print(f"   [!] Error preparant predicció diària per a {mr.get('id')}: {e_pred}")
+                for mr in db_m_rows:
+                    key = f"{mr['home_team_id']}_{mr['away_team_id']}"
+                    if key in existing_matchup_keys:
+                        continue
+                    try:
+                        h_data = self.db.get_team_rating(mr["home_team_id"])
+                        a_data = self.db.get_team_rating(mr["away_team_id"])
+                        ref_data = self.db.get_referee(mr.get("referee_id") or "REF_DEFAULT")
+                        single_pred = self.predictor.predict_single_match(h_data, a_data, ref_data, match_context={"date": mr["date_time"]})
+                        single_pred["competition_id"] = mr["competition_id"]
+                        single_pred["matchup"] = f"{mr['home_name']} vs {mr['away_name']}"
+                        single_pred["date"] = mr["date_time"]
+                        single_pred["home_team"] = {"id": mr["home_team_id"], "name": mr["home_name"]}
+                        single_pred["away_team"] = {"id": mr["away_team_id"], "name": mr["away_name"]}
+                        day_matches.append(single_pred)
+                        existing_matchup_keys.add(key)
+                    except Exception as e_pred:
+                        print(f"   [!] Error preparant predicció diària per a {mr.get('id')}: {e_pred}")
 
             # B) Comprovar si ja existeixen combinades congelades a la BD per a aquest dia
-            existing_daily = self.db.get_daily_combos_for_date(target_date)
+            if force_regenerate and target_date >= today_iso:
+                self.db.delete_daily_combos_for_date(target_date)
+                existing_daily = []
+            else:
+                existing_daily = self.db.get_daily_combos_for_date(target_date)
 
             safe_list = []
             semi_list = []
@@ -2022,7 +2044,7 @@ class WebDataExporter:
 
         # 2. Combinades del Dia (Suite de 6 combinades del dia per a totes les dates)
         print("[*] Generant i avaluant les Combinades del Dia...")
-        daily_combos = self.get_daily_combos_suite(all_predicted_matches_flat, previous_data=previous_data)
+        daily_combos = self.get_daily_combos_suite(all_predicted_matches_flat, previous_data=previous_data, force_regenerate=force_combos)
         combos["DAILY"] = daily_combos
 
 

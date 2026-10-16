@@ -96,6 +96,7 @@ class WinamaxScraper:
             "crystal palace": "palace", "palace": "palace", "brentford": "brentford",
             "everton": "everton", "nottingham": "forest", "forest": "forest",
             "ipswich": "ipswich", "leicester": "leicester", "southampton": "southampton",
+            "leeds": "leeds", "sunderland": "sunderland",
             # LaLiga Hypermotion
             "zaragoza": "zaragoza", "oviedo": "oviedo", "sporting": "sporting",
             "gijon": "sporting", "eibar": "eibar", "castellon": "castellon", "burgos": "burgos",
@@ -105,15 +106,16 @@ class WinamaxScraper:
             "tenerife": "tenerife", "cartagena": "cartagena", "girona": "girona",
             "sabadell": "sabadell", "ceuta": "ceuta", "palmas": "palmas",
             "mallorca": "mallorca", "fortuna": "celta", "valladolid": "valladolid",
+            "leganes": "leganes", "andorra": "andorra",
             # EFL Championship
             "birmingham": "birmingham", "blackburn": "blackburn", "bolton": "bolton",
             "bristol": "bristol", "burnley": "burnley", "cardiff": "cardiff",
             "charlton": "charlton", "derby": "derby", "lincoln": "lincoln",
             "middlesbrough": "middlesbrough", "millwall": "millwall", "norwich": "norwich",
-            "portsmouth": "portsmouth", "preston": "preston", "qpr": "qpr",
+            "portsmouth": "portsmouth", "preston": "preston", "qpr": "qpr", "queens": "qpr",
             "sheffield": "sheffield", "sheff": "sheffield", "stoke": "stoke",
             "swansea": "swansea", "watford": "watford", "west brom": "bromwich",
-            "wrexham": "wrexham"
+            "wrexham": "wrexham", "coventry": "coventry", "hull": "hull"
         }
 
         def get_keyword(name_str: str) -> str:

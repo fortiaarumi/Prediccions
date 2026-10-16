@@ -407,15 +407,15 @@ class ComboBetEngine:
             return self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)"), self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 14)
-        for k in range(3, min(n_pools, 6) + 1):
+        n_pools = min(len(pools), 10)
+        for k in range(3, min(n_pools, 5) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
                 comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                 if is_multi and len(comps) < 2:
                     continue
                 league_bonus = 0.08 if is_multi and len(comps) >= 3 else (0.03 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"] for m in match_combo]
+                cand_lists = [m["markets"][:2] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
@@ -443,11 +443,11 @@ class ComboBetEngine:
                         })
 
         if not candidates:
-            for k in range(3, min(n_pools, 7) + 1):
+            for k in range(3, min(n_pools, 5) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
                     comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                     if is_multi and len(comps) < 2: continue
-                    cand_lists = [m["markets"] for m in match_combo]
+                    cand_lists = [m["markets"][:2] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
@@ -528,15 +528,15 @@ class ComboBetEngine:
             return self.calculate_combo_summary([], f"{prefix} Arriscada #1 (Cuota >= 30.0)"), self.calculate_combo_summary([], f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 14)
-        for k in range(5, min(n_pools, 8) + 1):
+        n_pools = min(len(pools), 10)
+        for k in range(5, min(n_pools, 7) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
                 comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                 if is_multi and len(comps) < 2:
                     continue
                 league_bonus = 0.10 if is_multi and len(comps) >= 3 else (0.04 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"] for m in match_combo]
+                cand_lists = [m["markets"][:2] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
@@ -565,9 +565,9 @@ class ComboBetEngine:
 
         if not candidates:
             # Fallback si el rang estricte no es compleix amb el filtre
-            for k in range(4, min(n_pools, 8) + 1):
+            for k in range(4, min(n_pools, 7) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
-                    cand_lists = [m["markets"] for m in match_combo]
+                    cand_lists = [m["markets"][:2] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
@@ -968,13 +968,171 @@ class ComboBetEngine:
             "risky_combo": risky_1
         }
 
+    def generate_few_matches_combos_suite(self, day_matches: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Genera el paquet complet de 6 combinades (2 Segures, 2 Semi, 2 Arriscades)
+        per a dies amb 2 o 3 partits, combinant intel·ligentment tots els partits del dia
+        a través de mercats de diverses categories (1X2, Doble Oportunitat, Gols, Córners, Targetes).
+        """
+        for m in day_matches:
+            if not m.get("matchup"):
+                h = m.get("home_team", {}).get("name") if isinstance(m.get("home_team"), dict) else "Local"
+                a = m.get("away_team", {}).get("name") if isinstance(m.get("away_team"), dict) else "Visitant"
+                m["matchup"] = f"{h} vs {a}"
+
+        all_buckets = {}
+        for m in day_matches:
+            mkts = self._extract_single_match_markets(m)
+            for l in mkts:
+                key = (l["matchup"], l["category"])
+                all_buckets.setdefault(key, []).append(l)
+
+        bucket_keys = list(all_buckets.keys())
+
+        def find_combos(target_min_odd: float, target_max_odd: float, min_legs: int, max_legs: int, min_leg_prob: float = 0.0, allow_exact: bool = False, require_all_matches: bool = False):
+            candidates = []
+            n_keys = min(len(bucket_keys), 18)
+            for k in range(min_legs, min(max_legs, n_keys) + 1):
+                for b_combo in itertools.combinations(bucket_keys[:n_keys], k):
+                    matchups = {b[0] for b in b_combo}
+                    if require_all_matches and len(matchups) < len(day_matches):
+                        continue
+                    elif len(day_matches) >= 2 and len(matchups) < 2:
+                        continue
+
+                    if not allow_exact and any(b[1] == "Marcador Exacte" for b in b_combo):
+                        continue
+
+                    conflicts = False
+                    match_cats = {}
+                    for m_up, cat in b_combo:
+                        match_cats.setdefault(m_up, set()).add(cat)
+                    for m_up, cats in match_cats.items():
+                        if "1X2" in cats and "Doble Oportunitat" in cats:
+                            conflicts = True
+                            break
+                        if "Marcador Exacte" in cats and ("1X2" in cats or "Gols" in cats):
+                            conflicts = True
+                            break
+                    if conflicts:
+                        continue
+
+                    cand_lists = [all_buckets[b][:2] for b in b_combo]
+                    for choice in itertools.product(*cand_lists):
+                        if any(l["model_prob"] < min_leg_prob for l in choice):
+                            continue
+                        odds = [l["bookie_odd"] for l in choice]
+                        c_odd = round(self.calculate_combined_odds(odds), 2)
+                        if target_min_odd <= c_odd <= target_max_odd:
+                            p_dec = self.calculate_combined_probability([l["model_prob"] for l in choice])
+                            coverage_bonus = (len(matchups) / len(day_matches)) * 0.15
+                            score = p_dec * (1.0 + coverage_bonus) - abs(c_odd - (target_min_odd + target_max_odd) / 2.0) * 0.001
+                            candidates.append({
+                                "legs": list(choice),
+                                "c_odd": c_odd,
+                                "p_dec": p_dec,
+                                "score": score,
+                                "matchups": matchups,
+                                "sig": self._get_combo_sig(choice)
+                            })
+                            if len(candidates) >= 500:
+                                break
+                    if len(candidates) >= 500:
+                        break
+            candidates.sort(key=lambda x: x["score"], reverse=True)
+            return candidates
+
+        # 1. Segures (1.90 - 3.50)
+        safe_cands = find_combos(1.90, 3.50, min_legs=2, max_legs=3, min_leg_prob=50.0, require_all_matches=False)
+        if not safe_cands:
+            safe_cands = find_combos(1.70, 4.00, min_legs=2, max_legs=3, min_leg_prob=40.0)
+
+        s1 = safe_cands[0] if safe_cands else {"legs": []}
+        s2 = None
+        missing_m = set(m["matchup"] for m in day_matches) - s1.get("matchups", set())
+        for c in safe_cands[1:]:
+            if c["sig"] != s1.get("sig"):
+                if missing_m and (c["matchups"] & missing_m):
+                    s2 = c
+                    break
+        if not s2:
+            for c in safe_cands[1:]:
+                if c["sig"] != s1.get("sig") and len(set(c["sig"]) & set(s1.get("sig", []))) < len(c["sig"]):
+                    s2 = c
+                    break
+        if not s2 and len(safe_cands) > 1: s2 = safe_cands[1]
+        elif not s2 and safe_cands: s2 = safe_cands[0]
+
+        # 2. Semi-Arriscades (8.50 - 16.50)
+        semi_cands = find_combos(8.50, 16.50, min_legs=3, max_legs=5, min_leg_prob=30.0, require_all_matches=True)
+        if not semi_cands:
+            semi_cands = find_combos(6.00, 20.00, min_legs=3, max_legs=5, min_leg_prob=20.0, require_all_matches=True)
+        if not semi_cands:
+            semi_cands = find_combos(6.00, 20.00, min_legs=2, max_legs=5, min_leg_prob=20.0, require_all_matches=False)
+
+        sm1 = semi_cands[0] if semi_cands else {"legs": []}
+        sm2 = None
+        for c in semi_cands[1:]:
+            if c["sig"] != sm1.get("sig") and len(set(c["sig"]) & set(sm1.get("sig", []))) < len(c["sig"]):
+                sm2 = c
+                break
+        if not sm2 and len(semi_cands) > 1: sm2 = semi_cands[1]
+        elif not sm2 and semi_cands: sm2 = semi_cands[0]
+
+        # 3. Arriscades (>= 28.0)
+        risky_cands = find_combos(28.0, 75.0, min_legs=3, max_legs=6, min_leg_prob=15.0, allow_exact=True, require_all_matches=True)
+        if not risky_cands:
+            risky_cands = find_combos(20.0, 95.0, min_legs=3, max_legs=6, min_leg_prob=10.0, allow_exact=True, require_all_matches=True)
+        if not risky_cands:
+            risky_cands = find_combos(20.0, 95.0, min_legs=3, max_legs=6, min_leg_prob=10.0, allow_exact=True, require_all_matches=False)
+
+        r1 = risky_cands[0] if risky_cands else {"legs": []}
+        r2 = None
+        for c in risky_cands[1:]:
+            if c["sig"] != r1.get("sig") and len(set(c["sig"]) & set(r1.get("sig", []))) < len(c["sig"]):
+                r2 = c
+                break
+        if not r2 and len(risky_cands) > 1: r2 = risky_cands[1]
+        elif not r2 and risky_cands: r2 = risky_cands[0]
+
+        prefix = "Mega-Combinada Multi-Lliga" if len(set(m.get("competition_id") for m in day_matches if m.get("competition_id"))) > 1 else "Combinada"
+
+        safe_1 = self.calculate_combo_summary(s1.get("legs", []), f"{prefix} Segura #1 (Cuota 2-3)")
+        safe_2 = self.calculate_combo_summary(s2.get("legs", []), f"{prefix} Segura #2 (Cuota 2-3 Alternativa)")
+        safe_1["category_code"] = "SAFE"
+        safe_2["category_code"] = "SAFE"
+        safe_1["recommended_stake"] = 25.0
+        safe_2["recommended_stake"] = 25.0
+
+        semi_1 = self.calculate_combo_summary(sm1.get("legs", []), f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)")
+        semi_2 = self.calculate_combo_summary(sm2.get("legs", []), f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
+        semi_1["category_code"] = "SEMI"
+        semi_2["category_code"] = "SEMI"
+        semi_1["recommended_stake"] = 10.0
+        semi_2["recommended_stake"] = 10.0
+
+        risky_1 = self.calculate_combo_summary(r1.get("legs", []), f"{prefix} Arriscada #1 (Cuota >= 30.0)")
+        risky_2 = self.calculate_combo_summary(r2.get("legs", []), f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
+        risky_1["category_code"] = "RISKY"
+        risky_2["category_code"] = "RISKY"
+        risky_1["recommended_stake"] = 5.0
+        risky_2["recommended_stake"] = 5.0
+
+        return {
+            "safe": [safe_1, safe_2],
+            "semi": [semi_1, semi_2],
+            "risky": [risky_1, risky_2],
+            "safe_combo": safe_1,
+            "risky_combo": risky_1
+        }
+
     def generate_daily_combos_suite(self, day_matches: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         Genera la Suite Oficial de 6 Combinades del Dia (2 Segures, 2 Semi, 2 Arriscades):
         - Si no hi ha partits aquell dia: has_matches = False.
         - Si només juga 1 partit: combinades multimerkat d'aquell duel (Bet Builder).
-        - Si juguen només partits d'una lliga: ho especifica clarament.
-        - Si juguen múltiples lligues: combinades conjuntes de tots els partits del dia.
+        - Si juguen 2 o 3 partits: combinades multilliga combinant tots els partits del dia.
+        - Si juguen 4 o més partits: combinades completes de tota la lliga / multilliga.
         """
         if not day_matches:
             return {
@@ -1005,7 +1163,11 @@ class ComboBetEngine:
             suite["league_note"] = f"Partit únic d'avui: {m_title} · Suite de 6 combinades multimerkat del mateix partit"
             return suite
 
-        suite = self.generate_full_combos_suite(day_matches, is_multi=False)
+        if len(day_matches) <= 3:
+            suite = self.generate_few_matches_combos_suite(day_matches)
+        else:
+            suite = self.generate_full_combos_suite(day_matches, is_multi=(len(comps) > 1))
+
         suite["has_matches"] = True
         suite["matches_count"] = len(day_matches)
 

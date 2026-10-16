@@ -983,6 +983,20 @@ class DatabaseManager:
                 c["legs"] = [dict(lr) for lr in cursor.fetchall()]
             return combos
 
+    def delete_daily_combos_for_date(self, date_str: str) -> None:
+        """Elimina les combinades del dia per a una data específica (per permetre regeneració neta)."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            rows = cursor.execute("""
+                SELECT id FROM combo_recommendations
+                WHERE competition_id = 'DAILY' AND id LIKE ?
+            """, (f"COMBO_DAILY_{date_str}_%",)).fetchall()
+            for r in rows:
+                c_id = r[0]
+                cursor.execute("DELETE FROM combo_legs WHERE combo_id = ?", (c_id,))
+                cursor.execute("DELETE FROM combo_recommendations WHERE id = ?", (c_id,))
+            conn.commit()
+
     def has_daily_combos(self, date_str: str) -> bool:
         """Indica si ja existeixen combinades registrades per a aquest dia."""
         with self.get_connection() as conn:
