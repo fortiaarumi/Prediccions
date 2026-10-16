@@ -369,6 +369,8 @@ class ValueBetEngine:
                 m_thresh = re.search(r'(\d+(?:\.\d+)?)', c_key)
                 if m_thresh:
                     thresh = float(m_thresh.group(1))
+                    if thresh < 5.5 or thresh > 15.5:
+                        continue
                     k_max = int(thresh)
                     prob_under = float(poisson.cdf(k_max, lambda_corn))
                     prob_over = 1.0 - prob_under
@@ -388,6 +390,8 @@ class ValueBetEngine:
                 m_thresh = re.search(r'(\d+)_(\d+)', c_key)
                 if m_thresh:
                     thresh = float(f"{m_thresh.group(1)}.{m_thresh.group(2)}")
+                    if thresh < 5.5 or thresh > 15.5:
+                        continue
                     k_max = int(thresh)
                     prob_under = float(poisson.cdf(k_max, lambda_corn))
                     prob_over = 1.0 - prob_under

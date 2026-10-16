@@ -340,8 +340,26 @@ class WinamaxScraper:
                                 if val is not None and lbl.lower() in ["sí", "si"]:
                                     odds_data["cards"]["Targeta Vermella (Sí)"] = float(val)
 
-                        # Córners (Extracció dinàmica de totes les línies Over/Under)
-                        elif ("córner" in b_cat_lower or "corner" in b_cat_lower) and "número total" in b_title_lower:
+                        # Córners (Extracció dinàmica de totes les línies Over/Under del partit complet)
+                        elif ("córner" in b_cat_lower or "corner" in b_cat_lower):
+                            # Evitar meitats, descans o córners individuals d'un sol equip
+                            if any(sw in b_title_lower for sw in ["mitad", "descanso", "tiempo", "prórroga"]):
+                                continue
+
+                            clean_title = re.sub(r'\s+', ' ', b_title_lower).strip()
+                            valid_match_titles = [
+                                "número total córneres",
+                                "número total de córneres",
+                                "total córneres",
+                                "total de córneres"
+                            ]
+                            if clean_title not in valid_match_titles:
+                                continue
+
+                            title_norm = normalize(b_title)
+                            if (h_key and h_key in title_norm) or (a_key and a_key in title_norm):
+                                continue  # Ignorar córners per equip
+
                             for oid in out_ids:
                                 o_obj = outcomes.get(str(oid)) or {}
                                 lbl = str(o_obj.get("label") or o_obj.get("code") or "").strip()
@@ -350,9 +368,15 @@ class WinamaxScraper:
                                     lbl_clean = lbl.lower().replace(",", ".")
                                     m_c = re.search(r'(m[aá]s|menos)\s+de\s+(\d+(?:\.\d+)?)', lbl_clean)
                                     if m_c:
-                                        prefix = "Over" if "m" in m_c.group(1) else "Under"
+                                        dir_str = m_c.group(1).lower()
+                                        prefix = "Under" if "menos" in dir_str else "Over"
                                         c_line = m_c.group(2)
-                                        odds_data["corners"][f"{prefix} {c_line} Córners"] = float(val)
+                                        try:
+                                            c_line_flt = float(c_line)
+                                            if 5.5 <= c_line_flt <= 15.5:
+                                                odds_data["corners"][f"{prefix} {c_line} Córners"] = float(val)
+                                        except ValueError:
+                                            pass
 
             else:
                 print(f"[!] No s'ha trobat cap partit actiu a Winamax per a '{home_team}' vs '{away_team}'.")
