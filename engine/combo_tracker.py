@@ -212,24 +212,35 @@ class ComboTracker:
                     elif leg_status == "PENDING":
                         all_legs_finished = False
 
+                    # Actualitzar la selecció a SQLite immediatament si el partit ja ha finalitzat
+                    if leg.get("id") and leg_status != "PENDING" and (leg_status != leg.get("status") or actual_res != leg.get("actual_result")):
+                        cursor.execute("""
+                            UPDATE combo_legs
+                            SET status = ?, actual_result = ?, evaluated_at = datetime('now')
+                            WHERE id = ?
+                        """, (leg_status, actual_res, leg["id"]))
+                        conn.commit()
+
                     leg_eval = dict(leg)
                     leg_eval["status"] = leg_status
                     leg_eval["actual_result"] = actual_res
                     evaluated_legs.append(leg_eval)
 
-                # Si tots els partits han finalitzat:
-                if all_legs_finished:
-                    if any_leg_lost:
-                        final_status = "LOST"
-                        payout = 0.0
-                        profit = -float(combo["stake"])
-                    else:
-                        final_status = "WON"
-                        odd = float(combo["combined_odd"])
-                        stake = float(combo["stake"])
-                        payout = round(stake * odd, 2)
-                        profit = round(payout - stake, 2)
+                # Si qualsevol selecció ha fallat (la combinada ja és matemàticament perduda) o tots han acabat:
+                if any_leg_lost:
+                    final_status = "LOST"
+                    payout = 0.0
+                    profit = -float(combo["stake"])
+                elif all_legs_finished:
+                    final_status = "WON"
+                    odd = float(combo["combined_odd"])
+                    stake = float(combo["stake"])
+                    payout = round(stake * odd, 2)
+                    profit = round(payout - stake, 2)
+                else:
+                    final_status = "PENDING"
 
+                if final_status in ["WON", "LOST"]:
                     self.db.update_combo_evaluation(
                         combo_id=combo["id"],
                         status=final_status,

@@ -86,14 +86,30 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
         if not base_url:
             return None
 
-        # 1. Obtenir la darrera jornada jugada a SQLite per no predir el passat
+        # 1. Obtenir la darrera jornada completament finalitzada a SQLite per no predir el passat
         _db = db if db else DatabaseManager()
+        state_file = ROOT / "data" / "pipeline_state.json"
+        state_completed = 0
+        if state_file.exists():
+            try:
+                with open(state_file, "r", encoding="utf-8") as f:
+                    st = json.load(f)
+                    state_completed = int(st.get(comp, {}).get("last_scraped_jornada", 0))
+            except Exception:
+                pass
+
         with _db.get_connection() as conn:
             c = conn.cursor()
-            max_finished = c.execute(
-                "SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status = 'FINISHED'",
-                (comp,)
-            ).fetchone()[0] or 0
+            # Una jornada només es considera completament acabada si té suficients partits jugats i ZERO pendents
+            c_sql = c.execute("""
+                SELECT jornada FROM matches
+                WHERE competition_id = ? AND status = 'FINISHED'
+                GROUP BY jornada
+                HAVING COUNT(*) >= 8 AND SUM(CASE WHEN status = 'SCHEDULED' THEN 1 ELSE 0 END) = 0
+                ORDER BY jornada DESC LIMIT 1
+            """, (comp,)).fetchone()
+            sql_completed = c_sql[0] if c_sql else 0
+            max_completed = max(sql_completed, state_completed)
 
         cmd = ['curl', '-s', f'{base_url}/partidos/']
         res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
@@ -122,8 +138,8 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
                     continue
 
                 jornada_num = int(m_num.group(1))
-                # Només acceptar jornades posteriors o iguals a la darrera finalitzada
-                if jornada_num < max_finished:
+                # Només acceptar jornades posteriors a la darrera completada
+                if jornada_num <= max_completed:
                     continue
 
                 fields = {}
@@ -149,8 +165,8 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
         if not round_matches:
             return None
 
-        # Determinar quina és la jornada regular immediata següent
-        upcoming_jornadas = sorted(list({m["jornada"] for m in round_matches if m["jornada"] > max_finished}))
+        # Determinar quina és la jornada regular en curs o immediata següent
+        upcoming_jornadas = sorted(list({m["jornada"] for m in round_matches if m["jornada"] >= max_completed + 1}))
         if not upcoming_jornadas:
             upcoming_jornadas = sorted(list({m["jornada"] for m in round_matches}))
         if not upcoming_jornadas:
@@ -221,6 +237,7 @@ def run_daily_autonomous_check(force: bool = False):
 
         jornadas_to_check = set(scheduled_j)
         jornadas_to_check.add(last_scraped + 1)
+        jornadas_to_check.add(last_scraped + 2)
 
         for j_cand in sorted(list(jornadas_to_check)):
             if j_cand <= 0:

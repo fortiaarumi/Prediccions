@@ -959,9 +959,19 @@ class WebDataExporter:
                     elif leg_status == "PENDING":
                         all_finished = False
 
+                    if leg.get("id") and leg_status != "PENDING" and (leg_status != leg.get("status") or actual_res != leg.get("actual_result")):
+                        with self.db.get_connection() as conn_leg:
+                            conn_leg.cursor().execute("""
+                                UPDATE combo_legs
+                                SET status = ?, actual_result = ?, evaluated_at = datetime('now')
+                                WHERE id = ?
+                            """, (leg_status, actual_res, leg["id"]))
+                            conn_leg.commit()
+
                     w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
                     b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
                     legs_evaluated.append({
+                        "id": leg.get("id"),
                         "matchup": leg.get("matchup", ""),
                         "selection_name": leg.get("selection_name", ""),
                         "category": leg.get("category", ""),
@@ -1404,9 +1414,19 @@ class WebDataExporter:
                         elif leg_status == "PENDING":
                             all_finished = False
 
+                        if leg.get("id") and leg_status != "PENDING" and (leg_status != leg.get("status") or actual_res != leg.get("actual_result")):
+                            with self.db.get_connection() as conn_leg:
+                                conn_leg.cursor().execute("""
+                                    UPDATE combo_legs
+                                    SET status = ?, actual_result = ?, evaluated_at = datetime('now')
+                                    WHERE id = ?
+                                """, (leg_status, actual_res, leg["id"]))
+                                conn_leg.commit()
+
                         w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
                         b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
                         legs_evaluated.append({
+                            "id": leg.get("id"),
                             "matchup": leg.get("matchup", ""),
                             "selection_name": leg.get("selection_name", ""),
                             "category": leg.get("category", ""),

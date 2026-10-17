@@ -1,21 +1,49 @@
 [
   {
     "date": "2026-10-17",
-    "timestamp": "2026-10-17T08:49:33.438954",
+    "timestamp": "2026-10-17T11:29:27.817353",
     "title": "Actualització Diària del Model · 17/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
     "items": [
-      "⚽ S'han ingesta resultats oficials i mètriques de 2 partit(s) disputat(s):",
+      "⚽ S'han ingesta resultats oficials i mètriques de 3 partit(s) disputat(s):",
+      "   • [LALIGA J9] RC Deportivo de La Coruña 1 - 1 Levante UD | xG: 1.11-0.83 | Targetes: 5 🟨 | Córners: 8 🚩 | Àrbitre: Manuel Orellana",
       "   • [HYPERMOTION J10] CD Leganés 0 - 1 Córdoba CF | xG: 0.75-2.09 | Targetes: 7 🟨 | Córners: 11 🚩 | Àrbitre: Eder Mallo Fernández",
       "   • [CHAMPIONSHIP J11] Burnley 1 - 2 Wolverhampton Wanderers | xG: 1.03-2.00 | Targetes: 3 🟨 | Córners: 9 🚩 | Àrbitre: Smith L.",
       "📊 Actualització de Power Rànquings Elo:",
+      "   • RC Deportivo de La Coruña (-0.1 ➔ 1483.2) | Levante UD (+0.1 ➔ 1529.8)",
       "   • CD Leganés (-14.9 ➔ 1524.2) | Córdoba CF (+14.9 ➔ 1480.2)",
       "   • Burnley (-8.6 ➔ 1476.8) | Wolverhampton Wanderers (+8.6 ➔ 1624.3)",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 1 partit(s):",
+      "   • [EFL Championship J11] Birmingham City vs Queens Park Rangers: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Kirk T.'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 46.2% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 47.6% ➔ 47.6% (+0.0%)"
     ],
     "matches": [
+      {
+        "match_id": "LALIGA_J9_DEP_LEV",
+        "competition_id": "LALIGA",
+        "jornada": 9,
+        "home_team": "RC Deportivo de La Coruña",
+        "away_team": "Levante UD",
+        "home_goals": 1,
+        "away_goals": 1,
+        "score": "1 - 1",
+        "home_xg": 1.11,
+        "away_xg": 0.83,
+        "home_yellow_cards": 3,
+        "away_yellow_cards": 2,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 3,
+        "away_corners": 5,
+        "referee": "Manuel Orellana",
+        "elo_change_home": -0.1,
+        "elo_change_away": 0.1,
+        "new_elo_home": 1483.2,
+        "new_elo_away": 1529.8,
+        "date": "16.10.2026 21:00"
+      },
       {
         "match_id": "HYPERMOTION_J10_LEG_COR",
         "competition_id": "HYPERMOTION",
@@ -67,7 +95,47 @@
     ],
     "combos_evaluated": [],
     "combos_generated": [],
-    "referee_updates": []
+    "referee_updates": [
+      {
+        "match_id": "CHAMPIONSHIP_J11_BIR_QPR",
+        "matchup": "Birmingham City vs Queens Park Rangers",
+        "competition_id": "CHAMPIONSHIP",
+        "competition_name": "EFL Championship",
+        "jornada": 11,
+        "date": "17.10.2026 14:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Kirk T.",
+        "ref_stats": {
+          "yellow_avg": 3.8,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 46.2,
+            "delta": -7.2
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 47.6,
+            "after": 47.6,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Kirk T. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
+        }
+      }
+    ]
   },
   {
     "date": "2026-10-16",
