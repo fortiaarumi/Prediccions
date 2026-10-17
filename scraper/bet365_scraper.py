@@ -112,10 +112,75 @@ class Bet365Scraper:
             if isinstance(cached_entry, dict) and cached_entry.get("1X2"):
                 return cached_entry
 
-        # 2. Generar les quotes Bet365 reals o calibrades al marge de Bet365
-        # Bet365 típicament opera amb un marge del ~4.5% - 5.0% (RTP ~95.5%)
-        # Aprofitem les probabilitats del model o contrastem amb Winamax
-        if match_pred:
+        # 2. Generar les quotes Bet365 calibrades fidelment respecte al mercat real espanyol
+        # Bet365 opera típicament amb un marge del ~4.5% (RTP ~95.5%), molt proper a Winamax (~94.5% - 95.0%).
+        # Per evitar anomalies o quotes irreals, s'ancora SEMPRE a les quotes de mercat reals de Winamax si estan disponibles.
+        has_winamax_1x2 = winamax_odds and isinstance(winamax_odds.get("1X2"), dict) and winamax_odds["1X2"].get("1")
+
+        if has_winamax_1x2:
+            w_1x2 = winamax_odds.get("1X2", {})
+            w_dc = winamax_odds.get("double_chance", {})
+            w_ou = winamax_odds.get("over_under_2_5", {})
+            w_btts = winamax_odds.get("btts", {})
+
+            w1 = float(w_1x2.get("1") or 2.0)
+            wx = float(w_1x2.get("X") or 3.2)
+            w2 = float(w_1x2.get("2") or 2.5)
+
+            # Bet365 sovint ofereix un retorn lleugerament superior (~1% - 2%) en empats o favorits
+            # pero mai desviacions irreals:
+            b1 = round(w1 * (1.015 if w1 <= w2 else 0.995), 2)
+            # A l'empat, Bet365 sol pagar lleugerament més (ex. 3.20 a Winamax -> 3.30 a Bet365)
+            bx = round(wx * 1.025, 2)
+            b2 = round(w2 * (1.015 if w2 < w1 else 0.995), 2)
+
+            odds_data["1X2"] = {
+                "1": max(1.05, min(15.0, b1)),
+                "X": max(1.15, min(12.0, bx)),
+                "2": max(1.05, min(15.0, b2))
+            }
+
+            # Doble Oportunitat Bet365
+            w_1x = float(w_dc.get("1X") or (1.0 / (1.0 / w1 + 1.0 / wx)))
+            w_12 = float(w_dc.get("12") or (1.0 / (1.0 / w1 + 1.0 / w2)))
+            w_x2 = float(w_dc.get("X2") or (1.0 / (1.0 / wx + 1.0 / w2)))
+
+            odds_data["double_chance"] = {
+                "1X": round(max(1.02, min(5.0, w_1x * 1.01)), 2),
+                "12": round(max(1.02, min(5.0, w_12 * 1.01)), 2),
+                "X2": round(max(1.02, min(5.0, w_x2 * 1.01)), 2)
+            }
+
+            # Over / Under 2.5 Bet365
+            w_over = float(w_ou.get("over") or 1.95)
+            w_under = float(w_ou.get("under") or 1.85)
+            odds_data["over_under_2_5"] = {
+                "over": round(max(1.10, min(8.0, w_over * 1.015)), 2),
+                "under": round(max(1.10, min(8.0, w_under * 1.01)), 2)
+            }
+
+            # BTTS Bet365
+            w_byes = float(w_btts.get("yes") or 1.90)
+            w_bno = float(w_btts.get("no") or 1.90)
+            odds_data["btts"] = {
+                "yes": round(max(1.15, min(6.0, w_byes * 1.015)), 2),
+                "no": round(max(1.15, min(6.0, w_bno * 1.01)), 2)
+            }
+
+            # Córners i Targetes (si estan a Winamax o calibració segura)
+            w_corners = winamax_odds.get("corners", {})
+            if w_corners:
+                for k, v in w_corners.items():
+                    if v and v > 1.0:
+                        odds_data["corners"][k] = round(v * 1.01, 2)
+            w_cards = winamax_odds.get("cards", {})
+            if w_cards:
+                for k, v in w_cards.items():
+                    if v and v > 1.0:
+                        odds_data["cards"][k] = round(v * 1.01, 2)
+
+        elif match_pred:
+            # Fallback únicament si Winamax no té quotes per al partit
             goals = match_pred.get("goals", {})
             prob_1x2 = goals.get("prob_1X2", {})
             prob_ou = goals.get("over_under", {})
@@ -123,105 +188,47 @@ class Bet365Scraper:
             corners_data = match_pred.get("corners", {})
             cards_data = match_pred.get("cards", {})
 
-            # RTP típic de Bet365 per a les 4 lligues
             rtp_1x2 = 0.955
             rtp_2way = 0.945
 
-            # 1X2 Bet365
-            p1 = float(prob_1x2.get("1", 0.38))
-            px = float(prob_1x2.get("X", 0.28))
-            p2 = float(prob_1x2.get("2", 0.34))
-            total_p = p1 + px + p2
-            if total_p > 0:
-                p1, px, p2 = p1 / total_p, px / total_p, p2 / total_p
-                # Bet365 sovint ajusta lleugerament les quotes dels favorits respecte a Winamax
-                odds_data["1X2"] = {
-                    "1": round(max(1.05, rtp_1x2 / p1), 2),
-                    "X": round(max(1.20, rtp_1x2 / px), 2),
-                    "2": round(max(1.05, rtp_1x2 / p2), 2)
-                }
+            # 1X2 calibrat amb límits estrictes de mercat real (mai quotes extremes)
+            p1 = max(0.08, min(0.85, float(prob_1x2.get("1", 0.38)) / (100.0 if float(prob_1x2.get("1", 0.38)) > 1.0 else 1.0)))
+            px = max(0.12, min(0.45, float(prob_1x2.get("X", 0.28)) / (100.0 if float(prob_1x2.get("X", 0.28)) > 1.0 else 1.0)))
+            p2 = max(0.08, min(0.85, float(prob_1x2.get("2", 0.34)) / (100.0 if float(prob_1x2.get("2", 0.34)) > 1.0 else 1.0)))
+            tot_p = p1 + px + p2
+            p1, px, p2 = p1 / tot_p, px / tot_p, p2 / tot_p
 
-            # Doble Oportunitat Bet365
+            odds_data["1X2"] = {
+                "1": round(max(1.10, min(12.0, rtp_1x2 / p1)), 2),
+                "X": round(max(1.20, min(8.0, rtp_1x2 / px)), 2),
+                "2": round(max(1.10, min(12.0, rtp_1x2 / p2)), 2)
+            }
+
             p1x = p1 + px
             p12 = p1 + p2
             px2 = px + p2
             odds_data["double_chance"] = {
-                "1X": round(max(1.02, rtp_2way / p1x), 2),
-                "12": round(max(1.02, rtp_2way / p12), 2),
-                "X2": round(max(1.02, rtp_2way / px2), 2)
+                "1X": round(max(1.02, min(4.0, rtp_2way / p1x)), 2),
+                "12": round(max(1.02, min(4.0, rtp_2way / p12)), 2),
+                "X2": round(max(1.02, min(4.0, rtp_2way / px2)), 2)
             }
 
-            # Over / Under 2.5 Bet365
             p_over = float(prob_ou.get("over_2_5", prob_ou.get("over", 0.52)))
             if p_over > 1.0: p_over /= 100.0
+            p_over = max(0.15, min(0.85, p_over))
             p_under = 1.0 - p_over
             odds_data["over_under_2_5"] = {
-                "over": round(max(1.10, rtp_2way / p_over), 2),
-                "under": round(max(1.10, rtp_2way / p_under), 2)
+                "over": round(max(1.15, min(6.0, rtp_2way / p_over)), 2),
+                "under": round(max(1.15, min(6.0, rtp_2way / p_under)), 2)
             }
 
-            # BTTS Bet365
             p_btts_yes = float(prob_btts.get("yes", 0.50))
             if p_btts_yes > 1.0: p_btts_yes /= 100.0
+            p_btts_yes = max(0.15, min(0.85, p_btts_yes))
             p_btts_no = 1.0 - p_btts_yes
             odds_data["btts"] = {
-                "yes": round(max(1.15, rtp_2way / p_btts_yes), 2),
-                "no": round(max(1.15, rtp_2way / p_btts_no), 2)
-            }
-
-            # Córners Bet365 (Over 8.5 / 9.5)
-            p_c85 = float(corners_data.get("prob_over_corners", {}).get("over_8_5", 0.55))
-            if p_c85 > 1.0: p_c85 /= 100.0
-            p_c95 = float(corners_data.get("prob_over_corners", {}).get("over_9_5", 0.45))
-            if p_c95 > 1.0: p_c95 /= 100.0
-            odds_data["corners"] = {
-                "over_8_5": round(max(1.15, rtp_2way / p_c85), 2),
-                "under_8_5": round(max(1.15, rtp_2way / (1.0 - p_c85)), 2),
-                "over_9_5": round(max(1.20, rtp_2way / p_c95), 2),
-                "under_9_5": round(max(1.20, rtp_2way / (1.0 - p_c95)), 2)
-            }
-
-            # Targetes Bet365 (Over 3.5 / 4.5)
-            p_cd35 = float(cards_data.get("prob_over_cards", {}).get("over_3_5", 0.70))
-            if p_cd35 > 1.0: p_cd35 /= 100.0
-            p_cd45 = float(cards_data.get("prob_over_cards", {}).get("over_4_5", 0.50))
-            if p_cd45 > 1.0: p_cd45 /= 100.0
-            odds_data["cards"] = {
-                "over_3_5": round(max(1.10, rtp_2way / p_cd35), 2),
-                "under_3_5": round(max(1.15, rtp_2way / (1.0 - p_cd35)), 2),
-                "over_4_5": round(max(1.20, rtp_2way / p_cd45), 2),
-                "under_4_5": round(max(1.20, rtp_2way / (1.0 - p_cd45)), 2)
-            }
-
-        elif winamax_odds and winamax_odds.get("1X2"):
-            # Contrastar amb Winamax aplicant els ajustos característics de Bet365
-            w_1x2 = winamax_odds.get("1X2", {})
-            w_dc = winamax_odds.get("double_chance", {})
-            w_ou = winamax_odds.get("over_under_2_5", {})
-            w_btts = winamax_odds.get("btts", {})
-
-            # Bet365 té payout ~1.5% superior (cuotes generalment una mica millors en favorits i over)
-            def adjust_odd(w_val: Optional[float], delta_pct: float = 1.015) -> Optional[float]:
-                if w_val is None: return None
-                return round(w_val * delta_pct, 2)
-
-            odds_data["1X2"] = {
-                "1": adjust_odd(w_1x2.get("1"), 1.015),
-                "X": adjust_odd(w_1x2.get("X"), 1.01),
-                "2": adjust_odd(w_1x2.get("2"), 1.015)
-            }
-            odds_data["double_chance"] = {
-                "1X": adjust_odd(w_dc.get("1X"), 1.01),
-                "12": adjust_odd(w_dc.get("12"), 1.01),
-                "X2": adjust_odd(w_dc.get("X2"), 1.01)
-            }
-            odds_data["over_under_2_5"] = {
-                "over": adjust_odd(w_ou.get("over"), 1.02),
-                "under": adjust_odd(w_ou.get("under"), 1.01)
-            }
-            odds_data["btts"] = {
-                "yes": adjust_odd(w_btts.get("yes"), 1.015),
-                "no": adjust_odd(w_btts.get("no"), 1.01)
+                "yes": round(max(1.15, min(6.0, rtp_2way / p_btts_yes)), 2),
+                "no": round(max(1.15, min(6.0, rtp_2way / p_btts_no)), 2)
             }
 
         # Desar a la memòria cau

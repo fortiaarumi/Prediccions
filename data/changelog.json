@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-10-17",
-    "timestamp": "2026-10-17T12:16:43.044585",
+    "timestamp": "2026-10-17T12:48:20.689039",
     "title": "Actualització Diària del Model · 17/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -17,7 +17,7 @@
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
       "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 1 partit(s):",
       "   • [EFL Championship J11] Birmingham City vs Queens Park Rangers: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Kirk T.'",
-      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 46.2% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 47.6% ➔ 47.6% (+0.0%)"
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 46.2% (-7.2%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 46.7% ➔ 46.7% (+0.0%)"
     ],
     "matches": [
       {
@@ -128,8 +128,8 @@
             "delta": -3.5
           },
           "home_win_prob": {
-            "before": 47.6,
-            "after": 47.6,
+            "before": 46.7,
+            "after": 46.7,
             "delta": 0.0
           },
           "summary": "Designació oficial de Kirk T. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."

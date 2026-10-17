@@ -56,12 +56,12 @@ class GoalModel:
         away_off = float(away_team.get("off_rank", half_count))
         away_def = float(away_team.get("def_rank", half_count))
 
-        # 1. Força d'atac i feblesa defensiva teòrica
-        off_strength_home = max(0.4, (base_rank - home_off) / half_count)
-        def_weakness_away = max(0.4, away_def / half_count)
+        # 1. Força d'atac i feblesa defensiva teòrica (escala suau calibrada per evitar biaixos extrems)
+        off_strength_home = max(0.60, min(1.50, 1.0 + 0.35 * (half_count - home_off) / half_count))
+        def_weakness_away = max(0.60, min(1.50, 1.0 + 0.30 * (away_def - half_count) / half_count))
 
-        off_strength_away = max(0.4, (base_rank - away_off) / half_count)
-        def_weakness_home = max(0.4, home_def / half_count)
+        off_strength_away = max(0.60, min(1.50, 1.0 + 0.35 * (half_count - away_off) / half_count))
+        def_weakness_home = max(0.60, min(1.50, 1.0 + 0.30 * (home_def - half_count) / half_count))
 
         lambda_rank_home = prof["home_avg"] * off_strength_home * def_weakness_away
         lambda_rank_away = prof["away_avg"] * off_strength_away * def_weakness_home

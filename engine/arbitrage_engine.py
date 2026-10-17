@@ -18,13 +18,16 @@ import math
 from typing import Dict, List, Any, Optional
 
 class ArbitrageEngine:
-    def __init__(self, min_profit_threshold: float = 0.0, near_arb_threshold: float = -2.5):
+    def __init__(self, min_profit_threshold: float = 0.0, near_arb_threshold: float = -2.5, max_profit_threshold: float = 15.0):
         """
         :param min_profit_threshold: % mínim de benefici net garantit per considerar-ho Surebet (ex: 0.0% o 1.0%).
         :param near_arb_threshold: % límit per classificar com a 'Near-Arb' (marge estret en monitorització).
+        :param max_profit_threshold: % límit màxim de seguretat (palpable error filter). Si supera el 15%,
+                                     és un error de feed o quota errònia que la casa cancel·larà.
         """
         self.min_profit = min_profit_threshold
         self.near_arb_limit = near_arb_threshold
+        self.max_profit = max_profit_threshold
 
     def calculate_2way_arbitrage(
         self,
@@ -37,7 +40,7 @@ class ArbitrageEngine:
         o1 = float(leg1.get("odd") or 0.0)
         o2 = float(leg2.get("odd") or 0.0)
 
-        if o1 <= 1.01 or o2 <= 1.01:
+        if o1 <= 1.01 or o2 <= 1.01 or o1 > 15.0 or o2 > 15.0:
             return None
 
         # Suma de probabilitats implícites (Invers de les quotes)
@@ -48,7 +51,8 @@ class ArbitrageEngine:
         profit_pct = round(((1.0 / sum_inv) - 1.0) * 100.0, 2)
         margin_pct = round(sum_inv * 100.0, 2)
 
-        if profit_pct < self.near_arb_limit:
+        # Filtre anti errors palpables o quotes corruptes (>15% és irreal pre-partit)
+        if profit_pct < self.near_arb_limit or profit_pct > self.max_profit:
             return None
 
         is_pure_surebet = (profit_pct > self.min_profit)
@@ -115,7 +119,7 @@ class ArbitrageEngine:
         ox = float(legX.get("odd") or 0.0)
         o2 = float(leg2.get("odd") or 0.0)
 
-        if o1 <= 1.01 or ox <= 1.01 or o2 <= 1.01:
+        if o1 <= 1.01 or ox <= 1.01 or o2 <= 1.01 or o1 > 15.0 or ox > 15.0 or o2 > 15.0:
             return None
 
         # Si les 3 quotes provenen exactament de la mateixa casa, mai no hi haurà arbitratge (overround de la casa)
@@ -130,7 +134,8 @@ class ArbitrageEngine:
         profit_pct = round(((1.0 / sum_inv) - 1.0) * 100.0, 2)
         margin_pct = round(sum_inv * 100.0, 2)
 
-        if profit_pct < self.near_arb_limit:
+        # Filtre anti errors palpables o quotes corruptes (>15% és irreal pre-partit)
+        if profit_pct < self.near_arb_limit or profit_pct > self.max_profit:
             return None
 
         is_pure_surebet = (profit_pct > self.min_profit)
