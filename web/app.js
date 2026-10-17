@@ -4200,13 +4200,58 @@ function getActiveOddsAlerts() {
     overrides = JSON.parse(localStorage.getItem('manual_odds_overrides') || '{}');
   } catch (e) {}
 
+  const now = new Date();
+
   return baseAlerts.filter(a => {
+    // 1. Si el partit ja té quotes introduïdes manualment
     const ov = overrides[a.id];
     if (ov) {
       const hasW = !a.missing_winamax || (ov.winamax && ov.winamax['1']);
       const hasB = !a.missing_bet365 || (ov.bet365 && ov.bet365['1']);
       if (hasW && hasB) return false;
     }
+
+    // 2. Comprovar si el partit ja està finalitzat a appData
+    if (appData.predictions && appData.predictions[a.competition_id]) {
+      const compMatches = appData.predictions[a.competition_id].matches || [];
+      const mMatch = compMatches.find(m => {
+        const hName = (m.home_team ? m.home_team.name : '').toLowerCase();
+        const aName = (m.away_team ? m.away_team.name : '').toLowerCase();
+        const targetH = (a.home_team || '').toLowerCase();
+        const targetA = (a.away_team || '').toLowerCase();
+        return (
+          (hName.includes(targetH) || targetH.includes(hName)) &&
+          (aName.includes(targetA) || targetA.includes(aName))
+        );
+      });
+      if (mMatch) {
+        if (mMatch.status === 'FINISHED' || mMatch.home_goals !== null || mMatch.final_score) {
+          return false;
+        }
+        if (mMatch.has_winamax_odds && mMatch.has_bet365_odds) {
+          return false;
+        }
+      }
+    }
+
+    // 3. Comprovar si la data i hora d'inici ja ha passat (partit passat o començat)
+    if (a.date && a.date !== 'Pendent') {
+      try {
+        let pDate = null;
+        if (a.date.includes('.')) {
+          const parts = a.date.trim().split(' ');
+          const dParts = parts[0].split('.');
+          const tParts = (parts[1] || '00:00').split(':');
+          pDate = new Date(parseInt(dParts[2]), parseInt(dParts[1]) - 1, parseInt(dParts[0]), parseInt(tParts[0]), parseInt(tParts[1]));
+        } else if (a.date.includes('-')) {
+          pDate = new Date(a.date.replace(' ', 'T'));
+        }
+        if (pDate && !isNaN(pDate.getTime()) && pDate < now) {
+          return false;
+        }
+      } catch (err) {}
+    }
+
     return true;
   });
 }

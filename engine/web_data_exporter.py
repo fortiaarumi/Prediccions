@@ -422,6 +422,21 @@ class WebDataExporter:
             a_goals = r.get("away_goals")
             is_finished = (r.get("status") == "FINISHED" and h_goals is not None)
 
+            # Comprovar si la data i hora d'inici ja ha passat (partit començat o ja disputat)
+            match_is_past = False
+            if match_date and match_date != "Pendent":
+                try:
+                    clean_dt = str(match_date).strip()
+                    m_dt = None
+                    if "." in clean_dt:
+                        m_dt = datetime.strptime(clean_dt[:16], "%d.%m.%Y %H:%M")
+                    elif "-" in clean_dt:
+                        m_dt = datetime.strptime(clean_dt[:16], "%Y-%m-%d %H:%M")
+                    if m_dt and (now - m_dt).total_seconds() > 0:
+                        match_is_past = True
+                except Exception:
+                    pass
+
             # Cuotes Winamax & Bet365
             odds = {}
             odds_b365 = {}
@@ -429,7 +444,7 @@ class WebDataExporter:
             w_has_1x2 = False
             b_has_1x2 = False
 
-            if not is_finished:
+            if not is_finished and not match_is_past:
                 odds = self.winamax.get_match_odds(home_data["name"], away_data["name"], competition_id=competition_id)
                 if (not odds.get("matched")) and existing_match_odds:
                     m_key = f"{h_id}_{a_id}"
@@ -447,7 +462,7 @@ class WebDataExporter:
                 w_has_1x2 = bool(odds and odds.get("matched") and (odds.get("1X2") or {}).get("1"))
                 b_has_1x2 = bool(odds_b365 and odds_b365.get("matched") and (odds_b365.get("1X2") or {}).get("1"))
 
-                # Si falten quotes en un partit no jugat, registrar alerta per a l'usuari
+                # Si falten quotes en un partit PENDENT DE DISPUTAR (futur), registrar alerta per a l'usuari
                 if not w_has_1x2 or not b_has_1x2:
                     missing_bookies = []
                     if not w_has_1x2:
@@ -750,8 +765,8 @@ class WebDataExporter:
                 "url_bet365": odds_b365.get("url") or "https://www.bet365.es",
                 "has_winamax_odds": w_has_1x2,
                 "has_bet365_odds": b_has_1x2,
-                "missing_odds": not (w_has_1x2 and b_has_1x2) if not is_finished else False,
-                "missing_bookmakers": [b for b, m in [("Winamax", not w_has_1x2), ("Bet365", not b_has_1x2)] if m] if not is_finished else [],
+                "missing_odds": not (w_has_1x2 and b_has_1x2) if (not is_finished and not match_is_past) else False,
+                "missing_bookmakers": [b for b, m in [("Winamax", not w_has_1x2), ("Bet365", not b_has_1x2)] if m] if (not is_finished and not match_is_past) else [],
                 "value_bets": bet_analysis.get("value_bets", []) if not is_finished else [],
                 "raw_pred": pred # per a càlculs posteriors
             })
