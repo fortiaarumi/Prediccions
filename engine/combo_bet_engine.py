@@ -251,6 +251,52 @@ class ComboBetEngine:
                     })
         return pools
 
+    def _build_match_choices(
+        self,
+        markets: List[Dict[str, Any]],
+        allow_duos: bool = False,
+        max_singles: int = 4,
+        max_duos: int = 3
+    ) -> List[List[Dict[str, Any]]]:
+        """
+        Construeix les opcions seleccionables per a un partit:
+        - Seleccions individuals (1 mercat per partit).
+        - Si allow_duos=True, permet afegir fins a 2 mercats diferents del mateix partit
+          (de diferents categories i compatibles, ex: 1X + Còrners, o 1X + Gols, o Còrners + Targetes).
+        """
+        choices = [[m] for m in markets[:max_singles]]
+        if not allow_duos or len(markets) < 2:
+            return choices
+
+        duos = []
+        for m1, m2 in itertools.combinations(markets[:6], 2):
+            cat1 = m1.get("category", "")
+            cat2 = m2.get("category", "")
+            if cat1 == cat2:
+                continue
+            cats = {cat1, cat2}
+            # Evitar combinacions redundants o contradictòries
+            if "1X2" in cats and "Doble Oportunitat" in cats:
+                continue
+            if "Marcador Exacte" in cats:
+                continue
+            name1 = (m1.get("name") or m1.get("selection_name") or "").lower()
+            name2 = (m2.get("name") or m2.get("selection_name") or "").lower()
+            if "btts" in cats and any("menys d'1.5" in n or "under 1.5" in n for n in [name1, name2]):
+                continue
+            if any("1 -" in n or "2 -" in n for n in [name1, name2]) and any("menys d'1.5" in n or "under 1.5" in n for n in [name1, name2]):
+                continue
+            if any("1 -" in n for n in [name1, name2]) and any("marca (+0.5" in n or "marca més d'1.5" in n for n in [name1, name2]):
+                continue
+            if any("2 -" in n for n in [name1, name2]) and any("marca (+0.5" in n or "marca més d'1.5" in n for n in [name1, name2]):
+                continue
+            duos.append([m1, m2])
+
+        # Ordenar duos per probabilitat conjunta estimada
+        duos.sort(key=lambda d: (float(d[0].get("model_prob", 0.0)) / 100.0) * (float(d[1].get("model_prob", 0.0)) / 100.0), reverse=True)
+        choices.extend(duos[:max_duos])
+        return choices
+
     def _pick_diverse_c2(
         self,
         candidates: List[Dict[str, Any]],
@@ -352,7 +398,8 @@ class ComboBetEngine:
         is_multi: bool = False,
         global_counts: Optional[Dict[str, int]] = None,
         forbidden_exact: Optional[Set[str]] = None,
-        max_usage: int = 2
+        max_usage: int = 2,
+        allow_duos: bool = False
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Genera dues combinades segures (cuota 1.95 - 3.50) optimitzant la màxima probabilitat conjunta."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
@@ -382,8 +429,9 @@ class ComboBetEngine:
                     continue
                 league_bonus = 0.06 if is_multi and len(comps) >= 3 else (0.02 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"][:2] for m in match_combo]
-                for leg_choice in itertools.product(*cand_lists):
+                cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=2) for m in match_combo]
+                for choice in itertools.product(*cand_lists):
+                    leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -415,8 +463,9 @@ class ComboBetEngine:
                     comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                     if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
                         continue
-                    cand_lists = [m["markets"][:2] for m in match_combo]
-                    for leg_choice in itertools.product(*cand_lists):
+                    cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=2) for m in match_combo]
+                    for choice in itertools.product(*cand_lists):
+                        leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
                         odds = [l["bookie_odd"] for l in leg_choice]
@@ -476,7 +525,8 @@ class ComboBetEngine:
         is_multi: bool = False,
         global_counts: Optional[Dict[str, int]] = None,
         forbidden_exact: Optional[Set[str]] = None,
-        max_usage: int = 2
+        max_usage: int = 2,
+        allow_duos: bool = True
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Genera dues combinades semi-arriscades (cuota ~8.5 - 16.5) optimitzant probabilitat i varietat."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
@@ -499,15 +549,16 @@ class ComboBetEngine:
 
         candidates = []
         n_pools = min(len(pools), 14)
-        for k in range(3, min(n_pools, 6) + 1):
+        for k in range(2, min(n_pools, 6) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
                 comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                if is_multi and len(comps) < 2:
+                if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
                     continue
                 league_bonus = 0.08 if is_multi and len(comps) >= 3 else (0.03 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"][:2] for m in match_combo]
-                for leg_choice in itertools.product(*cand_lists):
+                cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=2) for m in match_combo]
+                for choice in itertools.product(*cand_lists):
+                    leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -540,13 +591,14 @@ class ComboBetEngine:
                 break
 
         if not candidates:
-            for k in range(3, min(n_pools, 6) + 1):
+            for k in range(2, min(n_pools, 6) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
                     comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                     if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
                         continue
-                    cand_lists = [m["markets"][:2] for m in match_combo]
-                    for leg_choice in itertools.product(*cand_lists):
+                    cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=2) for m in match_combo]
+                    for choice in itertools.product(*cand_lists):
+                        leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
                         odds = [l["bookie_odd"] for l in leg_choice]
@@ -604,7 +656,8 @@ class ComboBetEngine:
         is_multi: bool = False,
         global_counts: Optional[Dict[str, int]] = None,
         forbidden_exact: Optional[Set[str]] = None,
-        max_usage: int = 2
+        max_usage: int = 2,
+        allow_duos: bool = True
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Genera dues combinades arriscades (cuota >= 28.0) multimerkat amb activació de Combo Booster Winamax."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
@@ -614,28 +667,29 @@ class ComboBetEngine:
         pools = self._prepare_balanced_pools(
             match_markets,
             is_multi=is_multi,
-            min_prob=25.0,
-            min_odd=1.28,
+            min_prob=20.0,
+            min_odd=1.20,
             max_per_comp=4,
             forbidden_exact=forbidden_exact,
             counts=global_counts,
             max_usage=max_usage
         )
 
-        if len(pools) < 4:
+        if len(pools) < 3:
             return self.calculate_combo_summary([], f"{prefix} Arriscada #1 (Cuota >= 30.0)"), self.calculate_combo_summary([], f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
 
         candidates = []
         n_pools = min(len(pools), 14)
-        for k in range(4, min(n_pools, 8) + 1):
+        for k in range(3, min(n_pools, 8) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
                 comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                if is_multi and len(comps) < 2:
+                if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
                     continue
                 league_bonus = 0.10 if is_multi and len(comps) >= 3 else (0.04 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"][:2] for m in match_combo]
-                for leg_choice in itertools.product(*cand_lists):
+                cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=3) for m in match_combo]
+                for choice in itertools.product(*cand_lists):
+                    leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -668,19 +722,48 @@ class ComboBetEngine:
                 break
 
         if not candidates:
-            # Fallback si el rang estricte no es compleix amb el filtre
-            for k in range(4, min(n_pools, 8) + 1):
+            # Fallback 1: si no troba en rang estricte, buscar >= 28.0
+            for k in range(3, min(n_pools, 8) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
                     comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                     if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
                         continue
-                    cand_lists = [m["markets"][:2] for m in match_combo]
-                    for leg_choice in itertools.product(*cand_lists):
+                    cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=3) for m in match_combo]
+                    for choice in itertools.product(*cand_lists):
+                        leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
                         odds = [l["bookie_odd"] for l in leg_choice]
                         c_odd = round(self.calculate_combined_odds(odds), 2)
-                        if c_odd >= 20.0:
+                        if c_odd >= 28.0:
+                            p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                            candidates.append({
+                                "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
+                                "score": p_dec, "matchups": {l["matchup"] for l in leg_choice},
+                                "sig": self._get_combo_sig(leg_choice)
+                            })
+                            if len(candidates) >= 100:
+                                break
+                    if len(candidates) >= 100:
+                        break
+                if len(candidates) >= 100:
+                    break
+
+        if not candidates:
+            # Fallback 2: si cap combinació assoleix 28.0, permetre >= 22.0
+            for k in range(3, min(n_pools, 8) + 1):
+                for match_combo in itertools.combinations(pools[:n_pools], k):
+                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
+                    if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
+                        continue
+                    cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=3) for m in match_combo]
+                    for choice in itertools.product(*cand_lists):
+                        leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
+                        if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
+                            continue
+                        odds = [l["bookie_odd"] for l in leg_choice]
+                        c_odd = round(self.calculate_combined_odds(odds), 2)
+                        if c_odd >= 22.0:
                             p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
                             candidates.append({
                                 "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
@@ -1035,12 +1118,13 @@ class ComboBetEngine:
             "risky_combo": risky_1
         }
 
-    def generate_full_combos_suite(self, matches: List[Dict[str, Any]], is_multi: bool = False) -> Dict[str, Any]:
+    def generate_full_combos_suite(self, matches: List[Dict[str, Any]], is_multi: bool = False, allow_same_match_duo: bool = True) -> Dict[str, Any]:
         """
         Genera exactament el paquet complet sol·licitat per l'usuari:
         - 2 Combinades Segures (cuota 1.95 - 3.50) totalment diferents
         - 2 Combinades Semi-Arriscades (cuota ~8.0 - 15.0) totalment diferents
         - 2 Combinades Arriscades (cuota >= 28.0) totalment diferents
+        Permet incloure fins a dos mercats diferents del mateix partit si cal per optimitzar la probabilitat i cuota.
         """
         if len(matches) == 1:
             return self.generate_single_match_combos_suite(matches[0])
@@ -1051,20 +1135,21 @@ class ComboBetEngine:
 
         global_counts = Counter()
 
-        # 1. Combinades Segures
-        safe_1, safe_2 = self.find_pair_safe(mms, is_multi=is_multi, global_counts=global_counts, max_usage=2)
+        # 1. Combinades Segures (singles per defecte, o duos si pocs partits)
+        safe_1, safe_2 = self.find_pair_safe(mms, is_multi=is_multi, global_counts=global_counts, max_usage=2, allow_duos=(len(mms) < 4))
         safe_keys = {self._get_leg_key(l) for l in safe_1.get("legs", []) + safe_2.get("legs", [])}
 
-        # 2. Combinades Semi-Arriscades
-        semi_1, semi_2 = self.find_pair_semi(mms, is_multi=is_multi, global_counts=global_counts, max_usage=2)
+        # 2. Combinades Semi-Arriscades (permet duos del mateix partit per augmentar probabilitat)
+        semi_1, semi_2 = self.find_pair_semi(mms, is_multi=is_multi, global_counts=global_counts, max_usage=2, allow_duos=allow_same_match_duo)
 
-        # 3. Combinades Arriscades (prohibeix seleccions exactes de Safe, manté màxim 2 usos globals)
+        # 3. Combinades Arriscades (permet duos del mateix partit per assolir cuota >= 30.0 amb molta més probabilitat)
         risky_1, risky_2 = self.find_pair_risky(
             mms,
             is_multi=is_multi,
             global_counts=global_counts,
             forbidden_exact=safe_keys,
-            max_usage=2
+            max_usage=2,
+            allow_duos=allow_same_match_duo
         )
 
         return {
@@ -1278,7 +1363,7 @@ class ComboBetEngine:
         if len(day_matches) <= 3:
             suite = self.generate_few_matches_combos_suite(day_matches)
         else:
-            suite = self.generate_full_combos_suite(day_matches, is_multi=(len(comps) > 1))
+            suite = self.generate_full_combos_suite(day_matches, is_multi=(len(comps) > 1), allow_same_match_duo=True)
 
         suite["has_matches"] = True
         suite["matches_count"] = len(day_matches)

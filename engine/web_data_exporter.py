@@ -1370,13 +1370,6 @@ class WebDataExporter:
 
         # 2. Processar cada data
         for target_date in sorted_dates:
-            # Protecció estricta: preservar combinades de 2026-10-17 com ha demanat l'usuari
-            if target_date == "2026-10-17":
-                prev_17 = previous_data.get("daily_combos", {}).get("by_date", {}).get(target_date)
-                if prev_17 and (prev_17.get("safe") or prev_17.get("semi") or prev_17.get("risky")):
-                    by_date[target_date] = prev_17
-                    continue
-
             # A) Trobar partits per a aquest dia des de la llista plana
             day_matches = [
                 m for m in all_predicted_matches_flat
