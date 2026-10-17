@@ -881,7 +881,13 @@ class DatabaseManager:
             combos = [dict(r) for r in cursor.fetchall()]
             for c in combos:
                 cursor.execute("SELECT * FROM combo_legs WHERE combo_id = ?", (c["id"],))
-                c["legs"] = [dict(l) for l in cursor.fetchall()]
+                legs = [dict(l) for l in cursor.fetchall()]
+                for leg in legs:
+                    if "selection_name" in leg and "name" not in leg:
+                        leg["name"] = leg["selection_name"]
+                    elif "name" in leg and "selection_name" not in leg:
+                        leg["selection_name"] = leg["name"]
+                c["legs"] = legs
             return combos
 
     def delete_combos_for_jornada(self, competition_id: str, jornada: int):
@@ -980,7 +986,13 @@ class DatabaseManager:
             combos = [dict(r) for r in cursor.fetchall()]
             for c in combos:
                 cursor.execute("SELECT * FROM combo_legs WHERE combo_id = ?", (c["id"],))
-                c["legs"] = [dict(lr) for lr in cursor.fetchall()]
+                legs = [dict(lr) for lr in cursor.fetchall()]
+                for leg in legs:
+                    if "selection_name" in leg and "name" not in leg:
+                        leg["name"] = leg["selection_name"]
+                    elif "name" in leg and "selection_name" not in leg:
+                        leg["selection_name"] = leg["name"]
+                c["legs"] = legs
             return combos
 
     def delete_daily_combos_for_date(self, date_str: str) -> None:

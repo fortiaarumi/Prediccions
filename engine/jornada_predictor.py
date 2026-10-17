@@ -203,13 +203,15 @@ class JornadaPredictor:
         print(f"   🎯 APOSTES COMBINADES RECOMANADES ({comp_name.upper()} - WINAMAX ESPANYA)")
         print("-" * 75)
         if safe_c and safe_c.get("legs"):
-            print(f"   🛡️ COMBINADA SEGURA:   Cuota: {safe_c['combined_odd']:.2f} (Target 2-3) | Prob. Model: {safe_c['combined_prob_pct']:.1f}% | EV: +{safe_c['ev_pct']:.1f}%")
+            print(f"   🛡️ COMBINADA SEGURA:   Cuota: {safe_c.get('combined_odd', 0.0):.2f} (Target 2-3) | Prob. Model: {safe_c.get('combined_prob_pct', 0.0):.1f}% | EV: +{safe_c.get('ev_pct', 0.0):.1f}%")
             for leg in safe_c["legs"]:
-                print(f"      • {leg['matchup']}: {leg['name']} @ {leg['bookie_odd']:.2f} ({leg['model_prob']:.1f}%)")
+                l_name = leg.get("name") or leg.get("selection_name", "")
+                print(f"      • {leg.get('matchup', '')}: {l_name} @ {leg.get('bookie_odd', 1.0):.2f} ({leg.get('model_prob', 0.0):.1f}%)")
         if risky_c and risky_c.get("legs"):
-            print(f"   🚀 COMBINADA ARRISCADA: Cuota: {risky_c['combined_odd']:.2f} (Target >= 30) | Prob. Model: {risky_c['combined_prob_pct']:.1f}% | EV: +{risky_c['ev_pct']:.1f}%")
+            print(f"   🚀 COMBINADA ARRISCADA: Cuota: {risky_c.get('combined_odd', 0.0):.2f} (Target >= 30) | Prob. Model: {risky_c.get('combined_prob_pct', 0.0):.1f}% | EV: +{risky_c.get('ev_pct', 0.0):.1f}%")
             for leg in risky_c["legs"]:
-                print(f"      • {leg['matchup']}: {leg['name']} @ {leg['bookie_odd']:.2f} ({leg['model_prob']:.1f}%)")
+                l_name = leg.get("name") or leg.get("selection_name", "")
+                print(f"      • {leg.get('matchup', '')}: {l_name} @ {leg.get('bookie_odd', 1.0):.2f} ({leg.get('model_prob', 0.0):.1f}%)")
         print("-" * 75)
 
         # 4. Generació de l'informe PDF oficial

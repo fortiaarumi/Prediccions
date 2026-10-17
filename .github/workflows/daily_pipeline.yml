@@ -53,6 +53,7 @@ jobs:
               'scraper.jornada_resolver',
               'scraper.live_crawler',
               'scraper.winamax_scraper',
+              'scraper.bet365_scraper',
           ]
           failed = []
           for mod in modules:

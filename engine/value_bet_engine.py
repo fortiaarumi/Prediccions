@@ -7,7 +7,7 @@ Avalua ÚNICAMENT les cuotes que realment estan publicades a Winamax.
 
 import re
 import math
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from scipy.stats import poisson
 
 class ValueBetEngine:
