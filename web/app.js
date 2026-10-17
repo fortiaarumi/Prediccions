@@ -451,6 +451,7 @@ async function loadData() {
 function renderAll() {
   if (!appData) return;
 
+  applyLocalOddsOverrides();
   loadBankrollSimState();
   UserAuth.updateUI();
   PersonalBets.render();
@@ -462,6 +463,7 @@ function renderAll() {
   renderCombos();
   renderBankroll();
   renderChangelog();
+  checkOddsAlerts();
 }
 
 function applyFilters() {
@@ -934,9 +936,15 @@ function renderPredictions() {
         <!-- 1X2 Probabilities Bar -->
         <div class="prob-bar-container">
           <div class="prob-labels-row">
-            <span class="prob-1">1: ${p1}% (@${o1})</span>
-            <span class="prob-x">X: ${px}% (@${ox})</span>
-            <span class="prob-2">2: ${p2}% (@${o2})</span>
+            ${(o1 === '-' || !o1) ? `
+              <span class="missing-odds-inline-warn" onclick="openOddsModalForMatch('${m.competition_id || ''}', '${(m.home_team.name || '').replace(/'/g, "\\'")}', '${(m.away_team.name || '').replace(/'/g, "\\'")}')">
+                ⚠️ Quota ${isB365 ? 'Bet365' : 'Winamax'} no detectada ✏️
+              </span>
+            ` : `
+              <span class="prob-1">1: ${p1}% (@${o1})</span>
+              <span class="prob-x">X: ${px}% (@${ox})</span>
+              <span class="prob-2">2: ${p2}% (@${o2})</span>
+            `}
             <span class="prob-bookie-tag ${isB365 ? 'bet365' : 'winamax'}">${isB365 ? '🟢 Bet365' : '🔴 Winamax'}</span>
           </div>
           <div class="prob-bar">
@@ -4135,4 +4143,243 @@ window.onJornadaChange = onJornadaChange;
 window.UserAuth = UserAuth;
 window.setBookie = setBookie;
 window.copyBet365Slip = copyBet365Slip;
+window.openOddsModal = openOddsModal;
+window.openOddsModalForMatch = openOddsModalForMatch;
+window.closeOddsModal = closeOddsModal;
+window.saveManualOdds = saveManualOdds;
+window.copyOverridesJson = copyOverridesJson;
+window.checkOddsAlerts = checkOddsAlerts;
+
+// =============================================================================
+// GESTIÓ D'ALERTES DE QUOTES MANCANTS I EDICIÓ MANUAL
+// =============================================================================
+
+function applyLocalOddsOverrides() {
+  if (!appData || !appData.predictions) return;
+  try {
+    const raw = localStorage.getItem('manual_odds_overrides');
+    if (!raw) return;
+    const overrides = JSON.parse(raw);
+    for (const [compId, compObj] of Object.entries(appData.predictions)) {
+      const matches = compObj.matches || [];
+      matches.forEach(m => {
+        const hName = m.home_team ? m.home_team.name : '';
+        const aName = m.away_team ? m.away_team.name : '';
+        const normH = hName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const normA = aName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const key1 = `${compId}_${normH}_${normA}`;
+        const key2 = `${normH}_${normA}`;
+        const ov = overrides[key1] || overrides[key2];
+        if (ov) {
+          if (ov.winamax && ov.winamax['1']) {
+            m.odds_1x2_winamax = { ...m.odds_1x2_winamax, ...ov.winamax };
+            m.odds_1x2 = { ...m.odds_1x2, ...ov.winamax };
+            m.has_winamax_odds = true;
+          }
+          if (ov.bet365 && ov.bet365['1']) {
+            m.odds_1x2_bet365 = { ...m.odds_1x2_bet365, ...ov.bet365 };
+            m.has_bet365_odds = true;
+          }
+          if (m.has_winamax_odds && m.has_bet365_odds) {
+            m.missing_odds = false;
+            m.missing_bookmakers = [];
+          }
+        }
+      });
+    }
+  } catch (e) {
+    console.warn("Error aplicant overrides locals:", e);
+  }
+}
+
+function getActiveOddsAlerts() {
+  if (!appData) return [];
+  const baseAlerts = appData.odds_alerts || [];
+  let overrides = {};
+  try {
+    overrides = JSON.parse(localStorage.getItem('manual_odds_overrides') || '{}');
+  } catch (e) {}
+
+  return baseAlerts.filter(a => {
+    const ov = overrides[a.id];
+    if (ov) {
+      const hasW = !a.missing_winamax || (ov.winamax && ov.winamax['1']);
+      const hasB = !a.missing_bet365 || (ov.bet365 && ov.bet365['1']);
+      if (hasW && hasB) return false;
+    }
+    return true;
+  });
+}
+
+function checkOddsAlerts() {
+  const banner = document.getElementById('odds-alert-banner');
+  const msgEl = document.getElementById('odds-alert-msg');
+  if (!banner) return;
+
+  const activeAlerts = getActiveOddsAlerts();
+  if (activeAlerts && activeAlerts.length > 0) {
+    banner.style.display = 'block';
+    if (msgEl) {
+      msgEl.innerHTML = `S'han detectat <strong>${activeAlerts.length} partits</strong> sense quotes oficials a Winamax o Bet365. El model no inventa dades falses. Introdueix-les manualment:`;
+    }
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+function openOddsModal() {
+  const modal = document.getElementById('odds-modal-overlay');
+  const listEl = document.getElementById('odds-modal-list');
+  if (!modal || !listEl) return;
+
+  const alerts = getActiveOddsAlerts();
+  let overrides = {};
+  try {
+    overrides = JSON.parse(localStorage.getItem('manual_odds_overrides') || '{}');
+  } catch (e) {}
+
+  if (!alerts || alerts.length === 0) {
+    listEl.innerHTML = `
+      <div style="text-align: center; padding: 30px; color: var(--accent-emerald);">
+        <span style="font-size: 32px;">✅</span>
+        <h4 style="margin: 10px 0 5px 0;">Tots els partits tenen quotes oficials!</h4>
+        <p style="color: var(--text-muted); font-size: 13px;">No hi ha cap partit actiu pendent de quotes a Winamax ni a Bet365.</p>
+      </div>
+    `;
+  } else {
+    listEl.innerHTML = alerts.map(a => {
+      const ov = overrides[a.id] || {};
+      const wOv = ov.winamax || {};
+      const bOv = ov.bet365 || {};
+
+      return `
+        <div class="odds-edit-card" data-alert-id="${a.id}">
+          <div class="odds-edit-card-header">
+            <div>
+              <div class="odds-match-name">${a.matchup}</div>
+              <div class="odds-match-meta">
+                <span>🏆 ${a.competition_name || a.competition_id}</span>
+                <span>📅 ${a.date || 'Pendent'}</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              ${a.missing_winamax ? `<span class="missing-badge missing-badge-winamax">Falta Winamax</span>` : ''}
+              ${a.missing_bet365 ? `<span class="missing-badge missing-badge-bet365">Falta Bet365</span>` : ''}
+            </div>
+          </div>
+
+          <div class="odds-inputs-grid">
+            <!-- Winamax Inputs -->
+            <div class="odds-bookie-column">
+              <span class="odds-bookie-label">🔴 Winamax (1 - X - 2):</span>
+              <div class="odds-inputs-row">
+                <div class="odds-input-group">
+                  <label>1</label>
+                  <input type="number" step="0.01" min="1.01" class="odds-input-field input-w1" placeholder="ex: 2.15" value="${wOv['1'] || ''}">
+                </div>
+                <div class="odds-input-group">
+                  <label>X</label>
+                  <input type="number" step="0.01" min="1.01" class="odds-input-field input-wx" placeholder="ex: 3.30" value="${wOv['X'] || ''}">
+                </div>
+                <div class="odds-input-group">
+                  <label>2</label>
+                  <input type="number" step="0.01" min="1.01" class="odds-input-field input-w2" placeholder="ex: 3.50" value="${wOv['2'] || ''}">
+                </div>
+              </div>
+            </div>
+
+            <!-- Bet365 Inputs -->
+            <div class="odds-bookie-column">
+              <span class="odds-bookie-label">🟢 Bet365 (1 - X - 2):</span>
+              <div class="odds-inputs-row">
+                <div class="odds-input-group">
+                  <label>1</label>
+                  <input type="number" step="0.01" min="1.01" class="odds-input-field input-b1" placeholder="ex: 2.20" value="${bOv['1'] || ''}">
+                </div>
+                <div class="odds-input-group">
+                  <label>X</label>
+                  <input type="number" step="0.01" min="1.01" class="odds-input-field input-bx" placeholder="ex: 3.35" value="${bOv['X'] || ''}">
+                </div>
+                <div class="odds-input-group">
+                  <label>2</label>
+                  <input type="number" step="0.01" min="1.01" class="odds-input-field input-b2" placeholder="ex: 3.45" value="${bOv['2'] || ''}">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  modal.style.display = 'flex';
+}
+
+function openOddsModalForMatch(compId, home, away) {
+  openOddsModal();
+}
+
+function closeOddsModal() {
+  const modal = document.getElementById('odds-modal-overlay');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveManualOdds() {
+  const cards = document.querySelectorAll('.odds-edit-card');
+  let overrides = {};
+  try {
+    overrides = JSON.parse(localStorage.getItem('manual_odds_overrides') || '{}');
+  } catch (e) {}
+
+  let savedCount = 0;
+  cards.forEach(card => {
+    const aid = card.getAttribute('data-alert-id');
+    const w1 = parseFloat(card.querySelector('.input-w1')?.value || 0);
+    const wx = parseFloat(card.querySelector('.input-wx')?.value || 0);
+    const w2 = parseFloat(card.querySelector('.input-w2')?.value || 0);
+    const b1 = parseFloat(card.querySelector('.input-b1')?.value || 0);
+    const bx = parseFloat(card.querySelector('.input-bx')?.value || 0);
+    const b2 = parseFloat(card.querySelector('.input-b2')?.value || 0);
+
+    if ((w1 && wx && w2) || (b1 && bx && b2)) {
+      overrides[aid] = overrides[aid] || {};
+      if (w1 && wx && w2) {
+        overrides[aid].winamax = { '1': w1, 'X': wx, '2': w2 };
+      }
+      if (b1 && bx && b2) {
+        overrides[aid].bet365 = { '1': b1, 'X': bx, '2': b2 };
+      }
+      savedCount++;
+    }
+  });
+
+  localStorage.setItem('manual_odds_overrides', JSON.stringify(overrides));
+  applyLocalOddsOverrides();
+  renderPredictions();
+  renderValueBets();
+  renderArbitrage();
+  checkOddsAlerts();
+  closeOddsModal();
+
+  alert(`✅ S'han desat correctament les quotes de ${savedCount} partits! S'han actualitzat les prediccions i combinades a la pantalla.`);
+}
+
+function copyOverridesJson() {
+  let overrides = {};
+  try {
+    overrides = JSON.parse(localStorage.getItem('manual_odds_overrides') || '{}');
+  } catch (e) {}
+
+  const jsonStr = JSON.stringify(overrides, null, 2);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(jsonStr).then(() => {
+      alert("📋 JSON copiat al porta-retalls!\nPots enganxar-lo al fitxer data/manual_odds_override.json del servidor si vols persistir-lo al núvol.");
+    }).catch(() => {
+      prompt("Copia el JSON manualment per a data/manual_odds_override.json:", jsonStr);
+    });
+  } else {
+    prompt("Copia el JSON manualment per a data/manual_odds_override.json:", jsonStr);
+  }
+}
+
 

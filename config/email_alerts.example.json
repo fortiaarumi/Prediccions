@@ -1,0 +1,10 @@
+{
+  "enabled": false,
+  "smtp_host": "smtp.gmail.com",
+  "smtp_port": 587,
+  "smtp_user": "el_teu_correu@gmail.com",
+  "smtp_password": "la_teva_contrasenya_d_aplicacio",
+  "smtp_use_tls": true,
+  "email_to": "el_teu_correu@gmail.com",
+  "email_from": "alertes@prediccionslliga.cat"
+}

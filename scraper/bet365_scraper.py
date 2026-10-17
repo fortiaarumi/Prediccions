@@ -106,10 +106,31 @@ class Bet365Scraper:
             "combos": {}
         }
 
+        # 0. Comprovar si l'usuari ha definit quotes manuals a manual_odds_override.json
+        manual_override_file = CACHE_DIR / "manual_odds_override.json"
+        if manual_override_file.exists():
+            try:
+                with open(manual_override_file, "r", encoding="utf-8") as f:
+                    overrides = json.load(f)
+                    m_entry = overrides.get(cache_key) or overrides.get(f"{self._normalize(home_team)}_{self._normalize(away_team)}")
+                    if m_entry and isinstance(m_entry, dict):
+                        b_manual = m_entry.get("bet365") or m_entry.get("odds_bet365")
+                        if b_manual and isinstance(b_manual, dict) and b_manual.get("1"):
+                            odds_data["1X2"] = {
+                                "1": float(b_manual.get("1")),
+                                "X": float(b_manual.get("X")),
+                                "2": float(b_manual.get("2"))
+                            }
+                            odds_data["matched"] = True
+                            odds_data["is_manual_override"] = True
+                            return odds_data
+            except Exception:
+                pass
+
         # 1. Comprovar memòria cau
         if cache_key in self._cache:
             cached_entry = self._cache[cache_key]
-            if isinstance(cached_entry, dict) and cached_entry.get("1X2"):
+            if isinstance(cached_entry, dict) and cached_entry.get("1X2") and cached_entry.get("matched"):
                 return cached_entry
 
         # 2. Generar les quotes Bet365 calibrades fidelment respecte al mercat real espanyol
@@ -127,10 +148,8 @@ class Bet365Scraper:
             wx = float(w_1x2.get("X") or 3.2)
             w2 = float(w_1x2.get("2") or 2.5)
 
-            # Bet365 sovint ofereix un retorn lleugerament superior (~1% - 2%) en empats o favorits
-            # pero mai desviacions irreals:
+            # Bet365 sol oferir un retorn lleugerament superior en empats o favorits
             b1 = round(w1 * (1.015 if w1 <= w2 else 0.995), 2)
-            # A l'empat, Bet365 sol pagar lleugerament més (ex. 3.20 a Winamax -> 3.30 a Bet365)
             bx = round(wx * 1.025, 2)
             b2 = round(w2 * (1.015 if w2 < w1 else 0.995), 2)
 
@@ -139,6 +158,7 @@ class Bet365Scraper:
                 "X": max(1.15, min(12.0, bx)),
                 "2": max(1.05, min(15.0, b2))
             }
+            odds_data["matched"] = True
 
             # Doble Oportunitat Bet365
             w_1x = float(w_dc.get("1X") or (1.0 / (1.0 / w1 + 1.0 / wx)))
@@ -179,63 +199,23 @@ class Bet365Scraper:
                     if v and v > 1.0:
                         odds_data["cards"][k] = round(v * 1.01, 2)
 
-        elif match_pred:
-            # Fallback únicament si Winamax no té quotes per al partit
-            goals = match_pred.get("goals", {})
-            prob_1x2 = goals.get("prob_1X2", {})
-            prob_ou = goals.get("over_under", {})
-            prob_btts = goals.get("btts", {})
-            corners_data = match_pred.get("corners", {})
-            cards_data = match_pred.get("cards", {})
+            # Desar a la memòria cau només si hi ha dades de mercat reals
+            self._cache[cache_key] = odds_data
+            self._save_cache()
+            return odds_data
 
-            rtp_1x2 = 0.955
-            rtp_2way = 0.945
-
-            # 1X2 calibrat amb límits estrictes de mercat real (mai quotes extremes)
-            p1 = max(0.08, min(0.85, float(prob_1x2.get("1", 0.38)) / (100.0 if float(prob_1x2.get("1", 0.38)) > 1.0 else 1.0)))
-            px = max(0.12, min(0.45, float(prob_1x2.get("X", 0.28)) / (100.0 if float(prob_1x2.get("X", 0.28)) > 1.0 else 1.0)))
-            p2 = max(0.08, min(0.85, float(prob_1x2.get("2", 0.34)) / (100.0 if float(prob_1x2.get("2", 0.34)) > 1.0 else 1.0)))
-            tot_p = p1 + px + p2
-            p1, px, p2 = p1 / tot_p, px / tot_p, p2 / tot_p
-
-            odds_data["1X2"] = {
-                "1": round(max(1.10, min(12.0, rtp_1x2 / p1)), 2),
-                "X": round(max(1.20, min(8.0, rtp_1x2 / px)), 2),
-                "2": round(max(1.10, min(12.0, rtp_1x2 / p2)), 2)
-            }
-
-            p1x = p1 + px
-            p12 = p1 + p2
-            px2 = px + p2
-            odds_data["double_chance"] = {
-                "1X": round(max(1.02, min(4.0, rtp_2way / p1x)), 2),
-                "12": round(max(1.02, min(4.0, rtp_2way / p12)), 2),
-                "X2": round(max(1.02, min(4.0, rtp_2way / px2)), 2)
-            }
-
-            p_over = float(prob_ou.get("over_2_5", prob_ou.get("over", 0.52)))
-            if p_over > 1.0: p_over /= 100.0
-            p_over = max(0.15, min(0.85, p_over))
-            p_under = 1.0 - p_over
-            odds_data["over_under_2_5"] = {
-                "over": round(max(1.15, min(6.0, rtp_2way / p_over)), 2),
-                "under": round(max(1.15, min(6.0, rtp_2way / p_under)), 2)
-            }
-
-            p_btts_yes = float(prob_btts.get("yes", 0.50))
-            if p_btts_yes > 1.0: p_btts_yes /= 100.0
-            p_btts_yes = max(0.15, min(0.85, p_btts_yes))
-            p_btts_no = 1.0 - p_btts_yes
-            odds_data["btts"] = {
-                "yes": round(max(1.15, min(6.0, rtp_2way / p_btts_yes)), 2),
-                "no": round(max(1.15, min(6.0, rtp_2way / p_btts_no)), 2)
-            }
-
-        # Desar a la memòria cau
-        self._cache[cache_key] = odds_data
-        self._save_cache()
-
-        return odds_data
+        else:
+            # NO INVENTAR QUOTES: Si no s'han detectat dades oficials a Winamax ni Bet365,
+            # mai no s'utilitza el model matemàtic com a fallback per inventar quotes.
+            # Es deixa com a no detectat perquè el sistema alerti l'usuari i es puguin introduir manualment.
+            odds_data["matched"] = False
+            odds_data["1X2"] = {}
+            odds_data["double_chance"] = {}
+            odds_data["over_under_2_5"] = {}
+            odds_data["btts"] = {}
+            odds_data["status"] = "PENDING_REAL_ODDS"
+            odds_data["error"] = "NO_ODDS_DETECTED"
+            return odds_data
 
     def generate_combo_link(self, legs: list, competition_id: str = "LALIGA") -> str:
         """

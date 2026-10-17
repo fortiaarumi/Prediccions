@@ -94,6 +94,7 @@ class WebDataExporter:
         self.changelog_mgr = ChangelogManager()
         self.arbitrage_engine = ArbitrageEngine(min_profit_threshold=0.0)
         self.rank_engine = RankEngine(k_factor=32.0, league_teams_count=22.0)
+        self.odds_alerts: List[Dict[str, Any]] = []
 
     def get_power_rankings(self, competition_id: str) -> List[Dict[str, Any]]:
         """Calcula el rànquing Elo complet amb taula clàssica de classificació i forma recent."""
@@ -425,6 +426,9 @@ class WebDataExporter:
             odds = {}
             odds_b365 = {}
             bet_analysis = {"value_bets": []}
+            w_has_1x2 = False
+            b_has_1x2 = False
+
             if not is_finished:
                 odds = self.winamax.get_match_odds(home_data["name"], away_data["name"], competition_id=competition_id)
                 if (not odds.get("matched")) and existing_match_odds:
@@ -439,6 +443,35 @@ class WebDataExporter:
                     match_pred=pred,
                     winamax_odds=odds
                 )
+
+                w_has_1x2 = bool(odds and odds.get("matched") and (odds.get("1X2") or {}).get("1"))
+                b_has_1x2 = bool(odds_b365 and odds_b365.get("matched") and (odds_b365.get("1X2") or {}).get("1"))
+
+                # Si falten quotes en un partit no jugat, registrar alerta per a l'usuari
+                if not w_has_1x2 or not b_has_1x2:
+                    missing_bookies = []
+                    if not w_has_1x2:
+                        missing_bookies.append("Winamax")
+                    if not b_has_1x2:
+                        missing_bookies.append("Bet365")
+
+                    c_meta = [c for c in COMPETITIONS_META if c["id"] == competition_id]
+                    c_name = c_meta[0]["name"] if c_meta else competition_id
+                    alert_item = {
+                        "id": f"{competition_id}_{self.bet365._normalize(home_data['name'])}_{self.bet365._normalize(away_data['name'])}",
+                        "competition_id": competition_id,
+                        "competition_name": c_name,
+                        "matchup": f"{home_data['name']} vs {away_data['name']}",
+                        "home_team": home_data["name"],
+                        "away_team": away_data["name"],
+                        "date": match_date or "Pendent",
+                        "jornada": active_jornada,
+                        "missing_winamax": not w_has_1x2,
+                        "missing_bet365": not b_has_1x2,
+                        "missing_bookmakers": missing_bookies,
+                        "message": f"Quotes no detectades a {', '.join(missing_bookies)} per al partit {home_data['name']} vs {away_data['name']}."
+                    }
+                    self.odds_alerts.append(alert_item)
 
                 bet_analysis = self.value_engine.analyze_match_betting(pred, odds, bet365_odds=odds_b365)
                 if (not bet_analysis.get("value_bets")) and existing_match_odds:
@@ -675,9 +708,9 @@ class WebDataExporter:
                     "2": o_1x2.get("2")
                 },
                 "odds_1x2_bet365": {
-                    "1": (odds_b365.get("1X2") or {}).get("1") or o_1x2.get("1"),
-                    "X": (odds_b365.get("1X2") or {}).get("X") or o_1x2.get("X"),
-                    "2": (odds_b365.get("1X2") or {}).get("2") or o_1x2.get("2")
+                    "1": (odds_b365.get("1X2") or {}).get("1"),
+                    "X": (odds_b365.get("1X2") or {}).get("X"),
+                    "2": (odds_b365.get("1X2") or {}).get("2")
                 },
                 "odds_dc_winamax": {
                     "1X": o_dc.get("1X"),
@@ -685,9 +718,9 @@ class WebDataExporter:
                     "X2": o_dc.get("X2")
                 },
                 "odds_dc_bet365": {
-                    "1X": b_dc.get("1X") or o_dc.get("1X"),
-                    "12": b_dc.get("12") or o_dc.get("12"),
-                    "X2": b_dc.get("X2") or o_dc.get("X2")
+                    "1X": b_dc.get("1X"),
+                    "12": b_dc.get("12"),
+                    "X2": b_dc.get("X2")
                 },
                 "odds_ou25": {
                     "over": o_ou.get("over"),
@@ -698,8 +731,8 @@ class WebDataExporter:
                     "under": o_ou.get("under")
                 },
                 "odds_ou25_bet365": {
-                    "over": (odds_b365.get("over_under_2_5") or {}).get("over") or o_ou.get("over"),
-                    "under": (odds_b365.get("over_under_2_5") or {}).get("under") or o_ou.get("under")
+                    "over": (odds_b365.get("over_under_2_5") or {}).get("over"),
+                    "under": (odds_b365.get("over_under_2_5") or {}).get("under")
                 },
                 "odds_btts": {
                     "yes": o_btts.get("yes"),
@@ -710,11 +743,15 @@ class WebDataExporter:
                     "no": o_btts.get("no")
                 },
                 "odds_btts_bet365": {
-                    "yes": (odds_b365.get("btts") or {}).get("yes") or o_btts.get("yes"),
-                    "no": (odds_b365.get("btts") or {}).get("no") or o_btts.get("no")
+                    "yes": (odds_b365.get("btts") or {}).get("yes"),
+                    "no": (odds_b365.get("btts") or {}).get("no")
                 },
                 "url_winamax": odds.get("url") or "https://www.winamax.es",
                 "url_bet365": odds_b365.get("url") or "https://www.bet365.es",
+                "has_winamax_odds": w_has_1x2,
+                "has_bet365_odds": b_has_1x2,
+                "missing_odds": not (w_has_1x2 and b_has_1x2) if not is_finished else False,
+                "missing_bookmakers": [b for b, m in [("Winamax", not w_has_1x2), ("Bet365", not b_has_1x2)] if m] if not is_finished else [],
                 "value_bets": bet_analysis.get("value_bets", []) if not is_finished else [],
                 "raw_pred": pred # per a càlculs posteriors
             })
@@ -1893,6 +1930,7 @@ class WebDataExporter:
         combos = {}
         all_predicted_matches_flat = []
         all_value_bets = []
+        self.odds_alerts = []
 
         active_comps_meta = []
 
@@ -2129,7 +2167,26 @@ class WebDataExporter:
             notes=["Sincronització de les darreres dades i mètriques del model."] if not new_referee_updates and not effective_matches else None
         )
 
-        # 4. Assembling JSON Payload
+        # 4. Alerta de quotes no detectades a Winamax / Bet365
+        if self.odds_alerts:
+            print("\n" + "=" * 78)
+            print(f"⚠️  [ALERTA CRÍTICA DE DADES] S'han detectat {len(self.odds_alerts)} partits sense quotes a Winamax / Bet365:")
+            for a in self.odds_alerts:
+                print(f"   • [{a['competition_name']}] {a['matchup']} ({a['date']}) -> Falten: {', '.join(a['missing_bookmakers'])}")
+            print("=" * 78 + "\n")
+            try:
+                from notifier.email_notifier import send_missing_odds_alert
+                send_missing_odds_alert(self.odds_alerts)
+            except Exception as e:
+                print(f"[!] Error enviant alertes de quotes: {e}")
+        else:
+            try:
+                from notifier.email_notifier import send_missing_odds_alert
+                send_missing_odds_alert([])
+            except Exception:
+                pass
+
+        # 5. Assembling JSON Payload
         payload = {
             "metadata": {
                 "generated_at": now_iso,
@@ -2146,10 +2203,12 @@ class WebDataExporter:
             "arbitrage": arbitrage_report,
             "combos": combos,
             "daily_combos": daily_combos,
-            "bankroll_simulation": financial_ledger
+            "bankroll_simulation": financial_ledger,
+            "odds_alerts": self.odds_alerts,
+            "has_missing_odds": len(self.odds_alerts) > 0
         }
 
-        # 5. Escriure a fitxer
+        # 6. Escriure a fitxer
         WEB_DATA_DIR.mkdir(parents=True, exist_ok=True)
         with open(WEB_DATA_FILE, "w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2, ensure_ascii=False)

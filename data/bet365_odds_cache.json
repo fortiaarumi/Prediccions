@@ -8,13 +8,13 @@
     "matched_title": "RCD Espanyol vs Atlético de Madrid",
     "matched": true,
     "1X2": {
-      "1": 4.48,
-      "X": 4.2,
+      "1": 4.58,
+      "X": 4.1,
       "2": 1.68
     },
     "double_chance": {
       "1X": 2.22,
-      "12": 1.28,
+      "12": 1.29,
       "X2": 1.22
     },
     "goals": {},
@@ -56,12 +56,12 @@
     "matched_title": "Villarreal CF vs Elche CF",
     "matched": true,
     "1X2": {
-      "1": 1.43,
-      "X": 5.54,
-      "2": 5.97
+      "1": 1.44,
+      "X": 5.43,
+      "2": 5.77
     },
     "double_chance": {
-      "1X": 1.15,
+      "1X": 1.16,
       "12": 1.2,
       "X2": 2.88
     },
@@ -104,9 +104,9 @@
     "matched_title": "Real Betis vs FC Barcelona",
     "matched": true,
     "1X2": {
-      "1": 5.27,
+      "1": 5.17,
       "X": 5.94,
-      "2": 1.42
+      "2": 1.43
     },
     "double_chance": {
       "1X": 2.88,
@@ -153,7 +153,7 @@
     "matched": true,
     "1X2": {
       "1": 3.13,
-      "X": 3.33,
+      "X": 3.38,
       "2": 2.28
     },
     "double_chance": {
@@ -455,21 +455,21 @@
       "no": 1.92
     },
     "cards": {
-      "Over 4.5 Targetes": 2.47,
-      "Under 4.5 Targetes": 1.44,
-      "Over 5.5 Targetes": 4.04,
-      "Targeta Vermella (Sí)": 5.25
+      "Over 4.5 Targetes": 2.22,
+      "Under 4.5 Targetes": 1.54,
+      "Over 5.5 Targetes": 3.54,
+      "Targeta Vermella (Sí)": 4.95
     },
     "corners": {
       "Over 11.5 Córners": 2.58,
-      "Under 11.5 Córners": 1.4,
+      "Under 11.5 Córners": 1.41,
       "Over 9.5 Córners": 1.64,
       "Under 9.5 Córners": 2.02,
       "Over 10.5 Córners": 2.02,
       "Under 10.5 Córners": 1.66,
       "Over 12.5 Córners": 3.43,
       "Under 12.5 Córners": 1.24,
-      "Over 8.5 Córners": 1.38,
+      "Over 8.5 Córners": 1.37,
       "Under 8.5 Córners": 2.68
     },
     "combos": {}
@@ -484,13 +484,13 @@
     "matched": true,
     "1X2": {
       "1": 2.33,
-      "X": 3.79,
+      "X": 3.74,
       "2": 2.74
     },
     "double_chance": {
       "1X": 1.46,
       "12": 1.32,
-      "X2": 1.62
+      "X2": 1.6
     },
     "goals": {},
     "over_under_2_5": {
@@ -721,14 +721,14 @@
     "matched_title": "Brighton & Hove Albion vs Crystal Palace",
     "matched": true,
     "1X2": {
-      "1": 1.52,
-      "X": 4.82,
-      "2": 5.27
+      "1": 1.51,
+      "X": 4.92,
+      "2": 5.37
     },
     "double_chance": {
-      "1X": 1.17,
+      "1X": 1.16,
       "12": 1.22,
-      "X2": 2.52
+      "X2": 2.58
     },
     "goals": {},
     "over_under_2_5": {
@@ -894,8 +894,8 @@
       "Under 10.5 Córners": 1.7,
       "Over 12.5 Córners": 3.18,
       "Under 12.5 Córners": 1.25,
-      "Over 8.5 Córners": 1.32,
-      "Under 8.5 Córners": 2.78
+      "Over 8.5 Córners": 1.31,
+      "Under 8.5 Córners": 2.83
     },
     "combos": {}
   },
@@ -908,14 +908,14 @@
     "matched_title": "Real Sociedad B vs UD Almería",
     "matched": true,
     "1X2": {
-      "1": 3.43,
+      "1": 3.53,
       "X": 3.89,
-      "2": 1.93
+      "2": 1.91
     },
     "double_chance": {
-      "1X": 1.84,
+      "1X": 1.86,
       "12": 1.28,
-      "X2": 1.29
+      "X2": 1.28
     },
     "goals": {},
     "over_under_2_5": {
@@ -1139,14 +1139,14 @@
     "matched_title": "Granada CF vs Cádiz CF",
     "matched": true,
     "1X2": {
-      "1": 1.83,
-      "X": 3.59,
-      "2": 4.18
+      "1": 1.81,
+      "X": 3.64,
+      "2": 4.28
     },
     "double_chance": {
-      "1X": 1.21,
-      "12": 1.31,
-      "X2": 1.94
+      "1X": 1.2,
+      "12": 1.3,
+      "X2": 1.98
     },
     "goals": {},
     "over_under_2_5": {
@@ -1171,14 +1171,14 @@
     "matched_title": "Girona FC vs FC Andorra",
     "matched": true,
     "1X2": {
-      "1": 1.81,
-      "X": 3.89,
-      "2": 3.98
+      "1": 1.77,
+      "X": 3.95,
+      "2": 4.08
     },
     "double_chance": {
-      "1X": 1.23,
-      "12": 1.28,
-      "X2": 1.98
+      "1X": 1.22,
+      "12": 1.27,
+      "X2": 2.02
     },
     "goals": {},
     "over_under_2_5": {
@@ -1290,38 +1290,6 @@
     "corners": {},
     "combos": {}
   },
-  "CHAMPIONSHIP_middlesbrough_cardiffcity": {
-    "source": "Bet365 Espanya (CHAMPIONSHIP)",
-    "bookmaker": "BET365",
-    "url": "https://www.bet365.es/#/AS/B1/",
-    "tournament_url": "https://www.bet365.es/#/AS/B1/",
-    "match_id": null,
-    "matched_title": "Middlesbrough vs Cardiff City",
-    "matched": true,
-    "1X2": {
-      "1": 1.52,
-      "X": 4.06,
-      "2": 6.96
-    },
-    "double_chance": {
-      "1X": 1.1,
-      "12": 1.24,
-      "X2": 2.54
-    },
-    "goals": {},
-    "over_under_2_5": {
-      "over": 1.88,
-      "under": 1.9
-    },
-    "team_goals": {},
-    "btts": {
-      "yes": 2.0,
-      "no": 1.79
-    },
-    "cards": {},
-    "corners": {},
-    "combos": {}
-  },
   "CHAMPIONSHIP_millwall_lincolncity": {
     "source": "Bet365 Espanya (CHAMPIONSHIP)",
     "bookmaker": "BET365",
@@ -1370,70 +1338,6 @@
     },
     "combos": {}
   },
-  "CHAMPIONSHIP_watford_charltonathletic": {
-    "source": "Bet365 Espanya (CHAMPIONSHIP)",
-    "bookmaker": "BET365",
-    "url": "https://www.bet365.es/#/AS/B1/",
-    "tournament_url": "https://www.bet365.es/#/AS/B1/",
-    "match_id": null,
-    "matched_title": "Watford vs Charlton Athletic",
-    "matched": true,
-    "1X2": {
-      "1": 1.27,
-      "X": 5.69,
-      "2": 12.0
-    },
-    "double_chance": {
-      "1X": 1.03,
-      "12": 1.14,
-      "X2": 3.83
-    },
-    "goals": {},
-    "over_under_2_5": {
-      "over": 1.76,
-      "under": 2.05
-    },
-    "team_goals": {},
-    "btts": {
-      "yes": 2.5,
-      "no": 1.52
-    },
-    "cards": {},
-    "corners": {},
-    "combos": {}
-  },
-  "CHAMPIONSHIP_birminghamcity_queensparkrangers": {
-    "source": "Bet365 Espanya (CHAMPIONSHIP)",
-    "bookmaker": "BET365",
-    "url": "https://www.bet365.es/#/AS/B1/",
-    "tournament_url": "https://www.bet365.es/#/AS/B1/",
-    "match_id": null,
-    "matched_title": "Birmingham City vs Queens Park Rangers",
-    "matched": true,
-    "1X2": {
-      "1": 2.04,
-      "X": 3.35,
-      "2": 3.85
-    },
-    "double_chance": {
-      "1X": 1.26,
-      "12": 1.32,
-      "X2": 1.77
-    },
-    "goals": {},
-    "over_under_2_5": {
-      "over": 2.05,
-      "under": 1.75
-    },
-    "team_goals": {},
-    "btts": {
-      "yes": 1.86,
-      "no": 1.92
-    },
-    "cards": {},
-    "corners": {},
-    "combos": {}
-  },
   "CHAMPIONSHIP_bristolcity_sheffieldunited": {
     "source": "Bet365 Espanya (CHAMPIONSHIP)",
     "bookmaker": "BET365",
@@ -1463,10 +1367,10 @@
       "no": 1.92
     },
     "cards": {
-      "Over 4.5 Targetes": 2.42,
-      "Under 4.5 Targetes": 1.41,
-      "Over 5.5 Targetes": 4.04,
-      "Targeta Vermella (Sí)": 5.15
+      "Over 4.5 Targetes": 2.68,
+      "Under 4.5 Targetes": 1.38,
+      "Over 5.5 Targetes": 4.44,
+      "Targeta Vermella (Sí)": 5.55
     },
     "corners": {
       "Over 11.5 Córners": 2.37,
@@ -1530,38 +1434,6 @@
     },
     "combos": {}
   },
-  "CHAMPIONSHIP_norwichcity_portsmouth": {
-    "source": "Bet365 Espanya (CHAMPIONSHIP)",
-    "bookmaker": "BET365",
-    "url": "https://www.bet365.es/#/AS/B1/",
-    "tournament_url": "https://www.bet365.es/#/AS/B1/",
-    "match_id": null,
-    "matched_title": "Norwich City vs Portsmouth",
-    "matched": true,
-    "1X2": {
-      "1": 1.27,
-      "X": 5.69,
-      "2": 12.0
-    },
-    "double_chance": {
-      "1X": 1.03,
-      "12": 1.14,
-      "X2": 3.83
-    },
-    "goals": {},
-    "over_under_2_5": {
-      "over": 1.76,
-      "under": 2.05
-    },
-    "team_goals": {},
-    "btts": {
-      "yes": 2.5,
-      "no": 1.52
-    },
-    "cards": {},
-    "corners": {},
-    "combos": {}
-  },
   "CHAMPIONSHIP_southampton_boltonwanderers": {
     "source": "Bet365 Espanya (CHAMPIONSHIP)",
     "bookmaker": "BET365",
@@ -1571,14 +1443,14 @@
     "matched_title": "Southampton vs Bolton Wanderers",
     "matched": true,
     "1X2": {
-      "1": 1.38,
-      "X": 5.23,
-      "2": 5.97
+      "1": 1.41,
+      "X": 5.12,
+      "2": 5.67
     },
     "double_chance": {
-      "1X": 1.11,
-      "12": 1.16,
-      "X2": 2.93
+      "1X": 1.12,
+      "12": 1.17,
+      "X2": 2.83
     },
     "goals": {},
     "over_under_2_5": {
@@ -1639,10 +1511,10 @@
       "no": 1.92
     },
     "cards": {
-      "Over 4.5 Targetes": 2.42,
-      "Under 4.5 Targetes": 1.41,
-      "Over 5.5 Targetes": 4.04,
-      "Targeta Vermella (Sí)": 5.15
+      "Over 4.5 Targetes": 2.68,
+      "Under 4.5 Targetes": 1.38,
+      "Over 5.5 Targetes": 4.44,
+      "Targeta Vermella (Sí)": 5.55
     },
     "corners": {
       "Over 11.5 Córners": 2.37,
@@ -1687,10 +1559,10 @@
       "no": 1.92
     },
     "cards": {
-      "Over 4.5 Targetes": 2.42,
-      "Under 4.5 Targetes": 1.41,
-      "Over 5.5 Targetes": 4.04,
-      "Targeta Vermella (Sí)": 5.15
+      "Over 4.5 Targetes": 2.68,
+      "Under 4.5 Targetes": 1.39,
+      "Over 5.5 Targetes": 4.44,
+      "Targeta Vermella (Sí)": 5.55
     },
     "corners": {
       "Over 11.5 Córners": 2.32,
@@ -1735,10 +1607,10 @@
       "no": 1.92
     },
     "cards": {
-      "Over 4.5 Targetes": 2.78,
+      "Over 4.5 Targetes": 2.98,
       "Under 4.5 Targetes": 1.32,
-      "Over 5.5 Targetes": 4.75,
-      "Targeta Vermella (Sí)": 5.66
+      "Over 5.5 Targetes": 5.15,
+      "Targeta Vermella (Sí)": 5.96
     },
     "corners": {
       "Over 11.5 Córners": 2.52,

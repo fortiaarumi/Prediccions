@@ -81,6 +81,22 @@
     </nav>
   </header>
 
+  <!-- Alerta de Quotes Mancants / No Detectades -->
+  <div id="odds-alert-banner" class="odds-alert-banner" style="display: none;">
+    <div class="odds-alert-content">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="odds-alert-icon">⚠️</span>
+        <div class="odds-alert-text">
+          <strong>Alerta de Quotes:</strong>
+          <span id="odds-alert-msg">S'han detectat partits sense quotes oficials a Winamax o Bet365.</span>
+        </div>
+      </div>
+      <button class="btn-review-odds" id="btn-open-odds-modal" onclick="openOddsModal()">
+        ✏️ Revisar i Modificar Quotes
+      </button>
+    </div>
+  </div>
+
   <!-- Global Filter & Search Bar -->
   <section class="filter-bar-section">
     <div class="filter-bar-container">
@@ -800,7 +816,33 @@
     </div>
   </footer>
 
-  <script src="app.js?v=3.4.1"></script>
+  <!-- Modal per revisar i introduir quotes manuals -->
+  <div id="odds-modal-overlay" class="odds-modal-overlay" style="display: none;" onclick="if(event.target === this) closeOddsModal()">
+    <div class="odds-modal-card">
+      <div class="odds-modal-header">
+        <div class="odds-modal-title">
+          <span style="font-size: 20px;">⚠️</span>
+          <h3>Revisió i Modificació de Quotes Reals</h3>
+        </div>
+        <button class="btn-close-modal" onclick="closeOddsModal()">✕</button>
+      </div>
+      <div class="odds-modal-body">
+        <p class="odds-modal-intro">
+          El model <strong>no inventa quotes amb models matemàtics</strong> quan les cases no les han publicat o no s'han pogut extreure.
+          Introdueix les quotes oficials dels següents partits per desar-les immediatament i actualitzar prediccions, EV i combinades:
+        </p>
+        <div id="odds-modal-list" class="odds-modal-list">
+          <!-- Generat dinàmicament per JS -->
+        </div>
+      </div>
+      <div class="odds-modal-footer">
+        <button class="btn-secondary-modal" onclick="copyOverridesJson()">📋 Copiar JSON per al servidor</button>
+        <button class="btn-primary-modal" onclick="saveManualOdds()">💾 Desar Quotes a la Web</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=3.4.2"></script>
 
   <!-- Barra de Navegació Inferior per a Mòbil (Dock) -->
   <nav class="mobile-bottom-nav" aria-label="Navegació Ràpida per a Mòbil">

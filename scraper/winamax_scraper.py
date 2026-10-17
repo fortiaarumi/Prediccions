@@ -77,6 +77,28 @@ class WinamaxScraper:
                 s = s.replace(c, rep)
             return re.sub(r"[^a-z0-9]", "", s)
 
+        # 0. Comprovar si hi ha quotes manuals definides per l'usuari
+        manual_override_file = CACHE_DIR / "manual_odds_override.json"
+        if manual_override_file.exists():
+            try:
+                with open(manual_override_file, "r", encoding="utf-8") as f:
+                    overrides = json.load(f)
+                    cache_key = f"{comp_id}_{normalize(home_team)}_{normalize(away_team)}"
+                    m_entry = overrides.get(cache_key) or overrides.get(f"{normalize(home_team)}_{normalize(away_team)}")
+                    if m_entry and isinstance(m_entry, dict):
+                        w_manual = m_entry.get("winamax") or m_entry.get("odds_winamax")
+                        if w_manual and isinstance(w_manual, dict) and w_manual.get("1"):
+                            odds_data["1X2"] = {
+                                "1": float(w_manual.get("1")),
+                                "X": float(w_manual.get("X")),
+                                "2": float(w_manual.get("2"))
+                            }
+                            odds_data["matched"] = True
+                            odds_data["is_manual_override"] = True
+                            return odds_data
+            except Exception:
+                pass
+
         team_keywords = {
             # LaLiga EA Sports
             "madrid": "madrid", "sociedad": "sociedad", "barcelona": "barcelona",

@@ -1,0 +1,73 @@
+{
+  "count": 4,
+  "alerts": [
+    {
+      "id": "CHAMPIONSHIP_middlesbrough_cardiffcity",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Middlesbrough vs Cardiff City",
+      "home_team": "Middlesbrough",
+      "away_team": "Cardiff City",
+      "date": "17.10.2026 11:30",
+      "jornada": 11,
+      "missing_winamax": true,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Winamax",
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Winamax, Bet365 per al partit Middlesbrough vs Cardiff City."
+    },
+    {
+      "id": "CHAMPIONSHIP_watford_charltonathletic",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Watford vs Charlton Athletic",
+      "home_team": "Watford",
+      "away_team": "Charlton Athletic",
+      "date": "17.10.2026 11:30",
+      "jornada": 11,
+      "missing_winamax": true,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Winamax",
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Winamax, Bet365 per al partit Watford vs Charlton Athletic."
+    },
+    {
+      "id": "CHAMPIONSHIP_birminghamcity_queensparkrangers",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Birmingham City vs Queens Park Rangers",
+      "home_team": "Birmingham City",
+      "away_team": "Queens Park Rangers",
+      "date": "17.10.2026 14:00",
+      "jornada": 11,
+      "missing_winamax": true,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Winamax",
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Winamax, Bet365 per al partit Birmingham City vs Queens Park Rangers."
+    },
+    {
+      "id": "CHAMPIONSHIP_norwichcity_portsmouth",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Norwich City vs Portsmouth",
+      "home_team": "Norwich City",
+      "away_team": "Portsmouth",
+      "date": "17.10.2026 14:00",
+      "jornada": 11,
+      "missing_winamax": true,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Winamax",
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Winamax, Bet365 per al partit Norwich City vs Portsmouth."
+    }
+  ]
+}
