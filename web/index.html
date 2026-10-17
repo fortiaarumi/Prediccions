@@ -61,6 +61,10 @@
           <span class="tab-icon">💎</span>
           <span class="tab-label">Apostes de Valor (+EV)</span>
         </button>
+        <button class="nav-tab" id="tab-btn-surebets" role="tab" aria-selected="false" data-tab="surebets">
+          <span class="tab-icon">⚡</span>
+          <span class="tab-label">Surebets (Arbitratge)</span>
+        </button>
         <button class="nav-tab" id="tab-btn-combos" role="tab" aria-selected="false" data-tab="combos">
           <span class="tab-icon">🎯</span>
           <span class="tab-label">Combinades</span>
@@ -192,6 +196,72 @@
       <div class="value-bets-wrapper">
         <div class="value-bets-grid" id="value-bets-container">
           <!-- Targetes de valor generades per JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3.5: SUREBETS / ARBITRATGE ESPORTIU -->
+    <section class="tab-content" id="section-surebets" role="tabpanel">
+      <div class="section-hero">
+        <div>
+          <h1 class="section-title">⚡ Surebets & Arbitratge Garantit ("Diners Segurs")</h1>
+          <p class="section-subtitle">Detecció automàtica de discrepàncies de cuotes entre <strong>Winamax</strong> i <strong>Bet365</strong>. Cobertura del 100% de les opcions del mercat amb benefici net matemàticament assegurat, passi el que passi al terreny de joc.</p>
+        </div>
+      </div>
+
+      <!-- Hero KPI Banner -->
+      <div class="arbitrage-hero-banner" id="arbitrage-hero-banner">
+        <!-- Generat per JS -->
+      </div>
+
+      <!-- Interactive Stake Calculator Bar -->
+      <div class="arbitrage-calc-bar">
+        <div class="arb-calc-title">
+          <span class="arb-calc-icon">🧮</span>
+          <div>
+            <div class="arb-calc-heading">Calculadora d'Arbitratge en Temps Real</div>
+            <div class="arb-calc-subheading">Indica el capital total que vols repartir entre Winamax i Bet365:</div>
+          </div>
+        </div>
+        <div class="arb-calc-inputs">
+          <label for="arb-total-stake">Inversió total:</label>
+          <div class="arb-input-box">
+            <input type="number" id="arb-total-stake" min="10" step="5" value="100" />
+            <span class="currency-symbol">€</span>
+          </div>
+          <button class="arb-btn-recalc" id="arb-btn-recalc">⚡ Recalcular Apostes</button>
+        </div>
+      </div>
+
+      <!-- Anti-Limitation Warning / Safety Tips -->
+      <div class="arbitrage-tips-card">
+        <div class="arb-tip-icon">🛡️</div>
+        <div class="arb-tip-content">
+          <div class="arb-tip-title">Consells Professionals Anti-Limitació (Normativa DGOJ)</div>
+          <ul class="arb-tip-list">
+            <li><strong>Aposta imports rodons:</strong> El sistema arrodoneix automàticament les apostes (ex: 52€ i 48€ en lloc de 51.73€) per no aixecar sospites en els sistemes de control de risc de les cases.</li>
+            <li><strong>Executa primer l'aposta a la casa feble:</strong> Fes l'aposta a la casa amb la cuota més desajustada abans que el mercat corregeixi el preu.</li>
+            <li><strong>Verifica les regles del mercat:</strong> Assegura't que ambdues cases computin les mateixes condicions (90 minuts reglamentaris).</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Surebets Grid -->
+      <div class="arbitrage-grid-wrapper">
+        <div class="arb-section-header">
+          <h2 class="arb-section-heading">🔥 Surebets Actives (Benefici Net > 0%)</h2>
+          <span class="arb-section-count" id="surebets-count-badge">0 oportunitats</span>
+        </div>
+        <div class="arbitrage-grid" id="surebets-container">
+          <!-- Generat per JS -->
+        </div>
+
+        <div class="arb-section-header near-arb-header" style="margin-top: 36px;">
+          <h2 class="arb-section-heading near-arb-heading">👀 Monitorització de Mercat (Quasi-Arbitratge / Marge Estret)</h2>
+          <span class="arb-section-count" id="near-arbs-count-badge">0 partits</span>
+        </div>
+        <div class="arbitrage-grid" id="near-arbs-container">
+          <!-- Generat per JS -->
         </div>
       </div>
     </section>
@@ -749,6 +819,10 @@
     <button class="mobile-nav-btn" data-tab="value">
       <span class="mobile-nav-icon">💎</span>
       <span class="mobile-nav-lbl">+EV</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="surebets">
+      <span class="mobile-nav-icon">⚡</span>
+      <span class="mobile-nav-lbl">Surebets</span>
     </button>
     <button class="mobile-nav-btn" data-tab="bankroll">
       <span class="mobile-nav-icon">💰</span>

@@ -39,6 +39,7 @@ from engine.value_bet_engine import ValueBetEngine
 from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
 from engine.changelog_manager import ChangelogManager
+from engine.arbitrage_engine import ArbitrageEngine
 from model.rank_engine import RankEngine
 
 COMPETITIONS_META = [
@@ -91,6 +92,7 @@ class WebDataExporter:
         self.combo_engine = ComboBetEngine()
         self.tracker = ComboTracker(db=self.db)
         self.changelog_mgr = ChangelogManager()
+        self.arbitrage_engine = ArbitrageEngine(min_profit_threshold=0.0)
         self.rank_engine = RankEngine(k_factor=32.0, league_teams_count=22.0)
 
     def get_power_rankings(self, competition_id: str) -> List[Dict[str, Any]]:
@@ -518,6 +520,8 @@ class WebDataExporter:
             o_1x2 = odds.get("1X2") or odds.get("odds_1x2") or {}
             o_ou = odds.get("over_under_2_5") or {}
             o_btts = odds.get("btts") or {}
+            o_dc = odds.get("double_chance") or {}
+            b_dc = odds_b365.get("double_chance") or {}
 
             # Helper per percentatges segurs (de 0..100)
             def _to_pct(val, default=50.0):
@@ -674,6 +678,16 @@ class WebDataExporter:
                     "1": (odds_b365.get("1X2") or {}).get("1") or o_1x2.get("1"),
                     "X": (odds_b365.get("1X2") or {}).get("X") or o_1x2.get("X"),
                     "2": (odds_b365.get("1X2") or {}).get("2") or o_1x2.get("2")
+                },
+                "odds_dc_winamax": {
+                    "1X": o_dc.get("1X"),
+                    "12": o_dc.get("12"),
+                    "X2": o_dc.get("X2")
+                },
+                "odds_dc_bet365": {
+                    "1X": b_dc.get("1X") or o_dc.get("1X"),
+                    "12": b_dc.get("12") or o_dc.get("12"),
+                    "X2": b_dc.get("X2") or o_dc.get("X2")
                 },
                 "odds_ou25": {
                     "over": o_ou.get("over"),
@@ -2081,7 +2095,11 @@ class WebDataExporter:
         # Ordenar Value bets pel millor edge %
         all_value_bets.sort(key=lambda x: (float(x.get("edge_pct")) if x.get("edge_pct") is not None else -999.0), reverse=True)
 
-        # 3. Simulació Financera
+        # 3. Arbitratge Esportiu (Surebets / "Diners Segurs")
+        print("[*] Escanejant oportunitats d'Arbitratge Esportiu (Surebets)...")
+        arbitrage_report = self.arbitrage_engine.scan_all_matches(all_predicted_matches_flat)
+
+        # 4. Simulació Financera
         print("[*] Calculant resum financer 'Què hagués passat si...'...")
         financial_ledger = self.get_financial_ledger()
 
@@ -2125,6 +2143,7 @@ class WebDataExporter:
             "power_rankings": power_rankings,
             "predictions": predictions,
             "value_bets": all_value_bets,
+            "arbitrage": arbitrage_report,
             "combos": combos,
             "daily_combos": daily_combos,
             "bankroll_simulation": financial_ledger

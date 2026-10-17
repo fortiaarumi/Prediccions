@@ -360,6 +360,29 @@ function initEventListeners() {
   if (btnExportAcc) btnExportAcc.onclick = () => UserAuth.exportAccountBackup();
   const inputImportAcc = document.getElementById('input-import-account');
   if (inputImportAcc) inputImportAcc.onchange = (e) => UserAuth.importAccountBackup(e);
+
+  // Arbitrage Stake Calculator Listeners
+  const arbStakeInput = document.getElementById('arb-total-stake');
+  const arbBtnRecalc = document.getElementById('arb-btn-recalc');
+  if (arbStakeInput) {
+    arbStakeInput.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      if (val && val > 0) {
+        currentArbTotalStake = val;
+        renderArbitrage();
+      }
+    });
+  }
+  if (arbBtnRecalc) {
+    arbBtnRecalc.addEventListener('click', () => {
+      if (arbStakeInput) {
+        const val = parseFloat(arbStakeInput.value);
+        if (val && val > 0) currentArbTotalStake = val;
+      }
+      renderArbitrage();
+      showToast(`Apostes recalculades per a ${currentArbTotalStake}€ d'inversió total!`, 'info');
+    });
+  }
 }
 
 function switchTab(tabId) {
@@ -435,6 +458,7 @@ function renderAll() {
   renderPowerRankings();
   renderPredictions();
   renderValueBets();
+  renderArbitrage();
   renderCombos();
   renderBankroll();
   renderChangelog();
@@ -444,6 +468,7 @@ function applyFilters() {
   renderPowerRankings();
   renderPredictions();
   renderValueBets();
+  renderArbitrage();
   renderCombos();
 }
 
@@ -1131,6 +1156,253 @@ function renderValueBets() {
     `;
   }).join('');
 }
+
+// -----------------------------------------------------------------------------
+// 3.5. SUREBETS & ARBITRATGE ESPORTIU ("DINERS SEGURS")
+// -----------------------------------------------------------------------------
+let currentArbTotalStake = 100;
+window.arbitrageRegistry = {};
+
+function copyArbitrageInstructions(arbKey) {
+  const arb = window.arbitrageRegistry[arbKey];
+  if (!arb) return;
+
+  const total = currentArbTotalStake || 100;
+  const legs = arb.legs || [];
+  const sumInv = legs.reduce((acc, l) => acc + (1.0 / l.odd), 0);
+
+  // Recalcular per a l'stake actual
+  let exactStakes = legs.map(l => (total / sumInv) / l.odd);
+  let roundStakes = exactStakes.map(s => Math.max(1, Math.round(s)));
+  let sumRounded = roundStakes.reduce((a, b) => a + b, 0);
+  let diff = total - sumRounded;
+  roundStakes[0] += diff;
+
+  let returns = legs.map((l, i) => roundStakes[i] * l.odd);
+  let minRet = Math.min(...returns);
+  let netProfit = minRet - total;
+  let profitPct = arb.profit_pct != null ? arb.profit_pct : (((1.0 / sumInv) - 1.0) * 100.0);
+
+  let text = `⚡ INSTRUCCIONS D'ARBITRATGE SEGUR (+${profitPct.toFixed(1)}% NET)\n`;
+  text += `Partit: ${arb.matchup} (${arb.competition_name || arb.competition_id})\n`;
+  text += `Mercat: ${arb.market_name}\n`;
+  text += `Data: ${arb.date}\n`;
+  text += `Inversió Total: ${total} €\n\n`;
+  text += `PAS A PAS D'EXECUCIÓ:\n`;
+
+  legs.forEach((leg, i) => {
+    const isW = (leg.bookmaker.toLowerCase() === 'winamax');
+    const u = isW ? (leg.url || 'https://www.winamax.es') : getValidBet365Url(leg.url);
+    text += `${i + 1}. ${leg.bookmaker.toUpperCase()}:\n`;
+    text += `   👉 Aposta ${roundStakes[i]} € a '${leg.selection}' @${leg.odd.toFixed(2)}\n`;
+    text += `   💵 Retorn si es compleix: ${returns[i].toFixed(2)} €\n`;
+    text += `   🔗 Link directe: ${u}\n\n`;
+  });
+
+  text += `--------------------------------------------------\n`;
+  text += `✅ RETORN MÍNIM GARANTIT: ${minRet.toFixed(2)} €\n`;
+  text += `💰 BENEFICI NET ASSEGURAT: +${netProfit.toFixed(2)} € (Passi el que passi al partit!)\n`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(`Instruccions d'arbitratge copiades al porta-retalls!`, 'success');
+  }).catch(() => {
+    showToast(`Error copiant instruccions.`, 'error');
+  });
+}
+window.copyArbitrageInstructions = copyArbitrageInstructions;
+
+function renderArbitrage() {
+  const containerSurebets = document.getElementById('surebets-container');
+  const containerNear = document.getElementById('near-arbs-container');
+  const heroBanner = document.getElementById('arbitrage-hero-banner');
+  const countBadge = document.getElementById('surebets-count-badge');
+  const countNearBadge = document.getElementById('near-arbs-count-badge');
+
+  if (!containerSurebets || !appData || !appData.arbitrage) return;
+
+  const arbData = appData.arbitrage;
+  const summary = arbData.summary || {};
+  let surebets = arbData.surebets || [];
+  let nearArbs = arbData.near_arbs || [];
+
+  // Filtre per lliga
+  if (currentLeague !== 'ALL' && currentLeague !== 'DAILY') {
+    surebets = surebets.filter(a => a.competition_id === currentLeague);
+    nearArbs = nearArbs.filter(a => a.competition_id === currentLeague);
+  }
+
+  // Filtre per cerca de text
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    surebets = surebets.filter(a =>
+      a.matchup.toLowerCase().includes(q) ||
+      a.market_name.toLowerCase().includes(q) ||
+      (a.legs && a.legs.some(l => l.selection.toLowerCase().includes(q)))
+    );
+    nearArbs = nearArbs.filter(a =>
+      a.matchup.toLowerCase().includes(q) ||
+      a.market_name.toLowerCase().includes(q)
+    );
+  }
+
+  // Render Hero KPI Banner
+  if (heroBanner) {
+    const maxP = surebets.length > 0 ? Math.max(...surebets.map(s => s.profit_pct)) : summary.max_profit_pct || 0;
+    const avgP = surebets.length > 0 ? (surebets.reduce((acc, s) => acc + s.profit_pct, 0) / surebets.length) : summary.avg_profit_pct || 0;
+
+    heroBanner.innerHTML = `
+      <div class="arb-hero-card">
+        <span class="arb-hero-icon">⚡</span>
+        <div class="arb-hero-val">${surebets.length}</div>
+        <div class="arb-hero-lbl">Surebets Actives</div>
+      </div>
+      <div class="arb-hero-card glow-green">
+        <span class="arb-hero-icon">📈</span>
+        <div class="arb-hero-val">+${Number(maxP).toFixed(1)}%</div>
+        <div class="arb-hero-lbl">Benefici Màx. Garantit</div>
+      </div>
+      <div class="arb-hero-card">
+        <span class="arb-hero-icon">💰</span>
+        <div class="arb-hero-val">+${Number(avgP).toFixed(1)}%</div>
+        <div class="arb-hero-lbl">Retorn Mitjà per Arb</div>
+      </div>
+      <div class="arb-hero-card">
+        <span class="arb-hero-icon">🛡️</span>
+        <div class="arb-hero-val">100%</div>
+        <div class="arb-hero-lbl">Risc Esportiu Cobert</div>
+      </div>
+    `;
+  }
+
+  if (countBadge) countBadge.textContent = `${surebets.length} oportunitats`;
+  if (countNearBadge) countNearBadge.textContent = `${nearArbs.length} partits`;
+
+  window.arbitrageRegistry = {};
+  const totalBankroll = currentArbTotalStake || 100;
+
+  function renderCard(arb, idx, isSurebet) {
+    const arbKey = `arb_${arb.competition_id}_${idx}_${isSurebet ? 'sure' : 'near'}`;
+    window.arbitrageRegistry[arbKey] = arb;
+
+    const legs = arb.legs || [];
+    const sumInv = legs.reduce((acc, l) => acc + (1.0 / l.odd), 0);
+
+    // Càlcul dinàmic de stakes sobre el totalBankroll actual
+    let exactStakes = legs.map(l => (totalBankroll / sumInv) / l.odd);
+    let roundStakes = exactStakes.map(s => Math.max(1, Math.round(s)));
+    let sumRounded = roundStakes.reduce((a, b) => a + b, 0);
+    let diff = totalBankroll - sumRounded;
+    roundStakes[0] += diff;
+
+    let returns = legs.map((l, i) => roundStakes[i] * l.odd);
+    let minReturn = Math.min(...returns);
+    let netProfit = minReturn - totalBankroll;
+    let profitPct = arb.profit_pct != null ? arb.profit_pct : (((1.0 / sumInv) - 1.0) * 100.0);
+
+    const isPositive = profitPct > 0;
+    const badgeClass = isPositive ? 'arb-badge-profit' : 'arb-badge-near';
+    const badgeText = isPositive ? `+${profitPct.toFixed(1)}% NET ASSEGURAT` : `Marge: ${(sumInv * 100).toFixed(1)}%`;
+    const cardGlowClass = isPositive ? 'arb-card-surebet' : 'arb-card-near';
+
+    const legsHtml = legs.map((leg, i) => {
+      const isWinamax = (leg.bookmaker.toLowerCase() === 'winamax');
+      const bookieTagClass = isWinamax ? 'arb-tag-winamax' : 'arb-tag-bet365';
+      const bookieIcon = isWinamax ? '🔴' : '🟢';
+      const bookieBtnClass = isWinamax ? 'btn-arb-leg-winamax' : 'btn-arb-leg-bet365';
+      const actionLabel = isWinamax ? 'Apostar a Winamax ↗' : 'Apostar a Bet365 ↗';
+      const validUrl = isWinamax ? (leg.url || 'https://www.winamax.es') : getValidBet365Url(leg.url);
+
+      return `
+        <div class="arb-leg-box">
+          <div class="arb-leg-top">
+            <span class="arb-bookie-tag ${bookieTagClass}">${bookieIcon} ${leg.bookmaker}</span>
+            <span class="arb-leg-odd">@${Number(leg.odd).toFixed(2)}</span>
+          </div>
+          <div class="arb-leg-selection">${leg.selection}</div>
+          <div class="arb-leg-metrics">
+            <div class="arb-leg-mitem">
+              <span class="arb-m-label">Aposta:</span>
+              <span class="arb-m-val stake-val">${roundStakes[i]} €</span>
+            </div>
+            <div class="arb-leg-mitem">
+              <span class="arb-m-label">Retorn si encerta:</span>
+              <span class="arb-m-val return-val">${returns[i].toFixed(2)} €</span>
+            </div>
+          </div>
+          <a href="${validUrl}" target="_blank" rel="noopener noreferrer" class="btn-arb-leg ${bookieBtnClass}">
+            ${actionLabel}
+          </a>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="arb-card ${cardGlowClass}">
+        <div class="arb-card-header">
+          <div>
+            <div class="arb-league-badge">${arb.competition_name || arb.competition_id} · 📅 ${arb.date}</div>
+            <h3 class="arb-matchup-title">${arb.matchup}</h3>
+            <div class="arb-market-name">🎯 ${arb.market_name}</div>
+          </div>
+          <div class="arb-badge-container">
+            <span class="arb-badge ${badgeClass}">${badgeText}</span>
+          </div>
+        </div>
+
+        <div class="arb-legs-container">
+          ${legsHtml}
+        </div>
+
+        <div class="arb-card-footer">
+          <div class="arb-summary-stats">
+            <div class="arb-summary-item">
+              <span class="arb-sum-lbl">Inversió Total:</span>
+              <span class="arb-sum-val">${totalBankroll} €</span>
+            </div>
+            <div class="arb-summary-item">
+              <span class="arb-sum-lbl">Retorn Mínim:</span>
+              <span class="arb-sum-val" style="color: #6ee7b7;">${minReturn.toFixed(2)} €</span>
+            </div>
+            <div class="arb-summary-item">
+              <span class="arb-sum-lbl">Benefici Net:</span>
+              <span class="arb-sum-val ${isPositive ? 'profit-green' : 'loss-orange'}">${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)} €</span>
+            </div>
+          </div>
+          <div class="arb-card-actions">
+            <button class="btn-copy-arb" onclick="copyArbitrageInstructions('${arbKey}')" title="Copia instruccions detallades per executar l'arbitratge pas a pas">
+              📋 Copiar Instruccions
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Render Surebets
+  if (surebets.length === 0) {
+    containerSurebets.innerHTML = `
+      <div class="empty-jornada-state" style="grid-column: 1/-1; text-align: center; padding: 36px 20px; background: rgba(17, 24, 39, 0.45); border: 1px dashed rgba(255,255,255,0.12); border-radius: var(--radius-md);">
+        <span style="font-size: 36px; display: block; margin-bottom: 8px;">⚡</span>
+        <h3 style="font-size: 17px; color: var(--text-primary); margin-bottom: 6px;">No hi ha surebets actives amb el filtre actual</h3>
+        <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto; font-size: 13px;">
+          Les cases ajusten les cuotes contínuament. Consulta la secció inferior de <strong>Monitorització de Mercat</strong> per veure els partits més a prop de trencar la barrera d'arbitratge.
+        </p>
+      </div>
+    `;
+  } else {
+    containerSurebets.innerHTML = surebets.map((arb, i) => renderCard(arb, i, true)).join('');
+  }
+
+  // Render Near-Arbs
+  if (containerNear) {
+    if (nearArbs.length === 0) {
+      containerNear.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 24px;">No hi ha partits en monitorització d'estretor de marge.</p>`;
+    } else {
+      containerNear.innerHTML = nearArbs.map((arb, i) => renderCard(arb, i, false)).join('');
+    }
+  }
+}
+window.renderArbitrage = renderArbitrage;
 
 // -----------------------------------------------------------------------------
 // 4. COMBINADES RECOMANADES (6 PER LLIGA + COMBINADES DEL DIA)
