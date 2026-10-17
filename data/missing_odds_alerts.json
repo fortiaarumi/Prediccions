@@ -1,73 +1,213 @@
 {
-  "count": 4,
+  "count": 13,
   "alerts": [
     {
-      "id": "CHAMPIONSHIP_middlesbrough_cardiffcity",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Middlesbrough vs Cardiff City",
-      "home_team": "Middlesbrough",
-      "away_team": "Cardiff City",
-      "date": "17.10.2026 11:30",
-      "jornada": 11,
+      "id": "LALIGA_rcdespanyol_atleticodemadrid",
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "RCD Espanyol vs Atlético de Madrid",
+      "home_team": "RCD Espanyol",
+      "away_team": "Atlético de Madrid",
+      "date": "17.10.2026 12:00",
+      "jornada": 9,
       "missing_winamax": true,
-      "missing_bet365": true,
+      "missing_bet365": false,
       "missing_bookmakers": [
-        "Winamax",
-        "Bet365"
+        "Winamax"
       ],
-      "message": "Quotes no detectades a Winamax, Bet365 per al partit Middlesbrough vs Cardiff City."
+      "message": "Quotes no detectades a Winamax per al partit RCD Espanyol vs Atlético de Madrid."
     },
     {
-      "id": "CHAMPIONSHIP_watford_charltonathletic",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Watford vs Charlton Athletic",
-      "home_team": "Watford",
-      "away_team": "Charlton Athletic",
-      "date": "17.10.2026 11:30",
-      "jornada": 11,
+      "id": "LALIGA_villarrealcf_elchecf",
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "Villarreal CF vs Elche CF",
+      "home_team": "Villarreal CF",
+      "away_team": "Elche CF",
+      "date": "17.10.2026 14:15",
+      "jornada": 9,
       "missing_winamax": true,
-      "missing_bet365": true,
+      "missing_bet365": false,
       "missing_bookmakers": [
-        "Winamax",
-        "Bet365"
+        "Winamax"
       ],
-      "message": "Quotes no detectades a Winamax, Bet365 per al partit Watford vs Charlton Athletic."
+      "message": "Quotes no detectades a Winamax per al partit Villarreal CF vs Elche CF."
     },
     {
-      "id": "CHAMPIONSHIP_birminghamcity_queensparkrangers",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Birmingham City vs Queens Park Rangers",
-      "home_team": "Birmingham City",
-      "away_team": "Queens Park Rangers",
-      "date": "17.10.2026 14:00",
-      "jornada": 11,
+      "id": "LALIGA_realbetis_fcbarcelona",
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "Real Betis vs FC Barcelona",
+      "home_team": "Real Betis",
+      "away_team": "FC Barcelona",
+      "date": "17.10.2026 16:30",
+      "jornada": 9,
       "missing_winamax": true,
-      "missing_bet365": true,
+      "missing_bet365": false,
       "missing_bookmakers": [
-        "Winamax",
-        "Bet365"
+        "Winamax"
       ],
-      "message": "Quotes no detectades a Winamax, Bet365 per al partit Birmingham City vs Queens Park Rangers."
+      "message": "Quotes no detectades a Winamax per al partit Real Betis vs FC Barcelona."
     },
     {
-      "id": "CHAMPIONSHIP_norwichcity_portsmouth",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Norwich City vs Portsmouth",
-      "home_team": "Norwich City",
-      "away_team": "Portsmouth",
-      "date": "17.10.2026 14:00",
-      "jornada": 11,
+      "id": "LALIGA_valenciacf_athleticclub",
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "Valencia CF vs Athletic Club",
+      "home_team": "Valencia CF",
+      "away_team": "Athletic Club",
+      "date": "17.10.2026 19:00",
+      "jornada": 9,
       "missing_winamax": true,
-      "missing_bet365": true,
+      "missing_bet365": false,
       "missing_bookmakers": [
-        "Winamax",
-        "Bet365"
+        "Winamax"
       ],
-      "message": "Quotes no detectades a Winamax, Bet365 per al partit Norwich City vs Portsmouth."
+      "message": "Quotes no detectades a Winamax per al partit Valencia CF vs Athletic Club."
+    },
+    {
+      "id": "PREMIER_everton_chelsea",
+      "competition_id": "PREMIER",
+      "competition_name": "Premier League",
+      "matchup": "Everton vs Chelsea",
+      "home_team": "Everton",
+      "away_team": "Chelsea",
+      "date": "17.10.2026 13:30",
+      "jornada": 7,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Everton vs Chelsea."
+    },
+    {
+      "id": "PREMIER_brentford_liverpool",
+      "competition_id": "PREMIER",
+      "competition_name": "Premier League",
+      "matchup": "Brentford vs Liverpool",
+      "home_team": "Brentford",
+      "away_team": "Liverpool",
+      "date": "17.10.2026 16:00",
+      "jornada": 7,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Brentford vs Liverpool."
+    },
+    {
+      "id": "PREMIER_fulham_hull",
+      "competition_id": "PREMIER",
+      "competition_name": "Premier League",
+      "matchup": "Fulham vs Hull",
+      "home_team": "Fulham",
+      "away_team": "Hull",
+      "date": "17.10.2026 16:00",
+      "jornada": 7,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Fulham vs Hull."
+    },
+    {
+      "id": "PREMIER_manchestercity_ipswichtown",
+      "competition_id": "PREMIER",
+      "competition_name": "Premier League",
+      "matchup": "Manchester City vs Ipswich Town",
+      "home_team": "Manchester City",
+      "away_team": "Ipswich Town",
+      "date": "17.10.2026 16:00",
+      "jornada": 7,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Manchester City vs Ipswich Town."
+    },
+    {
+      "id": "PREMIER_newcastleunited_astonvilla",
+      "competition_id": "PREMIER",
+      "competition_name": "Premier League",
+      "matchup": "Newcastle United vs Aston Villa",
+      "home_team": "Newcastle United",
+      "away_team": "Aston Villa",
+      "date": "17.10.2026 18:30",
+      "jornada": 7,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Newcastle United vs Aston Villa."
+    },
+    {
+      "id": "HYPERMOTION_realsociedadb_udalmeria",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Sociedad B vs UD Almería",
+      "home_team": "Real Sociedad B",
+      "away_team": "UD Almería",
+      "date": "17.10.2026 12:00",
+      "jornada": 10,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Real Sociedad B vs UD Almería."
+    },
+    {
+      "id": "HYPERMOTION_sdeibar_rcdmallorca",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "SD Eibar vs RCD Mallorca",
+      "home_team": "SD Eibar",
+      "away_team": "RCD Mallorca",
+      "date": "17.10.2026 14:15",
+      "jornada": 10,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit SD Eibar vs RCD Mallorca."
+    },
+    {
+      "id": "HYPERMOTION_realsporting_albacetebalompie",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Real Sporting vs Albacete Balompié",
+      "home_team": "Real Sporting",
+      "away_team": "Albacete Balompié",
+      "date": "17.10.2026 16:30",
+      "jornada": 10,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Real Sporting vs Albacete Balompié."
+    },
+    {
+      "id": "HYPERMOTION_udlaspalmas_cdcastellon",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "UD Las Palmas vs CD Castellón",
+      "home_team": "UD Las Palmas",
+      "away_team": "CD Castellón",
+      "date": "17.10.2026 19:00",
+      "jornada": 10,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit UD Las Palmas vs CD Castellón."
     }
   ]
 }

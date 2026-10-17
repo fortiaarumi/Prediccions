@@ -395,6 +395,19 @@ class DatabaseManager:
             "southampton": "SOU",
             "southampton fc": "SOU",
             "sou": "SOU",
+            "hull": "HUL",
+            "hull city": "HUL",
+            "hul": "HUL",
+            "leeds": "LEE",
+            "leeds utd": "LEE",
+            "leeds united": "LEE",
+            "lee": "LEE",
+            "coventry": "COV",
+            "coventry city": "COV",
+            "cov": "COV",
+            "sunderland": "SUN",
+            "sunderland afc": "SUN",
+            "sun": "SUN",
 
             # LaLiga Hypermotion (2a Divisió) - 22 Equips
             "ceuta": "CEU",
@@ -419,6 +432,7 @@ class DatabaseManager:
             "celta b": "CDV",
             "celta de vigo b": "CDV",
             "celta fortuna": "CDV",
+            "rc celta fortuna": "CDV",
             "cdv": "CDV",
             "cadiz": "CAD",
             "cadiz cf": "CAD",
@@ -931,8 +945,10 @@ class DatabaseManager:
             cursor = conn.cursor()
             existing_row = cursor.execute("SELECT id, status FROM combo_recommendations WHERE id = ?", (combo_id,)).fetchone()
             if existing_row:
-                # Ja existeix per a aquest dia: preservar les seleccions i cuotes oficials congelades!
-                return combo_id
+                existing_legs_cnt = cursor.execute("SELECT COUNT(*) FROM combo_legs WHERE combo_id = ?", (combo_id,)).fetchone()[0]
+                if existing_legs_cnt > 0:
+                    # Ja existeix per a aquest dia amb seleccions vàlides: preservar les seleccions oficials congelades!
+                    return combo_id
 
             combined_odd = float(combo_summary.get("combined_odd", 1.0))
             prob_pct = float(combo_summary.get("combined_prob_pct", 0.0))
@@ -1009,14 +1025,20 @@ class DatabaseManager:
                 cursor.execute("DELETE FROM combo_recommendations WHERE id = ?", (c_id,))
             conn.commit()
 
-    def has_daily_combos(self, date_str: str) -> bool:
-        """Indica si ja existeixen combinades registrades per a aquest dia."""
+    def has_daily_combos(self, date_str: str, min_expected: int = 6) -> bool:
+        """Indica si ja existeixen combinades registrades per a aquest dia amb seleccions vàlides."""
         with self.get_connection() as conn:
-            c = conn.cursor().execute(
-                "SELECT COUNT(*) FROM combo_recommendations WHERE competition_id = 'DAILY' AND id LIKE ?",
+            rows = conn.cursor().execute(
+                "SELECT id FROM combo_recommendations WHERE competition_id = 'DAILY' AND id LIKE ?",
                 (f"COMBO_DAILY_{date_str}_%",)
-            ).fetchone()[0]
-            return c >= 2
+            ).fetchall()
+            if len(rows) < min_expected:
+                return False
+            for r in rows:
+                c_legs = conn.cursor().execute("SELECT COUNT(*) FROM combo_legs WHERE combo_id = ?", (r[0],)).fetchone()[0]
+                if c_legs == 0:
+                    return False
+            return True
 
     def get_all_daily_combo_dates(self) -> List[str]:
         """Recupera la llista de totes les dates que tenen combinades del dia."""

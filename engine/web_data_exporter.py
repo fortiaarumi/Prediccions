@@ -1260,11 +1260,17 @@ class WebDataExporter:
         if "." in d_clean:
             parts = d_clean.split(".")
             if len(parts) == 3:
-                return f"{parts[2]}-{parts[1].zfill(2)}-{parts[0].zfill(2)}"
+                if len(parts[2]) == 4:
+                    return f"{parts[2]}-{parts[1].zfill(2)}-{parts[0].zfill(2)}"
+                elif len(parts[0]) == 4:
+                    return f"{parts[0]}-{parts[1].zfill(2)}-{parts[2].zfill(2)}"
         elif "-" in d_clean:
             parts = d_clean.split("-")
             if len(parts) == 3:
-                return f"{parts[0]}-{parts[1].zfill(2)}-{parts[2].zfill(2)}"
+                if len(parts[2]) == 4:
+                    return f"{parts[2]}-{parts[1].zfill(2)}-{parts[0].zfill(2)}"
+                elif len(parts[0]) == 4:
+                    return f"{parts[0]}-{parts[1].zfill(2)}-{parts[2].zfill(2)}"
         return d_clean
 
     def _format_catalan_date(self, iso_date: str) -> str:
@@ -1349,6 +1355,13 @@ class WebDataExporter:
 
         # 2. Processar cada data
         for target_date in sorted_dates:
+            # Protecció estricta: preservar combinades de 2026-10-17 com ha demanat l'usuari
+            if target_date == "2026-10-17":
+                prev_17 = previous_data.get("daily_combos", {}).get("by_date", {}).get(target_date)
+                if prev_17 and (prev_17.get("safe") or prev_17.get("semi") or prev_17.get("risky")):
+                    by_date[target_date] = prev_17
+                    continue
+
             # A) Trobar partits per a aquest dia des de la llista plana
             day_matches = [
                 m for m in all_predicted_matches_flat
@@ -1387,6 +1400,16 @@ class WebDataExporter:
                         single_pred["date"] = mr["date_time"]
                         single_pred["home_team"] = {"id": mr["home_team_id"], "name": mr["home_name"]}
                         single_pred["away_team"] = {"id": mr["away_team_id"], "name": mr["away_name"]}
+
+                        # Assegurar quotes i anàlisi de valor per si es fan servir a les combinades (partits pendents)
+                        if target_date >= today_iso and mr.get("status") != "FINISHED":
+                            odds = self.winamax.get_match_odds(mr["home_name"], mr["away_name"], competition_id=mr["competition_id"])
+                            odds_b365 = self.bet365.get_match_odds(mr["home_name"], mr["away_name"], competition_id=mr["competition_id"], match_pred=single_pred, winamax_odds=odds)
+                            single_pred["odds"] = odds
+                            single_pred["odds_winamax"] = odds
+                            single_pred["odds_bet365"] = odds_b365
+                            single_pred["bet_analysis"] = self.value_engine.analyze_match_betting(single_pred, odds, bet365_odds=odds_b365)
+
                         day_matches.append(single_pred)
                         existing_matchup_keys.add(key)
                     except Exception as e_pred:
@@ -1424,7 +1447,13 @@ class WebDataExporter:
             else:
                 league_note = f"Partits del dia de múltiples lligues ({', '.join(comp_names)}) · {len(day_matches)} partits"
 
-            if existing_daily and len(existing_daily) >= 2:
+            expected_combos_count = 6 if len(day_matches) >= 4 else (len(day_matches) * 2 if len(day_matches) in [1, 2, 3] else 2)
+            has_valid_suite = (
+                existing_daily
+                and len(existing_daily) >= expected_combos_count
+                and all(len(c.get("legs", [])) > 0 for c in existing_daily)
+            )
+            if has_valid_suite:
                 # 3. Ja existien: avaluar progrés en viu sense sobreescriure les seleccions
                 for c in existing_daily:
                     legs_evaluated = []
@@ -1575,6 +1604,7 @@ class WebDataExporter:
 
             elif day_matches:
                 # 4. Generar noves combinades per a aquest dia i CONGELAR-LES a la BD
+                self.db.delete_daily_combos_for_date(target_date)
                 combos_data = self.combo_engine.generate_daily_combos_suite(day_matches)
 
                 def format_and_save_daily_combo(c: Dict[str, Any], prof_idx: int) -> Dict[str, Any]:

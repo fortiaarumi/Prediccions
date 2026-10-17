@@ -79,11 +79,11 @@ class RefereeResolver:
                 "ref_data": ref_data
             }
 
-        # 4. Si encara no s'ha anunciat oficialment pel CTA (partit futur):
+        # 4. Si encara no s'ha anunciat oficialment pel CTA / PGMOL (partit futur):
         ref_default_data = self.db.get_referee("REF_DEFAULT")
         return {
             "id": "REF_DEFAULT",
-            "name": "Pendent CTA (Àrbitre Mitjà Standard)",
+            "name": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
             "is_generic": True,
             "ref_data": ref_default_data
         }
@@ -96,8 +96,8 @@ class RefereeResolver:
         """
         try:
             # A. Feed d'informació estructurada del partit (df_sui_1)
-            cmd_info = ['curl.exe', '-s', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/df_sui_1_{match_code}']
-            res_info = subprocess.run(cmd_info, capture_output=True, text=True, encoding='utf-8', errors='replace')
+            cmd_info = ['curl.exe', '-s', '--max-time', '3', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/df_sui_1_{match_code}']
+            res_info = subprocess.run(cmd_info, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=3)
             if res_info.stdout and len(res_info.stdout) > 50:
                 # Patró del feed: MIT...REF...MIV...<Nom Àrbitre> (ex: MITREFMIVManzano J.)
                 m = re.search(r'MIT[^\w]*REF[^\w]*MIV[^\w]*([A-Za-z\s\.-]+)', res_info.stdout)
@@ -108,8 +108,8 @@ class RefereeResolver:
                         return ref_id
 
             # B. Feed de comentaris en viu (df_lc_1)
-            cmd_lc = ['curl.exe', '-s', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/df_lc_1_{match_code}']
-            res_lc = subprocess.run(cmd_lc, capture_output=True, text=True, encoding='utf-8', errors='replace')
+            cmd_lc = ['curl.exe', '-s', '--max-time', '3', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/df_lc_1_{match_code}']
+            res_lc = subprocess.run(cmd_lc, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=3)
             if res_lc.stdout and len(res_lc.stdout) > 50:
                 m_ref = re.search(r'([A-Za-z\s\.-]+)\s+will referee today\'s match', res_lc.stdout)
                 if not m_ref:

@@ -1,5 +1,445 @@
 [
   {
+    "date": "2026-10-18",
+    "timestamp": "2026-10-18T00:07:07.202049",
+    "title": "Actualització Diària del Model · 18/10/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ S'han ingesta resultats oficials i mètriques de 2 partit(s) disputat(s):",
+      "   • [LALIGA J9] RC Deportivo de La Coruña 1 - 1 Levante UD | xG: 1.11-0.83 | Targetes: 5 🟨 | Córners: 8 🚩 | Àrbitre: Manuel Orellana",
+      "   • [HYPERMOTION J10] CD Leganés 0 - 1 Córdoba CF | xG: 0.75-2.09 | Targetes: 7 🟨 | Córners: 11 🚩 | Àrbitre: Eder Mallo Fernández",
+      "📊 Actualització de Power Rànquings Elo:",
+      "   • RC Deportivo de La Coruña (-0.1 ➔ 1483.2) | Levante UD (+0.1 ➔ 1529.8)",
+      "   • CD Leganés (-14.9 ➔ 1524.2) | Córdoba CF (+14.9 ➔ 1480.2)",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 9 partit(s):",
+      "   • [LaLiga EA Sports J9] CA Osasuna vs Racing de Santander: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Juan Martínez Munuera'",
+      "     └ Impacte model: Targetes >4.5: 51.2% ➔ 49.8% (-1.4%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 53.1% ➔ 53.1% (+0.0%)",
+      "   • [LaLiga EA Sports J9] RC Celta de Vigo vs Deportivo Alavés: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José Luis Munuera Montero'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 55.2% (+1.8%) | Vermella: 22.1% ➔ 20.5% (-1.6%) | Victòria Local: 47.0% ➔ 47.0% (+0.0%)",
+      "   • [LaLiga EA Sports J9] Málaga CF vs Real Sociedad: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Luis Bestard'",
+      "     └ Impacte model: Targetes >4.5: 47.1% ➔ 52.1% (+5.0%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 30.4% ➔ 30.4% (+0.0%)",
+      "   • [LaLiga EA Sports J9] Real Madrid vs Sevilla FC: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Mateo Busquets Ferrer'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 70.1% (+23.4%) | Vermella: 22.1% ➔ 33.0% (+10.9%) | Victòria Local: 66.0% ➔ 66.0% (+0.0%)",
+      "   • [LaLiga Hypermotion J10] AD Ceuta vs Real Oviedo: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José Luis Guzmán Mansilla'",
+      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 64.5% (+17.8%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 29.5% ➔ 29.5% (+0.0%)",
+      "   • [LaLiga Hypermotion J10] Granada CF vs Cádiz CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Rafael Sánchez López'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 68.9% (+15.5%) | Vermella: 22.1% ➔ 26.7% (+4.6%) | Victòria Local: 46.8% ➔ 46.8% (+0.0%)",
+      "   • [LaLiga Hypermotion J10] Girona FC vs FC Andorra: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Dámaso Arcediano Monescillo'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 73.5% (+20.1%) | Vermella: 22.1% ➔ 30.2% (+8.1%) | Victòria Local: 46.4% ➔ 46.4% (+0.0%)",
+      "   • [LaLiga Hypermotion J10] Real Valladolid vs CD Eldense: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José María Sánchez Martínez'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 59.0% (+5.6%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 46.4% ➔ 46.4% (+0.0%)",
+      "   • [LaLiga Hypermotion J10] Burgos CF vs CE Sabadell: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Manuel Ángel Pérez Hernández'",
+      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 62.2% (+8.8%) | Vermella: 22.1% ➔ 22.1% (+0.0%) | Victòria Local: 46.4% ➔ 46.4% (+0.0%)"
+    ],
+    "matches": [
+      {
+        "match_id": "LALIGA_J9_DEP_LEV",
+        "competition_id": "LALIGA",
+        "jornada": 9,
+        "home_team": "RC Deportivo de La Coruña",
+        "away_team": "Levante UD",
+        "home_goals": 1,
+        "away_goals": 1,
+        "score": "1 - 1",
+        "home_xg": 1.11,
+        "away_xg": 0.83,
+        "home_yellow_cards": 3,
+        "away_yellow_cards": 2,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 3,
+        "away_corners": 5,
+        "referee": "Manuel Orellana",
+        "elo_change_home": -0.1,
+        "elo_change_away": 0.1,
+        "new_elo_home": 1483.2,
+        "new_elo_away": 1529.8,
+        "date": "16.10.2026 21:00"
+      },
+      {
+        "match_id": "HYPERMOTION_J10_LEG_COR",
+        "competition_id": "HYPERMOTION",
+        "jornada": 10,
+        "home_team": "CD Leganés",
+        "away_team": "Córdoba CF",
+        "home_goals": 0,
+        "away_goals": 1,
+        "score": "0 - 1",
+        "home_xg": 0.75,
+        "away_xg": 2.09,
+        "home_yellow_cards": 4,
+        "away_yellow_cards": 2,
+        "home_red_cards": 1,
+        "away_red_cards": 0,
+        "home_corners": 4,
+        "away_corners": 7,
+        "referee": "Eder Mallo Fernández",
+        "elo_change_home": -14.9,
+        "elo_change_away": 14.9,
+        "new_elo_home": 1524.2,
+        "new_elo_away": 1480.2,
+        "date": "16.10.2026 20:30"
+      }
+    ],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": [
+      {
+        "match_id": "LALIGA_J9_OSA_RDS",
+        "matchup": "CA Osasuna vs Racing de Santander",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 9,
+        "date": "18.10.2026 12:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Juan Martínez Munuera",
+        "ref_stats": {
+          "yellow_avg": 4.5,
+          "red_avg": 0.2,
+          "fouls_avg": 24.2,
+          "strictness_index": 0.98
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 51.2,
+            "after": 49.8,
+            "delta": -1.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 18.1,
+            "delta": -4.0
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 24.2,
+            "delta": -0.3
+          },
+          "home_win_prob": {
+            "before": 53.1,
+            "after": 53.1,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Juan Martínez Munuera (índex severitat 0.98). Mitjana històrica de 4.5 grogues i 0.2 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "LALIGA_J9_CEL_ALA",
+        "matchup": "RC Celta de Vigo vs Deportivo Alavés",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 9,
+        "date": "18.10.2026 14:15",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "José Luis Munuera Montero",
+        "ref_stats": {
+          "yellow_avg": 4.6,
+          "red_avg": 0.23,
+          "fouls_avg": 25.0,
+          "strictness_index": 1.02
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 55.2,
+            "delta": 1.8
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 20.5,
+            "delta": -1.6
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 25.0,
+            "delta": 0.5
+          },
+          "home_win_prob": {
+            "before": 47.0,
+            "after": 47.0,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de José Luis Munuera Montero (índex severitat 1.02). Mitjana històrica de 4.6 grogues i 0.23 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "LALIGA_J9_MAL_RSO",
+        "matchup": "Málaga CF vs Real Sociedad",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 9,
+        "date": "18.10.2026 16:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Luis Bestard",
+        "ref_stats": {
+          "yellow_avg": 4.8,
+          "red_avg": 0.2,
+          "fouls_avg": 24.5,
+          "strictness_index": 1.05
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 47.1,
+            "after": 52.1,
+            "delta": 5.0
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 18.1,
+            "delta": -4.0
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 24.5,
+            "delta": 0.0
+          },
+          "home_win_prob": {
+            "before": 30.4,
+            "after": 30.4,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Luis Bestard (índex severitat 1.05). Mitjana històrica de 4.8 grogues i 0.2 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "LALIGA_J9_RMA_SEV",
+        "matchup": "Real Madrid vs Sevilla FC",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 9,
+        "date": "18.10.2026 19:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Mateo Busquets Ferrer",
+        "ref_stats": {
+          "yellow_avg": 5.7,
+          "red_avg": 0.4,
+          "fouls_avg": 28.2,
+          "strictness_index": 1.25
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 70.1,
+            "delta": 23.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 33.0,
+            "delta": 10.9
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 28.2,
+            "delta": 3.7
+          },
+          "home_win_prob": {
+            "before": 66.0,
+            "after": 66.0,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Mateo Busquets Ferrer (índex severitat 1.25). Mitjana històrica de 5.7 grogues i 0.4 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J10_CEU_ROV",
+        "matchup": "AD Ceuta vs Real Oviedo",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 10,
+        "date": "18.10.2026 12:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "José Luis Guzmán Mansilla",
+        "ref_stats": {
+          "yellow_avg": 5.3,
+          "red_avg": 0.3,
+          "fouls_avg": 27.0,
+          "strictness_index": 1.19
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 46.7,
+            "after": 64.5,
+            "delta": 17.8
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 27.0,
+            "delta": 2.5
+          },
+          "home_win_prob": {
+            "before": 29.5,
+            "after": 29.5,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de José Luis Guzmán Mansilla (índex severitat 1.19). Mitjana històrica de 5.3 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J10_GRA_CAD",
+        "matchup": "Granada CF vs Cádiz CF",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 10,
+        "date": "18.10.2026 14:15",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Rafael Sánchez López",
+        "ref_stats": {
+          "yellow_avg": 5.3,
+          "red_avg": 0.31,
+          "fouls_avg": 26.9,
+          "strictness_index": 1.18
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 68.9,
+            "delta": 15.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 26.7,
+            "delta": 4.6
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.9,
+            "delta": 2.4
+          },
+          "home_win_prob": {
+            "before": 46.8,
+            "after": 46.8,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Rafael Sánchez López (índex severitat 1.18). Mitjana històrica de 5.3 grogues i 0.31 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J10_GIR_AND",
+        "matchup": "Girona FC vs FC Andorra",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 10,
+        "date": "18.10.2026 16:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Dámaso Arcediano Monescillo",
+        "ref_stats": {
+          "yellow_avg": 5.5,
+          "red_avg": 0.36,
+          "fouls_avg": 27.8,
+          "strictness_index": 1.24
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 73.5,
+            "delta": 20.1
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 30.2,
+            "delta": 8.1
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 27.8,
+            "delta": 3.3
+          },
+          "home_win_prob": {
+            "before": 46.4,
+            "after": 46.4,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Dámaso Arcediano Monescillo (índex severitat 1.24). Mitjana històrica de 5.5 grogues i 0.36 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J10_VLL_ELD",
+        "matchup": "Real Valladolid vs CD Eldense",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 10,
+        "date": "18.10.2026 16:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "José María Sánchez Martínez",
+        "ref_stats": {
+          "yellow_avg": 4.8,
+          "red_avg": 0.22,
+          "fouls_avg": 25.5,
+          "strictness_index": 1.06
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 59.0,
+            "delta": 5.6
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 19.7,
+            "delta": -2.4
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 25.5,
+            "delta": 1.0
+          },
+          "home_win_prob": {
+            "before": 46.4,
+            "after": 46.4,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de José María Sánchez Martínez (índex severitat 1.06). Mitjana històrica de 4.8 grogues i 0.22 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J10_BUR_SAB",
+        "matchup": "Burgos CF vs CE Sabadell",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 10,
+        "date": "18.10.2026 19:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Manuel Ángel Pérez Hernández",
+        "ref_stats": {
+          "yellow_avg": 5.0,
+          "red_avg": 0.25,
+          "fouls_avg": 25.5,
+          "strictness_index": 1.1
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.4,
+            "after": 62.2,
+            "delta": 8.8
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 22.1,
+            "delta": 0.0
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 25.5,
+            "delta": 1.0
+          },
+          "home_win_prob": {
+            "before": 46.4,
+            "after": 46.4,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Manuel Ángel Pérez Hernández (índex severitat 1.1). Mitjana històrica de 5.0 grogues i 0.25 vermelles per partit."
+        }
+      }
+    ]
+  },
+  {
     "date": "2026-10-17",
     "timestamp": "2026-10-17T13:28:25.900429",
     "title": "Actualització Diària del Model · 17/10/2026",

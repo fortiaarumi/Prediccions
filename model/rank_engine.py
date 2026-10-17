@@ -14,7 +14,7 @@ from typing import Dict, Any, Tuple
 import math
 
 class RankEngine:
-    def __init__(self, k_factor: float = 32.0, league_teams_count: float = 20.0):
+    def __init__(self, k_factor: float = 32.0, league_teams_count: float = 24.0):
         self.k_factor = k_factor
         self.league_teams_count = float(league_teams_count)
 

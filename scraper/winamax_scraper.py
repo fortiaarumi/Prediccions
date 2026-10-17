@@ -37,8 +37,16 @@ WINAMAX_TOURNAMENT_IDS = {
 }
 
 class WinamaxScraper:
-    def __init__(self, headless: bool = True):
+    def __init__(self, headless: bool = True, db: Optional[Any] = None):
         self.headless = headless
+        if db is not None:
+            self.db = db
+        else:
+            try:
+                from database.db_manager import DatabaseManager
+                self.db = DatabaseManager()
+            except Exception:
+                self.db = None
         self._tournament_cache: Dict[str, Dict[str, Any]] = {}
         self._match_cache: Dict[str, Dict[str, Any]] = {}
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -140,13 +148,20 @@ class WinamaxScraper:
             "wrexham": "wrexham", "coventry": "coventry", "hull": "hull"
         }
 
+        sorted_keywords = sorted(team_keywords.items(), key=lambda x: len(x[0]), reverse=True)
+        GENERIC_ROOTS = {"city", "united", "athletic", "town", "villa", "palace", "west", "sporting", "celta", "racing", "forest"}
+
         def get_keyword(name_str: str) -> str:
             n = normalize(name_str)
-            for k, root in team_keywords.items():
-                if k in n or root in n:
+            for k, root in sorted_keywords:
+                if k in n:
+                    return root
+                if root not in GENERIC_ROOTS and root in n:
                     return root
             return n[:5]
 
+        h_id = self.db.find_team_id(home_team) if self.db else None
+        a_id = self.db.find_team_id(away_team) if self.db else None
         h_key = get_keyword(home_team)
         a_key = get_keyword(away_team)
 
@@ -201,11 +216,22 @@ class WinamaxScraper:
                 if not c1 or not c2:
                     continue
 
-                c1_key = get_keyword(c1)
-                c2_key = get_keyword(c2)
+                is_matched = False
+                c1_id = self.db.find_team_id(c1) if self.db else None
+                c2_id = self.db.find_team_id(c2) if self.db else None
 
-                if (h_key == c1_key or h_key in normalize(c1) or normalize(c1) in h_key) and \
-                   (a_key == c2_key or a_key in normalize(c2) or normalize(c2) in a_key):
+                if h_id and a_id and c1_id and c2_id:
+                    if h_id == c1_id and a_id == c2_id:
+                        is_matched = True
+
+                if not is_matched:
+                    c1_key = get_keyword(c1)
+                    c2_key = get_keyword(c2)
+                    if (h_key == c1_key or (len(h_key) >= 4 and h_key in normalize(c1)) or (len(c1_key) >= 4 and c1_key in normalize(home_team))) and \
+                       (a_key == c2_key or (len(a_key) >= 4 and a_key in normalize(c2)) or (len(c2_key) >= 4 and c2_key in normalize(away_team))):
+                        is_matched = True
+
+                if is_matched:
                     target_match = m
                     target_mid = str(mid)
                     break
@@ -223,7 +249,7 @@ class WinamaxScraper:
                 if target_mid in self._match_cache:
                     match_state = self._match_cache[target_mid]
                 else:
-                    cmd_m = ['curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', match_url]
+                    cmd_m = ['curl.exe' if os.name == 'nt' else 'curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', match_url]
                     res_m = subprocess.run(cmd_m, capture_output=True, text=True, encoding='utf-8', errors='replace')
                     start_m = res_m.stdout.find('var PRELOADED_STATE = ')
                     if start_m != -1:

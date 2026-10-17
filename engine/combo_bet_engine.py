@@ -324,9 +324,9 @@ class ComboBetEngine:
         for cand in candidates:
             if cand.get("sig") == c1_sig:
                 continue
-            cand_matchups = cand.get("matchups", set())
-            overlap_matches = len(cand_matchups & c1_matchups)
-            if overlap_matches < len(c1_matchups):
+            cand_legs = cand.get("legs", [])
+            overlap_exact_legs = sum(1 for l in cand_legs if self._get_leg_key(l) in c1_leg_keys)
+            if overlap_exact_legs < len(c1_legs):
                 return cand
 
         # Fase 4: Construir combinada a partir dels partits del pool no utilitzats a c1
@@ -382,7 +382,7 @@ class ComboBetEngine:
                     continue
                 league_bonus = 0.06 if is_multi and len(comps) >= 3 else (0.02 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"] for m in match_combo]
+                cand_lists = [m["markets"][:2] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
@@ -402,13 +402,20 @@ class ComboBetEngine:
                             "matchups": {l["matchup"] for l in leg_choice},
                             "sig": self._get_combo_sig(leg_choice)
                         })
+                        if len(candidates) >= 100:
+                            break
+                if len(candidates) >= 100:
+                    break
+            if len(candidates) >= 100:
+                break
 
         if not candidates:
             for k in range(2, min(n_pools, 5) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
                     comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                    if is_multi and len(comps) < 2: continue
-                    cand_lists = [m["markets"] for m in match_combo]
+                    if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
+                        continue
+                    cand_lists = [m["markets"][:2] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
@@ -422,6 +429,12 @@ class ComboBetEngine:
                                 "matchups": {l["matchup"] for l in leg_choice},
                                 "sig": self._get_combo_sig(leg_choice)
                             })
+                            if len(candidates) >= 100:
+                                break
+                    if len(candidates) >= 100:
+                        break
+                if len(candidates) >= 100:
+                    break
 
         candidates.sort(key=lambda x: x["score"], reverse=True)
         c1_cand = candidates[0] if candidates else {"legs": [], "sig": frozenset()}
@@ -485,8 +498,8 @@ class ComboBetEngine:
             return self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)"), self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 10)
-        for k in range(3, min(n_pools, 5) + 1):
+        n_pools = min(len(pools), 14)
+        for k in range(3, min(n_pools, 6) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
                 comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                 if is_multi and len(comps) < 2:
@@ -519,12 +532,19 @@ class ComboBetEngine:
                             "matchups": {l["matchup"] for l in leg_choice},
                             "sig": self._get_combo_sig(leg_choice)
                         })
+                        if len(candidates) >= 100:
+                            break
+                if len(candidates) >= 100:
+                    break
+            if len(candidates) >= 100:
+                break
 
         if not candidates:
-            for k in range(3, min(n_pools, 5) + 1):
+            for k in range(3, min(n_pools, 6) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
                     comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
-                    if is_multi and len(comps) < 2: continue
+                    if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
+                        continue
                     cand_lists = [m["markets"][:2] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
@@ -539,6 +559,12 @@ class ComboBetEngine:
                                 "matchups": {l["matchup"] for l in leg_choice},
                                 "sig": self._get_combo_sig(leg_choice)
                             })
+                            if len(candidates) >= 100:
+                                break
+                    if len(candidates) >= 100:
+                        break
+                if len(candidates) >= 100:
+                    break
 
         candidates.sort(key=lambda x: x["score"], reverse=True)
         c1_cand = candidates[0] if candidates else {"legs": [], "sig": frozenset()}
@@ -588,8 +614,8 @@ class ComboBetEngine:
         pools = self._prepare_balanced_pools(
             match_markets,
             is_multi=is_multi,
-            min_prob=30.0,
-            min_odd=1.12,
+            min_prob=25.0,
+            min_odd=1.28,
             max_per_comp=4,
             forbidden_exact=forbidden_exact,
             counts=global_counts,
@@ -600,15 +626,15 @@ class ComboBetEngine:
             return self.calculate_combo_summary([], f"{prefix} Arriscada #1 (Cuota >= 30.0)"), self.calculate_combo_summary([], f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
 
         candidates = []
-        n_pools = min(len(pools), 10)
-        for k in range(4, min(n_pools, 6) + 1):
+        n_pools = min(len(pools), 14)
+        for k in range(4, min(n_pools, 8) + 1):
             for match_combo in itertools.combinations(pools[:n_pools], k):
                 comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
                 if is_multi and len(comps) < 2:
                     continue
                 league_bonus = 0.10 if is_multi and len(comps) >= 3 else (0.04 if is_multi and len(comps) >= 2 else 0.0)
 
-                cand_lists = [m["markets"][:3] for m in match_combo]
+                cand_lists = [m["markets"][:2] for m in match_combo]
                 for leg_choice in itertools.product(*cand_lists):
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
@@ -634,24 +660,39 @@ class ComboBetEngine:
                             "matchups": {l["matchup"] for l in leg_choice},
                             "sig": self._get_combo_sig(leg_choice)
                         })
+                        if len(candidates) >= 100:
+                            break
+                if len(candidates) >= 100:
+                    break
+            if len(candidates) >= 100:
+                break
 
         if not candidates:
             # Fallback si el rang estricte no es compleix amb el filtre
-            for k in range(4, min(n_pools, 7) + 1):
+            for k in range(4, min(n_pools, 8) + 1):
                 for match_combo in itertools.combinations(pools[:n_pools], k):
-                    cand_lists = [m["markets"][:3] for m in match_combo]
+                    comps = {s["competition_id"] for s in match_combo if s.get("competition_id")}
+                    if is_multi and len(comps) < 2 and len(set(m.get("competition_id") for m in pools if m.get("competition_id"))) >= 2:
+                        continue
+                    cand_lists = [m["markets"][:2] for m in match_combo]
                     for leg_choice in itertools.product(*cand_lists):
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
                         odds = [l["bookie_odd"] for l in leg_choice]
                         c_odd = round(self.calculate_combined_odds(odds), 2)
-                        if c_odd >= 22.0:
+                        if c_odd >= 20.0:
                             p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
                             candidates.append({
                                 "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
                                 "score": p_dec, "matchups": {l["matchup"] for l in leg_choice},
                                 "sig": self._get_combo_sig(leg_choice)
                             })
+                            if len(candidates) >= 100:
+                                break
+                    if len(candidates) >= 100:
+                        break
+                if len(candidates) >= 100:
+                    break
 
         candidates.sort(key=lambda x: x["score"], reverse=True)
         c1_cand = candidates[0] if candidates else {"legs": [], "sig": frozenset()}
@@ -1053,15 +1094,20 @@ class ComboBetEngine:
                 key = (l["matchup"], l["category"])
                 all_buckets.setdefault(key, []).append(l)
 
-        bucket_keys = list(all_buckets.keys())
+        # Ordenar bucket_keys per la màxima probabilitat / valor de les seleccions
+        bucket_keys.sort(
+            key=lambda b: max((float(l.get("model_prob", 0.0)) for l in all_buckets.get(b, [])), default=0.0),
+            reverse=True
+        )
 
         def find_combos(target_min_odd: float, target_max_odd: float, min_legs: int, max_legs: int, min_leg_prob: float = 0.0, allow_exact: bool = False, require_all_matches: bool = False):
             candidates = []
-            n_keys = min(len(bucket_keys), 18)
+            effective_require_all = require_all_matches and (len(day_matches) <= max_legs)
+            n_keys = min(len(bucket_keys), 14)
             for k in range(min_legs, min(max_legs, n_keys) + 1):
                 for b_combo in itertools.combinations(bucket_keys[:n_keys], k):
                     matchups = {b[0] for b in b_combo}
-                    if require_all_matches and len(matchups) < len(day_matches):
+                    if effective_require_all and len(matchups) < len(day_matches):
                         continue
                     elif len(day_matches) >= 2 and len(matchups) < 2:
                         continue
@@ -1101,9 +1147,9 @@ class ComboBetEngine:
                                 "matchups": matchups,
                                 "sig": self._get_combo_sig(choice)
                             })
-                            if len(candidates) >= 500:
+                            if len(candidates) >= 100:
                                 break
-                    if len(candidates) >= 500:
+                    if len(candidates) >= 100:
                         break
             candidates.sort(key=lambda x: x["score"], reverse=True)
             return candidates

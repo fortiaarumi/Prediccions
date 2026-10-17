@@ -1625,5 +1625,637 @@
       "Under 8.5 Córners": 2.73
     },
     "combos": {}
+  },
+  "CHAMPIONSHIP_birminghamcity_queensparkrangers": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Birmingham City vs Queens Park Rangers",
+    "matched": true,
+    "1X2": {
+      "1": 2.18,
+      "X": 3.38,
+      "2": 3.48
+    },
+    "double_chance": {
+      "1X": 1.31,
+      "12": 1.35,
+      "X2": 1.72
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_middlesbrough_cardiffcity": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Middlesbrough vs Cardiff City",
+    "matched": true,
+    "1X2": {
+      "1": 2.18,
+      "X": 3.69,
+      "2": 2.74
+    },
+    "double_chance": {
+      "1X": 1.41,
+      "12": 1.27,
+      "X2": 1.66
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {
+      "Over 11.5 Córners": 1.9,
+      "Under 11.5 Córners": 1.74,
+      "Over 9.5 Córners": 1.27,
+      "Under 9.5 Córners": 3.13,
+      "Over 10.5 Córners": 1.52,
+      "Under 10.5 Córners": 2.22,
+      "Over 12.5 Córners": 2.47,
+      "Under 12.5 Córners": 1.42,
+      "Over 8.5 Córners": 1.11,
+      "Under 8.5 Córners": 4.85,
+      "Under 6.5 Córners": 18.18,
+      "Over 7.5 Córners": 1.02,
+      "Under 7.5 Córners": 8.08,
+      "Over 13.5 Córners": 3.38,
+      "Under 13.5 Córners": 1.23,
+      "Over 14.5 Córners": 4.75,
+      "Under 14.5 Córners": 1.12,
+      "Over 15.5 Córners": 6.82,
+      "Under 15.5 Córners": 1.04
+    },
+    "combos": {}
+  },
+  "CHAMPIONSHIP_watford_charltonathletic": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Watford vs Charlton Athletic",
+    "matched": true,
+    "1X2": {
+      "1": 2.23,
+      "X": 2.77,
+      "2": 3.48
+    },
+    "double_chance": {
+      "1X": 1.28,
+      "12": 1.42,
+      "X2": 1.62
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {
+      "Over 11.5 Córners": 5.05,
+      "Under 11.5 Córners": 1.1,
+      "Over 9.5 Córners": 2.47,
+      "Under 9.5 Córners": 1.41,
+      "Over 10.5 Córners": 3.54,
+      "Under 10.5 Córners": 1.21,
+      "Over 7.5 Córners": 1.52,
+      "Under 7.5 Córners": 2.22,
+      "Over 8.5 Córners": 1.9,
+      "Under 8.5 Córners": 1.72,
+      "Over 12.5 Córners": 6.82,
+      "Under 12.5 Córners": 1.04,
+      "Over 5.5 Córners": 1.09,
+      "Under 5.5 Córners": 5.35,
+      "Over 6.5 Córners": 1.25,
+      "Under 6.5 Córners": 3.28,
+      "Over 13.5 Córners": 10.1,
+      "Under 13.5 Córners": 1.02,
+      "Over 14.5 Córners": 16.16
+    },
+    "combos": {}
+  },
+  "CHAMPIONSHIP_norwichcity_portsmouth": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Norwich City vs Portsmouth",
+    "matched": true,
+    "1X2": {
+      "1": 1.85,
+      "X": 3.74,
+      "2": 3.68
+    },
+    "double_chance": {
+      "1X": 1.25,
+      "12": 1.28,
+      "X2": 1.9
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 2.47,
+      "Under 4.5 Targetes": 1.45,
+      "Over 5.5 Targetes": 4.04,
+      "Targeta Vermella (Sí)": 5.25
+    },
+    "corners": {
+      "Over 11.5 Córners": 2.32,
+      "Under 11.5 Córners": 1.5,
+      "Over 9.5 Córners": 1.52,
+      "Under 9.5 Córners": 2.27,
+      "Over 10.5 Córners": 1.84,
+      "Under 10.5 Córners": 1.82,
+      "Over 12.5 Córners": 2.98,
+      "Under 12.5 Córners": 1.31,
+      "Over 8.5 Córners": 1.3,
+      "Under 8.5 Córners": 3.08
+    },
+    "combos": {}
+  },
+  "CHAMPIONSHIP_boltonwanderers_middlesbrough": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Bolton Wanderers vs Middlesbrough",
+    "matched": true,
+    "1X2": {
+      "1": 4.38,
+      "X": 4.3,
+      "2": 1.56
+    },
+    "double_chance": {
+      "1X": 2.27,
+      "12": 1.22,
+      "X2": 1.18
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_charltonathletic_norwichcity": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Charlton Athletic vs Norwich City",
+    "matched": true,
+    "1X2": {
+      "1": 3.48,
+      "X": 3.64,
+      "2": 1.89
+    },
+    "double_chance": {
+      "1X": 1.86,
+      "12": 1.29,
+      "X2": 1.27
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_portsmouth_millwall": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Portsmouth vs Millwall",
+    "matched": true,
+    "1X2": {
+      "1": 2.44,
+      "X": 3.33,
+      "2": 2.54
+    },
+    "double_chance": {
+      "1X": 1.45,
+      "12": 1.33,
+      "X2": 1.5
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_sheffieldunited_derbycounty": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Sheffield United vs Derby County",
+    "matched": true,
+    "1X2": {
+      "1": 1.89,
+      "X": 3.64,
+      "2": 3.43
+    },
+    "double_chance": {
+      "1X": 1.27,
+      "12": 1.29,
+      "X2": 1.84
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_blackburnrovers_wrexham": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Blackburn Rovers vs Wrexham",
+    "matched": true,
+    "1X2": {
+      "1": 2.33,
+      "X": 3.33,
+      "2": 2.69
+    },
+    "double_chance": {
+      "1X": 1.41,
+      "12": 1.34,
+      "X2": 1.54
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_cardiffcity_birminghamcity": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Cardiff City vs Birmingham City",
+    "matched": true,
+    "1X2": {
+      "1": 2.44,
+      "X": 3.69,
+      "2": 2.39
+    },
+    "double_chance": {
+      "1X": 1.52,
+      "12": 1.29,
+      "X2": 1.49
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_lincolncity_burnley": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Lincoln City vs Burnley",
+    "matched": true,
+    "1X2": {
+      "1": 2.89,
+      "X": 3.48,
+      "2": 2.18
+    },
+    "double_chance": {
+      "1X": 1.64,
+      "12": 1.31,
+      "X2": 1.37
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_prestonnorthend_westbromwichalbion": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Preston North End vs West Bromwich Albion",
+    "matched": true,
+    "1X2": {
+      "1": 3.23,
+      "X": 3.43,
+      "2": 2.01
+    },
+    "double_chance": {
+      "1X": 1.74,
+      "12": 1.32,
+      "X2": 1.3
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_queensparkrangers_swanseacity": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Queens Park Rangers vs Swansea City",
+    "matched": true,
+    "1X2": {
+      "1": 2.23,
+      "X": 3.43,
+      "2": 2.79
+    },
+    "double_chance": {
+      "1X": 1.34,
+      "12": 1.32,
+      "X2": 1.6
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_stokecity_bristolcity": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Stoke City vs Bristol City",
+    "matched": true,
+    "1X2": {
+      "1": 2.18,
+      "X": 3.33,
+      "2": 2.94
+    },
+    "double_chance": {
+      "1X": 1.31,
+      "12": 1.33,
+      "X2": 1.64
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_westhamunited_southampton": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "West Ham United vs Southampton",
+    "matched": true,
+    "1X2": {
+      "1": 1.64,
+      "X": 4.2,
+      "2": 3.98
+    },
+    "double_chance": {
+      "1X": 1.22,
+      "12": 1.23,
+      "X2": 2.12
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_wolverhamptonwanderers_watford": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Wolverhampton Wanderers vs Watford",
+    "matched": true,
+    "1X2": {
+      "1": 1.34,
+      "X": 5.02,
+      "2": 6.72
+    },
+    "double_chance": {
+      "1X": 1.08,
+      "12": 1.17,
+      "X2": 3.08
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "CHAMPIONSHIP_wolverhamptonwanderers_portsmouth": {
+    "source": "Bet365 Espanya (CHAMPIONSHIP)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Wolverhampton Wanderers vs Portsmouth",
+    "matched": true,
+    "1X2": {
+      "1": 1.52,
+      "X": 4.2,
+      "2": 4.88
+    },
+    "double_chance": {
+      "1X": 1.15,
+      "12": 1.23,
+      "X2": 2.37
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LALIGA_levanteud_athleticclub": {
+    "source": "Bet365 Espanya (LALIGA)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Levante UD vs Athletic Club",
+    "matched": true,
+    "1X2": {
+      "1": 3.38,
+      "X": 3.38,
+      "2": 2.08
+    },
+    "double_chance": {
+      "1X": 1.78,
+      "12": 1.37,
+      "X2": 1.33
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
   }
 }

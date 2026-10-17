@@ -362,20 +362,55 @@ def run_daily_autonomous_check(force: bool = False):
             dc = str(d_val).strip().split(" ")[0]
             if "." in dc:
                 p = dc.split(".")
-                if len(p) == 3: return f"{p[2]}-{p[1].zfill(2)}-{p[0].zfill(2)}"
+                if len(p) == 3:
+                    if len(p[2]) == 4: return f"{p[2]}-{p[1].zfill(2)}-{p[0].zfill(2)}"
+                    elif len(p[0]) == 4: return f"{p[0]}-{p[1].zfill(2)}-{p[2].zfill(2)}"
+            elif "-" in dc:
+                p = dc.split("-")
+                if len(p) == 3:
+                    if len(p[2]) == 4: return f"{p[2]}-{p[1].zfill(2)}-{p[0].zfill(2)}"
+                    elif len(p[0]) == 4: return f"{p[0]}-{p[1].zfill(2)}-{p[2].zfill(2)}"
             return dc
 
-        today_matches = [
-            m for m in all_predicted_matches
-            if _norm_date(m.get("date", "")) == today_iso
-        ]
+        # Obtenir tots els partits d'avui de totes les 4 competicions (no només les que s'han predit en aquest cicle)
+        from engine.web_data_exporter import WebDataExporter, COMPETITIONS_META
+        exporter = WebDataExporter(db=db)
+
+        all_today_matches = []
+        today_match_keys = set()
+        for m in all_predicted_matches:
+            if _norm_date(m.get("date", "")) == today_iso:
+                all_today_matches.append(m)
+                h_id = m.get("home_team", {}).get("id") if isinstance(m.get("home_team"), dict) else m.get("home_team_id")
+                a_id = m.get("away_team", {}).get("id") if isinstance(m.get("away_team"), dict) else m.get("away_team_id")
+                today_match_keys.add(f"{h_id}_{a_id}")
+
+        for comp_meta in COMPETITIONS_META:
+            cid = comp_meta["id"]
+            if cid not in leagues_to_predict:
+                try:
+                    pred_data = exporter.get_upcoming_predictions(cid)
+                    for m in pred_data.get("matches", []):
+                        if _norm_date(m.get("date", "")) == today_iso:
+                            h_id = m.get("home_team", {}).get("id")
+                            a_id = m.get("away_team", {}).get("id")
+                            key = f"{h_id}_{a_id}"
+                            if key not in today_match_keys:
+                                today_match_keys.add(key)
+                                all_today_matches.append(m)
+                except Exception as e_c:
+                    print(f"   [!] Error consultant partits d'avui per a {cid}: {e_c}")
+
+        today_matches = all_today_matches
 
         if not today_matches and all_predicted_matches:
             earliest_dates = sorted(list({_norm_date(m.get("date", "")) for m in all_predicted_matches if m.get("date")}))
             print(f"   • Avui ({today_iso}) no hi ha partits programats. Propers dies amb partits: {', '.join(earliest_dates[:3])}")
         elif today_matches:
-            print(f"   • S'han detectat {len(today_matches)} partits per al dia d'avui ({today_iso}).")
-            if not db.has_daily_combos(today_iso):
+            comps_today = set(m.get("competition_id") for m in today_matches if m.get("competition_id"))
+            print(f"   • S'han detectat {len(today_matches)} partits per al dia d'avui ({today_iso}) involucrant {len(comps_today)} lligues ({', '.join(comps_today)}).")
+            if not db.has_daily_combos(today_iso, min_expected=6):
+                db.delete_daily_combos_for_date(today_iso)
                 daily_suite = combo_engine.generate_daily_combos_suite(today_matches)
                 for idx, sc in enumerate(daily_suite.get("safe", []), 1):
                     if sc and sc.get("legs"):
@@ -391,7 +426,7 @@ def run_daily_autonomous_check(force: bool = False):
                         all_new_combos.append({"competition_id": "DAILY", "jornada": 0, "profile": f"RISKY_{idx}", "odd": rc.get("combined_odd", 1.0)})
                 print(f"   [+] Combinades del dia generades i congelades oficials per a {today_iso}!")
             else:
-                print(f"   🔒 [JA GENERADES AVUI] Les combinades del dia per a {today_iso} ja estaven congelades oficialment. Es preserven sense sobreescriure.")
+                print(f"   🔒 [JA GENERADES AVUI] Les 6 combinades del dia per a {today_iso} ja estaven congelades oficialment. Es preserven sense sobreescriure.")
 
     # -----------------------------------------------------------------
     # FASE 5: EXPORTACIÓ PER A LA WEB I SECCIÓ DE NOVETATS (SEMPRE S'EXECUTA)
