@@ -870,6 +870,21 @@ body {
   margin-bottom: 4px;
 }
 
+.value-card-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-bottom: 8px;
+  font-family: var(--font-sans);
+}
+
 .value-selection {
   font-size: 14px;
   font-weight: 600;

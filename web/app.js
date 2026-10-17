@@ -56,11 +56,19 @@ function setBookie(bookie) {
 }
 window.setBookie = setBookie;
 
+function getValidBet365Url(url) {
+  if (!url || typeof url !== 'string' || url.includes('/D1002/')) {
+    return 'https://www.bet365.es/#/AS/B1/';
+  }
+  return url;
+}
+window.getValidBet365Url = getValidBet365Url;
+
 function copyBet365Slip(comboKey) {
   const combo = window.combosRegistry[comboKey];
   if (!combo) return;
   const odd = combo.combined_odd_bet365 || combo.boosted_odd || combo.combined_odd || 1.0;
-  const url = combo.bet365_url || 'https://www.bet365.es';
+  const url = getValidBet365Url(combo.bet365_url);
   const legs = combo.legs || [];
 
   let text = `🟢 BET365 · ${combo.profile}\n`;
@@ -970,15 +978,87 @@ function renderPredictions() {
 // -----------------------------------------------------------------------------
 // 3. APOSTES DE VALOR (+EV%)
 // -----------------------------------------------------------------------------
+function formatBetMatchDate(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const parts = dateStr.trim().split(' ');
+    const dParts = parts[0].includes('.') ? parts[0].split('.') : parts[0].split('-');
+    let day, month, year;
+    if (parts[0].includes('.')) {
+      day = parseInt(dParts[0], 10);
+      month = parseInt(dParts[1], 10) - 1;
+      year = parseInt(dParts[2], 10);
+    } else {
+      year = parseInt(dParts[0], 10);
+      month = parseInt(dParts[1], 10) - 1;
+      day = parseInt(dParts[2], 10);
+    }
+    const d = new Date(year, month, day);
+    const dayNames = ['Dg.', 'Dl.', 'Dt.', 'Dc.', 'Dj.', 'Dv.', 'Ds.'];
+    const dayName = dayNames[d.getDay()] || '';
+    const timeStr = parts[1] ? ` · ${parts[1]}` : '';
+    return `${dayName} ${day.toString().padStart(2, '0')}/${(month + 1).toString().padStart(2, '0')}${timeStr}`;
+  } catch (e) {
+    return dateStr;
+  }
+}
+
 function renderValueBets() {
   const container = document.getElementById('value-bets-container');
   if (!container || !appData.value_bets) return;
 
-  let bets = appData.value_bets || [];
+  const isB365 = (currentBookie === 'BET365');
+  let rawBets = appData.value_bets || [];
+
+  // Mapejar i calcular exactament l'edge real per a la casa d'apostes activa
+  let bets = rawBets.map(b => {
+    const odd = isB365
+      ? (b.bookie_odd_bet365 != null ? b.bookie_odd_bet365 : (b.bookie_odd != null ? +(b.bookie_odd * 1.015).toFixed(2) : null))
+      : (b.bookie_odd_winamax != null ? b.bookie_odd_winamax : b.bookie_odd);
+
+    const prob = (b.model_prob != null ? b.model_prob : 0) / 100.0;
+    
+    // EV percentual real: (Probabilitat * Cuota - 1) * 100
+    let calcEdge = 0.0;
+    if (odd && odd > 1.0 && prob > 0) {
+      calcEdge = +((prob * odd - 1.0) * 100.0).toFixed(1);
+    } else if (isB365) {
+      calcEdge = b.edge_pct_bet365 != null ? b.edge_pct_bet365 : (b.edge_pct || 0.0);
+    } else {
+      calcEdge = b.edge_pct_winamax != null ? b.edge_pct_winamax : (b.edge_pct || 0.0);
+    }
+
+    // Càlcul dinàmic de Kelly Stake per a la cuota activa
+    let kellyStake = b.kelly_stake != null ? b.kelly_stake : 2.5;
+    if (odd && odd > 1.0 && prob > 0) {
+      const bRatio = odd - 1.0;
+      const q = 1.0 - prob;
+      const rawK = ((bRatio * prob) - q) / bRatio;
+      kellyStake = rawK > 0 ? +(Math.min(10.0, Math.max(0.5, rawK * 100 * 0.25))).toFixed(1) : 0.0;
+    }
+
+    const bUrl = isB365
+      ? (b.bet365_url && !b.bet365_url.includes('/D1002/') ? b.bet365_url : 'https://www.bet365.es/#/AS/B1/')
+      : (b.winamax_url || 'https://www.winamax.es/apuestas-deportivas');
+
+    return {
+      ...b,
+      _activeOdd: odd,
+      _activeEdge: calcEdge,
+      _activeKelly: kellyStake,
+      _activeUrl: bUrl
+    };
+  });
+
+  // Filtre 1: Només apostes amb VALOR POSITIU (+EV > 0%) per a la casa seleccionada!
+  bets = bets.filter(b => b._activeEdge > 0.0);
+
+  // Filtre 2: Lliga
   if (currentLeague !== 'ALL' && currentLeague !== 'DAILY') {
     bets = bets.filter(b => b.competition_id === currentLeague);
   }
 
+  // Filtre 3: Cerca de text
   if (currentSearch) {
     bets = bets.filter(b => 
       b.matchup.toLowerCase().includes(currentSearch) ||
@@ -986,38 +1066,37 @@ function renderValueBets() {
     );
   }
 
+  // Ordenar de major a menor valor (+EV%)
+  bets.sort((a, b) => b._activeEdge - a._activeEdge);
+
   if (bets.length === 0) {
-    container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No hi ha apostes de valor (+EV) per al filtre seleccionat.</p>`;
+    const bookieName = isB365 ? 'Bet365' : 'Winamax';
+    container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No hi ha apostes de valor (+EV) per a ${bookieName} amb el filtre seleccionat.</p>`;
     return;
   }
 
   container.innerHTML = bets.map(b => {
-    const isB365 = (currentBookie === 'BET365');
-    const bookieOddVal = isB365
-      ? (b.bookie_odd_bet365 != null ? b.bookie_odd_bet365.toFixed(2) : (b.bookie_odd != null ? (b.bookie_odd * 1.015).toFixed(2) : '-'))
-      : (b.bookie_odd_winamax != null ? b.bookie_odd_winamax.toFixed(2) : (b.bookie_odd != null ? b.bookie_odd.toFixed(2) : '-'));
+    const bookieOddStr = b._activeOdd != null ? b._activeOdd.toFixed(2) : '-';
+    const edgeStr = `+${b._activeEdge.toFixed(1)}% EV`;
+    const kellyStr = `${b._activeKelly.toFixed(1)}%`;
+    const fairStr = b.fair_odd != null ? b.fair_odd.toFixed(2) : '-';
+    const dateFormatted = formatBetMatchDate(b.date);
 
-    const edge = isB365
-      ? (b.edge_pct_bet365 != null ? b.edge_pct_bet365.toFixed(1) : (b.edge_pct != null ? b.edge_pct.toFixed(1) : '0.0'))
-      : (b.edge_pct != null ? b.edge_pct.toFixed(1) : '0.0');
-
-    const kelly = b.kelly_stake != null ? b.kelly_stake.toFixed(1) : '2.5';
-    const fair = b.fair_odd != null ? b.fair_odd.toFixed(2) : '-';
-    const bookieUrl = isB365 ? (b.bet365_url || 'https://www.bet365.es') : (b.winamax_url || 'https://www.winamax.es');
     const bookieLabel = isB365 ? 'Cuota Bet365' : 'Cuota Winamax';
     const actionLabel = isB365 ? 'Apostar a Bet365 ↗' : 'Apostar a Winamax España ↗';
     const btnCls = isB365 ? 'btn-winamax combo-direct-link bet365-link' : 'btn-winamax';
 
     return `
       <div class="value-card">
-        <div class="value-edge-glow">+${edge}% EV</div>
+        <div class="value-edge-glow">${edgeStr}</div>
         <div class="value-matchup">${b.matchup}</div>
+        ${dateFormatted ? `<div class="value-card-date">📅 ${dateFormatted}</div>` : ''}
         <div class="value-selection">👉 ${b.selection}</div>
 
         <div class="value-metrics-row">
           <div>
             <div class="stat-item-label">${bookieLabel}</div>
-            <div class="stat-item-val" style="color: #ffffff;">@${bookieOddVal}</div>
+            <div class="stat-item-val" style="color: #ffffff;">@${bookieOddStr}</div>
           </div>
           <div>
             <div class="stat-item-label">Prob. Model</div>
@@ -1025,11 +1104,11 @@ function renderValueBets() {
           </div>
           <div>
             <div class="stat-item-label">Cuota Justa</div>
-            <div class="stat-item-val" style="color: var(--text-muted);">@${fair}</div>
+            <div class="stat-item-val" style="color: var(--text-muted);">@${fairStr}</div>
           </div>
           <div>
             <div class="stat-item-label">Stake Kelly</div>
-            <div class="stat-item-val" style="color: var(--accent-emerald);">${kelly}%</div>
+            <div class="stat-item-val" style="color: var(--accent-emerald);">${kellyStr}</div>
           </div>
         </div>
 
@@ -1037,14 +1116,14 @@ function renderValueBets() {
           <button class="btn-track-bet-card" onclick="quickTrackBetFromCard('${encodeURIComponent(JSON.stringify({
             matchup: b.matchup,
             selection: b.selection,
-            odd: parseFloat(bookieOddVal) || b.bookie_odd,
+            odd: parseFloat(bookieOddStr) || b.bookie_odd,
             stake: 10,
             category: 'Valor (+EV)',
             competition_id: b.competition_id
           }))}')">
             ➕ Afegir al meu compte
           </button>
-          <a href="${bookieUrl}" target="_blank" rel="noopener noreferrer" class="${btnCls}">
+          <a href="${b._activeUrl}" target="_blank" rel="noopener noreferrer" class="${btnCls}">
             ${actionLabel}
           </a>
         </div>
@@ -1515,7 +1594,7 @@ function renderComboCardsHtml(allCards, lKey, leagueTitle) {
               </button>
             </div>
             <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
-              <a href="${c.bet365_url || 'https://www.bet365.es'}" target="_blank" rel="noopener noreferrer" class="combo-direct-link bet365-link" style="flex: 1;">
+              <a href="${getValidBet365Url(c.bet365_url)}" target="_blank" rel="noopener noreferrer" class="combo-direct-link bet365-link" style="flex: 1;">
                 🟢 Apostar a Bet365 ↗
               </a>
               <button type="button" class="btn-assistant" onclick="openQuickAssistant('${comboKey}')" title="Obre assistent interactiu pas a pas" style="padding: 10px 14px;">
@@ -1524,7 +1603,7 @@ function renderComboCardsHtml(allCards, lKey, leagueTitle) {
             </div>
             <div class="bet365-direct-url-box">
               <span class="bet365-url-lbl">🔗 Link Bet:</span>
-              <a href="${c.bet365_url || 'https://www.bet365.es'}" target="_blank" rel="noopener noreferrer" class="bet365-url-text">${c.bet365_url || 'https://www.bet365.es'}</a>
+              <a href="${getValidBet365Url(c.bet365_url)}" target="_blank" rel="noopener noreferrer" class="bet365-url-text">${getValidBet365Url(c.bet365_url)}</a>
             </div>
           ` : `
             <div class="combo-btn-row">
@@ -3575,7 +3654,7 @@ function openQuickAssistant(comboKey) {
         : (leg.bookie_odd_winamax != null ? leg.bookie_odd_winamax.toFixed(2) : (leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-'));
       const modelProb = leg.model_prob != null ? leg.model_prob.toFixed(1) : '-';
       const legUrl = isB365
-        ? (leg.url_bet365 || combo.bet365_url || 'https://www.bet365.es')
+        ? getValidBet365Url(leg.url_bet365 || combo.bet365_url)
         : (leg.url || combo.winamax_url || 'https://www.winamax.es');
 
       return `
@@ -3672,7 +3751,7 @@ function copyModalComboSummary() {
     : (combo.boosted_odd || combo.combined_odd || 1.0);
   const probConjunta = combo.combined_prob_pct != null ? combo.combined_prob_pct.toFixed(1) : '-';
   const bookieName = isB365 ? 'BET365' : 'WINAMAX';
-  const directLink = isB365 ? (combo.bet365_url || 'https://www.bet365.es') : (combo.winamax_url || 'https://www.winamax.es');
+  const directLink = isB365 ? getValidBet365Url(combo.bet365_url) : (combo.winamax_url || 'https://www.winamax.es');
 
   let text = `⚽ PREDICCIONS FUTBOL · ${bookieName} · ${combo.profile}\n`;
   text += `Lliga: ${combo.leagueTitle || ''}\n`;

@@ -1981,6 +1981,11 @@ class WebDataExporter:
                     edge_w = round(float(edge_val), 1)
                     edge_b365 = round((p_calc * b365_odd - 1.0) * 100.0, 1)
 
+                    from scraper.winamax_scraper import WINAMAX_TOURNAMENTS
+                    w_base = f"https://www.winamax.es/apuestas-deportivas/sports/1/{WINAMAX_TOURNAMENTS.get(cid, '32')}"
+                    w_match_url = vb.get("url") or m.get("odds", {}).get("url") or w_base
+                    b365_match_url = "https://www.bet365.es/#/AS/B1/"
+
                     all_value_bets.append({
                         "competition_id": cid,
                         "competition_name": cname,
@@ -1997,8 +2002,8 @@ class WebDataExporter:
                         "edge_pct_winamax": edge_w,
                         "edge_pct_bet365": edge_b365,
                         "kelly_stake": round(float(stake_val), 1),
-                        "winamax_url": vb.get("url", m.get("odds", {}).get("match_url", "https://www.winamax.es")),
-                        "bet365_url": m.get("url_bet365") or self.bet365.generate_combo_link([], cid)
+                        "winamax_url": w_match_url,
+                        "bet365_url": b365_match_url
                     })
 
             # C) 6 Combinades per lliga i seguiment multijornada

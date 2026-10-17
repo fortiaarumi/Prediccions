@@ -25,22 +25,22 @@ CACHE_DIR = Path(__file__).parent.parent / "data"
 BET365_TOURNAMENTS = {
     "LALIGA": {
         "name": "España - LaLiga EA Sports",
-        "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E4/G40/",
+        "url": "https://www.bet365.es/#/AS/B1/",
         "code": "E4"
     },
     "PREMIER": {
         "name": "Inglaterra - Premier League",
-        "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E1/G40/",
+        "url": "https://www.bet365.es/#/AS/B1/",
         "code": "E1"
     },
     "HYPERMOTION": {
         "name": "España - LaLiga Hypermotion",
-        "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E5/G40/",
+        "url": "https://www.bet365.es/#/AS/B1/",
         "code": "E5"
     },
     "CHAMPIONSHIP": {
         "name": "Inglaterra - Championship",
-        "url": "https://www.bet365.es/#/AC/B1/C1/D1002/E2/G40/",
+        "url": "https://www.bet365.es/#/AS/B1/",
         "code": "E2"
     }
 }
