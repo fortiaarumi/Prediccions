@@ -1,5 +1,5 @@
 {
-  "count": 5,
+  "count": 6,
   "alerts": [
     {
       "id": "LALIGA_caosasuna_racingdesantander",
@@ -80,6 +80,22 @@
         "Winamax"
       ],
       "message": "Quotes no detectades a Winamax per al partit AD Ceuta vs Real Oviedo."
+    },
+    {
+      "id": "HYPERMOTION_granadacf_cadizcf",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Granada CF vs Cádiz CF",
+      "home_team": "Granada CF",
+      "away_team": "Cádiz CF",
+      "date": "18.10.2026 16:15",
+      "jornada": 10,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Granada CF vs Cádiz CF."
     }
   ]
 }

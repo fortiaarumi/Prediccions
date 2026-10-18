@@ -321,17 +321,17 @@ class WebDataExporter:
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
             max_f = cursor.execute(
-                "SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status IN ('FINISHED', 'SUSPENDED')",
+                "SELECT MAX(jornada) FROM matches WHERE competition_id = ? AND status IN ('FINISHED', 'SUSPENDED', 'LIVE')",
                 (comp,)
             ).fetchone()[0] or 0
 
-            # Si la jornada max_f encara està en curs de jugar-se (té >= 2 partits SCHEDULED)
+            # Si la jornada max_f encara està en curs de jugar-se (té >= 2 partits SCHEDULED o LIVE)
             if max_f > 0:
                 sched_in_max_f = cursor.execute(
-                    "SELECT COUNT(*) FROM matches WHERE competition_id = ? AND jornada = ? AND status = 'SCHEDULED'",
+                    "SELECT COUNT(*) FROM matches WHERE competition_id = ? AND jornada = ? AND status IN ('SCHEDULED', 'LIVE')",
                     (comp, max_f)
                 ).fetchone()[0] or 0
-                if sched_in_max_f >= 2:
+                if sched_in_max_f >= 1:
                     return max_f
 
             # Comprovar si hi ha una jornada posterior amb partits SCHEDULED
@@ -385,9 +385,12 @@ class WebDataExporter:
                         is_susp = f.get("is_suspended", False) or (
                             any(w in str(f.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
                         ) or (f.get("status") == "SUSPENDED")
-                        is_played = (not is_susp) and score_h is not None and str(score_h).isdigit()
+                        is_live = (f.get("status") == "LIVE") or bool(f.get("is_live"))
+                        is_played = (not is_susp) and (not is_live) and score_h is not None and str(score_h).isdigit()
                         if is_susp:
                             m_status = "SUSPENDED"
+                        elif is_live:
+                            m_status = "LIVE"
                         elif is_played:
                             m_status = "FINISHED"
                         else:
@@ -400,8 +403,8 @@ class WebDataExporter:
                             "away_team_id": a_id,
                             "date_time": f.get("date", "Pendent"),
                             "status": m_status,
-                            "home_goals": int(score_h) if is_played else None,
-                            "away_goals": int(score_a) if is_played else None,
+                            "home_goals": int(score_h) if (is_played or is_live) and score_h is not None and str(score_h).isdigit() else None,
+                            "away_goals": int(score_a) if (is_played or is_live) and score_a is not None and str(score_a).isdigit() else None,
                             "home_name": h_name,
                             "url": f.get("url", ""),
                             "is_suspended": is_susp,
@@ -448,11 +451,12 @@ class WebDataExporter:
             pred["competition_id"] = competition_id
             pred["date"] = match_date
             pred["referee_resolution"] = ref_res
-
-            # Comprovar si el partit ja s'ha disputat (FINISHED)
+            # Comprovar si el partit ja s'ha disputat (FINISHED) o està en joc (LIVE)
             h_goals = r.get("home_goals")
             a_goals = r.get("away_goals")
-            is_finished = (r.get("status") == "FINISHED" and h_goals is not None)
+            raw_status = r.get("status")
+            is_live_match = (raw_status == "LIVE")
+            is_finished = (raw_status == "FINISHED" and h_goals is not None)
 
             # Comprovar si la data i hora d'inici ja ha passat (partit començat o ja disputat)
             match_is_past = False
@@ -476,7 +480,7 @@ class WebDataExporter:
             w_has_1x2 = False
             b_has_1x2 = False
 
-            if not is_finished and not match_is_past:
+            if not is_finished and not is_live_match and not match_is_past:
                 odds = self.winamax.get_match_odds(home_data["name"], away_data["name"], competition_id=competition_id)
                 if (not odds.get("matched")) and existing_match_odds:
                     m_key = f"{h_id}_{a_id}"
@@ -678,6 +682,11 @@ class WebDataExporter:
             is_susp_match = (raw_status in ["SUSPENDED", "POSTPONED"]) or (r.get("is_suspended", False)) or ("Rayo" in home_data["name"] and "Athletic" in away_data["name"] and not is_finished)
             if is_susp_match:
                 m_status = "SUSPENDED"
+            elif is_live_match:
+                m_status = "LIVE"
+                live_hg = int(h_goals) if h_goals is not None else 0
+                live_ag = int(a_goals) if a_goals is not None else 0
+                final_score_str = f"{live_hg} - {live_ag} (En joc)"
             elif is_finished:
                 m_status = "FINISHED"
             else:
@@ -707,9 +716,9 @@ class WebDataExporter:
                     "elo": round(float(away_data.get("elo_rating", 1500.0)), 1)
                 },
                 "date": match_date,
-                # Dades reals si ja s'ha jugat
-                "home_goals": int(h_goals) if is_finished else None,
-                "away_goals": int(a_goals) if is_finished else None,
+                # Dades reals si ja s'ha jugat o està en joc
+                "home_goals": int(h_goals) if (is_finished or is_live_match) and h_goals is not None else None,
+                "away_goals": int(a_goals) if (is_finished or is_live_match) and a_goals is not None else None,
                 "final_score": final_score_str,
                 "actual_1x2": actual_1x2,
                 "predicted_1x2": predicted_1x2,
@@ -838,11 +847,13 @@ class WebDataExporter:
 
         matches_list = []
         for r in rows:
-            is_susp_match = (r.get("status") in ["SUSPENDED", "POSTPONED"]) or bool(r.get("is_suspended")) or ("Rayo" in r.get("h_name", "") and "Athletic" in r.get("a_name", "") and r.get("status") != "FINISHED")
-            is_finished = (not is_susp_match) and (r.get("status") == "FINISHED" and r.get("home_goals") is not None)
-            hg = int(r["home_goals"]) if is_finished else None
-            ag = int(r["away_goals"]) if is_finished else None
-            final_str = f"{hg} - {ag}" if is_finished else None
+            raw_status = r.get("status")
+            is_susp_match = (raw_status in ["SUSPENDED", "POSTPONED"]) or bool(r.get("is_suspended")) or ("Rayo" in r.get("h_name", "") and "Athletic" in r.get("a_name", "") and raw_status != "FINISHED")
+            is_live = (raw_status == "LIVE")
+            is_finished = (not is_susp_match) and (not is_live) and (raw_status == "FINISHED" and r.get("home_goals") is not None)
+            hg = int(r["home_goals"]) if (is_finished or is_live) and r.get("home_goals") is not None else None
+            ag = int(r["away_goals"]) if (is_finished or is_live) and r.get("away_goals") is not None else None
+            final_str = f"{hg} - {ag} (En joc)" if is_live else (f"{hg} - {ag}" if is_finished else None)
             actual_1x2 = "1" if (is_finished and hg > ag) else ("2" if (is_finished and ag > hg) else ("X" if is_finished else None))
 
             home_data = {"id": r["home_team_id"], "name": r["h_name"], "elo_rating": r.get("h_elo", 1500.0)}
@@ -868,11 +879,13 @@ class WebDataExporter:
             if is_susp_match and not susp_reason:
                 susp_reason = "Partit suspès oficialment per incidents a la grada. A l'espera de resolució de LaLiga/CTA (resultat no compta com a 0-0)."
 
+            m_status = "SUSPENDED" if is_susp_match else ("LIVE" if is_live else ("FINISHED" if is_finished else "SCHEDULED"))
+
             matches_list.append({
                 "match_id": r["id"],
                 "competition_id": competition_id,
                 "jornada": jornada,
-                "status": "SUSPENDED" if is_susp_match else ("FINISHED" if is_finished else "SCHEDULED"),
+                "status": m_status,
                 "is_suspended": is_susp_match,
                 "suspension_reason": susp_reason if is_susp_match else "",
                 "home_team": {
@@ -1054,6 +1067,10 @@ class WebDataExporter:
                         leg_status = "PENDING"
                         if (match_row and match_row.get("status") == "SUSPENDED") or ("Rayo" in leg.get("matchup", "") and "Athletic" in leg.get("matchup", "")):
                             actual_res = "Partit suspès (a l'espera del resultat)"
+                        elif match_row and match_row.get("status") == "LIVE":
+                            lh = match_row.get("home_goals") if match_row.get("home_goals") is not None else 0
+                            la = match_row.get("away_goals") if match_row.get("away_goals") is not None else 0
+                            actual_res = f"En joc ({lh}-{la})"
                         else:
                             actual_res = "Pendent de disputar"
                     else:
@@ -1926,7 +1943,7 @@ class WebDataExporter:
                     comp = meta["id"]
                     c.execute("""
                         SELECT MAX(jornada) FROM matches
-                        WHERE competition_id = ? AND (status = 'SCHEDULED' OR status = 'FINISHED')
+                        WHERE competition_id = ? AND (status = 'SCHEDULED' OR status = 'FINISHED' OR status = 'LIVE')
                     """, (comp,))
                     row_j = c.fetchone()
                     active_j = row_j[0] if row_j else None
@@ -1951,7 +1968,7 @@ class WebDataExporter:
 
                     c.execute("""
                         SELECT COUNT(*) FROM matches
-                        WHERE competition_id = ? AND jornada = ? AND status = 'SCHEDULED'
+                        WHERE competition_id = ? AND jornada = ? AND (status = 'SCHEDULED' OR status = 'LIVE')
                     """, (comp, active_j))
                     has_scheduled = (c.fetchone()[0] or 0) > 0
 

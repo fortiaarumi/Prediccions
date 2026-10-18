@@ -293,8 +293,8 @@ class DatabaseManager:
                 ("REF_DEFAULT", "Àrbitre Mitjà (Standard)", 500, 4.50, 0.25, 25.0, 0.28, 0.45, 1.00),
             ]
             cursor.executemany(
-                """INSERT OR REPLACE INTO referees 
-                   (id, name, matches_count, yellow_cards_avg, red_cards_avg, fouls_avg, penalties_avg, home_win_pct, strictness_index, updated_at) 
+                """INSERT OR REPLACE INTO referees
+                   (id, name, matches_count, yellow_cards_avg, red_cards_avg, fouls_avg, penalties_avg, home_win_pct, strictness_index, updated_at)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))""",
                 referees
             )
@@ -346,8 +346,8 @@ class DatabaseManager:
                     ranks = (14.0, 14.0, 14.0, 1440.0)
 
                 cursor.execute(
-                    """INSERT OR IGNORE INTO team_ratings 
-                       (team_id, general_rank, off_rank, def_rank, elo_rating, rest_days, updated_at) 
+                    """INSERT OR IGNORE INTO team_ratings
+                       (team_id, general_rank, off_rank, def_rank, elo_rating, rest_days, updated_at)
                        VALUES (?, ?, ?, ?, ?, 7.0, datetime('now'))""",
                     (t_id, ranks[0], ranks[1], ranks[2], ranks[3])
                 )
@@ -360,7 +360,7 @@ class DatabaseManager:
         """
         if not query_name:
             return None
-        
+
         q = query_name.strip().lower()
         # Neteja de caràcters especials per a comparació
         q_norm = q.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
@@ -662,6 +662,7 @@ class DatabaseManager:
             "freiburg": "SCF",
             "scf": "SCF",
             "borussia monchengladbach": "BMG",
+            "b. monchengladbach": "BMG",
             "borussia m'gladbach": "BMG",
             "borussia mgladbach": "BMG",
             "monchengladbach": "BMG",
@@ -917,7 +918,7 @@ class DatabaseManager:
         """
         if not query_name:
             return "REF_DEFAULT"
-            
+
         def _norm(s: str) -> str:
             return "".join(c for c in unicodedata.normalize("NFD", s.lower()) if unicodedata.category(c) != "Mn")
 
@@ -939,7 +940,7 @@ class DatabaseManager:
         if len(parts) >= 2 and len(parts[-1]) == 1:
             initial = parts[-1]
             fs_surname = parts[0]
-            
+
             # Prioritat 2a: Coincidència de primer cognom i inicial
             for ref in all_refs:
                 fn_words = _norm(ref["name"]).split()
@@ -1020,8 +1021,8 @@ class DatabaseManager:
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """SELECT t.id, t.name, t.short_name, t.stadium, 
-                          r.general_rank, r.off_rank, r.def_rank, r.elo_rating, 
+                """SELECT t.id, t.name, t.short_name, t.stadium,
+                          r.general_rank, r.off_rank, r.def_rank, r.elo_rating,
                           r.rest_days, r.avg_cards_for_5, r.avg_corners_for_5, r.avg_corners_against_5
                    FROM teams t
                    LEFT JOIN team_ratings r ON t.id = r.team_id
@@ -1052,7 +1053,7 @@ class DatabaseManager:
         with self.get_connection() as conn:
             cursor = conn.cursor()
             query = """
-                SELECT t.id, t.name, t.short_name, t.stadium, 
+                SELECT t.id, t.name, t.short_name, t.stadium,
                        r.elo_rating, r.general_rank, r.off_rank, r.def_rank,
                        r.avg_cards_for_5, r.avg_corners_for_5
                 FROM teams t
@@ -1076,7 +1077,7 @@ class DatabaseManager:
                 if comp_team_ids:
                     placeholders = ",".join("?" for _ in comp_team_ids)
                     cursor.execute(f"""
-                        SELECT t.id, t.name, t.short_name, t.stadium, 
+                        SELECT t.id, t.name, t.short_name, t.stadium,
                                r.elo_rating, r.general_rank, r.off_rank, r.def_rank,
                                r.avg_cards_for_5, r.avg_corners_for_5
                         FROM teams t
@@ -1396,14 +1397,14 @@ class DatabaseManager:
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                DELETE FROM combo_legs 
+                DELETE FROM combo_legs
                 WHERE combo_id IN (
-                    SELECT id FROM combo_recommendations 
+                    SELECT id FROM combo_recommendations
                     WHERE jornada < 6 OR profile IN ('SAFE', 'RISKY')
                 )
             """)
             cursor.execute("""
-                DELETE FROM combo_recommendations 
+                DELETE FROM combo_recommendations
                 WHERE jornada < 6 OR profile IN ('SAFE', 'RISKY')
             """)
             conn.commit()

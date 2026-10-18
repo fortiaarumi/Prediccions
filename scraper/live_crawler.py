@@ -66,7 +66,7 @@ class LiveCrawler:
             data_start = html_text.find("data: `", idx) + len("data: `")
             data_end = html_text.find("`", data_start)
             raw_feed = html_text[data_start:data_end]
-            
+
             blocks = raw_feed.split('~')
             current_round = None
             items = []
@@ -107,14 +107,71 @@ class LiveCrawler:
             return items
 
         # 1. Obtenir resultats jugats
-        cmd_res = ['curl', '-s', f'{base_url}/resultados/']
+        curl_bin = 'curl.exe' if os.name == 'nt' else 'curl'
+        cmd_res = [curl_bin, '-s', f'{base_url}/resultados/']
         res_res = subprocess.run(cmd_res, capture_output=True, text=True, encoding='utf-8', errors='replace')
         all_matches = parse_feed_blocks(res_res.stdout, 'results')
 
         # 2. Obtenir fixtures pendents
-        cmd_fix = ['curl', '-s', f'{base_url}/partidos/']
+        cmd_fix = [curl_bin, '-s', f'{base_url}/partidos/']
         res_fix = subprocess.run(cmd_fix, capture_output=True, text=True, encoding='utf-8', errors='replace')
         all_matches.extend(parse_feed_blocks(res_fix.stdout, 'fixtures'))
+
+        # 3. Obtenir partits en joc (LIVE) o de la jornada d'avui que no figurin a fixtures/results
+        comp_patterns = {
+            "LALIGA": r'SPAIN:\s*LaLiga(?!\d| Women)',
+            "PREMIER": r'ENGLAND:\s*Premier League(?!\d| 2| Women)',
+            "HYPERMOTION": r'SPAIN:\s*(?:LaLiga2|LaLiga Hypermotion)',
+            "CHAMPIONSHIP": r'ENGLAND:\s*Championship(?!\s*Women)',
+            "BUNDESLIGA": r'GERMANY:\s*Bundesliga(?!\s*Women)',
+            "LIGUE1": r'FRANCE:\s*Ligue 1(?!\s*Women)',
+            "SERIEA": r'ITALY:\s*Serie A(?!\s*Women)',
+        }
+        pat = comp_patterns.get(comp_id)
+        if pat:
+            try:
+                cmd_live = [curl_bin, '-s', '-H', 'x-fsign: SW9D1eZo', 'https://local-global.flashscore.ninja/2/x/feed/f_1_0_3_es_1']
+                res_live = subprocess.run(cmd_live, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=5)
+                if res_live.stdout:
+                    live_blocks = res_live.stdout.split('~')
+                    in_comp = False
+                    for b in live_blocks:
+                        if 'ZA÷' in b:
+                            in_comp = bool(re.search(pat, b, re.IGNORECASE))
+                        if in_comp and 'AA÷' in b and 'AE÷' in b and 'AF÷' in b:
+                            fields = {}
+                            for token in re.split(r'[\xac\r\n\t]+', b):
+                                if '÷' in token or '\xf7' in token:
+                                    parts = re.split(r'[\xf7÷]', token, maxsplit=1)
+                                    if len(parts) == 2:
+                                        fields[parts[0]] = parts[1]
+                            ts = fields.get('AD')
+                            dt_str = datetime.fromtimestamp(int(ts)).strftime('%d.%m.%Y %H:%M') if ts and ts.isdigit() else 'TBD'
+                            am_note = fields.get('AM', '')
+                            ac_code = str(fields.get('AC', ''))
+                            is_susp = (
+                                ac_code in ['37', '4', '10', '11'] or
+                                any(w in am_note.lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
+                            )
+                            is_live = ac_code in ['2', '6', '7', '8', '12', '13']
+                            is_fin = (ac_code == '3') and not is_susp and not is_live
+                            all_matches.append({
+                                'round_str': f"Jornada {jornada}",
+                                'match_code': fields.get('AA'),
+                                'home': fields.get('AE'),
+                                'away': fields.get('AF'),
+                                'score_h': fields.get('AG') if (is_fin or is_live) else None,
+                                'score_a': fields.get('AH') if (is_fin or is_live) else None,
+                                'date': dt_str,
+                                'url': f"https://www.flashscore.es/partido/{fields.get('AA')}/#/estadisticas-del-partido/0",
+                                'is_suspended': is_susp,
+                                'suspension_reason': am_note,
+                                'is_finished': is_fin,
+                                'is_live': is_live,
+                                'ac_code': ac_code
+                            })
+            except Exception:
+                pass
 
         # Filtrar exactament per Jornada/Round N
         for m in all_matches:
@@ -123,11 +180,28 @@ class LiveCrawler:
             m_num = re.search(r'(?:Jornada|Round|Matchday|Spieltag|Journ[eé]e|Giornata)\s*(\d+)|(\d+)\.?\s*(?:Spieltag|Journ[eé]e|Giornata)', r_str, re.IGNORECASE)
             if m_num:
                 match_round_num = int(m_num.group(1) or m_num.group(2))
-            
+
             if match_round_num == jornada:
-                # Evitar duplicats
-                if not any(f["home"] == m["home"] and f["away"] == m["away"] for f in fixtures):
-                    is_susp_fix = m.get("is_suspended", False)
+                existing_idx = next((i for i, f in enumerate(fixtures) if f["match_code"] == m["match_code"] or (f["home"] == m["home"] and f["away"] == m["away"])), None)
+                if existing_idx is not None:
+                    if m.get("is_live") or m.get("is_finished"):
+                        fixtures[existing_idx] = {
+                            "competition_id": comp_id,
+                            "home": m["home"],
+                            "away": m["away"],
+                            "date": m["date"],
+                            "url": m["url"],
+                            "match_code": m["match_code"],
+                            "jornada": jornada,
+                            "score_h": m.get("score_h"),
+                            "score_a": m.get("score_a"),
+                            "is_suspended": m.get("is_suspended", False),
+                            "suspension_reason": m.get("suspension_reason", ""),
+                            "is_finished": m.get("is_finished", False),
+                            "is_live": m.get("is_live", False),
+                            "ac_code": m.get("ac_code", "")
+                        }
+                else:
                     fixtures.append({
                         "competition_id": comp_id,
                         "home": m["home"],
@@ -138,9 +212,10 @@ class LiveCrawler:
                         "jornada": jornada,
                         "score_h": m.get("score_h"),
                         "score_a": m.get("score_a"),
-                        "is_suspended": is_susp_fix,
+                        "is_suspended": m.get("is_suspended", False),
                         "suspension_reason": m.get("suspension_reason", ""),
                         "is_finished": m.get("is_finished", False),
+                        "is_live": m.get("is_live", False),
                         "ac_code": m.get("ac_code", "")
                     })
 
@@ -191,17 +266,28 @@ class LiveCrawler:
             # 1. Comprovar si el partit ja estava guardat i finalitzat a la base de dades
             # Cerca per match_code a la URL, per clau canònica o per enfrontament natural (competició, temporada, equips)
             cursor.execute("""
-                SELECT id, status, home_goals, away_goals, jornada, date_time 
-                FROM matches 
+                SELECT id, status, home_goals, away_goals, jornada, date_time
+                FROM matches
                 WHERE (url LIKE '%' || ? || '%' AND ? != '')
                    OR (competition_id = ? AND season = ? AND home_team_id = ? AND away_team_id = ?)
             """, (match_code or '', match_code or '', comp_id, season, home_id, away_id))
             existing = cursor.fetchone()
 
+            is_live_fix = fix.get("is_live", False)
             if existing:
                 match_id = existing["id"]
                 if existing["status"] == "FINISHED" and existing["home_goals"] is not None:
                     print(f">> {home_id} vs {away_id}: [JA INGESTAT PRÈVIAMENT ({existing['home_goals']}-{existing['away_goals']})] - Saltant per no duplicar Elo.")
+                    skipped_count += 1
+                    continue
+                elif existing["status"] == "LIVE" and is_live_fix:
+                    h_cur = int(fix.get("score_h") or 0) if fix.get("score_h") is not None and str(fix.get("score_h")).isdigit() else existing["home_goals"]
+                    a_cur = int(fix.get("score_a") or 0) if fix.get("score_a") is not None and str(fix.get("score_a")).isdigit() else existing["away_goals"]
+                    cursor.execute("""
+                        UPDATE matches SET home_goals = ?, away_goals = ?, date_time = ? WHERE id = ?
+                    """, (h_cur, a_cur, fix.get("date") or existing["date_time"], match_id))
+                    conn.commit()
+                    print(f">> {home_id} vs {away_id}: [ACTUALITZAT EN DIRECTE ({h_cur}-{a_cur})] - Sense alterar Elo.")
                     skipped_count += 1
                     continue
             else:
@@ -227,7 +313,7 @@ class LiveCrawler:
                 a_goals = data.get("away_goals") if data.get("away_goals") is not None else fix.get("score_a")
 
                 # El partit NOMÉS és finalitzat si té resultat definitiu (no en joc/live ni suspès)
-                is_definitive = fix.get("is_finished", False) or data.get("is_finished", False) or (str(fix.get("ac_code", "")) == "3")
+                is_definitive = (fix.get("is_finished", False) or data.get("is_finished", False) or (str(fix.get("ac_code", "")) == "3")) and not is_live_fix
                 is_finished = (not is_suspended) and is_definitive and (h_goals is not None and str(h_goals).isdigit())
                 ref_id = db.get_or_create_referee(data.get("referee"), competition_id=comp_id)
 
@@ -239,6 +325,10 @@ class LiveCrawler:
                     match_status = "FINISHED"
                     h_goals_val = int(h_goals)
                     a_goals_val = int(a_goals)
+                elif is_live_fix:
+                    match_status = "LIVE"
+                    h_goals_val = int(h_goals) if h_goals is not None and str(h_goals).isdigit() else 0
+                    a_goals_val = int(a_goals) if a_goals is not None and str(a_goals).isdigit() else 0
                 else:
                     match_status = "SCHEDULED"
                     h_goals_val = None
@@ -272,6 +362,8 @@ class LiveCrawler:
 
                 if is_suspended:
                     print(f"   ⏸️ [PARTIT SUSPÈS] {home} vs {away} - A l'espera del resultat (no s'inventen marcadors 0-0 ni es toca l'Elo).")
+                elif is_live_fix:
+                    print(f"   🔴 [PARTIT EN DIRECTE] {home} {h_goals_val}-{a_goals_val} {away} - Partit en joc (sense alterar l'Elo).")
                 elif is_finished:
                     h_data = db.get_team_rating(home_id)
                     a_data = db.get_team_rating(away_id)

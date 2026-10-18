@@ -29,23 +29,6 @@ class CardModel:
             ("ARS", "TOT"), ("TOT", "ARS"), # North London Derby
             ("MUN", "MCI"), ("MCI", "MUN"), # Manchester Derby
             ("MUN", "LIV"), ("LIV", "MUN"), # Northwest Derby
-            # Bundesliga
-            ("DOR", "S04"), ("S04", "DOR"), # Revierderby
-            ("FCB", "DOR"), ("DOR", "FCB"), # Der Klassiker
-            ("HSV", "STP"), ("STP", "HSV"), # Hamburger Stadtderby
-            ("B04", "KOE"), ("KOE", "B04"), # Rhein-Derby
-            ("SVW", "HSV"), ("HSV", "SVW"), # Nordderby
-            # Ligue 1
-            ("PSG", "OM"), ("OM", "PSG"),   # Le Classique
-            ("OL", "ASSE"), ("ASSE", "OL"), # Derby du Rhône
-            ("MON", "OGC"), ("OGC", "MON"), # Derby de la Côte d'Azur
-            ("LIL", "RCL"), ("RCL", "LIL"), # Derby du Nord
-            # Serie A
-            ("INT", "ACM"), ("ACM", "INT"), # Derby della Madonnina
-            ("ROM", "LAZ"), ("LAZ", "ROM"), # Derby della Capitale
-            ("JUV", "TOR"), ("TOR", "JUV"), # Derby della Mole
-            ("JUV", "INT"), ("INT", "JUV"), # Derby d'Italia
-            ("GEN", "SAM"), ("SAM", "GEN"), # Derby della Lanterna
         }
 
     def is_derby(self, home_team_id: str, away_team_id: str) -> bool:
