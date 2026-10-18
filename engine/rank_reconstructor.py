@@ -86,7 +86,7 @@ def get_canonical_initial_ratings() -> Dict[str, Dict[str, float]]:
         initial_map[tid] = {"general": 20.0, "off": 20.0, "def": 20.0}
 
     # Bundesliga (18 equips -> neutre 9.0)
-    for tid in ["BAY", "B04", "BVB", "RBL", "SGE", "VFB", "SCF", "BMG", "SVW", "FCA", "TSG", "M05", "FCU", "KOE", "HSV", "S04", "SCP", "SVE", "WOB"]:
+    for tid in ["BAY", "B04", "BVB", "RBL", "SGE", "VFB", "SCF", "BMG", "SVW", "FCA", "TSG", "M05", "FCU", "KOE", "HSV", "S04", "SCP", "SVE"]:
         initial_map[tid] = {"general": 9.0, "off": 9.0, "def": 9.0}
 
     # Ligue 1 (18 equips -> neutre 9.0)

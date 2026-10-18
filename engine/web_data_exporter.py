@@ -109,8 +109,13 @@ COMPETITIONS_META = [
 ]
 
 class WebDataExporter:
-    def __init__(self, db: Optional[DatabaseManager] = None):
-        self.db = db if db else DatabaseManager()
+    def __init__(self, db: Optional[Any] = None):
+        if isinstance(db, (str, Path)):
+            self.db = DatabaseManager(db_path=str(db))
+        elif db is not None:
+            self.db = db
+        else:
+            self.db = DatabaseManager()
         self.predictor = MatchPredictor()
         self.referee_resolver = RefereeResolver(db=self.db)
         self.winamax = WinamaxScraper(headless=True)

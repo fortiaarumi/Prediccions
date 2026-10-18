@@ -1302,22 +1302,22 @@ class ComboBetEngine:
 
         prefix = "Mega-Combinada Multi-Lliga" if len(set(m.get("competition_id") for m in day_matches if m.get("competition_id"))) > 1 else "Combinada"
 
-        safe_1 = self.calculate_combo_summary(s1.get("legs", []), f"{prefix} Segura #1 (Cuota 2-3)")
-        safe_2 = self.calculate_combo_summary(s2.get("legs", []), f"{prefix} Segura #2 (Cuota 2-3 Alternativa)")
+        safe_1 = self.calculate_combo_summary((s1 or {}).get("legs", []), f"{prefix} Segura #1 (Cuota 2-3)")
+        safe_2 = self.calculate_combo_summary((s2 or {}).get("legs", []), f"{prefix} Segura #2 (Cuota 2-3 Alternativa)")
         safe_1["category_code"] = "SAFE"
         safe_2["category_code"] = "SAFE"
         safe_1["recommended_stake"] = 25.0
         safe_2["recommended_stake"] = 25.0
 
-        semi_1 = self.calculate_combo_summary(sm1.get("legs", []), f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)")
-        semi_2 = self.calculate_combo_summary(sm2.get("legs", []), f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
+        semi_1 = self.calculate_combo_summary((sm1 or {}).get("legs", []), f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)")
+        semi_2 = self.calculate_combo_summary((sm2 or {}).get("legs", []), f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
         semi_1["category_code"] = "SEMI"
         semi_2["category_code"] = "SEMI"
         semi_1["recommended_stake"] = 10.0
         semi_2["recommended_stake"] = 10.0
 
-        risky_1 = self.calculate_combo_summary(r1.get("legs", []), f"{prefix} Arriscada #1 (Cuota >= 30.0)")
-        risky_2 = self.calculate_combo_summary(r2.get("legs", []), f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
+        risky_1 = self.calculate_combo_summary((r1 or {}).get("legs", []), f"{prefix} Arriscada #1 (Cuota >= 30.0)")
+        risky_2 = self.calculate_combo_summary((r2 or {}).get("legs", []), f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
         risky_1["category_code"] = "RISKY"
         risky_2["category_code"] = "RISKY"
         risky_1["recommended_stake"] = 5.0

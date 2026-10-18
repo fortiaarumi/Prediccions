@@ -174,7 +174,6 @@ class DatabaseManager:
                 ("S04", "FC Schalke 04", "Schalke", "FC Schalke 04,Schalke 04,Schalke,S04", "Veltins-Arena", "Gelsenkirchen"),
                 ("SCP", "SC Paderborn 07", "Paderborn", "SC Paderborn 07,Paderborn,SCP", "Home Deluxe Arena", "Paderborn"),
                 ("SVE", "SV Elversberg", "Elversberg", "SV Elversberg,Elversberg,SVE", "Ursapharm-Arena", "Spiesen-Elversberg"),
-                ("WOB", "VfL Wolfsburg", "Wolfsburg", "VfL Wolfsburg,Wolfsburg,WOB", "Volkswagen Arena", "Wolfsburg"),
             ]
 
             # 7. Equips de Ligue 1 (1a Divisió Francesa) - 18 Equips Oficials
@@ -1070,7 +1069,7 @@ class DatabaseManager:
             if not rows:
                 # Fallback canònic per a competicions abans de la descàrrega de partits
                 comp_team_ids = {
-                    "BUNDESLIGA": ["BAY", "B04", "BVB", "RBL", "SGE", "VFB", "SCF", "BMG", "SVW", "FCA", "TSG", "M05", "FCU", "KOE", "HSV", "S04", "SCP", "SVE", "WOB"],
+                    "BUNDESLIGA": ["BAY", "B04", "BVB", "RBL", "SGE", "VFB", "SCF", "BMG", "SVW", "FCA", "TSG", "M05", "FCU", "KOE", "HSV", "S04", "SCP", "SVE"],
                     "LIGUE1": ["PSG", "ASM", "LIL", "OM", "OL", "RCL", "OGC", "SRFC", "BRS", "TFC", "RCS", "HAC", "AJA", "SCO", "FCL", "EST", "PFC", "LMA"],
                     "SERIEA": ["INT", "ACM", "JUV", "ATA", "NAP", "ASR", "LAZ", "FIO", "BFC", "TOR", "MNZ", "GEN", "UDI", "CAG", "USL", "PAR", "COM", "VEN", "SAS", "FRO"]
                 }.get(comp, [])
