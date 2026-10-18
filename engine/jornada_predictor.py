@@ -356,6 +356,19 @@ class JornadaPredictor:
                     "referee_name": ref_name
                 })
             else:
+                # Partit pendent de disputar: assegurar que queda registrat a SQLite com a SCHEDULED
+                if h_id and a_id:
+                    from scraper.live_crawler import LiveCrawler
+                    match_id = LiveCrawler.build_match_id(competition_id, "2026-2027", fix.get("match_code"), h_id, a_id, jornada)
+                    with self.db.get_connection() as conn:
+                        c = conn.cursor()
+                        c.execute("""
+                            INSERT OR IGNORE INTO matches 
+                            (id, competition_id, season, jornada, date_time, home_team_id, away_team_id, referee_id,
+                             home_goals, away_goals, status, url)
+                            VALUES (?, ?, '2026-2027', ?, ?, ?, ?, 'REF_DEFAULT', NULL, NULL, 'SCHEDULED', ?)
+                        """, (match_id, competition_id, jornada, fix.get("date") or "Pendent", h_id, a_id, fix.get("url", "")))
+                        conn.commit()
                 upcoming.append(fix)
 
         return played, upcoming

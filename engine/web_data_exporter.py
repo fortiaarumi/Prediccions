@@ -396,8 +396,13 @@ class WebDataExporter:
                         else:
                             m_status = "SCHEDULED"
 
-                        rows.append({
+                        from scraper.live_crawler import LiveCrawler
+                        m_id = LiveCrawler.build_match_id(competition_id, "2026-2027", f.get("match_code"), h_id, a_id, active_jornada)
+
+                        m_record = {
+                            "id": m_id,
                             "competition_id": competition_id,
+                            "season": "2026-2027",
                             "jornada": active_jornada,
                             "home_team_id": h_id,
                             "away_team_id": a_id,
@@ -405,11 +410,43 @@ class WebDataExporter:
                             "status": m_status,
                             "home_goals": int(score_h) if (is_played or is_live) and score_h is not None and str(score_h).isdigit() else None,
                             "away_goals": int(score_a) if (is_played or is_live) and score_a is not None and str(score_a).isdigit() else None,
-                            "home_name": h_name,
-                            "url": f.get("url", ""),
-                            "is_suspended": is_susp,
-                            "suspension_reason": f.get("suspension_reason") or ("Partit suspès (a l'espera del resultat)" if is_susp else "")
-                        })
+                            "referee_id": f.get("referee") or "REF_DEFAULT",
+                            "url": f.get("url", "")
+                        }
+                        self.db.save_match(m_record)
+
+                        m_record["home_name"] = h_name
+                        m_record["is_suspended"] = is_susp
+                        m_record["suspension_reason"] = f.get("suspension_reason") or ("Partit suspès (a l'espera del resultat)" if is_susp else "")
+                        rows.append(m_record)
+                    else:
+                        # Partit existent a SQLite: comprovar si s'ha d'actualitzar l'estat (ex: SCHEDULED -> LIVE o FINISHED)
+                        score_h = f.get("score_h")
+                        score_a = f.get("score_a")
+                        is_live = (f.get("status") == "LIVE") or bool(f.get("is_live"))
+                        is_played = (not is_live) and score_h is not None and str(score_h).isdigit()
+                        for r_item in rows:
+                            if r_item.get("home_team_id") == h_id and r_item.get("away_team_id") == a_id:
+                                if is_live and r_item.get("status") != "FINISHED":
+                                    r_item["status"] = "LIVE"
+                                    r_item["home_goals"] = int(score_h) if score_h is not None and str(score_h).isdigit() else 0
+                                    r_item["away_goals"] = int(score_a) if score_a is not None and str(score_a).isdigit() else 0
+                                    with self.db.get_connection() as u_conn:
+                                        u_conn.cursor().execute(
+                                            "UPDATE matches SET status = 'LIVE', home_goals = ?, away_goals = ? WHERE id = ?",
+                                            (r_item["home_goals"], r_item["away_goals"], r_item["id"])
+                                        )
+                                        u_conn.commit()
+                                elif is_played and r_item.get("status") != "FINISHED":
+                                    r_item["status"] = "FINISHED"
+                                    r_item["home_goals"] = int(score_h)
+                                    r_item["away_goals"] = int(score_a)
+                                    with self.db.get_connection() as u_conn:
+                                        u_conn.cursor().execute(
+                                            "UPDATE matches SET status = 'FINISHED', home_goals = ?, away_goals = ? WHERE id = ?",
+                                            (r_item["home_goals"], r_item["away_goals"], r_item["id"])
+                                        )
+                                        u_conn.commit()
 
         predicted_list = []
         referee_updates = []

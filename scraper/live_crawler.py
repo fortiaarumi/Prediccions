@@ -155,21 +155,60 @@ class LiveCrawler:
                             )
                             is_live = ac_code in ['2', '6', '7', '8', '12', '13']
                             is_fin = (ac_code == '3') and not is_susp and not is_live
-                            all_matches.append({
-                                'round_str': f"Jornada {jornada}",
-                                'match_code': fields.get('AA'),
-                                'home': fields.get('AE'),
-                                'away': fields.get('AF'),
-                                'score_h': fields.get('AG') if (is_fin or is_live) else None,
-                                'score_a': fields.get('AH') if (is_fin or is_live) else None,
-                                'date': dt_str,
-                                'url': f"https://www.flashscore.es/partido/{fields.get('AA')}/#/estadisticas-del-partido/0",
-                                'is_suspended': is_susp,
-                                'suspension_reason': am_note,
-                                'is_finished': is_fin,
-                                'is_live': is_live,
-                                'ac_code': ac_code
-                            })
+                            m_code = fields.get('AA')
+                            existing = next((m for m in all_matches if m.get('match_code') == m_code), None)
+                            if existing:
+                                existing['is_live'] = is_live
+                                existing['is_finished'] = is_fin
+                                existing['is_suspended'] = is_susp
+                                existing['ac_code'] = ac_code
+                                if am_note:
+                                    existing['suspension_reason'] = am_note
+                                if is_live or is_fin:
+                                    existing['score_h'] = fields.get('AG')
+                                    existing['score_a'] = fields.get('AH')
+                            else:
+                                live_round = None
+                                try:
+                                    from database.db_manager import DatabaseManager
+                                    _db = DatabaseManager()
+                                    with _db.get_connection() as _conn:
+                                        _c = _conn.cursor()
+                                        _row = _c.execute(
+                                            "SELECT jornada FROM matches WHERE id LIKE ? OR (home_team_id = ? AND away_team_id = ?)",
+                                            (f"%{m_code}%", _db.find_team_id(fields.get('AE')), _db.find_team_id(fields.get('AF')))
+                                        ).fetchone()
+                                        if _row:
+                                            live_round = _row[0]
+                                except Exception:
+                                    pass
+
+                                if not live_round and dt_str != 'TBD':
+                                    m_date_prefix = dt_str.split(' ')[0]
+                                    same_day_rounds = [
+                                        m.get('round_str') for m in all_matches 
+                                        if m.get('date', '').startswith(m_date_prefix) and m.get('round_str')
+                                    ]
+                                    if same_day_rounds:
+                                        from collections import Counter
+                                        live_round = Counter(same_day_rounds).most_common(1)[0][0]
+
+                                r_str = f"Jornada {live_round}" if isinstance(live_round, int) else (live_round or f"Jornada {jornada}")
+                                all_matches.append({
+                                    'round_str': r_str,
+                                    'match_code': m_code,
+                                    'home': fields.get('AE'),
+                                    'away': fields.get('AF'),
+                                    'score_h': fields.get('AG') if (is_fin or is_live) else None,
+                                    'score_a': fields.get('AH') if (is_fin or is_live) else None,
+                                    'date': dt_str,
+                                    'url': f"https://www.flashscore.es/partido/{fields.get('AA')}/#/estadisticas-del-partido/0",
+                                    'is_suspended': is_susp,
+                                    'suspension_reason': am_note,
+                                    'is_finished': is_fin,
+                                    'is_live': is_live,
+                                    'ac_code': ac_code
+                                })
             except Exception:
                 pass
 
@@ -290,164 +329,180 @@ class LiveCrawler:
                     print(f">> {home_id} vs {away_id}: [ACTUALITZAT EN DIRECTE ({h_cur}-{a_cur})] - Sense alterar Elo.")
                     skipped_count += 1
                     continue
+                elif existing["status"] == "SCHEDULED" and is_live_fix:
+                    h_cur = int(fix.get("score_h") or 0) if fix.get("score_h") is not None and str(fix.get("score_h")).isdigit() else 0
+                    a_cur = int(fix.get("score_a") or 0) if fix.get("score_a") is not None and str(fix.get("score_a")).isdigit() else 0
+                    cursor.execute("""
+                        UPDATE matches SET status = 'LIVE', home_goals = ?, away_goals = ?, date_time = ? WHERE id = ?
+                    """, (h_cur, a_cur, fix.get("date") or existing["date_time"], match_id))
+                    conn.commit()
+                    print(f">> {home_id} vs {away_id}: [TRANSICIÓ SCHEDULED -> LIVE ({h_cur}-{a_cur})] - Sense alterar Elo.")
+                    skipped_count += 1
+                    continue
+                elif existing["status"] == "SCHEDULED" and not (fix.get("is_finished") or fix.get("score_h") is not None):
+                    # Segueix programat, actualitzar data si cal
+                    if fix.get("date") and fix.get("date") != existing["date_time"]:
+                        cursor.execute("UPDATE matches SET date_time = ? WHERE id = ?", (fix.get("date"), match_id))
+                        conn.commit()
+                    skipped_count += 1
+                    continue
             else:
                 match_id = self.build_match_id(comp_id, season, match_code, home_id, away_id, jornada)
 
             print(f"\n>> Ingestant partit nou o pendent: {home} vs {away}")
             print(f"   URL d'Estadístiques: {url}")
 
-            if url and "http" in url:
-                data = scraper.scrape_url(url)
-                if not data:
-                    data = {}
+            data = {}
+            if url and "http" in url and (fix.get("score_h") is not None or fix.get("is_finished") or is_live_fix):
+                data = scraper.scrape_url(url) or {}
 
-                # Comprovar si el partit està suspès o ajornat
-                is_suspended = (
-                    fix.get("is_suspended", False) or
-                    any(w in str(fix.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon']) or
-                    any(w in str(data.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
+            # Comprovar si el partit està suspès o ajornat
+            is_suspended = (
+                fix.get("is_suspended", False) or
+                any(w in str(fix.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon']) or
+                any(w in str(data.get("suspension_reason") or "").lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
+            )
+
+            # Si el feed té el marcador
+            h_goals = data.get("home_goals") if data.get("home_goals") is not None else fix.get("score_h")
+            a_goals = data.get("away_goals") if data.get("away_goals") is not None else fix.get("score_a")
+
+            # El partit NOMÉS és finalitzat si té resultat definitiu (no en joc/live ni suspès)
+            is_definitive = (fix.get("is_finished", False) or data.get("is_finished", False) or (str(fix.get("ac_code", "")) == "3")) and not is_live_fix
+            is_finished = (not is_suspended) and is_definitive and (h_goals is not None and str(h_goals).isdigit())
+            ref_id = db.get_or_create_referee(data.get("referee"), competition_id=comp_id)
+
+            if is_suspended:
+                match_status = "SUSPENDED"
+                h_goals_val = None
+                a_goals_val = None
+            elif is_finished:
+                match_status = "FINISHED"
+                h_goals_val = int(h_goals)
+                a_goals_val = int(a_goals)
+            elif is_live_fix:
+                match_status = "LIVE"
+                h_goals_val = int(h_goals) if h_goals is not None and str(h_goals).isdigit() else 0
+                a_goals_val = int(a_goals) if a_goals is not None and str(a_goals).isdigit() else 0
+            else:
+                match_status = "SCHEDULED"
+                h_goals_val = None
+                a_goals_val = None
+
+            match_record = {
+                "id": match_id,
+                "competition_id": comp_id,
+                "season": "2026-2027",
+                "jornada": jornada,
+                "date_time": fix["date"] or data.get("date"),
+                "home_team_id": home_id,
+                "away_team_id": away_id,
+                "referee_id": ref_id,
+                "home_goals": h_goals_val,
+                "away_goals": a_goals_val,
+                "home_xg": data.get("home_xg") if is_finished else None,
+                "away_xg": data.get("away_xg") if is_finished else None,
+                "home_corners": data.get("home_corners") if is_finished else None,
+                "away_corners": data.get("away_corners") if is_finished else None,
+                "home_yellow_cards": data.get("home_yellow_cards") if is_finished else None,
+                "away_yellow_cards": data.get("away_yellow_cards") if is_finished else None,
+                "home_red_cards": data.get("home_red_cards", 0) if is_finished else 0,
+                "away_red_cards": data.get("away_red_cards", 0) if is_finished else 0,
+                "status": match_status,
+                "url": url or ""
+            }
+
+            db.save_match(match_record)
+            ingested_count += 1
+
+            if is_suspended:
+                print(f"   ⏸️ [PARTIT SUSPÈS] {home} vs {away} - A l'espera del resultat (no s'inventen marcadors 0-0 ni es toca l'Elo).")
+            elif is_live_fix:
+                print(f"   🔴 [PARTIT EN DIRECTE] {home} {h_goals_val}-{a_goals_val} {away} - Partit en joc (sense alterar l'Elo).")
+            elif is_finished:
+                h_data = db.get_team_rating(home_id)
+                a_data = db.get_team_rating(away_id)
+                d_elo_h, d_elo_a = rank_engine.calculate_elo_change(
+                    h_data["elo_rating"], a_data["elo_rating"],
+                    int(h_goals), int(a_goals)
                 )
 
-                # Si el feed té el marcador
-                h_goals = data.get("home_goals") if data.get("home_goals") is not None else fix.get("score_h")
-                a_goals = data.get("away_goals") if data.get("away_goals") is not None else fix.get("score_a")
+                # --- Actualització de Rànquings Ofensiu/Defensiu (Tri-Rank) ---
+                # xG del partit (fallback: gols reals si xG no disponible)
+                match_xg_home = float(data.get("home_xg") or h_goals_val)
+                match_xg_away = float(data.get("away_xg") or a_goals_val)
+                # Referència: mitjana de gols de la lliga per al context d'avaluació ((home_avg + away_avg)/2)
+                league_avg_goals = {
+                    "LALIGA": 1.27,
+                    "PREMIER": 1.40,
+                    "HYPERMOTION": 1.20,
+                    "CHAMPIONSHIP": 1.33,
+                    "BUNDESLIGA": 1.50,
+                    "LIGUE1": 1.30,
+                    "SERIEA": 1.30
+                }
+                expected_goals_ref = league_avg_goals.get(comp_id, 1.27)
 
-                # El partit NOMÉS és finalitzat si té resultat definitiu (no en joc/live ni suspès)
-                is_definitive = (fix.get("is_finished", False) or data.get("is_finished", False) or (str(fix.get("ac_code", "")) == "3")) and not is_live_fix
-                is_finished = (not is_suspended) and is_definitive and (h_goals is not None and str(h_goals).isdigit())
-                ref_id = db.get_or_create_referee(data.get("referee"), competition_id=comp_id)
+                h_gen, h_off, h_def = rank_engine.update_tri_ranks(
+                    current_off_rank=float(h_data.get("off_rank", 14.0)),
+                    current_def_rank=float(h_data.get("def_rank", 14.0)),
+                    goals_scored=h_goals_val,
+                    goals_conceded=a_goals_val,
+                    xg_for=match_xg_home,
+                    xg_against=match_xg_away,
+                    expected_goals_model=expected_goals_ref
+                )
+                a_gen, a_off, a_def = rank_engine.update_tri_ranks(
+                    current_off_rank=float(a_data.get("off_rank", 14.0)),
+                    current_def_rank=float(a_data.get("def_rank", 14.0)),
+                    goals_scored=a_goals_val,
+                    goals_conceded=h_goals_val,
+                    xg_for=match_xg_away,
+                    xg_against=match_xg_home,
+                    expected_goals_model=expected_goals_ref
+                )
 
-                if is_suspended:
-                    match_status = "SUSPENDED"
-                    h_goals_val = None
-                    a_goals_val = None
-                elif is_finished:
-                    match_status = "FINISHED"
-                    h_goals_val = int(h_goals)
-                    a_goals_val = int(a_goals)
-                elif is_live_fix:
-                    match_status = "LIVE"
-                    h_goals_val = int(h_goals) if h_goals is not None and str(h_goals).isdigit() else 0
-                    a_goals_val = int(a_goals) if a_goals is not None and str(a_goals).isdigit() else 0
-                else:
-                    match_status = "SCHEDULED"
-                    h_goals_val = None
-                    a_goals_val = None
+                cursor.execute(
+                    "UPDATE team_ratings SET elo_rating = ?, general_rank = ?, off_rank = ?, def_rank = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?",
+                    (h_data["elo_rating"] + d_elo_h, h_gen, h_off, h_def, home_id)
+                )
+                cursor.execute(
+                    "UPDATE team_ratings SET elo_rating = ?, general_rank = ?, off_rank = ?, def_rank = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?",
+                    (a_data["elo_rating"] + d_elo_a, a_gen, a_off, a_def, away_id)
+                )
+                conn.commit()
 
-                match_record = {
-                    "id": match_id,
+                ref_name = data.get("referee") or "Oficial CTA/PGMOL"
+                newly_ingested_matches.append({
+                    "match_id": match_id,
                     "competition_id": comp_id,
-                    "season": "2026-2027",
                     "jornada": jornada,
-                    "date_time": fix["date"] or data.get("date"),
+                    "home_team": home,
+                    "away_team": away,
                     "home_team_id": home_id,
                     "away_team_id": away_id,
-                    "referee_id": ref_id,
-                    "home_goals": h_goals_val,
-                    "away_goals": a_goals_val,
-                    "home_xg": data.get("home_xg") if is_finished else None,
-                    "away_xg": data.get("away_xg") if is_finished else None,
-                    "home_corners": data.get("home_corners") if is_finished else None,
-                    "away_corners": data.get("away_corners") if is_finished else None,
-                    "home_yellow_cards": data.get("home_yellow_cards") if is_finished else None,
-                    "away_yellow_cards": data.get("away_yellow_cards") if is_finished else None,
-                    "home_red_cards": data.get("home_red_cards", 0) if is_finished else 0,
-                    "away_red_cards": data.get("away_red_cards", 0) if is_finished else 0,
-                    "status": match_status,
-                    "url": url
-                }
+                    "home_goals": int(h_goals),
+                    "away_goals": int(a_goals),
+                    "score": f"{int(h_goals)} - {int(a_goals)}",
+                    "home_xg": data.get("home_xg"),
+                    "away_xg": data.get("away_xg"),
+                    "home_yellow_cards": data.get("home_yellow_cards", 0),
+                    "away_yellow_cards": data.get("away_yellow_cards", 0),
+                    "home_red_cards": data.get("home_red_cards", 0),
+                    "away_red_cards": data.get("away_red_cards", 0),
+                    "home_corners": data.get("home_corners", 0),
+                    "away_corners": data.get("away_corners", 0),
+                    "referee": ref_name,
+                    "elo_change_home": round(d_elo_h, 1),
+                    "elo_change_away": round(d_elo_a, 1),
+                    "new_elo_home": round(h_data["elo_rating"] + d_elo_h, 1),
+                    "new_elo_away": round(a_data["elo_rating"] + d_elo_a, 1),
+                    "date": fix["date"] or data.get("date")
+                })
 
-                db.save_match(match_record)
-                ingested_count += 1
-
-                if is_suspended:
-                    print(f"   ⏸️ [PARTIT SUSPÈS] {home} vs {away} - A l'espera del resultat (no s'inventen marcadors 0-0 ni es toca l'Elo).")
-                elif is_live_fix:
-                    print(f"   🔴 [PARTIT EN DIRECTE] {home} {h_goals_val}-{a_goals_val} {away} - Partit en joc (sense alterar l'Elo).")
-                elif is_finished:
-                    h_data = db.get_team_rating(home_id)
-                    a_data = db.get_team_rating(away_id)
-                    d_elo_h, d_elo_a = rank_engine.calculate_elo_change(
-                        h_data["elo_rating"], a_data["elo_rating"],
-                        int(h_goals), int(a_goals)
-                    )
-
-                    # --- Actualització de Rànquings Ofensiu/Defensiu (Tri-Rank) ---
-                    # xG del partit (fallback: gols reals si xG no disponible)
-                    match_xg_home = float(data.get("home_xg") or h_goals_val)
-                    match_xg_away = float(data.get("away_xg") or a_goals_val)
-                    # Referència: mitjana de gols de la lliga per al context d'avaluació ((home_avg + away_avg)/2)
-                    league_avg_goals = {
-                        "LALIGA": 1.27,
-                        "PREMIER": 1.40,
-                        "HYPERMOTION": 1.20,
-                        "CHAMPIONSHIP": 1.33,
-                        "BUNDESLIGA": 1.50,
-                        "LIGUE1": 1.30,
-                        "SERIEA": 1.30
-                    }
-                    expected_goals_ref = league_avg_goals.get(comp_id, 1.27)
-
-                    h_gen, h_off, h_def = rank_engine.update_tri_ranks(
-                        current_off_rank=float(h_data.get("off_rank", 14.0)),
-                        current_def_rank=float(h_data.get("def_rank", 14.0)),
-                        goals_scored=h_goals_val,
-                        goals_conceded=a_goals_val,
-                        xg_for=match_xg_home,
-                        xg_against=match_xg_away,
-                        expected_goals_model=expected_goals_ref
-                    )
-                    a_gen, a_off, a_def = rank_engine.update_tri_ranks(
-                        current_off_rank=float(a_data.get("off_rank", 14.0)),
-                        current_def_rank=float(a_data.get("def_rank", 14.0)),
-                        goals_scored=a_goals_val,
-                        goals_conceded=h_goals_val,
-                        xg_for=match_xg_away,
-                        xg_against=match_xg_home,
-                        expected_goals_model=expected_goals_ref
-                    )
-
-                    cursor.execute(
-                        "UPDATE team_ratings SET elo_rating = ?, general_rank = ?, off_rank = ?, def_rank = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?",
-                        (h_data["elo_rating"] + d_elo_h, h_gen, h_off, h_def, home_id)
-                    )
-                    cursor.execute(
-                        "UPDATE team_ratings SET elo_rating = ?, general_rank = ?, off_rank = ?, def_rank = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?",
-                        (a_data["elo_rating"] + d_elo_a, a_gen, a_off, a_def, away_id)
-                    )
-                    conn.commit()
-
-                    ref_name = data.get("referee") or "Oficial CTA/PGMOL"
-                    newly_ingested_matches.append({
-                        "match_id": match_id,
-                        "competition_id": comp_id,
-                        "jornada": jornada,
-                        "home_team": home,
-                        "away_team": away,
-                        "home_team_id": home_id,
-                        "away_team_id": away_id,
-                        "home_goals": int(h_goals),
-                        "away_goals": int(a_goals),
-                        "score": f"{int(h_goals)} - {int(a_goals)}",
-                        "home_xg": data.get("home_xg"),
-                        "away_xg": data.get("away_xg"),
-                        "home_yellow_cards": data.get("home_yellow_cards", 0),
-                        "away_yellow_cards": data.get("away_yellow_cards", 0),
-                        "home_red_cards": data.get("home_red_cards", 0),
-                        "away_red_cards": data.get("away_red_cards", 0),
-                        "home_corners": data.get("home_corners", 0),
-                        "away_corners": data.get("away_corners", 0),
-                        "referee": ref_name,
-                        "elo_change_home": round(d_elo_h, 1),
-                        "elo_change_away": round(d_elo_a, 1),
-                        "new_elo_home": round(h_data["elo_rating"] + d_elo_h, 1),
-                        "new_elo_away": round(a_data["elo_rating"] + d_elo_a, 1),
-                        "date": fix["date"] or data.get("date")
-                    })
-
-                    print(f"   [NOU RESULTAT INGESTAT] {h_goals}-{a_goals} (xG: {data.get('home_xg')} - {data.get('away_xg')}) | Elo: {home_id} ({d_elo_h:+.1f}) / {away_id} ({d_elo_a:+.1f}) | Rank: {home_id} Off={h_off:.1f} Def={h_def:.1f} / {away_id} Off={a_off:.1f} Def={a_def:.1f}")
-                else:
-                    print(f"   [PENDENT] Partit encara no jugat. Registrat a SQLite com a programat.")
+                print(f"   [NOU RESULTAT INGESTAT] {h_goals}-{a_goals} (xG: {data.get('home_xg')} - {data.get('away_xg')}) | Elo: {home_id} ({d_elo_h:+.1f}) / {away_id} ({d_elo_a:+.1f}) | Rank: {home_id} Off={h_off:.1f} Def={h_def:.1f} / {away_id} Off={a_off:.1f} Def={a_def:.1f}")
+            else:
+                print(f"   [PENDENT] Partit encara no jugat. Registrat a SQLite com a programat.")
 
         conn.close()
         print("\n" + "=" * 75)

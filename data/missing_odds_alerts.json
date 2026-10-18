@@ -1,5 +1,5 @@
 {
-  "count": 6,
+  "count": 7,
   "alerts": [
     {
       "id": "LALIGA_caosasuna_racingdesantander",
@@ -16,6 +16,22 @@
         "Winamax"
       ],
       "message": "Quotes no detectades a Winamax per al partit CA Osasuna vs Racing de Santander."
+    },
+    {
+      "id": "LALIGA_rcceltadevigo_deportivoalaves",
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "RC Celta de Vigo vs Deportivo Alavés",
+      "home_team": "RC Celta de Vigo",
+      "away_team": "Deportivo Alavés",
+      "date": "18.10.2026 16:15",
+      "jornada": 9,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit RC Celta de Vigo vs Deportivo Alavés."
     },
     {
       "id": "PREMIER_afcbournemouth_sunderland",

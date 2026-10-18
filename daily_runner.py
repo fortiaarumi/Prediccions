@@ -103,9 +103,10 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
             # Una jornada només es considera completament acabada si té suficients partits jugats i ZERO pendents
             c_sql = c.execute("""
                 SELECT jornada FROM matches
-                WHERE competition_id = ? AND status = 'FINISHED'
+                WHERE competition_id = ?
                 GROUP BY jornada
-                HAVING COUNT(*) >= 7 AND SUM(CASE WHEN status = 'SCHEDULED' THEN 1 ELSE 0 END) = 0
+                HAVING COUNT(CASE WHEN status = 'FINISHED' THEN 1 END) >= 7
+                   AND COUNT(CASE WHEN status IN ('SCHEDULED', 'LIVE') THEN 1 END) = 0
                 ORDER BY jornada DESC LIMIT 1
             """, (comp,)).fetchone()
             sql_completed = c_sql[0] if c_sql else 0
@@ -238,6 +239,14 @@ def run_daily_autonomous_check(force: bool = False):
         jornadas_to_check = set(scheduled_j)
         jornadas_to_check.add(last_scraped + 1)
         jornadas_to_check.add(last_scraped + 2)
+
+        # Detectar la jornada activa o en curs a Flashscore per assegurar persistència de noves lligues
+        u_info = get_upcoming_round_info(comp, db=db)
+        if u_info and u_info.get("jornada"):
+            act_j = int(u_info["jornada"])
+            jornadas_to_check.add(act_j)
+            if act_j > 1:
+                jornadas_to_check.add(act_j - 1)
 
         for j_cand in sorted(list(jornadas_to_check)):
             if j_cand <= 0:

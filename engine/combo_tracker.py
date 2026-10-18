@@ -41,7 +41,7 @@ class ComboTracker:
         a_corn = int(match.get("away_corners") or 0)
         tot_corn = h_corn + a_corn
 
-        sel_name = leg.get("selection_name", "").lower()
+        sel_name = (leg.get("selection_name") or leg.get("name") or "").lower()
         cat = (leg.get("category") or "").lower()
         matchup = leg.get("matchup", "")
         parts = matchup.split(" vs ", 1)
