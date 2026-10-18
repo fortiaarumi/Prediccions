@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-18T00:07:45.252480",
-    "formatted_date": "18/10/2026 a les 00:07",
+    "generated_at": "2026-10-18T11:24:51.872754",
+    "formatted_date": "18/10/2026 a les 11:24",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -43,7 +43,7 @@
   "changelog": [
     {
       "date": "2026-10-18",
-      "timestamp": "2026-10-18T00:07:48.303023",
+      "timestamp": "2026-10-18T11:24:53.747712",
       "title": "Actualització Diària del Model · 18/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -44693,7 +44693,7 @@
           "formatted_date": "Divendres, 16 d'octubre",
           "has_matches": true,
           "matches_count": 3,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 3 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 3 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-16_SAFE_1",
@@ -45206,7 +45206,7 @@
           "formatted_date": "Dissabte, 17 d'octubre",
           "has_matches": true,
           "matches_count": 24,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 24 partits",
+          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 24 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -45719,7 +45719,7 @@
           "formatted_date": "Diumenge, 18 d'octubre",
           "has_matches": true,
           "matches_count": 13,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 13 partits",
+          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, LaLiga EA Sports) · 13 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -46280,7 +46280,7 @@
           "formatted_date": "Dilluns, 19 d'octubre",
           "has_matches": true,
           "matches_count": 3,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 3 partits",
+          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, LaLiga EA Sports) · 3 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -50013,7 +50013,7 @@
       },
       "has_matches": true,
       "matches_count": 13,
-      "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 13 partits",
+      "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, LaLiga EA Sports) · 13 partits",
       "safe": [
         {
           "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -51169,7 +51169,7 @@
         "formatted_date": "Divendres, 16 d'octubre",
         "has_matches": true,
         "matches_count": 3,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 3 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 3 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-16_SAFE_1",
@@ -51682,7 +51682,7 @@
         "formatted_date": "Dissabte, 17 d'octubre",
         "has_matches": true,
         "matches_count": 24,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 24 partits",
+        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 24 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -52195,7 +52195,7 @@
         "formatted_date": "Diumenge, 18 d'octubre",
         "has_matches": true,
         "matches_count": 13,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 13 partits",
+        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, LaLiga EA Sports) · 13 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -52756,7 +52756,7 @@
         "formatted_date": "Dilluns, 19 d'octubre",
         "has_matches": true,
         "matches_count": 3,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 3 partits",
+        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, LaLiga EA Sports) · 3 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -56489,7 +56489,7 @@
     },
     "has_matches": true,
     "matches_count": 13,
-    "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports, LaLiga Hypermotion) · 13 partits",
+    "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, LaLiga EA Sports) · 13 partits",
     "safe": [
       {
         "id": "COMBO_DAILY_2026-10-18_SAFE_1",
