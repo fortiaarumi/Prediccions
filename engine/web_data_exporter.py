@@ -1067,7 +1067,12 @@ class WebDataExporter:
         else:
             existing_combos = self.db.get_combos_for_jornada(competition_id, jornada)
 
-        if existing_combos and len(existing_combos) >= 2:
+        if existing_combos and len(existing_combos) < 6 and any((m.get("status") or (m.get("raw_pred") or {}).get("status")) != "FINISHED" for m in predicted_matches):
+            print(f"   🔄 Suite incompleta detectada ({len(existing_combos)}/6) per a {competition_id} J{jornada}. Regenerant les 6 combinades completes...")
+            self.db.delete_combos_for_jornada(competition_id, jornada)
+            existing_combos = []
+
+        if existing_combos and len(existing_combos) >= 6:
             safe_list = []
             semi_list = []
             risky_list = []
@@ -1534,13 +1539,16 @@ class WebDataExporter:
                 "LALIGA": "LaLiga EA Sports",
                 "PREMIER": "Premier League",
                 "HYPERMOTION": "LaLiga Hypermotion",
-                "CHAMPIONSHIP": "EFL Championship"
+                "CHAMPIONSHIP": "EFL Championship",
+                "BUNDESLIGA": "Bundesliga",
+                "LIGUE1": "Ligue 1",
+                "SERIEA": "Serie A"
             }
             comp_names = [comp_map.get(c, c) for c in comps_involved]
 
             # Determinar nota de lliga
             if not has_matches:
-                league_note = "Sense partits programats per a avui a cap de les 4 lligues analitzades."
+                league_note = "Sense partits programats per a avui a cap de les 7 lligues analitzades."
             elif len(day_matches) == 1:
                 m_title = day_matches[0].get("matchup") or "Partit Únic"
                 league_note = f"Partit únic d'avui: {m_title} · Suite de combinades multimerkat del mateix partit"

@@ -1563,7 +1563,7 @@ function renderCombos() {
               <span style="font-size: 36px; display: block; margin-bottom: 8px;">📅</span>
               <h3 style="font-size: 17px; color: var(--text-primary); margin-bottom: 6px;">No hi ha partits programats per al dia ${dateFormatted}</h3>
               <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto; font-size: 13px; line-height: 1.5;">
-                Avui no es disputa cap partit a cap de les 4 lligues analitzades (LaLiga EA Sports, Premier League, LaLiga Hypermotion, Championship). Pots consultar les combinades d'altres dies amb el selector de dates superior.
+                Avui no es disputa cap partit a cap de les 7 lligues analitzades (LaLiga EA Sports, Premier League, LaLiga Hypermotion, EFL Championship, Bundesliga, Ligue 1, Serie A). Pots consultar les combinades d'altres dies amb el selector de dates superior.
               </p>
             </div>
           </div>

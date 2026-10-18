@@ -411,7 +411,7 @@ def run_daily_autonomous_check(force: bool = False):
                     elif len(p[0]) == 4: return f"{p[0]}-{p[1].zfill(2)}-{p[2].zfill(2)}"
             return dc
 
-        # Obtenir tots els partits d'avui de totes les 4 competicions (no només les que s'han predit en aquest cicle)
+        # Obtenir tots els partits d'avui de totes les 7 competicions (no només les que s'han predit en aquest cicle)
         from engine.web_data_exporter import WebDataExporter, COMPETITIONS_META
         exporter = WebDataExporter(db=db)
 

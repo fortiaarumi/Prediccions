@@ -619,7 +619,28 @@ class ComboBetEngine:
                     break
 
         candidates.sort(key=lambda x: x["score"], reverse=True)
-        c1_cand = candidates[0] if candidates else {"legs": [], "sig": frozenset()}
+        if candidates:
+            c1_cand = candidates[0]
+        else:
+            c1_legs = []
+            for p in pools:
+                for m in p["markets"]:
+                    k = self._get_leg_key(m)
+                    if k not in forbidden_exact and global_counts.get(k, 0) < max_usage:
+                        c1_legs.append(m)
+                        break
+                if len(c1_legs) >= 3:
+                    break
+            if len(c1_legs) < 2 and pools:
+                for p in pools:
+                    for m in p["markets"]:
+                        k = self._get_leg_key(m)
+                        if k not in forbidden_exact:
+                            c1_legs.append(m)
+                            break
+                    if len(c1_legs) >= 3:
+                        break
+            c1_cand = {"legs": c1_legs, "matchups": {l["matchup"] for l in c1_legs}, "sig": self._get_combo_sig(c1_legs), "score": 0.0}
 
         temp_counts = dict(global_counts)
         for l in c1_cand.get("legs", []):
@@ -778,7 +799,28 @@ class ComboBetEngine:
                     break
 
         candidates.sort(key=lambda x: x["score"], reverse=True)
-        c1_cand = candidates[0] if candidates else {"legs": [], "sig": frozenset()}
+        if candidates:
+            c1_cand = candidates[0]
+        else:
+            c1_legs = []
+            for p in pools:
+                for m in p["markets"]:
+                    k = self._get_leg_key(m)
+                    if k not in forbidden_exact and global_counts.get(k, 0) < max_usage:
+                        c1_legs.append(m)
+                        break
+                if len(c1_legs) >= 4:
+                    break
+            if len(c1_legs) < 2 and pools:
+                for p in pools:
+                    for m in p["markets"]:
+                        k = self._get_leg_key(m)
+                        if k not in forbidden_exact:
+                            c1_legs.append(m)
+                            break
+                    if len(c1_legs) >= 4:
+                        break
+            c1_cand = {"legs": c1_legs, "matchups": {l["matchup"] for l in c1_legs}, "sig": self._get_combo_sig(c1_legs), "score": 0.0}
 
         temp_counts = dict(global_counts)
         for l in c1_cand.get("legs", []):
@@ -1132,6 +1174,9 @@ class ComboBetEngine:
         mms = self._extract_all_match_markets(matches)
         if len(mms) == 1:
             return self.generate_single_match_combos_suite(matches[0])
+        elif len(mms) in [2, 3]:
+            matches_for_few = [m for m in matches if any(m.get("matchup") == mm.get("matchup") for mm in mms)]
+            return self.generate_few_matches_combos_suite(matches_for_few or matches)
 
         global_counts = Counter()
 
