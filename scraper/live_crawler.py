@@ -30,11 +30,23 @@ FLASHSCORE_COMPETITIONS = {
     "PREMIER": "https://www.flashscore.es/futbol/inglaterra/premier-league",
     "HYPERMOTION": "https://www.flashscore.es/futbol/espana/laliga-hypermotion",
     "CHAMPIONSHIP": "https://www.flashscore.es/futbol/inglaterra/championship",
+    "BUNDESLIGA": "https://www.flashscore.es/futbol/alemania/bundesliga",
+    "LIGUE1": "https://www.flashscore.es/futbol/francia/ligue-1",
+    "SERIEA": "https://www.flashscore.es/futbol/italia/serie-a",
 }
 
 class LiveCrawler:
     def __init__(self, headless: bool = True):
         self.headless = headless
+
+    @staticmethod
+    def build_match_id(competition_id: str, season: str, match_code: Optional[str] = None, home_id: str = "", away_id: str = "", jornada: int = 0) -> str:
+        """Construeix un identificador de partit resilient incloent competició i temporada."""
+        if match_code:
+            return f"{competition_id}_{season}_{match_code}"
+        return f"{competition_id}_{season}_J{jornada}_{home_id}_{away_id}" if jornada else f"{competition_id}_{season}_{home_id}_{away_id}"
+
+    _build_match_id = build_match_id
 
     def crawl_jornada_fixtures_from_web(self, jornada: int, competition_id: str = "LALIGA") -> List[Dict[str, Any]]:
         """Rastreja a internet filtrant estrictament pel bloc de la 'JORNADA {jornada}' o 'Round {jornada}'."""
@@ -108,9 +120,9 @@ class LiveCrawler:
         for m in all_matches:
             r_str = m.get('round_str', '')
             match_round_num = None
-            m_num = re.search(r'(?:Jornada|Round|Matchday)\s*(\d+)', r_str, re.IGNORECASE)
+            m_num = re.search(r'(?:Jornada|Round|Matchday|Spieltag|Journ[eé]e|Giornata)\s*(\d+)|(\d+)\.?\s*(?:Spieltag|Journ[eé]e|Giornata)', r_str, re.IGNORECASE)
             if m_num:
-                match_round_num = int(m_num.group(1))
+                match_round_num = int(m_num.group(1) or m_num.group(2))
             
             if match_round_num == jornada:
                 # Evitar duplicats
@@ -153,7 +165,7 @@ class LiveCrawler:
 
         db = DatabaseManager()
         db.seed_initial_data()
-        teams_count = 24 if comp_id == "CHAMPIONSHIP" else (22 if comp_id == "HYPERMOTION" else 20)
+        teams_count = 24 if comp_id == "CHAMPIONSHIP" else (22 if comp_id == "HYPERMOTION" else (18 if comp_id in ["BUNDESLIGA", "LIGUE1"] else 20))
         rank_engine = RankEngine(league_teams_count=teams_count)
         scraper = MatchScraper(headless=self.headless)
 
@@ -173,16 +185,27 @@ class LiveCrawler:
 
             home_id = db.find_team_id(home) or db.get_or_create_team(home)
             away_id = db.find_team_id(away) or db.get_or_create_team(away)
-            match_id = f"{comp_id}_J{jornada}_{home_id}_{away_id}"
+            match_code = fix.get("match_code")
+            season = "2026-2027"
 
             # 1. Comprovar si el partit ja estava guardat i finalitzat a la base de dades
-            cursor.execute("SELECT status, home_goals, away_goals FROM matches WHERE id = ?", (match_id,))
+            # Cerca per match_code a la URL, per clau canònica o per enfrontament natural (competició, temporada, equips)
+            cursor.execute("""
+                SELECT id, status, home_goals, away_goals, jornada, date_time 
+                FROM matches 
+                WHERE (url LIKE '%' || ? || '%' AND ? != '')
+                   OR (competition_id = ? AND season = ? AND home_team_id = ? AND away_team_id = ?)
+            """, (match_code or '', match_code or '', comp_id, season, home_id, away_id))
             existing = cursor.fetchone()
 
-            if existing and existing["status"] == "FINISHED" and existing["home_goals"] is not None:
-                print(f">> {home_id} vs {away_id}: [JA INGESTAT PRÈVIAMENT ({existing['home_goals']}-{existing['away_goals']})] - Saltant per no duplicar Elo.")
-                skipped_count += 1
-                continue
+            if existing:
+                match_id = existing["id"]
+                if existing["status"] == "FINISHED" and existing["home_goals"] is not None:
+                    print(f">> {home_id} vs {away_id}: [JA INGESTAT PRÈVIAMENT ({existing['home_goals']}-{existing['away_goals']})] - Saltant per no duplicar Elo.")
+                    skipped_count += 1
+                    continue
+            else:
+                match_id = self.build_match_id(comp_id, season, match_code, home_id, away_id, jornada)
 
             print(f"\n>> Ingestant partit nou o pendent: {home} vs {away}")
             print(f"   URL d'Estadístiques: {url}")
@@ -262,7 +285,15 @@ class LiveCrawler:
                     match_xg_home = float(data.get("home_xg") or h_goals_val)
                     match_xg_away = float(data.get("away_xg") or a_goals_val)
                     # Referència: mitjana de gols de la lliga per al context d'avaluació ((home_avg + away_avg)/2)
-                    league_avg_goals = {"LALIGA": 1.27, "PREMIER": 1.40, "HYPERMOTION": 1.20, "CHAMPIONSHIP": 1.33}
+                    league_avg_goals = {
+                        "LALIGA": 1.27,
+                        "PREMIER": 1.40,
+                        "HYPERMOTION": 1.20,
+                        "CHAMPIONSHIP": 1.33,
+                        "BUNDESLIGA": 1.50,
+                        "LIGUE1": 1.30,
+                        "SERIEA": 1.30
+                    }
                     expected_goals_ref = league_avg_goals.get(comp_id, 1.27)
 
                     h_gen, h_off, h_def = rank_engine.update_tri_ranks(

@@ -50,6 +50,7 @@ jobs:
               'engine.pdf_report_generator',
               'engine.value_bet_engine',
               'engine.web_data_exporter',
+              'engine.rank_reconstructor',
               'scraper.jornada_resolver',
               'scraper.live_crawler',
               'scraper.winamax_scraper',

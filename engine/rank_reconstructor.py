@@ -20,14 +20,20 @@ LEAGUE_AVG_GOALS = {
     "LALIGA": 1.27,
     "PREMIER": 1.40,
     "HYPERMOTION": 1.20,
-    "CHAMPIONSHIP": 1.33
+    "CHAMPIONSHIP": 1.33,
+    "BUNDESLIGA": 1.50,
+    "LIGUE1": 1.30,
+    "SERIEA": 1.30
 }
 
 LEAGUE_TEAMS_COUNT = {
     "LALIGA": 20,
     "PREMIER": 20,
     "HYPERMOTION": 22,
-    "CHAMPIONSHIP": 24
+    "CHAMPIONSHIP": 24,
+    "BUNDESLIGA": 18,
+    "LIGUE1": 18,
+    "SERIEA": 20
 }
 
 def parse_date(date_str: str) -> datetime:
@@ -78,6 +84,18 @@ def get_canonical_initial_ratings() -> Dict[str, Dict[str, float]]:
         initial_map[tid] = {"general": 12.0, "off": 12.0, "def": 12.0}
     for tid in ["POR", "BOL", "CHA", "LIN"]:
         initial_map[tid] = {"general": 20.0, "off": 20.0, "def": 20.0}
+
+    # Bundesliga (18 equips -> neutre 9.0)
+    for tid in ["BAY", "B04", "BVB", "RBL", "SGE", "VFB", "SCF", "BMG", "SVW", "FCA", "TSG", "M05", "FCU", "KOE", "HSV", "S04", "SCP", "SVE", "WOB"]:
+        initial_map[tid] = {"general": 9.0, "off": 9.0, "def": 9.0}
+
+    # Ligue 1 (18 equips -> neutre 9.0)
+    for tid in ["PSG", "ASM", "LIL", "OM", "OL", "RCL", "OGC", "SRFC", "BRS", "TFC", "RCS", "HAC", "AJA", "SCO", "FCL", "EST", "PFC", "LMA"]:
+        initial_map[tid] = {"general": 9.0, "off": 9.0, "def": 9.0}
+
+    # Serie A (20 equips -> neutre 10.0)
+    for tid in ["INT", "ACM", "JUV", "ATA", "NAP", "ASR", "LAZ", "FIO", "BFC", "TOR", "MNZ", "GEN", "UDI", "CAG", "USL", "PAR", "COM", "VEN", "SAS", "FRO"]:
+        initial_map[tid] = {"general": 10.0, "off": 10.0, "def": 10.0}
 
     return initial_map
 

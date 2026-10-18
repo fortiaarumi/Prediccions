@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-10-18",
-    "timestamp": "2026-10-18T00:51:13.435786",
+    "timestamp": "2026-10-18T17:17:03.171677",
     "title": "Actualització Diària del Model · 18/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -41,23 +41,23 @@
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
       "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 9 partit(s):",
       "   • [LaLiga EA Sports J9] CA Osasuna vs Racing de Santander: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Juan Martínez Munuera'",
-      "     └ Impacte model: Targetes >4.5: 51.2% ➔ 49.8% (-1.4%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 53.1% ➔ 53.1% (+0.0%)",
+      "     └ Impacte model: Targetes >4.5: 51.0% ➔ 49.6% (-1.4%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 49.6% ➔ 49.6% (+0.0%)",
       "   • [LaLiga EA Sports J9] RC Celta de Vigo vs Deportivo Alavés: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José Luis Munuera Montero'",
-      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 55.2% (+1.8%) | Vermella: 22.1% ➔ 20.5% (-1.6%) | Victòria Local: 47.0% ➔ 47.0% (+0.0%)",
+      "     └ Impacte model: Targetes >4.5: 53.3% ➔ 55.2% (+1.9%) | Vermella: 22.1% ➔ 20.5% (-1.6%) | Victòria Local: 41.8% ➔ 41.8% (+0.0%)",
       "   • [LaLiga EA Sports J9] Málaga CF vs Real Sociedad: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Luis Bestard'",
-      "     └ Impacte model: Targetes >4.5: 47.1% ➔ 52.1% (+5.0%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 30.4% ➔ 30.4% (+0.0%)",
+      "     └ Impacte model: Targetes >4.5: 46.6% ➔ 51.6% (+5.0%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 25.0% ➔ 25.0% (+0.0%)",
       "   • [LaLiga EA Sports J9] Real Madrid vs Sevilla FC: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Mateo Busquets Ferrer'",
-      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 70.1% (+23.4%) | Vermella: 22.1% ➔ 33.0% (+10.9%) | Victòria Local: 66.0% ➔ 66.0% (+0.0%)",
+      "     └ Impacte model: Targetes >4.5: 46.1% ➔ 69.6% (+23.5%) | Vermella: 22.1% ➔ 33.0% (+10.9%) | Victòria Local: 63.0% ➔ 63.0% (+0.0%)",
       "   • [LaLiga Hypermotion J10] AD Ceuta vs Real Oviedo: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José Luis Guzmán Mansilla'",
-      "     └ Impacte model: Targetes >4.5: 46.7% ➔ 64.5% (+17.8%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 29.5% ➔ 29.5% (+0.0%)",
+      "     └ Impacte model: Targetes >4.5: 45.9% ➔ 63.9% (+18.0%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 25.1% ➔ 25.1% (+0.0%)",
       "   • [LaLiga Hypermotion J10] Granada CF vs Cádiz CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Rafael Sánchez López'",
-      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 68.9% (+15.5%) | Vermella: 22.1% ➔ 26.7% (+4.6%) | Victòria Local: 46.8% ➔ 46.8% (+0.0%)",
+      "     └ Impacte model: Targetes >4.5: 53.2% ➔ 68.8% (+15.6%) | Vermella: 22.1% ➔ 26.7% (+4.6%) | Victòria Local: 42.4% ➔ 42.4% (+0.0%)",
       "   • [LaLiga Hypermotion J10] Girona FC vs FC Andorra: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Dámaso Arcediano Monescillo'",
-      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 73.5% (+20.1%) | Vermella: 22.1% ➔ 30.2% (+8.1%) | Victòria Local: 46.4% ➔ 46.4% (+0.0%)",
+      "     └ Impacte model: Targetes >4.5: 53.3% ➔ 73.4% (+20.1%) | Vermella: 22.1% ➔ 30.2% (+8.1%) | Victòria Local: 42.4% ➔ 42.4% (+0.0%)",
       "   • [LaLiga Hypermotion J10] Real Valladolid vs CD Eldense: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José María Sánchez Martínez'",
-      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 59.0% (+5.6%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 46.4% ➔ 46.4% (+0.0%)",
+      "     └ Impacte model: Targetes >4.5: 53.0% ➔ 58.6% (+5.6%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 42.5% ➔ 42.5% (+0.0%)",
       "   • [LaLiga Hypermotion J10] Burgos CF vs CE Sabadell: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Manuel Ángel Pérez Hernández'",
-      "     └ Impacte model: Targetes >4.5: 53.4% ➔ 62.2% (+8.8%) | Vermella: 22.1% ➔ 22.1% (+0.0%) | Victòria Local: 46.4% ➔ 46.4% (+0.0%)"
+      "     └ Impacte model: Targetes >4.5: 53.2% ➔ 62.1% (+8.9%) | Vermella: 22.1% ➔ 22.1% (+0.0%) | Victòria Local: 41.6% ➔ 41.6% (+0.0%)"
     ],
     "matches": [
       {
@@ -441,8 +441,8 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 51.2,
-            "after": 49.8,
+            "before": 51.0,
+            "after": 49.6,
             "delta": -1.4
           },
           "red_card_prob": {
@@ -456,8 +456,8 @@
             "delta": -0.3
           },
           "home_win_prob": {
-            "before": 53.1,
-            "after": 53.1,
+            "before": 49.6,
+            "after": 49.6,
             "delta": 0.0
           },
           "summary": "Designació oficial de Juan Martínez Munuera (índex severitat 0.98). Mitjana històrica de 4.5 grogues i 0.2 vermelles per partit."
@@ -480,9 +480,9 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 53.4,
+            "before": 53.3,
             "after": 55.2,
-            "delta": 1.8
+            "delta": 1.9
           },
           "red_card_prob": {
             "before": 22.1,
@@ -495,8 +495,8 @@
             "delta": 0.5
           },
           "home_win_prob": {
-            "before": 47.0,
-            "after": 47.0,
+            "before": 41.8,
+            "after": 41.8,
             "delta": 0.0
           },
           "summary": "Designació oficial de José Luis Munuera Montero (índex severitat 1.02). Mitjana històrica de 4.6 grogues i 0.23 vermelles per partit."
@@ -519,8 +519,8 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 47.1,
-            "after": 52.1,
+            "before": 46.6,
+            "after": 51.6,
             "delta": 5.0
           },
           "red_card_prob": {
@@ -534,8 +534,8 @@
             "delta": 0.0
           },
           "home_win_prob": {
-            "before": 30.4,
-            "after": 30.4,
+            "before": 25.0,
+            "after": 25.0,
             "delta": 0.0
           },
           "summary": "Designació oficial de Luis Bestard (índex severitat 1.05). Mitjana històrica de 4.8 grogues i 0.2 vermelles per partit."
@@ -558,9 +558,9 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 46.7,
-            "after": 70.1,
-            "delta": 23.4
+            "before": 46.1,
+            "after": 69.6,
+            "delta": 23.5
           },
           "red_card_prob": {
             "before": 22.1,
@@ -573,8 +573,8 @@
             "delta": 3.7
           },
           "home_win_prob": {
-            "before": 66.0,
-            "after": 66.0,
+            "before": 63.0,
+            "after": 63.0,
             "delta": 0.0
           },
           "summary": "Designació oficial de Mateo Busquets Ferrer (índex severitat 1.25). Mitjana històrica de 5.7 grogues i 0.4 vermelles per partit."
@@ -597,9 +597,9 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 46.7,
-            "after": 64.5,
-            "delta": 17.8
+            "before": 45.9,
+            "after": 63.9,
+            "delta": 18.0
           },
           "red_card_prob": {
             "before": 22.1,
@@ -612,8 +612,8 @@
             "delta": 2.5
           },
           "home_win_prob": {
-            "before": 29.5,
-            "after": 29.5,
+            "before": 25.1,
+            "after": 25.1,
             "delta": 0.0
           },
           "summary": "Designació oficial de José Luis Guzmán Mansilla (índex severitat 1.19). Mitjana històrica de 5.3 grogues i 0.3 vermelles per partit."
@@ -636,9 +636,9 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 53.4,
-            "after": 68.9,
-            "delta": 15.5
+            "before": 53.2,
+            "after": 68.8,
+            "delta": 15.6
           },
           "red_card_prob": {
             "before": 22.1,
@@ -651,8 +651,8 @@
             "delta": 2.4
           },
           "home_win_prob": {
-            "before": 46.8,
-            "after": 46.8,
+            "before": 42.4,
+            "after": 42.4,
             "delta": 0.0
           },
           "summary": "Designació oficial de Rafael Sánchez López (índex severitat 1.18). Mitjana històrica de 5.3 grogues i 0.31 vermelles per partit."
@@ -675,8 +675,8 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 53.4,
-            "after": 73.5,
+            "before": 53.3,
+            "after": 73.4,
             "delta": 20.1
           },
           "red_card_prob": {
@@ -690,8 +690,8 @@
             "delta": 3.3
           },
           "home_win_prob": {
-            "before": 46.4,
-            "after": 46.4,
+            "before": 42.4,
+            "after": 42.4,
             "delta": 0.0
           },
           "summary": "Designació oficial de Dámaso Arcediano Monescillo (índex severitat 1.24). Mitjana històrica de 5.5 grogues i 0.36 vermelles per partit."
@@ -714,8 +714,8 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 53.4,
-            "after": 59.0,
+            "before": 53.0,
+            "after": 58.6,
             "delta": 5.6
           },
           "red_card_prob": {
@@ -729,8 +729,8 @@
             "delta": 1.0
           },
           "home_win_prob": {
-            "before": 46.4,
-            "after": 46.4,
+            "before": 42.5,
+            "after": 42.5,
             "delta": 0.0
           },
           "summary": "Designació oficial de José María Sánchez Martínez (índex severitat 1.06). Mitjana històrica de 4.8 grogues i 0.22 vermelles per partit."
@@ -753,9 +753,9 @@
         },
         "changes": {
           "cards_over_45": {
-            "before": 53.4,
-            "after": 62.2,
-            "delta": 8.8
+            "before": 53.2,
+            "after": 62.1,
+            "delta": 8.9
           },
           "red_card_prob": {
             "before": 22.1,
@@ -768,8 +768,8 @@
             "delta": 1.0
           },
           "home_win_prob": {
-            "before": 46.4,
-            "after": 46.4,
+            "before": 41.6,
+            "after": 41.6,
             "delta": 0.0
           },
           "summary": "Designació oficial de Manuel Ángel Pérez Hernández (índex severitat 1.1). Mitjana històrica de 5.0 grogues i 0.25 vermelles per partit."

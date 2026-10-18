@@ -1152,6 +1152,13 @@ class ComboBetEngine:
             allow_duos=allow_same_match_duo
         )
 
+        safe_1["recommended_stake"] = 25.0
+        safe_2["recommended_stake"] = 25.0
+        semi_1["recommended_stake"] = 10.0
+        semi_2["recommended_stake"] = 10.0
+        risky_1["recommended_stake"] = 5.0
+        risky_2["recommended_stake"] = 5.0
+
         return {
             "safe": [safe_1, safe_2],
             "semi": [semi_1, semi_2],
@@ -1179,6 +1186,7 @@ class ComboBetEngine:
                 key = (l["matchup"], l["category"])
                 all_buckets.setdefault(key, []).append(l)
 
+        bucket_keys = list(all_buckets.keys())
         # Ordenar bucket_keys per la màxima probabilitat / valor de les seleccions
         bucket_keys.sort(
             key=lambda b: max((float(l.get("model_prob", 0.0)) for l in all_buckets.get(b, [])), default=0.0),
@@ -1335,7 +1343,7 @@ class ComboBetEngine:
             return {
                 "has_matches": False,
                 "matches_count": 0,
-                "league_note": "Sense partits programats per a avui a cap de les 4 lligues analitzades.",
+                "league_note": "Sense partits programats per a avui a cap de les 7 lligues analitzades.",
                 "safe": [],
                 "semi": [],
                 "risky": [],
@@ -1348,7 +1356,10 @@ class ComboBetEngine:
             "LALIGA": "LaLiga EA Sports",
             "PREMIER": "Premier League",
             "HYPERMOTION": "LaLiga Hypermotion",
-            "CHAMPIONSHIP": "EFL Championship"
+            "CHAMPIONSHIP": "EFL Championship",
+            "BUNDESLIGA": "Bundesliga",
+            "LIGUE1": "Ligue 1",
+            "SERIEA": "Serie A"
         }
         comp_names = [comp_map.get(c, c) for c in comps]
 

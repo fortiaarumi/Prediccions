@@ -64,6 +64,7 @@ class JornadaResolver:
         per a la competició sol·licitada, analitzant en directe els fixtures de Flashscore.
         Evita predir jornades llunyanes i s'adapta tant a caps de setmana com a intersetmanals.
         """
+        import os
         import subprocess
         import re
 
@@ -73,10 +74,14 @@ class JornadaResolver:
             "PREMIER": "https://www.flashscore.es/futbol/inglaterra/premier-league/partidos/",
             "HYPERMOTION": "https://www.flashscore.es/futbol/espana/laliga-hypermotion/partidos/",
             "CHAMPIONSHIP": "https://www.flashscore.es/futbol/inglaterra/championship/partidos/",
+            "BUNDESLIGA": "https://www.flashscore.es/futbol/alemania/bundesliga/partidos/",
+            "LIGUE1": "https://www.flashscore.es/futbol/francia/ligue-1/partidos/",
+            "SERIEA": "https://www.flashscore.es/futbol/italia/serie-a/partidos/",
         }
         target_url = urls.get(comp_id, urls["LALIGA"])
 
-        cmd = ['curl', '-s', target_url]
+        curl_bin = 'curl.exe' if os.name == 'nt' else 'curl'
+        cmd = [curl_bin, '-s', target_url]
         res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
 
         blocks = res.stdout.split('~')
@@ -88,9 +93,9 @@ class JornadaResolver:
                     current_round = m_round.group(1)
             if 'AA÷' in b and 'AD÷' in b:
                 if current_round:
-                    m_num = re.search(r'\d+', current_round)
+                    m_num = re.search(r'(?:Jornada|Round|Matchday|Spieltag|Journ[eé]e|Giornata)\s*(\d+)|(\d+)\.?\s*(?:Spieltag|Journ[eé]e|Giornata)', current_round, re.IGNORECASE)
                     if m_num:
-                        detected = int(m_num.group(0))
+                        detected = int(m_num.group(1) or m_num.group(2))
                         print(f"[*] Detecció automàtica de calendari per a {comp_id}: Jornada activa = {detected}")
                         return detected
 

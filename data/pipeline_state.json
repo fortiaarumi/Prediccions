@@ -19,5 +19,20 @@
     "last_predicted_date": "2026-10-17",
     "last_scraped_jornada": 11
   },
-  "updated_at": "2026-10-17T16:32:45.708736"
+  "BUNDESLIGA": {
+    "last_predicted_jornada": 0,
+    "last_predicted_date": "",
+    "last_scraped_jornada": 0
+  },
+  "LIGUE1": {
+    "last_predicted_jornada": 0,
+    "last_predicted_date": "",
+    "last_scraped_jornada": 0
+  },
+  "SERIEA": {
+    "last_predicted_jornada": 0,
+    "last_predicted_date": "",
+    "last_scraped_jornada": 0
+  },
+  "updated_at": "2026-10-18T17:15:40.506306"
 }

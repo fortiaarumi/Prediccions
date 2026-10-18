@@ -2257,5 +2257,460 @@
     "cards": {},
     "corners": {},
     "combos": {}
+  },
+  "BUNDESLIGA_borussiamgladbach_tsghoffenheim": {
+    "source": "Bet365 Espanya (BUNDESLIGA)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Borussia M'gladbach vs TSG Hoffenheim",
+    "matched": true,
+    "1X2": {
+      "1": 2.79,
+      "X": 4.1,
+      "2": 2.18
+    },
+    "double_chance": {
+      "1X": 1.66,
+      "12": 1.28,
+      "X2": 1.44
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 1.8,
+      "Under 4.5 Targetes": 1.84,
+      "Over 5.5 Targetes": 2.68,
+      "Targeta Vermella (Sí)": 4.44
+    },
+    "corners": {
+      "Over 11.5 Córners": 2.42,
+      "Under 11.5 Córners": 1.46,
+      "Over 9.5 Córners": 1.56,
+      "Under 9.5 Córners": 2.17,
+      "Over 10.5 Córners": 1.92,
+      "Under 10.5 Córners": 1.76,
+      "Over 8.5 Córners": 1.33,
+      "Under 8.5 Córners": 2.93,
+      "Over 12.5 Córners": 3.13,
+      "Under 12.5 Córners": 1.28
+    },
+    "combos": {}
+  },
+  "LIGUE1_lehavreac_ajauxerre": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Le Havre AC vs AJ Auxerre",
+    "matched": true,
+    "1X2": {
+      "1": 2.23,
+      "X": 3.54,
+      "2": 2.84
+    },
+    "double_chance": {
+      "1X": 1.42,
+      "12": 1.31,
+      "X2": 1.66
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 2.63,
+      "Under 4.5 Targetes": 1.37,
+      "Over 5.5 Targetes": 4.34
+    },
+    "corners": {
+      "Over 11.5 Córners": 2.58,
+      "Under 11.5 Córners": 1.39,
+      "Over 9.5 Córners": 1.64,
+      "Under 9.5 Córners": 2.02,
+      "Over 10.5 Córners": 2.0,
+      "Under 10.5 Córners": 1.64,
+      "Over 7.5 Córners": 1.19,
+      "Under 7.5 Córners": 3.79,
+      "Over 8.5 Córners": 1.35,
+      "Under 8.5 Córners": 2.73,
+      "Over 5.5 Córners": 1.02,
+      "Under 5.5 Córners": 10.1,
+      "Over 6.5 Córners": 1.08,
+      "Under 6.5 Córners": 5.76,
+      "Over 12.5 Córners": 3.54,
+      "Under 12.5 Córners": 1.22,
+      "Over 13.5 Córners": 4.85,
+      "Under 13.5 Córners": 1.11,
+      "Over 14.5 Córners": 6.82,
+      "Under 14.5 Córners": 1.04,
+      "Over 15.5 Córners": 10.1,
+      "Under 15.5 Córners": 1.02
+    },
+    "combos": {}
+  },
+  "LIGUE1_fclorient_asmonaco": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "FC Lorient vs AS Monaco",
+    "matched": true,
+    "1X2": {
+      "1": 3.38,
+      "X": 3.48,
+      "2": 2.03
+    },
+    "double_chance": {
+      "1X": 1.8,
+      "12": 1.33,
+      "X2": 1.33
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 2.47,
+      "Under 4.5 Targetes": 1.42,
+      "Over 5.5 Targetes": 4.04
+    },
+    "corners": {
+      "Over 9.5 Córners": 2.07,
+      "Under 9.5 Córners": 1.6,
+      "Over 10.5 Córners": 2.83,
+      "Under 10.5 Córners": 1.33,
+      "Over 6.5 Córners": 1.16,
+      "Under 6.5 Córners": 4.14,
+      "Over 7.5 Córners": 1.33,
+      "Under 7.5 Córners": 2.83,
+      "Over 8.5 Córners": 1.64,
+      "Under 8.5 Córners": 2.02,
+      "Over 11.5 Córners": 3.99,
+      "Under 11.5 Córners": 1.17,
+      "Over 5.5 Córners": 1.04,
+      "Under 5.5 Córners": 6.82,
+      "Over 12.5 Córners": 5.76,
+      "Under 12.5 Córners": 1.07,
+      "Over 13.5 Córners": 8.08,
+      "Under 13.5 Córners": 1.02,
+      "Over 14.5 Córners": 13.13,
+      "Over 15.5 Córners": 22.22
+    },
+    "combos": {}
+  },
+  "LIGUE1_parisfc_staderennais": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Paris FC vs Stade Rennais",
+    "matched": true,
+    "1X2": {
+      "1": 1.97,
+      "X": 3.95,
+      "2": 3.43
+    },
+    "double_chance": {
+      "1X": 1.32,
+      "12": 1.3,
+      "X2": 1.88
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 2.22,
+      "Under 4.5 Targetes": 1.52,
+      "Over 5.5 Targetes": 3.43
+    },
+    "corners": {
+      "Over 11.5 Córners": 2.88,
+      "Under 11.5 Córners": 1.31,
+      "Over 9.5 Córners": 1.72,
+      "Under 9.5 Córners": 1.9,
+      "Over 10.5 Córners": 2.17,
+      "Under 10.5 Córners": 1.56,
+      "Over 7.5 Córners": 1.21,
+      "Under 7.5 Córners": 3.59,
+      "Over 8.5 Córners": 1.4,
+      "Under 8.5 Córners": 2.52,
+      "Over 5.5 Córners": 1.02,
+      "Under 5.5 Córners": 8.59,
+      "Over 6.5 Córners": 1.09,
+      "Under 6.5 Córners": 5.45,
+      "Over 12.5 Córners": 4.04,
+      "Under 12.5 Córners": 1.17,
+      "Over 13.5 Córners": 5.76,
+      "Under 13.5 Córners": 1.08,
+      "Over 14.5 Córners": 8.08,
+      "Under 14.5 Córners": 1.02,
+      "Over 15.5 Córners": 13.13
+    },
+    "combos": {}
+  },
+  "LIGUE1_olympiquelyonnais_ogcnice": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Olympique Lyonnais vs OGC Nice",
+    "matched": true,
+    "1X2": {
+      "1": 1.85,
+      "X": 3.95,
+      "2": 3.88
+    },
+    "double_chance": {
+      "1X": 1.27,
+      "12": 1.3,
+      "X2": 1.98
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 2.52,
+      "Under 4.5 Targetes": 1.42,
+      "Over 5.5 Targetes": 4.14,
+      "Targeta Vermella (Sí)": 4.34
+    },
+    "corners": {
+      "Over 11.5 Córners": 2.42,
+      "Under 11.5 Córners": 1.46,
+      "Over 9.5 Córners": 1.58,
+      "Under 9.5 Córners": 2.17,
+      "Over 10.5 Córners": 1.92,
+      "Under 10.5 Córners": 1.74,
+      "Over 12.5 Córners": 3.18,
+      "Under 12.5 Córners": 1.28,
+      "Over 8.5 Córners": 1.33,
+      "Under 8.5 Córners": 2.88
+    },
+    "combos": {}
+  },
+  "SERIEA_acmilan_atalantabc": {
+    "source": "Bet365 Espanya (SERIEA)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "AC Milan vs Atalanta BC",
+    "matched": true,
+    "1X2": {
+      "1": 1.62,
+      "X": 4.41,
+      "2": 4.68
+    },
+    "double_chance": {
+      "1X": 1.21,
+      "12": 1.27,
+      "X2": 2.32
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 3.99,
+      "Under 4.5 Targetes": 1.18,
+      "Targeta Vermella (Sí)": 7.07
+    },
+    "corners": {
+      "Over 9.5 Córners": 2.02,
+      "Under 9.5 Córners": 1.66,
+      "Over 10.5 Córners": 2.63,
+      "Under 10.5 Córners": 1.39,
+      "Over 7.5 Córners": 1.36,
+      "Under 7.5 Córners": 2.78,
+      "Over 8.5 Córners": 1.64,
+      "Under 8.5 Córners": 2.07,
+      "Over 11.5 Córners": 3.59,
+      "Under 11.5 Córners": 1.23
+    },
+    "combos": {}
+  },
+  "SERIEA_juventusfc_sslazio": {
+    "source": "Bet365 Espanya (SERIEA)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Juventus FC vs SS Lazio",
+    "matched": true,
+    "1X2": {
+      "1": 1.56,
+      "X": 4.3,
+      "2": 5.47
+    },
+    "double_chance": {
+      "1X": 1.14,
+      "12": 1.27,
+      "X2": 2.47
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 1.8,
+      "Under 4.5 Targetes": 1.86,
+      "Over 5.5 Targetes": 2.63,
+      "Targeta Vermella (Sí)": 4.44
+    },
+    "corners": {
+      "Over 11.5 Córners": 3.03,
+      "Under 11.5 Córners": 1.3,
+      "Over 9.5 Córners": 1.82,
+      "Under 9.5 Córners": 1.82,
+      "Over 10.5 Córners": 2.32,
+      "Under 10.5 Córners": 1.5,
+      "Over 7.5 Córners": 1.27,
+      "Under 7.5 Córners": 3.23,
+      "Over 8.5 Córners": 1.49,
+      "Under 8.5 Córners": 2.32
+    },
+    "combos": {}
+  },
+  "SERIEA_acmonza_cagliaricalcio": {
+    "source": "Bet365 Espanya (SERIEA)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "AC Monza vs Cagliari Calcio",
+    "matched": true,
+    "1X2": {
+      "1": 2.39,
+      "X": 3.33,
+      "2": 2.94
+    },
+    "double_chance": {
+      "1X": 1.42,
+      "12": 1.4,
+      "X2": 1.6
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {
+      "Over 11.5 Córners": 3.23,
+      "Under 11.5 Córners": 1.24,
+      "Over 9.5 Córners": 1.9,
+      "Under 9.5 Córners": 1.7,
+      "Over 10.5 Córners": 2.42,
+      "Under 10.5 Córners": 1.41,
+      "Over 7.5 Córners": 1.29,
+      "Under 7.5 Córners": 2.93,
+      "Over 8.5 Córners": 1.54,
+      "Under 8.5 Córners": 2.12
+    },
+    "combos": {}
+  },
+  "SERIEA_parmacalcio_torinofc": {
+    "source": "Bet365 Espanya (SERIEA)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Parma Calcio vs Torino FC",
+    "matched": true,
+    "1X2": {
+      "1": 3.08,
+      "X": 3.18,
+      "2": 2.39
+    },
+    "double_chance": {
+      "1X": 1.62,
+      "12": 1.42,
+      "X2": 1.39
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {
+      "Over 4.5 Targetes": 2.12,
+      "Under 4.5 Targetes": 1.56,
+      "Over 5.5 Targetes": 3.33
+    },
+    "corners": {
+      "Over 9.5 Córners": 2.27,
+      "Under 9.5 Córners": 1.47,
+      "Over 10.5 Córners": 3.08,
+      "Under 10.5 Córners": 1.27,
+      "Over 6.5 Córners": 1.23,
+      "Under 6.5 Córners": 3.33,
+      "Over 7.5 Córners": 1.44,
+      "Under 7.5 Córners": 2.32,
+      "Over 8.5 Córners": 1.78,
+      "Under 8.5 Córners": 1.8
+    },
+    "combos": {}
   }
 }

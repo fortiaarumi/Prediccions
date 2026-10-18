@@ -27,6 +27,9 @@ WINAMAX_TOURNAMENTS = {
     "PREMIER": "1",
     "HYPERMOTION": "32",
     "CHAMPIONSHIP": "1",
+    "BUNDESLIGA": "30",
+    "LIGUE1": "7",
+    "SERIEA": "31",
 }
 
 WINAMAX_TOURNAMENT_IDS = {
@@ -34,6 +37,9 @@ WINAMAX_TOURNAMENT_IDS = {
     "PREMIER": 1,
     "HYPERMOTION": 37,
     "CHAMPIONSHIP": 2,
+    "BUNDESLIGA": 42,
+    "LIGUE1": 4,
+    "SERIEA": 33,
 }
 
 class WinamaxScraper:
@@ -145,7 +151,43 @@ class WinamaxScraper:
             "portsmouth": "portsmouth", "preston": "preston", "qpr": "qpr", "queens": "qpr",
             "sheffield": "sheffield", "sheff": "sheffield", "stoke": "stoke",
             "swansea": "swansea", "watford": "watford", "west brom": "bromwich",
-            "wrexham": "wrexham", "coventry": "coventry", "hull": "hull"
+            "wrexham": "wrexham", "coventry": "coventry", "hull": "hull",
+            # Bundesliga
+            "bayern": "bayern", "munich": "bayern", "munchen": "bayern",
+            "leverkusen": "leverkusen", "bayer": "leverkusen",
+            "dortmund": "dortmund", "leipzig": "leipzig",
+            "frankfurt": "frankfurt", "francfort": "frankfurt",
+            "stuttgart": "stuttgart", "friburgo": "friburgo", "freiburg": "friburgo",
+            "gladbach": "gladbach", "monchengladbach": "gladbach",
+            "bremen": "bremen", "augsburgo": "augsburg", "augsburg": "augsburg",
+            "hoffenheim": "hoffenheim", "mainz": "mainz",
+            "union berlin": "union", "colonia": "colonia", "koln": "colonia",
+            "hamburgo": "hamburgo", "hamburg": "hamburgo",
+            "schalke": "schalke", "paderborn": "paderborn", "elversberg": "elversberg",
+            # Ligue 1
+            "paris": "paris", "psg": "paris",
+            "monaco": "monaco", "lille": "lille",
+            "marseille": "marsella", "marsella": "marsella",
+            "lyon": "lyon", "lens": "lens",
+            "niza": "niza", "nice": "niza",
+            "rennes": "rennes", "brest": "brest",
+            "toulouse": "toulouse", "strasbourg": "estrasburgo", "estrasburgo": "estrasburgo",
+            "le havre": "havre", "havre": "havre",
+            "auxerre": "auxerre", "angers": "angers",
+            "lorient": "lorient", "troyes": "troyes",
+            "le mans": "mans",
+            # Serie A
+            "inter": "inter", "internazionale": "inter",
+            "milan": "milan", "juventus": "juventus", "juve": "juventus",
+            "atalanta": "atalanta", "napoli": "napoles", "napoles": "napoles",
+            "roma": "roma", "lazio": "lazio",
+            "fiorentina": "fiorentina", "bologna": "bolonia", "bolonia": "bolonia",
+            "torino": "torino", "monza": "monza",
+            "genoa": "genoa", "udinese": "udinese",
+            "cagliari": "cagliari", "lecce": "lecce",
+            "parma": "parma", "como": "como",
+            "venezia": "venecia", "venecia": "venecia",
+            "sassuolo": "sassuolo", "frosinone": "frosinone"
         }
 
         sorted_keywords = sorted(team_keywords.items(), key=lambda x: len(x[0]), reverse=True)

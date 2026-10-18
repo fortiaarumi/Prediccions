@@ -45,6 +45,15 @@ class DatabaseManager:
             cursor.execute(
                 "INSERT OR REPLACE INTO competitions (id, name, type, weight) VALUES ('CHAMPIONSHIP', 'EFL Championship', 'LEAGUE', 0.85)"
             )
+            cursor.execute(
+                "INSERT OR REPLACE INTO competitions (id, name, type, weight) VALUES ('BUNDESLIGA', 'Bundesliga', 'LEAGUE', 1.0)"
+            )
+            cursor.execute(
+                "INSERT OR REPLACE INTO competitions (id, name, type, weight) VALUES ('LIGUE1', 'Ligue 1', 'LEAGUE', 1.0)"
+            )
+            cursor.execute(
+                "INSERT OR REPLACE INTO competitions (id, name, type, weight) VALUES ('SERIEA', 'Serie A', 'LEAGUE', 1.0)"
+            )
 
             # 2. Els 20 Equips Oficials de Primera Divisió
             teams_laliga = [
@@ -145,7 +154,76 @@ class DatabaseManager:
                 ("WRE", "Wrexham", "Wrexham", "Wrexham,Wrexham AFC,WRE", "Racecourse Ground", "Wrexham"),
             ]
 
-            all_teams = teams_laliga + teams_premier + teams_hypermotion + teams_championship
+            # 6. Equips de Bundesliga (1a Divisió Alemanya) - 18 Equips Oficials
+            teams_bundesliga = [
+                ("BAY", "Bayern Múnich", "Bayern", "Bayern München,Bayern Munich,Bayern Múnich,Bayern,FC Bayern,BAY", "Allianz Arena", "Múnich"),
+                ("B04", "Bayer Leverkusen", "Leverkusen", "Bayer Leverkusen,Bayer 04 Leverkusen,Leverkusen,B04", "BayArena", "Leverkusen"),
+                ("BVB", "Borussia Dortmund", "Dortmund", "Borussia Dortmund,Dortmund,BVB", "Signal Iduna Park", "Dortmund"),
+                ("RBL", "RB Leipzig", "RB Leipzig", "RB Leipzig,Leipzig,RBL", "Red Bull Arena", "Leipzig"),
+                ("SGE", "Eintracht Fráncfort", "Frankfurt", "Eintracht Frankfurt,Eintracht Fráncfort,Frankfurt,SGE", "Deutsche Bank Park", "Frankfurt"),
+                ("VFB", "VfB Stuttgart", "Stuttgart", "VfB Stuttgart,Stuttgart,VFB", "MHPArena", "Stuttgart"),
+                ("SCF", "SC Friburgo", "Friburgo", "SC Freiburg,Friburgo,Freiburg,SCF", "Europa-Park Stadion", "Friburgo"),
+                ("BMG", "Borussia M'gladbach", "M'gladbach", "Borussia Mönchengladbach,Borussia Monchengladbach,Gladbach,BMG,M'gladbach", "Borussia-Park", "Mönchengladbach"),
+                ("SVW", "Werder Bremen", "Werder Bremen", "Werder Bremen,Bremen,SVW", "Weserstadion", "Bremen"),
+                ("FCA", "FC Augsburgo", "Augsburgo", "FC Augsburg,Augsburgo,Augsburg,FCA", "WWK Arena", "Augsburg"),
+                ("TSG", "TSG Hoffenheim", "Hoffenheim", "TSG Hoffenheim,Hoffenheim,TSG", "PreZero Arena", "Sinsheim"),
+                ("M05", "1. FSV Mainz 05", "Mainz", "1. FSV Mainz 05,Mainz 05,Mainz,M05", "Mewa Arena", "Mainz"),
+                ("FCU", "1. FC Union Berlin", "Union Berlin", "1. FC Union Berlin,Union Berlin,Union,FCU", "Stadion An der Alten Försterei", "Berlín"),
+                ("KOE", "1. FC Colonia", "Colonia", "1. FC Köln,FC Koln,Colonia,KOE", "RheinEnergieStadion", "Colonia"),
+                ("HSV", "Hamburger SV", "Hamburgo", "Hamburger SV,Hamburgo,Hamburg,HSV", "Volksparkstadion", "Hamburgo"),
+                ("S04", "FC Schalke 04", "Schalke", "FC Schalke 04,Schalke 04,Schalke,S04", "Veltins-Arena", "Gelsenkirchen"),
+                ("SCP", "SC Paderborn 07", "Paderborn", "SC Paderborn 07,Paderborn,SCP", "Home Deluxe Arena", "Paderborn"),
+                ("SVE", "SV Elversberg", "Elversberg", "SV Elversberg,Elversberg,SVE", "Ursapharm-Arena", "Spiesen-Elversberg"),
+                ("WOB", "VfL Wolfsburg", "Wolfsburg", "VfL Wolfsburg,Wolfsburg,WOB", "Volkswagen Arena", "Wolfsburg"),
+            ]
+
+            # 7. Equips de Ligue 1 (1a Divisió Francesa) - 18 Equips Oficials
+            teams_ligue1 = [
+                ("PSG", "Paris Saint-Germain", "PSG", "Paris Saint-Germain,Paris SG,PSG", "Parc des Princes", "París"),
+                ("ASM", "AS Monaco", "Monaco", "AS Monaco,Monaco,Mónaco,ASM", "Stade Louis II", "Mònaco"),
+                ("LIL", "Lille OSC", "Lille", "Lille OSC,Lille,LOSC,LIL", "Decathlon Arena Stade Pierre-Mauroy", "Lille"),
+                ("OM", "Olympique de Marseille", "Marsella", "Olympique de Marseille,Marseille,Marsella,OM", "Orange Vélodrome", "Marsella"),
+                ("OL", "Olympique Lyonnais", "Lyon", "Olympique Lyonnais,Lyon,OL", "Groupama Stadium", "Décines-Charpieu"),
+                ("RCL", "RC Lens", "Lens", "RC Lens,Lens,RCL", "Stade Bollaert-Delelis", "Lens"),
+                ("OGC", "OGC Nice", "Niza", "OGC Nice,Nice,Niza,OGC,NIC", "Allianz Riviera", "Niça"),
+                ("SRFC", "Stade Rennais", "Rennes", "Stade Rennais,Rennes,SRFC,REN", "Roazhon Park", "Rennes"),
+                ("BRS", "Stade Brestois 29", "Brest", "Stade Brestois 29,Brest,BRS,SB29", "Stade Francis-Le Blé", "Brest"),
+                ("TFC", "Toulouse FC", "Toulouse", "Toulouse FC,Toulouse,TFC", "Stadium de Toulouse", "Tolosa"),
+                ("RCS", "RC Strasbourg", "Estrasburgo", "RC Strasbourg,Strasbourg,Estrasburgo,RCS", "Stade de la Meinau", "Estrasburg"),
+                ("HAC", "Le Havre AC", "Le Havre", "Le Havre AC,Le Havre,HAC", "Stade Océane", "Le Havre"),
+                ("AJA", "AJ Auxerre", "Auxerre", "AJ Auxerre,Auxerre,AJA", "Stade de l'Abbé-Deschamps", "Auxerre"),
+                ("SCO", "Angers SCO", "Angers", "Angers SCO,Angers,SCO", "Stade Raymond Kopa", "Angers"),
+                ("FCL", "FC Lorient", "Lorient", "FC Lorient,Lorient,FCL", "Stade du Moustoir", "Lorient"),
+                ("EST", "ES Troyes AC", "Troyes", "ES Troyes AC,Troyes,EST", "Stade de l'Aube", "Troyes"),
+                ("PFC", "Paris FC", "Paris FC", "Paris FC,PFC", "Stade Charléty", "París"),
+                ("LMA", "Le Mans FC", "Le Mans", "Le Mans FC,Le Mans,LMA", "Stade Marie-Marvingt", "Le Mans"),
+            ]
+
+            # 8. Equips de Serie A (1a Divisió Italiana) - 20 Equips Oficials
+            teams_seriea = [
+                ("INT", "Inter de Milán", "Inter", "Inter de Milán,Inter Milan,Inter,Internazionale,INT", "San Siro", "Milà"),
+                ("ACM", "AC Milan", "Milan", "AC Milan,Milan,Rossoneri,ACM", "San Siro", "Milà"),
+                ("JUV", "Juventus FC", "Juventus", "Juventus FC,Juventus,Juve,JUV", "Allianz Stadium", "Torí"),
+                ("ATA", "Atalanta BC", "Atalanta", "Atalanta BC,Atalanta,La Dea,ATA", "Gewiss Stadium", "Bèrgam"),
+                ("NAP", "SSC Napoli", "Nápoles", "SSC Napoli,Napoli,Nápoles,NAP", "Stadio Diego Armando Maradona", "Nàpols"),
+                ("ASR", "AS Roma", "Roma", "AS Roma,Roma,Giallorossi,ASR", "Stadio Olimpico", "Roma"),
+                ("LAZ", "SS Lazio", "Lazio", "SS Lazio,Lazio,Biancocelesti,LAZ", "Stadio Olimpico", "Roma"),
+                ("FIO", "ACF Fiorentina", "Fiorentina", "ACF Fiorentina,Fiorentina,Viola,FIO", "Stadio Artemio Franchi", "Florència"),
+                ("BFC", "Bologna FC", "Bologna", "Bologna FC,Bologna,Bolonia,BFC", "Stadio Renato Dall'Ara", "Bolonya"),
+                ("TOR", "Torino FC", "Torino", "Torino FC,Torino,Toro,TOR", "Stadio Olimpico Grande Torino", "Torí"),
+                ("MNZ", "AC Monza", "Monza", "AC Monza,Monza,MNZ", "U-Power Stadium", "Monza"),
+                ("GEN", "Genoa CFC", "Genoa", "Genoa CFC,Genoa,Grifone,GEN", "Stadio Luigi Ferraris", "Gènova"),
+                ("UDI", "Udinese Calcio", "Udinese", "Udinese Calcio,Udinese,Zebrette,UDI", "Bluenergy Stadium", "Udine"),
+                ("CAG", "Cagliari Calcio", "Cagliari", "Cagliari Calcio,Cagliari,CAG", "Unipol Domus", "Càller"),
+                ("USL", "US Lecce", "Lecce", "US Lecce,Lecce,Giallorossi,USL", "Stadio Ettore Giardiniero", "Lecce"),
+                ("PAR", "Parma Calcio", "Parma", "Parma Calcio,Parma,Crociati,PAR", "Stadio Ennio Tardini", "Parma"),
+                ("COM", "Como 1907", "Como", "Como 1907,Como,Lariani,COM", "Stadio Giuseppe Sinigaglia", "Como"),
+                ("VEN", "Venezia FC", "Venezia", "Venezia FC,Venezia,Venecia,Lagunari,VEN", "Stadio Pier Luigi Penzo", "Venècia"),
+                ("SAS", "US Sassuolo", "Sassuolo", "US Sassuolo,Sassuolo,Neroverdi,SAS", "Mapei Stadium", "Reggio Emilia"),
+                ("FRO", "Frosinone Calcio", "Frosinone", "Frosinone Calcio,Frosinone,Ciociari,FRO", "Stadio Benito Stirpe", "Frosinone"),
+            ]
+
+            all_teams = teams_laliga + teams_premier + teams_hypermotion + teams_championship + teams_bundesliga + teams_ligue1 + teams_seriea
             cursor.executemany(
                 "INSERT OR REPLACE INTO teams (id, name, short_name, aliases, stadium, city) VALUES (?, ?, ?, ?, ?, ?)",
                 all_teams
@@ -256,6 +334,15 @@ class DatabaseManager:
                     ranks = (12.0, 12.0, 12.0, 1470.0)
                 elif t_id in ["POR", "BOL", "CHA", "LIN"]:
                     ranks = (20.0, 20.0, 20.0, 1400.0)
+                # Bundesliga neutral ratings (18 teams -> half=9.0)
+                elif t_id in [t[0] for t in teams_bundesliga]:
+                    ranks = (9.0, 9.0, 9.0, 1500.0)
+                # Ligue 1 neutral ratings (18 teams -> half=9.0)
+                elif t_id in [t[0] for t in teams_ligue1]:
+                    ranks = (9.0, 9.0, 9.0, 1500.0)
+                # Serie A neutral ratings (20 teams -> half=10.0)
+                elif t_id in [t[0] for t in teams_seriea]:
+                    ranks = (10.0, 10.0, 10.0, 1500.0)
                 else: # RDS, DEP, MAL, ELC, CAS, BUR, ALB, HUE, COR, MIR, ELD, RFE, TEN, CAR
                     ranks = (14.0, 14.0, 14.0, 1440.0)
 
@@ -543,6 +630,227 @@ class DatabaseManager:
             "wba": "WBA",
             "wrexham": "WRE",
             "wre": "WRE",
+
+            # Bundesliga (Alemanya)
+            "bayern munich": "BAY",
+            "bayern munchen": "BAY",
+            "bayern munich": "BAY",
+            "fc bayern munchen": "BAY",
+            "fc bayern": "BAY",
+            "bayern": "BAY",
+            "bay": "BAY",
+            "bayer leverkusen": "B04",
+            "bayer 04 leverkusen": "B04",
+            "bayer 04": "B04",
+            "leverkusen": "B04",
+            "b04": "B04",
+            "borussia dortmund": "BVB",
+            "dortmund": "BVB",
+            "bvb": "BVB",
+            "rb leipzig": "RBL",
+            "leipzig": "RBL",
+            "rbl": "RBL",
+            "eintracht frankfurt": "SGE",
+            "eintracht francfort": "SGE",
+            "frankfurt": "SGE",
+            "francfort": "SGE",
+            "sge": "SGE",
+            "vfb stuttgart": "VFB",
+            "stuttgart": "VFB",
+            "vfb": "VFB",
+            "sc freiburg": "SCF",
+            "friburgo": "SCF",
+            "freiburg": "SCF",
+            "scf": "SCF",
+            "borussia monchengladbach": "BMG",
+            "borussia m'gladbach": "BMG",
+            "borussia mgladbach": "BMG",
+            "monchengladbach": "BMG",
+            "m'gladbach": "BMG",
+            "mgladbach": "BMG",
+            "gladbach": "BMG",
+            "bmg": "BMG",
+            "werder bremen": "SVW",
+            "bremen": "SVW",
+            "svw": "SVW",
+            "fc augsburg": "FCA",
+            "augsburgo": "FCA",
+            "augsburg": "FCA",
+            "fca": "FCA",
+            "tsg hoffenheim": "TSG",
+            "tsg 1899 hoffenheim": "TSG",
+            "hoffenheim": "TSG",
+            "tsg": "TSG",
+            "1. fsv mainz 05": "M05",
+            "fsv mainz": "M05",
+            "mainz 05": "M05",
+            "mainz": "M05",
+            "m05": "M05",
+            "1. fc union berlin": "FCU",
+            "union berlin": "FCU",
+            "union": "FCU",
+            "fcu": "FCU",
+            "1. fc koln": "KOE",
+            "fc koln": "KOE",
+            "1. fc colonia": "KOE",
+            "colonia": "KOE",
+            "koln": "KOE",
+            "koe": "KOE",
+            "hamburger sv": "HSV",
+            "hamburgo": "HSV",
+            "hamburg": "HSV",
+            "hsv": "HSV",
+            "fc schalke 04": "S04",
+            "schalke 04": "S04",
+            "schalke": "S04",
+            "s04": "S04",
+            "sc paderborn 07": "SCP",
+            "paderborn 07": "SCP",
+            "paderborn": "SCP",
+            "scp": "SCP",
+            "sv elversberg": "SVE",
+            "elversberg": "SVE",
+            "sve": "SVE",
+            "vfl wolfsburg": "WOB",
+            "wolfsburg": "WOB",
+            "wob": "WOB",
+
+            # Ligue 1 (França)
+            "paris saint-germain": "PSG",
+            "paris saint germain": "PSG",
+            "paris sg": "PSG",
+            "psg": "PSG",
+            "as monaco": "ASM",
+            "monaco": "ASM",
+            "asm": "ASM",
+            "lille osc": "LIL",
+            "lille": "LIL",
+            "losc": "LIL",
+            "lil": "LIL",
+            "olympique de marseille": "OM",
+            "olympique marseille": "OM",
+            "marseille": "OM",
+            "marsella": "OM",
+            "om": "OM",
+            "olympique lyonnais": "OL",
+            "olympique lyon": "OL",
+            "lyon": "OL",
+            "ol": "OL",
+            "rc lens": "RCL",
+            "lens": "RCL",
+            "rcl": "RCL",
+            "ogc nice": "OGC",
+            "nice": "OGC",
+            "niza": "OGC",
+            "ogc": "OGC",
+            "stade rennais": "SRFC",
+            "stade rennais fc": "SRFC",
+            "rennes": "SRFC",
+            "srfc": "SRFC",
+            "stade brestois 29": "BRS",
+            "stade brestois": "BRS",
+            "brest": "BRS",
+            "sb29": "BRS",
+            "brs": "BRS",
+            "toulouse fc": "TFC",
+            "toulouse": "TFC",
+            "tfc": "TFC",
+            "rc strasbourg": "RCS",
+            "strasbourg": "RCS",
+            "estrasburgo": "RCS",
+            "rcs": "RCS",
+            "le havre ac": "HAC",
+            "le havre": "HAC",
+            "havre": "HAC",
+            "hac": "HAC",
+            "aj auxerre": "AJA",
+            "auxerre": "AJA",
+            "aja": "AJA",
+            "angers sco": "SCO",
+            "angers": "SCO",
+            "sco": "SCO",
+            "fc lorient": "FCL",
+            "lorient": "FCL",
+            "fcl": "FCL",
+            "es troyes ac": "EST",
+            "es troyes": "EST",
+            "troyes": "EST",
+            "est": "EST",
+            "paris fc": "PFC",
+            "pfc": "PFC",
+            "le mans fc": "LMA",
+            "le mans": "LMA",
+            "lma": "LMA",
+
+            # Serie A (Itàlia)
+            "inter de milan": "INT",
+            "inter milan": "INT",
+            "internazionale": "INT",
+            "inter": "INT",
+            "int": "INT",
+            "ac milan": "ACM",
+            "milan": "ACM",
+            "acm": "ACM",
+            "juventus fc": "JUV",
+            "juventus": "JUV",
+            "juve": "JUV",
+            "juv": "JUV",
+            "atalanta bc": "ATA",
+            "atalanta": "ATA",
+            "ata": "ATA",
+            "ssc napoli": "NAP",
+            "napoli": "NAP",
+            "napoles": "NAP",
+            "nap": "NAP",
+            "as roma": "ASR",
+            "roma": "ASR",
+            "asr": "ASR",
+            "ss lazio": "LAZ",
+            "lazio": "LAZ",
+            "laz": "LAZ",
+            "acf fiorentina": "FIO",
+            "fiorentina": "FIO",
+            "fio": "FIO",
+            "bologna fc": "BFC",
+            "bologna fc 1909": "BFC",
+            "bologna": "BFC",
+            "bolonia": "BFC",
+            "bfc": "BFC",
+            "torino fc": "TOR",
+            "torino": "TOR",
+            "tor": "TOR",
+            "ac monza": "MNZ",
+            "monza": "MNZ",
+            "mnz": "MNZ",
+            "genoa cfc": "GEN",
+            "genoa": "GEN",
+            "gen": "GEN",
+            "udinese calcio": "UDI",
+            "udinese": "UDI",
+            "udi": "UDI",
+            "cagliari calcio": "CAG",
+            "cagliari": "CAG",
+            "cag": "CAG",
+            "us lecce": "USL",
+            "lecce": "USL",
+            "usl": "USL",
+            "parma calcio": "PAR",
+            "parma calcio 1913": "PAR",
+            "parma": "PAR",
+            "par": "PAR",
+            "como 1907": "COM",
+            "como": "COM",
+            "com": "COM",
+            "venezia fc": "VEN",
+            "venezia": "VEN",
+            "venecia": "VEN",
+            "ven": "VEN",
+            "us sassuolo": "SAS",
+            "sassuolo": "SAS",
+            "sas": "SAS",
+            "frosinone calcio": "FRO",
+            "frosinone": "FRO",
+            "fro": "FRO",
         }
 
         if q_norm in exact_mappings:
@@ -677,6 +985,12 @@ class DatabaseManager:
             y_avg, r_avg, f_avg, strict = 3.80, 0.12, 21.0, 1.00
         elif comp == "HYPERMOTION":
             y_avg, r_avg, f_avg, strict = 5.20, 0.30, 26.5, 1.15
+        elif comp == "BUNDESLIGA":
+            y_avg, r_avg, f_avg, strict = 3.60, 0.10, 22.0, 0.88
+        elif comp == "LIGUE1":
+            y_avg, r_avg, f_avg, strict = 3.90, 0.18, 23.0, 0.95
+        elif comp == "SERIEA":
+            y_avg, r_avg, f_avg, strict = 4.60, 0.22, 25.0, 1.05
         else:
             y_avg, r_avg, f_avg, strict = 4.80, 0.24, 25.5, 1.08
 
@@ -753,6 +1067,25 @@ class DatabaseManager:
             """
             cursor.execute(query, (comp, comp))
             rows = cursor.fetchall()
+            if not rows:
+                # Fallback canònic per a competicions abans de la descàrrega de partits
+                comp_team_ids = {
+                    "BUNDESLIGA": ["BAY", "B04", "BVB", "RBL", "SGE", "VFB", "SCF", "BMG", "SVW", "FCA", "TSG", "M05", "FCU", "KOE", "HSV", "S04", "SCP", "SVE", "WOB"],
+                    "LIGUE1": ["PSG", "ASM", "LIL", "OM", "OL", "RCL", "OGC", "SRFC", "BRS", "TFC", "RCS", "HAC", "AJA", "SCO", "FCL", "EST", "PFC", "LMA"],
+                    "SERIEA": ["INT", "ACM", "JUV", "ATA", "NAP", "ASR", "LAZ", "FIO", "BFC", "TOR", "MNZ", "GEN", "UDI", "CAG", "USL", "PAR", "COM", "VEN", "SAS", "FRO"]
+                }.get(comp, [])
+                if comp_team_ids:
+                    placeholders = ",".join("?" for _ in comp_team_ids)
+                    cursor.execute(f"""
+                        SELECT t.id, t.name, t.short_name, t.stadium, 
+                               r.elo_rating, r.general_rank, r.off_rank, r.def_rank,
+                               r.avg_cards_for_5, r.avg_corners_for_5
+                        FROM teams t
+                        JOIN team_ratings r ON t.id = r.team_id
+                        WHERE t.id IN ({placeholders})
+                        ORDER BY r.elo_rating DESC
+                    """, comp_team_ids)
+                    rows = cursor.fetchall()
             return [dict(r) for r in rows]
 
     def save_match(self, match_data: Dict[str, Any]):

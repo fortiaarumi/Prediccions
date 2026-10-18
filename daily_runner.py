@@ -46,7 +46,7 @@ from engine.jornada_predictor import JornadaPredictor
 from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
 from engine.pdf_report_generator import PDFReportGenerator
-COMPETITIONS = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"]
+COMPETITIONS = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP", "BUNDESLIGA", "LIGUE1", "SERIEA"]
 
 
 def load_state() -> Dict[str, Any]:
@@ -105,7 +105,7 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
                 SELECT jornada FROM matches
                 WHERE competition_id = ? AND status = 'FINISHED'
                 GROUP BY jornada
-                HAVING COUNT(*) >= 8 AND SUM(CASE WHEN status = 'SCHEDULED' THEN 1 ELSE 0 END) = 0
+                HAVING COUNT(*) >= 7 AND SUM(CASE WHEN status = 'SCHEDULED' THEN 1 ELSE 0 END) = 0
                 ORDER BY jornada DESC LIMIT 1
             """, (comp,)).fetchone()
             sql_completed = c_sql[0] if c_sql else 0
@@ -125,15 +125,15 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
                 if m_round:
                     current_round = m_round.group(1).strip()
 
-            # Filtrar partits de Copa (Copa del Rey, EFL Cup, FA Cup, etc.)
+            # Filtrar partits de Copa (Copa del Rey, EFL Cup, FA Cup, DFB-Pokal, Coupe de France, Coppa Italia, etc.)
             if current_round:
                 cr_lower = current_round.lower()
-                if any(cup in cr_lower for cup in ['copa', 'cup', 'fa cup', 'trophy', 'supercopa', 'playoff']):
+                if any(cup in cr_lower for cup in ['copa', 'cup', 'fa cup', 'trophy', 'supercopa', 'playoff', 'pokal', 'coupe', 'coppa']):
                     continue
 
             if 'AA÷' in b and 'AD÷' in b:
-                # Comprovar que sigui una Jornada regular: "Jornada N", "Round N", "Matchday N"
-                m_num = re.search(r'(?:Jornada|Round|Matchday)\s*(\d+)', current_round or '', re.IGNORECASE)
+                # Comprovar que sigui una Jornada regular: "Jornada N", "Round N", "Matchday N", "Spieltag N", "Journée N", "Giornata N"
+                m_num = re.search(r'(?:Jornada|Round|Matchday|Spieltag|Journ[eé]e|Giornata)\s*(\d+)', current_round or '', re.IGNORECASE)
                 if not m_num:
                     continue
 

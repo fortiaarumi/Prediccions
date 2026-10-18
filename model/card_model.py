@@ -16,14 +16,36 @@ from scipy.stats import poisson
 
 class CardModel:
     def __init__(self):
-        # Llista de derbis d'alta tensió a La Lliga
         self.known_derbies = {
+            # LaLiga
             ("RMA", "FCB"), ("FCB", "RMA"), # El Clásico
             ("RMA", "ATM"), ("ATM", "RMA"), # Derbi Madrileño
             ("BET", "SEV"), ("SEV", "BET"), # Gran Derbi Sevillano
             ("ATH", "RSO"), ("RSO", "ATH"), # Derbi Vasco
             ("FCB", "ESP"), ("ESP", "FCB"), # Derbi Barcelonés
             ("VAL", "VIL"), ("VIL", "VAL"), # Derbi de la Comunitat
+            # Premier League
+            ("LIV", "EVE"), ("EVE", "LIV"), # Merseyside Derby
+            ("ARS", "TOT"), ("TOT", "ARS"), # North London Derby
+            ("MUN", "MCI"), ("MCI", "MUN"), # Manchester Derby
+            ("MUN", "LIV"), ("LIV", "MUN"), # Northwest Derby
+            # Bundesliga
+            ("DOR", "S04"), ("S04", "DOR"), # Revierderby
+            ("FCB", "DOR"), ("DOR", "FCB"), # Der Klassiker
+            ("HSV", "STP"), ("STP", "HSV"), # Hamburger Stadtderby
+            ("B04", "KOE"), ("KOE", "B04"), # Rhein-Derby
+            ("SVW", "HSV"), ("HSV", "SVW"), # Nordderby
+            # Ligue 1
+            ("PSG", "OM"), ("OM", "PSG"),   # Le Classique
+            ("OL", "ASSE"), ("ASSE", "OL"), # Derby du Rhône
+            ("MON", "OGC"), ("OGC", "MON"), # Derby de la Côte d'Azur
+            ("LIL", "RCL"), ("RCL", "LIL"), # Derby du Nord
+            # Serie A
+            ("INT", "ACM"), ("ACM", "INT"), # Derby della Madonnina
+            ("ROM", "LAZ"), ("LAZ", "ROM"), # Derby della Capitale
+            ("JUV", "TOR"), ("TOR", "JUV"), # Derby della Mole
+            ("JUV", "INT"), ("INT", "JUV"), # Derby d'Italia
+            ("GEN", "SAM"), ("SAM", "GEN"), # Derby della Lanterna
         }
 
     def is_derby(self, home_team_id: str, away_team_id: str) -> bool:

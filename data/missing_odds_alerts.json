@@ -1,4 +1,85 @@
 {
-  "count": 0,
-  "alerts": []
+  "count": 5,
+  "alerts": [
+    {
+      "id": "LALIGA_caosasuna_racingdesantander",
+      "competition_id": "LALIGA",
+      "competition_name": "LaLiga EA Sports",
+      "matchup": "CA Osasuna vs Racing de Santander",
+      "home_team": "CA Osasuna",
+      "away_team": "Racing de Santander",
+      "date": "18.10.2026 14:00",
+      "jornada": 9,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit CA Osasuna vs Racing de Santander."
+    },
+    {
+      "id": "PREMIER_afcbournemouth_sunderland",
+      "competition_id": "PREMIER",
+      "competition_name": "Premier League",
+      "matchup": "AFC Bournemouth vs Sunderland",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Sunderland",
+      "date": "18.10.2026 15:00",
+      "jornada": 7,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit AFC Bournemouth vs Sunderland."
+    },
+    {
+      "id": "PREMIER_brightonhovealbion_crystalpalace",
+      "competition_id": "PREMIER",
+      "competition_name": "Premier League",
+      "matchup": "Brighton & Hove Albion vs Crystal Palace",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Crystal Palace",
+      "date": "18.10.2026 15:00",
+      "jornada": 7,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Brighton & Hove Albion vs Crystal Palace."
+    },
+    {
+      "id": "PREMIER_leedsutd_manchesterutd",
+      "competition_id": "PREMIER",
+      "competition_name": "Premier League",
+      "matchup": "Leeds Utd vs Manchester Utd",
+      "home_team": "Leeds Utd",
+      "away_team": "Manchester Utd",
+      "date": "18.10.2026 15:00",
+      "jornada": 7,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit Leeds Utd vs Manchester Utd."
+    },
+    {
+      "id": "HYPERMOTION_adceuta_realoviedo",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "AD Ceuta vs Real Oviedo",
+      "home_team": "AD Ceuta",
+      "away_team": "Real Oviedo",
+      "date": "18.10.2026 14:00",
+      "jornada": 10,
+      "missing_winamax": true,
+      "missing_bet365": false,
+      "missing_bookmakers": [
+        "Winamax"
+      ],
+      "message": "Quotes no detectades a Winamax per al partit AD Ceuta vs Real Oviedo."
+    }
+  ]
 }

@@ -1527,7 +1527,7 @@ function renderCombos() {
   }
 
   window.combosRegistry = {};
-  const leagueKeys = ['DAILY', 'LALIGA', 'PREMIER', 'HYPERMOTION', 'CHAMPIONSHIP'];
+  const leagueKeys = ['DAILY', 'LALIGA', 'PREMIER', 'HYPERMOTION', 'CHAMPIONSHIP', 'BUNDESLIGA', 'LIGUE1', 'SERIEA'];
   let html = '';
   let totalCombosFound = 0;
   let isFutureCombos = false;
@@ -1664,6 +1664,9 @@ function renderCombos() {
     else if (lKey === 'PREMIER') leagueTitle = '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League';
     else if (lKey === 'HYPERMOTION') leagueTitle = '🇪🇸 LaLiga Hypermotion';
     else if (lKey === 'CHAMPIONSHIP') leagueTitle = '🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship';
+    else if (lKey === 'BUNDESLIGA') leagueTitle = '🇩🇪 Bundesliga';
+    else if (lKey === 'LIGUE1') leagueTitle = '🇫🇷 Ligue 1';
+    else if (lKey === 'SERIEA') leagueTitle = '🇮🇹 Serie A';
 
     html += `
       <div class="combos-league-wrapper">

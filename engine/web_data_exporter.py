@@ -78,6 +78,33 @@ COMPETITIONS_META = [
         "flashscore_code": "championship",
         "winamax_sport_id": 1,
         "winamax_cat_id": 1,
+    },
+    {
+        "id": "BUNDESLIGA",
+        "name": "Bundesliga",
+        "country": "Alemanya",
+        "flag": "🇩🇪",
+        "flashscore_code": "bundesliga",
+        "winamax_sport_id": 1,
+        "winamax_cat_id": 30,
+    },
+    {
+        "id": "LIGUE1",
+        "name": "Ligue 1",
+        "country": "França",
+        "flag": "🇫🇷",
+        "flashscore_code": "ligue-1",
+        "winamax_sport_id": 1,
+        "winamax_cat_id": 7,
+    },
+    {
+        "id": "SERIEA",
+        "name": "Serie A",
+        "country": "Itàlia",
+        "flag": "🇮🇹",
+        "flashscore_code": "serie-a",
+        "winamax_sport_id": 1,
+        "winamax_cat_id": 31,
     }
 ]
 
@@ -815,6 +842,12 @@ class WebDataExporter:
 
             home_data = {"id": r["home_team_id"], "name": r["h_name"], "elo_rating": r.get("h_elo", 1500.0)}
             away_data = {"id": r["away_team_id"], "name": r["a_name"], "elo_rating": r.get("a_elo", 1500.0)}
+            ref_data = {
+                "name": r.get("ref_name") or "Àrbitre Oficial",
+                "yellow_cards_avg": float(r.get("ref_yellow") or 4.5),
+                "fouls_avg": float(r.get("ref_fouls") or 26.0),
+                "strictness_index": 1.0
+            }
             pred = self.predictor.predict_single_match(
                 home_data, away_data, referee=ref_data, match_context={"competition_id": competition_id, "date": r.get("date_time")}
             )

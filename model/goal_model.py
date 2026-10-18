@@ -28,6 +28,9 @@ class GoalModel:
             "PREMIER": {"home_avg": 1.55, "away_avg": 1.25, "teams": 20},
             "HYPERMOTION": {"home_avg": 1.35, "away_avg": 1.05, "teams": 22},
             "CHAMPIONSHIP": {"home_avg": 1.48, "away_avg": 1.18, "teams": 24},
+            "BUNDESLIGA": {"home_avg": 1.62, "away_avg": 1.38, "teams": 18},
+            "LIGUE1": {"home_avg": 1.42, "away_avg": 1.18, "teams": 18},
+            "SERIEA": {"home_avg": 1.44, "away_avg": 1.16, "teams": 20},
         }
 
     def estimate_lambdas(

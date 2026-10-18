@@ -43,7 +43,7 @@ def run_pipeline(
     season: str = "2026-2027"
 ):
     if not leagues:
-        leagues = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"]
+        leagues = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP", "BUNDESLIGA", "LIGUE1", "SERIEA"]
 
     # Detecció intel·ligent de calendari per a cada lliga
     league_jornadas = {}
@@ -191,7 +191,7 @@ def update_completed_results(jornada: Optional[int] = None, leagues: List[str] =
 def main():
     parser = argparse.ArgumentParser(description="Pipeline Autònom de Prediccions de Futbol Multi-Lliga")
     parser.add_argument("--jornada", type=int, default=None, help="Número de jornada (si no s'indica, es detecta automàticament per a cada lliga)")
-    parser.add_argument("--leagues", nargs="+", default=["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"], help="Lligues a incloure (ex: LALIGA PREMIER HYPERMOTION CHAMPIONSHIP)")
+    parser.add_argument("--leagues", nargs="+", default=["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP", "BUNDESLIGA", "LIGUE1", "SERIEA"], help="Lligues a incloure (ex: LALIGA PREMIER HYPERMOTION CHAMPIONSHIP BUNDESLIGA LIGUE1 SERIEA)")
     parser.add_argument("--season", type=str, default="2026-2027", help="Temporada oficial")
     parser.add_argument("--update-results", action="store_true", help="Només descarrega resultats de la jornada i actualitza el PnL (per als dimarts)")
 

@@ -42,6 +42,21 @@ BET365_TOURNAMENTS = {
         "name": "Inglaterra - Championship",
         "url": "https://www.bet365.es/#/AS/B1/",
         "code": "E2"
+    },
+    "BUNDESLIGA": {
+        "name": "Alemania - Bundesliga",
+        "url": "https://www.bet365.es/#/AS/B1/",
+        "code": "E3"
+    },
+    "LIGUE1": {
+        "name": "Francia - Ligue 1",
+        "url": "https://www.bet365.es/#/AS/B1/",
+        "code": "E7"
+    },
+    "SERIEA": {
+        "name": "Italia - Serie A",
+        "url": "https://www.bet365.es/#/AS/B1/",
+        "code": "E6"
     }
 }
 
