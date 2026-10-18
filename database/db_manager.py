@@ -1389,6 +1389,25 @@ class DatabaseManager:
             return sorted(list(dates))
 
 
+    def purge_future_daily_combos(self, today_str: str) -> int:
+        """
+        Elimina qualsevol combinada del dia registrada per error per a dates futures (> today_str),
+        garantint que no es bloquegin seleccions abans de conèixer àrbitres i quotes definitives.
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            rows = cursor.execute("""
+                SELECT id FROM combo_recommendations
+                WHERE competition_id = 'DAILY' AND substr(id, 13, 10) > ?
+            """, (today_str,)).fetchall()
+            count = len(rows)
+            for r in rows:
+                c_id = r[0]
+                cursor.execute("DELETE FROM combo_legs WHERE combo_id = ?", (c_id,))
+                cursor.execute("DELETE FROM combo_recommendations WHERE id = ?", (c_id,))
+            conn.commit()
+            return count
+
     def purge_historical_combos_before_today(self):
         """
         Elimina totes les combinades de jornades passades anteriors a l'inici del seguiment viu (J1 a J5),

@@ -415,6 +415,11 @@ def run_daily_autonomous_check(force: bool = False):
         from engine.web_data_exporter import WebDataExporter, COMPETITIONS_META
         exporter = WebDataExporter(db=db)
 
+        # Neteja de seguretat: assegurar que mai quedi cap combinada futura (> today_iso) registrada per error
+        purged_cnt = db.purge_future_daily_combos(today_iso)
+        if purged_cnt > 0:
+            print(f"   🧹 S'han netejat {purged_cnt} combinades de dies futurs bloquejades prematurament a SQLite.")
+
         all_today_matches = []
         today_match_keys = set()
         for m in all_predicted_matches:
@@ -449,6 +454,7 @@ def run_daily_autonomous_check(force: bool = False):
             comps_today = set(m.get("competition_id") for m in today_matches if m.get("competition_id"))
             print(f"   • S'han detectat {len(today_matches)} partits per al dia d'avui ({today_iso}) involucrant {len(comps_today)} lligues ({', '.join(comps_today)}).")
             if not db.has_daily_combos(today_iso, min_expected=6):
+                print(f"   [*] Generant les 6 combinades oficials del dia per a {today_iso} (Primer pipeline 08:23h o fallback 15:23h)...")
                 db.delete_daily_combos_for_date(today_iso)
                 daily_suite = combo_engine.generate_daily_combos_suite(today_matches)
                 for idx, sc in enumerate(daily_suite.get("safe", []), 1):

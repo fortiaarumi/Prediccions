@@ -1508,8 +1508,8 @@ class WebDataExporter:
                         single_pred["home_team"] = {"id": mr["home_team_id"], "name": mr["home_name"]}
                         single_pred["away_team"] = {"id": mr["away_team_id"], "name": mr["away_name"]}
 
-                        # Assegurar quotes i anàlisi de valor per si es fan servir a les combinades (partits pendents)
-                        if target_date >= today_iso and mr.get("status") != "FINISHED":
+                        # Només per al dia d'avui es cerquen quotes de mercat per a les combinades diàries
+                        if target_date == today_iso and mr.get("status") != "FINISHED":
                             odds = self.winamax.get_match_odds(mr["home_name"], mr["away_name"], competition_id=mr["competition_id"])
                             odds_b365 = self.bet365.get_match_odds(mr["home_name"], mr["away_name"], competition_id=mr["competition_id"], match_pred=single_pred, winamax_odds=odds)
                             single_pred["odds"] = odds
@@ -1522,18 +1522,7 @@ class WebDataExporter:
                     except Exception as e_pred:
                         print(f"   [!] Error preparant predicció diària per a {mr.get('id')}: {e_pred}")
 
-            # B) Comprovar si ja existeixen combinades congelades a la BD per a aquest dia
-            if force_regenerate and target_date >= today_iso:
-                self.db.delete_daily_combos_for_date(target_date)
-                existing_daily = []
-            else:
-                existing_daily = self.db.get_daily_combos_for_date(target_date)
-
-            safe_list = []
-            semi_list = []
-            risky_list = []
-
-            has_matches = (len(day_matches) > 0 or len(existing_daily) > 0)
+            # Identificar competicions del dia
             comps_involved = {m.get("competition_id") for m in day_matches if m.get("competition_id")}
             comp_map = {
                 "LALIGA": "LaLiga EA Sports",
@@ -1545,6 +1534,42 @@ class WebDataExporter:
                 "SERIEA": "Serie A"
             }
             comp_names = [comp_map.get(c, c) for c in comps_involved]
+
+            # --- CONDICIÓ CRÍTICA: DIES FUTURS ---
+            # Les combinades del dia NUNCA es generen per endavant.
+            # S'espera sempre al primer pipeline del dia (08:23h) per disposar de les designacions arbitrals oficials i les quotes de mercat.
+            if target_date > today_iso:
+                has_m = len(day_matches) > 0
+                if has_m:
+                    c_list_str = f" ({', '.join(comp_names)})" if comp_names else ""
+                    l_note = f"Partits programats: {len(day_matches)}{c_list_str}. Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives."
+                else:
+                    l_note = "Sense partits programats per a aquest dia a cap de les 7 lligues."
+
+                by_date[target_date] = {
+                    "date": target_date,
+                    "formatted_date": self._format_catalan_date(target_date),
+                    "has_matches": has_m,
+                    "matches_count": len(day_matches),
+                    "league_note": l_note,
+                    "safe": [],
+                    "semi": [],
+                    "risky": []
+                }
+                continue
+
+            # B) Comprovar si ja existeixen combinades congelades a la BD per a aquest dia
+            if force_regenerate and target_date == today_iso:
+                self.db.delete_daily_combos_for_date(target_date)
+                existing_daily = []
+            else:
+                existing_daily = self.db.get_daily_combos_for_date(target_date)
+
+            safe_list = []
+            semi_list = []
+            risky_list = []
+
+            has_matches = (len(day_matches) > 0 or len(existing_daily) > 0)
 
             # Determinar nota de lliga
             if not has_matches:
@@ -1712,8 +1737,8 @@ class WebDataExporter:
                     else:
                         risky_list.append(combo_obj)
 
-            elif day_matches:
-                # 4. Generar noves combinades per a aquest dia i CONGELAR-LES a la BD
+            elif target_date == today_iso and day_matches:
+                # 4. Generar noves combinades exclusivament per al dia d'avui i CONGELAR-LES a la BD
                 self.db.delete_daily_combos_for_date(target_date)
                 combos_data = self.combo_engine.generate_daily_combos_suite(day_matches)
 
