@@ -14,6 +14,7 @@ __pycache__/
 reports/*.pdf
 data/*_urls.txt
 database/*.db
+data/*_backup*.db
 scratch/
 
 # Fitxers de sistema

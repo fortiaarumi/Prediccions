@@ -58,6 +58,8 @@ class MatchScraper:
             "home_fouls": None,
             "away_fouls": None,
             "referee": "REF_DEFAULT",
+            "is_finished": False,
+            "status": "SCHEDULED",
             "raw_stats": {}
         }
 
@@ -127,6 +129,11 @@ class MatchScraper:
                         result["away_goals"] = int(fields['DF'])
                     except Exception:
                         pass
+                if 'DA' in fields:
+                    # DA == '3' és el codi oficial de Finalitzat a Flashscore
+                    da_code = str(fields['DA']).strip()
+                    result["is_finished"] = (da_code == '3')
+                    result["status"] = "FINISHED" if da_code == '3' else ("LIVE" if da_code in ['2', '7', '8', '9'] else "SCHEDULED")
 
             # 3. Extreure àrbitre des del feed oficial d'informació (df_sui_1)
             cmd_sui = ['curl', '-s', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/df_sui_1_{match_code}']

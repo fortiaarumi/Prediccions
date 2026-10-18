@@ -76,17 +76,21 @@ class LiveCrawler:
                         ac_code in ['37', '4', '10', '11'] or
                         any(w in am_note.lower() for w in ['suspend', 'aplazad', 'pospuest', 'cancel', 'interrump', 'abandon'])
                     )
+                    # El partit NOMÉS és finalitzat si prové de /resultados/ o té codi oficial de finalitzat (AC='3')
+                    is_fin = (feed_key == 'results' or str(ac_code) == '3') and not is_susp
                     items.append({
                         'round_str': current_round or '',
                         'match_code': fields.get('AA'),
                         'home': fields.get('AE'),
                         'away': fields.get('AF'),
-                        'score_h': None if is_susp else fields.get('AG'),
-                        'score_a': None if is_susp else fields.get('AH'),
+                        'score_h': fields.get('AG') if is_fin else None,
+                        'score_a': fields.get('AH') if is_fin else None,
                         'date': dt_str,
                         'url': f"https://www.flashscore.es/partido/{fields.get('AA')}/#/estadisticas-del-partido/0",
                         'is_suspended': is_susp,
-                        'suspension_reason': am_note
+                        'suspension_reason': am_note,
+                        'is_finished': is_fin,
+                        'ac_code': ac_code
                     })
             return items
 
@@ -120,10 +124,12 @@ class LiveCrawler:
                         "url": m["url"],
                         "match_code": m["match_code"],
                         "jornada": jornada,
-                        "score_h": None if is_susp_fix else m.get("score_h"),
-                        "score_a": None if is_susp_fix else m.get("score_a"),
+                        "score_h": m.get("score_h"),
+                        "score_a": m.get("score_a"),
                         "is_suspended": is_susp_fix,
-                        "suspension_reason": m.get("suspension_reason", "")
+                        "suspension_reason": m.get("suspension_reason", ""),
+                        "is_finished": m.get("is_finished", False),
+                        "ac_code": m.get("ac_code", "")
                     })
 
         print(f"[*] S'han trobat {len(fixtures)} partits oficials per a la Jornada {jornada} de {comp_id}.")
@@ -197,8 +203,9 @@ class LiveCrawler:
                 h_goals = data.get("home_goals") if data.get("home_goals") is not None else fix.get("score_h")
                 a_goals = data.get("away_goals") if data.get("away_goals") is not None else fix.get("score_a")
 
-                # El partit NOMÉS és finalitzat si té gols i NO està suspès
-                is_finished = (not is_suspended) and (h_goals is not None and str(h_goals).isdigit())
+                # El partit NOMÉS és finalitzat si té resultat definitiu (no en joc/live ni suspès)
+                is_definitive = fix.get("is_finished", False) or data.get("is_finished", False) or (str(fix.get("ac_code", "")) == "3")
+                is_finished = (not is_suspended) and is_definitive and (h_goals is not None and str(h_goals).isdigit())
                 ref_id = db.get_or_create_referee(data.get("referee"), competition_id=comp_id)
 
                 if is_suspended:
@@ -249,8 +256,42 @@ class LiveCrawler:
                         h_data["elo_rating"], a_data["elo_rating"],
                         int(h_goals), int(a_goals)
                     )
-                    cursor.execute("UPDATE team_ratings SET elo_rating = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?", (h_data["elo_rating"] + d_elo_h, home_id))
-                    cursor.execute("UPDATE team_ratings SET elo_rating = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?", (a_data["elo_rating"] + d_elo_a, away_id))
+
+                    # --- Actualització de Rànquings Ofensiu/Defensiu (Tri-Rank) ---
+                    # xG del partit (fallback: gols reals si xG no disponible)
+                    match_xg_home = float(data.get("home_xg") or h_goals_val)
+                    match_xg_away = float(data.get("away_xg") or a_goals_val)
+                    # Referència: mitjana de gols de la lliga per al context d'avaluació ((home_avg + away_avg)/2)
+                    league_avg_goals = {"LALIGA": 1.27, "PREMIER": 1.40, "HYPERMOTION": 1.20, "CHAMPIONSHIP": 1.33}
+                    expected_goals_ref = league_avg_goals.get(comp_id, 1.27)
+
+                    h_gen, h_off, h_def = rank_engine.update_tri_ranks(
+                        current_off_rank=float(h_data.get("off_rank", 14.0)),
+                        current_def_rank=float(h_data.get("def_rank", 14.0)),
+                        goals_scored=h_goals_val,
+                        goals_conceded=a_goals_val,
+                        xg_for=match_xg_home,
+                        xg_against=match_xg_away,
+                        expected_goals_model=expected_goals_ref
+                    )
+                    a_gen, a_off, a_def = rank_engine.update_tri_ranks(
+                        current_off_rank=float(a_data.get("off_rank", 14.0)),
+                        current_def_rank=float(a_data.get("def_rank", 14.0)),
+                        goals_scored=a_goals_val,
+                        goals_conceded=h_goals_val,
+                        xg_for=match_xg_away,
+                        xg_against=match_xg_home,
+                        expected_goals_model=expected_goals_ref
+                    )
+
+                    cursor.execute(
+                        "UPDATE team_ratings SET elo_rating = ?, general_rank = ?, off_rank = ?, def_rank = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?",
+                        (h_data["elo_rating"] + d_elo_h, h_gen, h_off, h_def, home_id)
+                    )
+                    cursor.execute(
+                        "UPDATE team_ratings SET elo_rating = ?, general_rank = ?, off_rank = ?, def_rank = ?, rest_days = 0, updated_at = datetime('now') WHERE team_id = ?",
+                        (a_data["elo_rating"] + d_elo_a, a_gen, a_off, a_def, away_id)
+                    )
                     conn.commit()
 
                     ref_name = data.get("referee") or "Oficial CTA/PGMOL"
@@ -281,7 +322,7 @@ class LiveCrawler:
                         "date": fix["date"] or data.get("date")
                     })
 
-                    print(f"   [NOU RESULTAT INGESTAT] {h_goals}-{a_goals} (xG: {data.get('home_xg')} - {data.get('away_xg')}) | Elo: {home_id} ({d_elo_h:+.1f}) / {away_id} ({d_elo_a:+.1f})")
+                    print(f"   [NOU RESULTAT INGESTAT] {h_goals}-{a_goals} (xG: {data.get('home_xg')} - {data.get('away_xg')}) | Elo: {home_id} ({d_elo_h:+.1f}) / {away_id} ({d_elo_a:+.1f}) | Rank: {home_id} Off={h_off:.1f} Def={h_def:.1f} / {away_id} Off={a_off:.1f} Def={a_def:.1f}")
                 else:
                     print(f"   [PENDENT] Partit encara no jugat. Registrat a SQLite com a programat.")
 

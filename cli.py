@@ -40,6 +40,17 @@ def cmd_predict_jornada(jornada: int, league: str = "LALIGA"):
     for c in comps:
         predictor.predict_jornada(jornada=jornada, competition_id=c)
 
+def cmd_rebuild_ranks():
+    from engine.rank_reconstructor import compute_replay, apply_reconstructed_ranks
+    db_path = Path("data/laliga.db")
+    print("\n[*] Reconstruint rànquings històrics deterministament sobre data/laliga.db...")
+    ranks, matches = compute_replay(db_path)
+    backup = apply_reconstructed_ranks(db_path, ranks, create_backup=True)
+    print(f"    • Partits processats: {len(matches)}")
+    print(f"    • Rànquings actualitzats per a {len(ranks)} equips.")
+    print(f"    • Còpia de seguretat creada a: {backup}")
+    print("[+] Rànquings històrics reconstruïts amb èxit!\n")
+
 def cmd_predict_match(home: str, away: str, date: str = None, referee_name: str = None):
     db = DatabaseManager()
     db.seed_initial_data()
@@ -120,10 +131,13 @@ def main():
     parser.add_argument("--predict-match", nargs=2, metavar=("HOME", "AWAY"), help="Prediu un partit individual amb cuotes Winamax i genera PDF")
     parser.add_argument("--date", type=str, help="Data del partit (YYYY-MM-DD)")
     parser.add_argument("--referee", type=str, default=None, help="Nom o ID de l'àrbitre (opcional: si s'omet, es resol automàticament)")
+    parser.add_argument("--rebuild-ranks", action="store_true", help="Reconstrueix deterministament els rànquings (tri-ranks) històrics a partir dels partits acabats")
 
     args = parser.parse_args()
 
-    if args.scrape_jornada is not None:
+    if args.rebuild_ranks:
+        cmd_rebuild_ranks()
+    elif args.scrape_jornada is not None:
         cmd_scrape_jornada(args.scrape_jornada, league=args.league)
     elif args.predict_jornada is not None:
         cmd_predict_jornada(args.predict_jornada, league=args.league)

@@ -411,7 +411,7 @@ class WebDataExporter:
                 home_team=home_data,
                 away_team=away_data,
                 referee=ref_data,
-                match_context={"date": match_date}
+                match_context={"date": match_date, "competition_id": competition_id}
             )
             pred["competition_id"] = competition_id
             pred["date"] = match_date
@@ -512,7 +512,7 @@ class WebDataExporter:
                     home_team=home_data,
                     away_team=away_data,
                     referee=self.db.get_referee("REF_DEFAULT"),
-                    match_context={"date": match_date}
+                    match_context={"date": match_date, "competition_id": competition_id}
                 )
                 p_base_goals = pred_base.get("goals", {}).get("prob_1X2", {})
                 p_base_cards = pred_base.get("cards", {})
@@ -815,8 +815,9 @@ class WebDataExporter:
 
             home_data = {"id": r["home_team_id"], "name": r["h_name"], "elo_rating": r.get("h_elo", 1500.0)}
             away_data = {"id": r["away_team_id"], "name": r["a_name"], "elo_rating": r.get("a_elo", 1500.0)}
-            ref_data = {"name": r.get("ref_name") or "Àrbitre Oficial", "yellow_cards_avg": r.get("ref_yellow", 4.5), "fouls_avg": r.get("ref_fouls", 25.0)}
-            pred = self.predictor.predict_single_match(home_data, away_data, referee=ref_data)
+            pred = self.predictor.predict_single_match(
+                home_data, away_data, referee=ref_data, match_context={"competition_id": competition_id, "date": r.get("date_time")}
+            )
 
             p_1x2 = pred.get("goals", {}).get("prob_1X2", {})
             p1 = round(float(p_1x2.get("1", 33.3)), 1)
@@ -1402,7 +1403,7 @@ class WebDataExporter:
                         h_data = self.db.get_team_rating(mr["home_team_id"])
                         a_data = self.db.get_team_rating(mr["away_team_id"])
                         ref_data = self.db.get_referee(mr.get("referee_id") or "REF_DEFAULT")
-                        single_pred = self.predictor.predict_single_match(h_data, a_data, ref_data, match_context={"date": mr["date_time"]})
+                        single_pred = self.predictor.predict_single_match(h_data, a_data, ref_data, match_context={"date": mr["date_time"], "competition_id": mr["competition_id"]})
                         single_pred["competition_id"] = mr["competition_id"]
                         single_pred["matchup"] = f"{mr['home_name']} vs {mr['away_name']}"
                         single_pred["date"] = mr["date_time"]
@@ -1886,7 +1887,7 @@ class WebDataExporter:
                 for meta in COMPETITIONS_META:
                     comp = meta["id"]
                     c.execute("""
-                        SELECT MAX(jornada) FROM matches 
+                        SELECT MAX(jornada) FROM matches
                         WHERE competition_id = ? AND (status = 'SCHEDULED' OR status = 'FINISHED')
                     """, (comp,))
                     row_j = c.fetchone()
@@ -1911,7 +1912,7 @@ class WebDataExporter:
                     rows = c.fetchall()
 
                     c.execute("""
-                        SELECT COUNT(*) FROM matches 
+                        SELECT COUNT(*) FROM matches
                         WHERE competition_id = ? AND jornada = ? AND status = 'SCHEDULED'
                     """, (comp, active_j))
                     has_scheduled = (c.fetchone()[0] or 0) > 0
@@ -2027,7 +2028,7 @@ class WebDataExporter:
                     (cid,)
                 ).fetchall()
                 available_jornadas = [int(r[0]) for r in j_rows if r[0]]
-            
+
             if pred_data["jornada"] not in available_jornadas:
                 available_jornadas.append(pred_data["jornada"])
             available_jornadas.sort()

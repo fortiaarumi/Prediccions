@@ -15,8 +15,9 @@ from scipy.stats import poisson
 from typing import Dict, Any, List, Tuple
 
 class GoalModel:
-    def __init__(self, rho: float = -0.10, home_advantage: float = 0.25, max_goals: int = 8):
+    def __init__(self, rho: float = -0.10, home_advantage: float = 0.0, max_goals: int = 8):
         self.rho = rho
+        # home_advantage default a 0.0 perquè els perfils de lliga ja incorporen l'avantatge real (home_avg > away_avg)
         self.home_advantage = home_advantage
         self.max_goals = max_goals
         self.league_avg_home_goals = 1.42
@@ -25,7 +26,7 @@ class GoalModel:
         self.league_profiles = {
             "LALIGA": {"home_avg": 1.42, "away_avg": 1.12, "teams": 20},
             "PREMIER": {"home_avg": 1.55, "away_avg": 1.25, "teams": 20},
-            "HYPERMOTION": {"home_avg": 1.35, "away_avg": 0.98, "teams": 22},
+            "HYPERMOTION": {"home_avg": 1.35, "away_avg": 1.05, "teams": 22},
             "CHAMPIONSHIP": {"home_avg": 1.48, "away_avg": 1.18, "teams": 24},
         }
 

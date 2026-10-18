@@ -118,7 +118,7 @@ class JornadaPredictor:
                 home_team=home_data,
                 away_team=away_data,
                 referee=ref_data,
-                match_context={"date": match_date}
+                match_context={"date": match_date, "competition_id": comp_id}
             )
             match_pred["competition_id"] = comp_id
             match_pred["date"] = match_date

@@ -36,6 +36,16 @@ class MatchPredictor:
         if match_context is None:
             match_context = {}
 
+        # 0. Assegurar propagació de competition_id per al perfil de lliga del GoalModel
+        comp_id = (
+            (match_context and match_context.get("competition_id")) or
+            home_team.get("competition_id") or
+            away_team.get("competition_id") or
+            "LALIGA"
+        ).upper()
+        home_team["competition_id"] = comp_id
+        away_team["competition_id"] = comp_id
+
         # 1. Factors de descans
         home_rest = float(home_team.get("rest_days", 7.0))
         away_rest = float(away_team.get("rest_days", 7.0))
