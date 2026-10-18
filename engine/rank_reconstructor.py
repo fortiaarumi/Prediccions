@@ -205,3 +205,216 @@ def apply_reconstructed_ranks(db_path: Path, ranks: Dict[str, Dict[str, float]],
         conn.close()
 
     return backup_path
+
+
+def reconstruct_competition_ratings(
+    db_path: Path = None,
+    competition_ids: List[str] = None
+) -> Dict[str, Dict[str, Any]]:
+    """
+    Reconstrueix l'Elo, els Tri-Ranks (general, off, def) i les mitjanes rodants
+    de targetes i córners per a les competicions especificades, en ordre cronològic estricte.
+    Idempotent i aïllat: només afecta els equips de les competicions indicades.
+    """
+    db_file = db_path or (Path(__file__).parent.parent / "data" / "laliga.db")
+    comps = [c.upper() for c in (competition_ids or ["BUNDESLIGA", "LIGUE1", "SERIEA"])]
+
+    conn = sqlite3.connect(str(db_file), timeout=60.0)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    canonical_initial = get_canonical_initial_ratings()
+    reconstructed_results: Dict[str, Dict[str, Any]] = {}
+
+    try:
+        cur.execute("BEGIN TRANSACTION")
+
+        for comp in comps:
+            teams_count = LEAGUE_TEAMS_COUNT.get(comp, 20)
+            exp_ref = LEAGUE_AVG_GOALS.get(comp, 1.30)
+            rank_engine = RankEngine(k_factor=32.0, league_teams_count=teams_count)
+
+            # Obtenir equips d'aquesta competició
+            cur.execute("""
+                SELECT DISTINCT t.id, t.name FROM teams t
+                WHERE t.id IN (
+                    SELECT home_team_id FROM matches WHERE competition_id = ?
+                    UNION
+                    SELECT away_team_id FROM matches WHERE competition_id = ?
+                )
+                ORDER BY t.id
+            """, (comp, comp))
+            teams = [dict(r) for r in cur.fetchall()]
+            team_ids = [t["id"] for t in teams]
+
+            # Inicialització canònica de cada equip
+            elo_ratings: Dict[str, float] = {}
+            off_ranks: Dict[str, float] = {}
+            def_ranks: Dict[str, float] = {}
+            general_ranks: Dict[str, float] = {}
+            cards_history: Dict[str, List[float]] = {tid: [] for tid in team_ids}
+            corners_for_history: Dict[str, List[float]] = {tid: [] for tid in team_ids}
+            corners_against_history: Dict[str, List[float]] = {tid: [] for tid in team_ids}
+            last_match_dts: Dict[str, datetime] = {}
+            last_match_strs: Dict[str, str] = {}
+
+            default_rank = 10.0 if comp == "SERIEA" else 9.0
+            for tid in team_ids:
+                elo_ratings[tid] = 1500.0
+                init_ranks = canonical_initial.get(tid, {"general": default_rank, "off": default_rank, "def": default_rank})
+                general_ranks[tid] = float(init_ranks.get("general", default_rank))
+                off_ranks[tid] = float(init_ranks.get("off", default_rank))
+                def_ranks[tid] = float(init_ranks.get("def", default_rank))
+
+            # Recuperar partits acabats de la competició
+            cur.execute("""
+                SELECT id, competition_id, jornada, date_time, home_team_id, away_team_id,
+                       home_goals, away_goals, home_xg, away_xg,
+                       home_corners, away_corners, home_yellow_cards, away_yellow_cards,
+                       home_red_cards, away_red_cards
+                FROM matches
+                WHERE competition_id = ? AND status = 'FINISHED'
+                  AND home_goals IS NOT NULL AND away_goals IS NOT NULL
+            """, (comp,))
+            matches = [dict(r) for r in cur.fetchall()]
+
+            for m in matches:
+                m["dt"] = parse_date(m.get("date_time", ""))
+
+            # Ordenació cronològica estricta i determinista
+            matches.sort(key=lambda x: (x["dt"], int(x.get("jornada") or 0), x["id"]))
+
+            # Replay cronològic dels partits
+            for m in matches:
+                hid = m["home_team_id"]
+                aid = m["away_team_id"]
+                if hid not in elo_ratings or aid not in elo_ratings:
+                    continue
+
+                hg = int(m["home_goals"])
+                ag = int(m["away_goals"])
+
+                # 1. Elo Rating
+                d_elo_h, d_elo_a = rank_engine.calculate_elo_change(
+                    elo_ratings[hid], elo_ratings[aid], hg, ag
+                )
+                elo_ratings[hid] += d_elo_h
+                elo_ratings[aid] += d_elo_a
+
+                # 2. Tri-Ranks (off, def, general)
+                h_xg = float(m["home_xg"]) if m["home_xg"] is not None else float(hg)
+                a_xg = float(m["away_xg"]) if m["away_xg"] is not None else float(ag)
+
+                h_gen, h_off, h_def = rank_engine.update_tri_ranks(
+                    current_off_rank=off_ranks[hid],
+                    current_def_rank=def_ranks[hid],
+                    goals_scored=hg,
+                    goals_conceded=ag,
+                    xg_for=h_xg,
+                    xg_against=a_xg,
+                    expected_goals_model=exp_ref
+                )
+                a_gen, a_off, a_def = rank_engine.update_tri_ranks(
+                    current_off_rank=off_ranks[aid],
+                    current_def_rank=def_ranks[aid],
+                    goals_scored=ag,
+                    goals_conceded=hg,
+                    xg_for=a_xg,
+                    xg_against=h_xg,
+                    expected_goals_model=exp_ref
+                )
+
+                off_ranks[hid] = h_off
+                def_ranks[hid] = h_def
+                general_ranks[hid] = h_gen
+                off_ranks[aid] = a_off
+                def_ranks[aid] = a_def
+                general_ranks[aid] = a_gen
+
+                # 3. Targetes (grogues + vermelles)
+                if m["home_yellow_cards"] is not None:
+                    h_cards = float((m["home_yellow_cards"] or 0) + (m["home_red_cards"] or 0))
+                    cards_history[hid].append(h_cards)
+                if m["away_yellow_cards"] is not None:
+                    a_cards = float((m["away_yellow_cards"] or 0) + (m["away_red_cards"] or 0))
+                    cards_history[aid].append(a_cards)
+
+                # 4. Córners
+                if m["home_corners"] is not None and m["away_corners"] is not None:
+                    hc = float(m["home_corners"])
+                    ac = float(m["away_corners"])
+                    corners_for_history[hid].append(hc)
+                    corners_against_history[hid].append(ac)
+                    corners_for_history[aid].append(ac)
+                    corners_against_history[aid].append(hc)
+
+                # 5. Data últim partit
+                last_match_dts[hid] = m["dt"]
+                last_match_strs[hid] = m.get("date_time", "")
+                last_match_dts[aid] = m["dt"]
+                last_match_strs[aid] = m.get("date_time", "")
+
+            # Guardar rànquings a SQLite per a cada equip de la lliga
+            now_dt = datetime.now()
+            comp_ratings: Dict[str, Dict[str, Any]] = {}
+
+            for tid in team_ids:
+                # Mitjanes dels darrers 5 partits (o valors per defecte si no hi ha prou dades)
+                cards_5 = cards_history[tid][-5:] if cards_history[tid] else []
+                avg_cards = round(sum(cards_5) / len(cards_5), 2) if cards_5 else 2.2
+
+                c_for_5 = corners_for_history[tid][-5:] if corners_for_history[tid] else []
+                avg_c_for = round(sum(c_for_5) / len(c_for_5), 2) if c_for_5 else 5.0
+
+                c_ag_5 = corners_against_history[tid][-5:] if corners_against_history[tid] else []
+                avg_c_ag = round(sum(c_ag_5) / len(c_ag_5), 2) if c_ag_5 else 4.5
+
+                last_dt = last_match_dts.get(tid)
+                last_str = last_match_strs.get(tid)
+                if last_dt and last_dt > datetime(2020, 1, 1):
+                    days_diff = (now_dt - last_dt).total_seconds() / 86400.0
+                    rest_days = max(0.0, round(days_diff, 1))
+                else:
+                    rest_days = 7.0
+
+                final_elo = round(elo_ratings[tid], 2)
+                final_gen = general_ranks[tid]
+                final_off = off_ranks[tid]
+                final_def = def_ranks[tid]
+
+                cur.execute("""
+                    UPDATE team_ratings
+                    SET elo_rating = ?, general_rank = ?, off_rank = ?, def_rank = ?,
+                        avg_cards_for_5 = ?, avg_corners_for_5 = ?, avg_corners_against_5 = ?,
+                        last_match_date = ?, rest_days = ?, updated_at = datetime('now')
+                    WHERE team_id = ?
+                """, (
+                    final_elo, final_gen, final_off, final_def,
+                    avg_cards, avg_c_for, avg_c_ag,
+                    last_str, rest_days, tid
+                ))
+
+                comp_ratings[tid] = {
+                    "team_id": tid,
+                    "elo": final_elo,
+                    "general_rank": final_gen,
+                    "off_rank": final_off,
+                    "def_rank": final_def,
+                    "avg_cards": avg_cards,
+                    "avg_corners_for": avg_c_for,
+                    "avg_corners_against": avg_c_ag,
+                    "last_match": last_str,
+                    "matches_played": len(cards_history[tid])
+                }
+
+            reconstructed_results[comp] = comp_ratings
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        raise e
+    finally:
+        conn.close()
+
+    return reconstructed_results
