@@ -100,6 +100,36 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
 
         with _db.get_connection() as conn:
             c = conn.cursor()
+            # Si SQLite ja té una jornada amb partits en curs (SCHEDULED o LIVE), aquesta és la jornada activa
+            in_prog = c.execute("""
+                SELECT jornada FROM matches
+                WHERE competition_id = ? AND status IN ('SCHEDULED', 'LIVE')
+                ORDER BY jornada ASC LIMIT 1
+            """, (comp,)).fetchone()
+            if in_prog:
+                dt_row = c.execute("""
+                    SELECT date_time FROM matches
+                    WHERE competition_id = ? AND jornada = ? AND status IN ('SCHEDULED', 'LIVE')
+                    ORDER BY date_time ASC LIMIT 1
+                """, (comp, in_prog[0])).fetchone()
+                first_dt = None
+                if dt_row and dt_row[0]:
+                    try:
+                        clean_dt = str(dt_row[0]).strip()
+                        if "." in clean_dt:
+                            first_dt = datetime.strptime(clean_dt[:16], "%d.%m.%Y %H:%M")
+                        elif "-" in clean_dt:
+                            first_dt = datetime.strptime(clean_dt[:16], "%Y-%m-%d %H:%M")
+                    except Exception:
+                        pass
+                return {
+                    "competition_id": comp,
+                    "jornada": in_prog[0],
+                    "first_match_dt": first_dt or datetime.now(),
+                    "cluster_start_date": first_dt.date() if first_dt else datetime.now().date(),
+                    "matches_count": 0
+                }
+
             # Una jornada només es considera completament acabada si té suficients partits jugats i ZERO pendents
             c_sql = c.execute("""
                 SELECT jornada FROM matches

@@ -367,8 +367,9 @@ class WebDataExporter:
             """, (competition_id, active_jornada))
             rows = [dict(r) for r in c.fetchall()]
 
-        # Si a SQLite no hi ha suficients partits per a aquesta jornada, consultar JornadaResolver
-        if len(rows) < 8:
+        # Si a SQLite no hi ha suficients partits O hi ha partits pendents/en joc (SCHEDULED o LIVE), consultar JornadaResolver per sincronitzar estats reals
+        has_pending = any(r.get("status") in ("SCHEDULED", "LIVE") for r in rows)
+        if len(rows) < 8 or has_pending:
             resolver = JornadaResolver(competition_id=competition_id)
             fixtures = resolver.get_jornada_fixtures(active_jornada)
             if fixtures:

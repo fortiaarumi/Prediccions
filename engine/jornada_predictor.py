@@ -356,18 +356,29 @@ class JornadaPredictor:
                     "referee_name": ref_name
                 })
             else:
-                # Partit pendent de disputar: assegurar que queda registrat a SQLite com a SCHEDULED
+                # Partit pendent de disputar o en joc
                 if h_id and a_id:
                     from scraper.live_crawler import LiveCrawler
                     match_id = LiveCrawler.build_match_id(competition_id, "2026-2027", fix.get("match_code"), h_id, a_id, jornada)
+                    is_live = fix.get("is_live", False) or (fix.get("status") == "LIVE")
+                    sc_h = fix.get("score_h")
+                    sc_a = fix.get("score_a")
+                    m_status = "LIVE" if is_live else "SCHEDULED"
+                    hg_val = int(sc_h) if is_live and sc_h is not None and str(sc_h).isdigit() else None
+                    ag_val = int(sc_a) if is_live and sc_a is not None and str(sc_a).isdigit() else None
                     with self.db.get_connection() as conn:
                         c = conn.cursor()
                         c.execute("""
-                            INSERT OR IGNORE INTO matches 
+                            INSERT INTO matches 
                             (id, competition_id, season, jornada, date_time, home_team_id, away_team_id, referee_id,
                              home_goals, away_goals, status, url)
-                            VALUES (?, ?, '2026-2027', ?, ?, ?, ?, 'REF_DEFAULT', NULL, NULL, 'SCHEDULED', ?)
-                        """, (match_id, competition_id, jornada, fix.get("date") or "Pendent", h_id, a_id, fix.get("url", "")))
+                            VALUES (?, ?, '2026-2027', ?, ?, ?, ?, 'REF_DEFAULT', ?, ?, ?, ?)
+                            ON CONFLICT(id) DO UPDATE SET
+                                status = excluded.status,
+                                home_goals = excluded.home_goals,
+                                away_goals = excluded.away_goals
+                            WHERE matches.status != 'FINISHED'
+                        """, (match_id, competition_id, jornada, fix.get("date") or "Pendent", h_id, a_id, hg_val, ag_val, m_status, fix.get("url", "")))
                         conn.commit()
                 upcoming.append(fix)
 
