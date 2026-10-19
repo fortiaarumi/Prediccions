@@ -64,6 +64,13 @@ function getValidBet365Url(url) {
 }
 window.getValidBet365Url = getValidBet365Url;
 
+function cleanSelectionName(str) {
+  if (!str) return '';
+  if (typeof str !== 'string') return String(str);
+  return str.replace(/\{['"]id['"]:\s*['"][^'"]*['"],\s*['"]name['"]:\s*['"]([^'"]*)['"]\}/g, '$1');
+}
+window.cleanSelectionName = cleanSelectionName;
+
 function copyBet365Slip(comboKey) {
   const combo = window.combosRegistry[comboKey];
   if (!combo) return;
@@ -77,7 +84,7 @@ function copyBet365Slip(comboKey) {
   text += `SELECCIONS DEL CUPÓ:\n`;
   legs.forEach((leg, i) => {
     const o = leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : (leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-');
-    text += `${i + 1}. [${leg.matchup}] 👉 ${leg.selection_name} (@${o})\n`;
+    text += `${i + 1}. [${leg.matchup}] 👉 ${cleanSelectionName(leg.selection_name)}\n`;
   });
 
   navigator.clipboard.writeText(text).then(() => {
@@ -676,7 +683,17 @@ function renderPredictions() {
       jMatches = pData.by_jornada[String(targetJ)];
     }
 
+    const seenMatchKeys = new Set();
     jMatches.forEach(m => {
+      const hId = (m.home_team?.id || m.home_team_id || (typeof m.home_team === 'string' ? m.home_team : '') || '').toLowerCase();
+      const aId = (m.away_team?.id || m.away_team_id || (typeof m.away_team === 'string' ? m.away_team : '') || '').toLowerCase();
+      const mId = m.match_id || m.id;
+      const canonicalKey = `${m.competition_id || c.id}_J${targetJ}_${hId}_${aId}`;
+      if (seenMatchKeys.has(canonicalKey) || (mId && seenMatchKeys.has(mId))) {
+        return;
+      }
+      seenMatchKeys.add(canonicalKey);
+      if (mId) seenMatchKeys.add(mId);
       m._compName = c.name;
       m._compFlag = c.flag;
       m._targetJornada = targetJ;
@@ -685,7 +702,7 @@ function renderPredictions() {
   });
 
   if (currentSearch) {
-    allMatches = allMatches.filter(m => 
+    allMatches = allMatches.filter(m =>
       m.home_team.name.toLowerCase().includes(currentSearch) ||
       m.away_team.name.toLowerCase().includes(currentSearch)
     );
@@ -771,7 +788,7 @@ function renderPredictions() {
               <div class="team-name">${m.home_team.name}</div>
               <div class="team-elo-sub">Elo: ${m.home_team.elo}</div>
             </div>
-            
+
             <div class="final-score-box">
               <div class="final-score-val">${m.final_score || `${m.home_goals} - ${m.away_goals}`}</div>
               <span class="final-score-lbl">Marcador Final</span>
@@ -862,7 +879,7 @@ function renderPredictions() {
               <div class="team-name">${m.home_team.name}</div>
               <div class="team-elo-sub">Elo: ${m.home_team.elo}</div>
             </div>
-            
+
             <div class="suspended-score-box">
               <div class="suspended-icon-val">⏸️</div>
               <span class="suspended-score-lbl">Resultat Congelat</span>
@@ -1050,7 +1067,7 @@ function renderValueBets() {
       : (b.bookie_odd_winamax != null ? b.bookie_odd_winamax : b.bookie_odd);
 
     const prob = (b.model_prob != null ? b.model_prob : 0) / 100.0;
-    
+
     // EV percentual real: (Probabilitat * Cuota - 1) * 100
     let calcEdge = 0.0;
     if (odd && odd > 1.0 && prob > 0) {
@@ -1093,7 +1110,7 @@ function renderValueBets() {
 
   // Filtre 3: Cerca de text
   if (currentSearch) {
-    bets = bets.filter(b => 
+    bets = bets.filter(b =>
       b.matchup.toLowerCase().includes(currentSearch) ||
       b.selection.toLowerCase().includes(currentSearch)
     );
@@ -1840,7 +1857,7 @@ function renderComboCardsHtml(allCards, lKey, leagueTitle) {
                     <span class="leg-matchup">${l.matchup}</span>
                     ${catTag}
                   </div>
-                  <div class="leg-name">${l.selection_name}</div>
+                  <div class="leg-name">${cleanSelectionName(l.selection_name)}</div>
                   <div style="margin-top: 4px;">${legBadge}</div>
                 </div>
                 <div class="leg-odds-box">
@@ -4109,8 +4126,8 @@ function getAutofillUrl(combo) {
   };
 
   const hash = encodeURIComponent(JSON.stringify(payload));
-  const initialUrl = (combo.legs && combo.legs.length > 0 && combo.legs[0].url) 
-    ? combo.legs[0].url 
+  const initialUrl = (combo.legs && combo.legs.length > 0 && combo.legs[0].url)
+    ? combo.legs[0].url
     : (combo.winamax_url || 'https://www.winamax.es/apuestas-deportivas');
 
   return `${initialUrl}#combo_autofill=${hash}&leg_idx=0`;

@@ -83,6 +83,16 @@ class ComboBetEngine:
                 "winamax_url": self.winamax_base_url
             }
 
+        # Deduplicació defensiva de seleccions canòniques mantenint ordre
+        unique_legs = []
+        seen_keys = set()
+        for leg in legs:
+            k = self._get_leg_key(leg)
+            if k not in seen_keys:
+                seen_keys.add(k)
+                unique_legs.append(leg)
+        legs = unique_legs
+
         odds_list = [leg["bookie_odd"] for leg in legs]
         probs_list = [leg["model_prob"] for leg in legs]
 
@@ -111,10 +121,54 @@ class ComboBetEngine:
         }
 
     def _get_leg_key(self, leg: Dict[str, Any]) -> str:
-        """Identificador únic normalitzat d'una selecció exacta (matchup + nom de mercat)."""
-        name = leg.get("name") or leg.get("selection_name") or ""
-        matchup = leg.get("matchup") or ""
-        return f"{matchup.strip()}::{name.strip()}"
+        """Identificador únic normalitzat d'una selecció exacta (matchup + categoria + mercat)."""
+        matchup = (leg.get("matchup") or "").strip().lower()
+        name = (leg.get("name") or leg.get("selection_name") or "").strip().lower()
+        cat = (leg.get("category") or "").strip().lower()
+        return f"{matchup}::{cat}::{name}"
+
+    def _get_match_canonical_key(self, m: Dict[str, Any]) -> str:
+        """Retorna una clau canònica del partit independentment del format (id, matchup o equips)."""
+        mid = m.get("id") or m.get("match_id")
+        h = m.get("home_team")
+        a = m.get("away_team")
+        h_str = (h.get("id") or h.get("name") if isinstance(h, dict) else str(h or m.get("home_team_id") or "")).strip().lower()
+        a_str = (a.get("id") or a.get("name") if isinstance(a, dict) else str(a or m.get("away_team_id") or "")).strip().lower()
+        if h_str and a_str:
+            return f"{h_str}::{a_str}"
+        matchup = (m.get("matchup") or "").strip().lower()
+        if " vs " in matchup:
+            parts = matchup.split(" vs ", 1)
+            return f"{parts[0].strip()}::{parts[1].strip()}"
+        return str(mid or matchup)
+
+    def is_valid_combo_legs(self, legs: List[Dict[str, Any]], allow_duos: bool = False) -> bool:
+        """
+        Valida que les seleccions d'una combinada siguin canònicament correctes:
+        - Totes les seleccions han de tenir claus canòniques estrictament úniques (sense seleccions repetides).
+        - Si allow_duos=False: màxim 1 selecció per partit.
+        - Si allow_duos=True: màxim 2 seleccions per partit, de categories diferents no incompatibles.
+        """
+        if not legs or len(legs) < 2:
+            return False
+        leg_keys = [self._get_leg_key(l) for l in legs]
+        if len(set(leg_keys)) != len(legs):
+            return False
+        matchup_counts = Counter((l.get("matchup") or "").strip().lower() for l in legs)
+        if not allow_duos:
+            if any(cnt > 1 for cnt in matchup_counts.values()):
+                return False
+        else:
+            if any(cnt > 2 for cnt in matchup_counts.values()):
+                return False
+            for m_up, cnt in matchup_counts.items():
+                if cnt == 2:
+                    m_legs = [l for l in legs if (l.get("matchup") or "").strip().lower() == m_up]
+                    cat1 = m_legs[0].get("category", "")
+                    cat2 = m_legs[1].get("category", "")
+                    if cat1 == cat2:
+                        return False
+        return True
 
     def _get_combo_sig(self, legs: List[Dict[str, Any]]) -> frozenset:
         """Signatura única del conjunt de seleccions d'una combinada."""
@@ -123,10 +177,16 @@ class ComboBetEngine:
     def _extract_all_match_markets(self, predicted_matches: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Extreu tots els mercats individuals disponibles per a cada partit,
-        assegurant la informació del partit i l'enllaç de Winamax.
+        assegurant la informació del partit i l'enllaç de Winamax,
+        deduplicant partits per clau canònica.
         """
         match_markets = []
+        seen_matches = set()
         for p in predicted_matches:
+            m_key = self._get_match_canonical_key(p)
+            if m_key in seen_matches:
+                continue
+            seen_matches.add(m_key)
             matchup = p.get("matchup")
             if not matchup:
                 h_name = p.get("home_team", {}).get("name") if isinstance(p.get("home_team"), dict) else str(p.get("home_team") or p.get("home") or "Local")
@@ -223,6 +283,7 @@ class ComboBetEngine:
             return sorted_cands[:4]
 
         pools = []
+        seen_pool_matchups = set()
         if is_multi:
             by_comp = {}
             for mm in match_markets:
@@ -233,8 +294,12 @@ class ComboBetEngine:
             for i in range(max_per_comp):
                 for c_id, comp_mms in by_comp.items():
                     if i < len(comp_mms):
+                        m_up = (comp_mms[i].get("matchup") or "").strip().lower()
+                        if m_up in seen_pool_matchups:
+                            continue
                         cands = extract_diverse_cands(comp_mms[i])
                         if cands:
+                            seen_pool_matchups.add(m_up)
                             pools.append({
                                 "matchup": comp_mms[i]["matchup"],
                                 "competition_id": c_id,
@@ -242,8 +307,12 @@ class ComboBetEngine:
                             })
         else:
             for mm in match_markets:
+                m_up = (mm.get("matchup") or "").strip().lower()
+                if m_up in seen_pool_matchups:
+                    continue
                 cands = extract_diverse_cands(mm)
                 if cands:
+                    seen_pool_matchups.add(m_up)
                     pools.append({
                         "matchup": mm["matchup"],
                         "competition_id": mm.get("competition_id", ""),
@@ -377,17 +446,20 @@ class ComboBetEngine:
 
         # Fase 4: Construir combinada a partir dels partits del pool no utilitzats a c1
         alt_legs = []
+        seen_alt_matchups = set()
         for p in pools:
-            if p["matchup"] not in c1_matchups:
+            p_up = (p.get("matchup") or "").strip().lower()
+            if p["matchup"] not in c1_matchups and p_up not in seen_alt_matchups:
                 for m in p["markets"]:
                     k = self._get_leg_key(m)
                     if k not in forbidden_exact and k not in c1_leg_keys:
                         alt_legs.append(m)
+                        seen_alt_matchups.add(p_up)
                         break
                 if len(alt_legs) >= k_len:
                     break
 
-        if len(alt_legs) >= 2:
+        if len(alt_legs) >= 2 and self.is_valid_combo_legs(alt_legs, allow_duos=False):
             return {"legs": alt_legs, "sig": self._get_combo_sig(alt_legs)}
 
         return {"legs": [], "sig": frozenset()}
@@ -432,6 +504,8 @@ class ComboBetEngine:
                 cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=2) for m in match_combo]
                 for choice in itertools.product(*cand_lists):
                     leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
+                    if not self.is_valid_combo_legs(leg_choice, allow_duos=allow_duos):
+                        continue
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -466,6 +540,8 @@ class ComboBetEngine:
                     cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=2) for m in match_combo]
                     for choice in itertools.product(*cand_lists):
                         leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
+                        if not self.is_valid_combo_legs(leg_choice, allow_duos=allow_duos):
+                            continue
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
                         odds = [l["bookie_odd"] for l in leg_choice]
@@ -559,6 +635,8 @@ class ComboBetEngine:
                 cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=2) for m in match_combo]
                 for choice in itertools.product(*cand_lists):
                     leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
+                    if not self.is_valid_combo_legs(leg_choice, allow_duos=allow_duos):
+                        continue
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -566,13 +644,13 @@ class ComboBetEngine:
                     if 8.50 <= c_odd <= 16.50:
                         cats = {l.get("category") for l in leg_choice}
                         p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
-                        
+
                         div_bonus = 0.0
                         if "Córners" in cats: div_bonus += 0.05
                         if "Targetes" in cats: div_bonus += 0.05
                         if "BTTS" in cats: div_bonus += 0.04
                         if "Gols" in cats: div_bonus += 0.03
-                        
+
                         fresh_bonus = sum(0.04 for l in leg_choice if global_counts.get(self._get_leg_key(l), 0) == 0)
                         score = p_dec * (1.0 + div_bonus + league_bonus + fresh_bonus) - abs(c_odd - 10.0) * 0.002
                         candidates.append({
@@ -599,6 +677,8 @@ class ComboBetEngine:
                     cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=2) for m in match_combo]
                     for choice in itertools.product(*cand_lists):
                         leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
+                        if not self.is_valid_combo_legs(leg_choice, allow_duos=allow_duos):
+                            continue
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
                         odds = [l["bookie_odd"] for l in leg_choice]
@@ -711,6 +791,8 @@ class ComboBetEngine:
                 cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=3) for m in match_combo]
                 for choice in itertools.product(*cand_lists):
                     leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
+                    if not self.is_valid_combo_legs(leg_choice, allow_duos=allow_duos):
+                        continue
                     if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                         continue
                     odds = [l["bookie_odd"] for l in leg_choice]
@@ -718,13 +800,13 @@ class ComboBetEngine:
                     if 28.0 <= c_odd <= 65.0:
                         cats = {l.get("category") for l in leg_choice}
                         p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
-                        
+
                         div_bonus = 0.0
                         if "Córners" in cats: div_bonus += 0.08
                         if "Targetes" in cats: div_bonus += 0.08
                         if "BTTS" in cats: div_bonus += 0.06
                         if "Gols" in cats: div_bonus += 0.05
-                        
+
                         fresh_bonus = sum(0.05 for l in leg_choice if global_counts.get(self._get_leg_key(l), 0) == 0)
                         score = p_dec * (1.0 + div_bonus + league_bonus + fresh_bonus) - abs(c_odd - 35.0) * 0.0005
                         candidates.append({
@@ -752,6 +834,8 @@ class ComboBetEngine:
                     cand_lists = [self._build_match_choices(m["markets"], allow_duos=allow_duos, max_singles=3, max_duos=3) for m in match_combo]
                     for choice in itertools.product(*cand_lists):
                         leg_choice = [leg for item in choice for leg in (item if isinstance(item, list) else [item])]
+                        if not self.is_valid_combo_legs(leg_choice, allow_duos=allow_duos):
+                            continue
                         if any(self._get_leg_key(l) in forbidden_exact or global_counts.get(self._get_leg_key(l), 0) >= max_usage for l in leg_choice):
                             continue
                         odds = [l["bookie_odd"] for l in leg_choice]
@@ -1224,6 +1308,16 @@ class ComboBetEngine:
                 a = m.get("away_team", {}).get("name") if isinstance(m.get("away_team"), dict) else "Visitant"
                 m["matchup"] = f"{h} vs {a}"
 
+        # Deduplicar partits del dia per identitat canònica
+        seen_day_keys = set()
+        deduped_day_matches = []
+        for m in day_matches:
+            mk = self._get_match_canonical_key(m)
+            if mk not in seen_day_keys:
+                seen_day_keys.add(mk)
+                deduped_day_matches.append(m)
+        day_matches = deduped_day_matches
+
         all_buckets = {}
         for m in day_matches:
             mkts = self._extract_single_match_markets(m)
@@ -1269,6 +1363,9 @@ class ComboBetEngine:
 
                     cand_lists = [all_buckets[b][:2] for b in b_combo]
                     for choice in itertools.product(*cand_lists):
+                        choice_legs = list(choice)
+                        if not self.is_valid_combo_legs(choice_legs, allow_duos=True):
+                            continue
                         if any(l["model_prob"] < min_leg_prob for l in choice):
                             continue
                         odds = [l["bookie_odd"] for l in choice]
@@ -1395,6 +1492,16 @@ class ComboBetEngine:
                 "safe_combo": {},
                 "risky_combo": {}
             }
+
+        # Deduplicar partits del dia per identitat canònica abans de processar
+        seen_suite_keys = set()
+        deduped_suite_matches = []
+        for m in day_matches:
+            mk = self._get_match_canonical_key(m)
+            if mk not in seen_suite_keys:
+                seen_suite_keys.add(mk)
+                deduped_suite_matches.append(m)
+        day_matches = deduped_suite_matches
 
         comps = {m.get("competition_id") for m in day_matches if m.get("competition_id")}
         comp_map = {

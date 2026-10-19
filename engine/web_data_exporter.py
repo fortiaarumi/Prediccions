@@ -1475,11 +1475,18 @@ class WebDataExporter:
                 if self._normalize_date_iso(m.get("date", "")) == target_date
             ]
 
+            def _extract_m_key(m_obj):
+                h = m_obj.get("home_team")
+                a = m_obj.get("away_team")
+                h_k = (h.get("id") or h.get("name") if isinstance(h, dict) else str(h or m_obj.get("home_team_id") or "")).strip().lower()
+                a_k = (a.get("id") or a.get("name") if isinstance(a, dict) else str(a or m_obj.get("away_team_id") or "")).strip().lower()
+                if h_k and a_k:
+                    return f"{h_k}_{a_k}"
+                matchup = (m_obj.get("matchup") or "").strip().lower()
+                return matchup or str(m_obj.get("id") or m_obj.get("match_id"))
+
             # També comprovar si hi ha partits a SQLite per a aquesta data que no estiguin a all_predicted_matches_flat
-            existing_matchup_keys = {
-                f"{m.get('home_team', {}).get('id')}_{m.get('away_team', {}).get('id')}"
-                for m in day_matches
-            }
+            existing_matchup_keys = {_extract_m_key(m) for m in day_matches}
             with self.db.get_connection() as conn:
                 c = conn.cursor()
                 c.execute("""
@@ -1494,8 +1501,14 @@ class WebDataExporter:
                 db_m_rows = [dict(r) for r in c.fetchall()]
 
                 for mr in db_m_rows:
-                    key = f"{mr['home_team_id']}_{mr['away_team_id']}"
-                    if key in existing_matchup_keys:
+                    h_alias = self.db.find_team_id(mr['home_name']) or mr['home_team_id']
+                    a_alias = self.db.find_team_id(mr['away_name']) or mr['away_team_id']
+                    keys_to_test = {
+                        f"{mr['home_team_id'].lower()}_{mr['away_team_id'].lower()}",
+                        f"{h_alias.lower()}_{a_alias.lower()}",
+                        f"{mr['home_name'].strip().lower()}_{mr['away_name'].strip().lower()}"
+                    }
+                    if any(k in existing_matchup_keys for k in keys_to_test):
                         continue
                     try:
                         h_data = self.db.get_team_rating(mr["home_team_id"])
@@ -1751,9 +1764,13 @@ class WebDataExporter:
                         w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
                         b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
                         b365_comb_odd *= b365_odd
+                        sel_name = leg.get("name") or leg.get("selection_name", "")
+                        if isinstance(sel_name, str) and ("{'id':" in sel_name or '{"id":' in sel_name):
+                            import re
+                            sel_name = re.sub(r"\{['\"]id['\"]:\s*['\"][^'\"]*['\"],\s*['\"]name['\"]:\s*['\"]([^'\"]*)['\"]\}", r"\1", sel_name)
                         legs.append({
                             "matchup": leg.get("matchup", ""),
-                            "selection_name": leg.get("name") or leg.get("selection_name", ""),
+                            "selection_name": sel_name,
                             "category": leg.get("category", ""),
                             "bookie_odd": w_odd,
                             "bookie_odd_winamax": w_odd,
@@ -2316,11 +2333,8 @@ class WebDataExporter:
             if ru.get("match_id") not in already_reported_ids and not ru.get("is_finished")
         ]
 
-        # Si no s'han passat partits recents directament (ex. execució local o pipeline posterior),
-        # recuperar els partits finalitzats de la jornada activa de cap de setmana en curs per informar el resum diari
+        # Registrar exclusivament els partits que han finalitzat en aquesta execució del pipeline
         effective_matches = ingested_matches or []
-        if not effective_matches:
-            effective_matches = self.get_active_jornada_finished_matches()
 
         self.changelog_mgr.record_pipeline_execution(
             date_str=today_str,

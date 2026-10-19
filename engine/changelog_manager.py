@@ -19,8 +19,8 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 CHANGELOG_FILE = DATA_DIR / "changelog.json"
 
 class ChangelogManager:
-    def __init__(self, filepath: Optional[Path] = None):
-        self.filepath = filepath if filepath else CHANGELOG_FILE
+    def __init__(self, filepath: Optional[Any] = None):
+        self.filepath = Path(filepath) if filepath else CHANGELOG_FILE
         self.filepath.parent.mkdir(parents=True, exist_ok=True)
         if not self.filepath.exists():
             self._init_default_changelog()
@@ -131,7 +131,24 @@ class ChangelogManager:
         now = datetime.now()
         target_date = date_str or now.strftime("%Y-%m-%d")
         day_formatted = now.strftime("%d/%m/%Y")
-        matches = ingested_matches or []
+
+        # Comprovar quins partits ja han estat informats en entrades prèvies per no repetir partits antics
+        existing_entries = self.load_entries()
+        already_reported_mids = set()
+        for ent in existing_entries:
+            if ent.get("date") != target_date:
+                for m_old in ent.get("matches", []):
+                    if m_old.get("match_id"):
+                        already_reported_mids.add(m_old["match_id"])
+                    if m_old.get("home_team") and m_old.get("away_team"):
+                        already_reported_mids.add(f"{m_old.get('competition_id')}_{m_old['home_team']}_{m_old['away_team']}")
+
+        raw_matches = ingested_matches or []
+        matches = [
+            m for m in raw_matches
+            if m.get("match_id") not in already_reported_mids
+            and f"{m.get('competition_id')}_{m.get('home_team')}_{m.get('away_team')}" not in already_reported_mids
+        ]
         eval_combos = evaluated_combos or []
         gen_combos = new_combos or []
 
@@ -146,7 +163,7 @@ class ChangelogManager:
                 h_name = m.get("home_team", "")
                 a_name = m.get("away_team", "")
                 score = m.get("score") or f"{m.get('home_goals', 0)} - {m.get('away_goals', 0)}"
-                
+
                 xg_h = f"{m['home_xg']:.2f}" if m.get("home_xg") is not None else "-"
                 xg_a = f"{m['away_xg']:.2f}" if m.get("away_xg") is not None else "-"
                 tot_cards = (m.get("home_yellow_cards") or 0) + (m.get("away_yellow_cards") or 0) + (m.get("home_red_cards") or 0) + (m.get("away_red_cards") or 0)
@@ -207,11 +224,11 @@ class ChangelogManager:
                 p_ref = ref_u.get("prev_referee", "Pendent CTA")
                 n_ref = ref_u.get("new_referee", "")
                 ch = ref_u.get("changes", {})
-                
+
                 cards_delta = ch.get("cards_over_45", {})
                 red_delta = ch.get("red_card_prob", {})
                 home_delta = ch.get("home_win_prob", {})
-                
+
                 delta_str_parts = []
                 if cards_delta:
                     d_c = cards_delta.get('delta', 0.0)
@@ -225,7 +242,7 @@ class ChangelogManager:
                     d_h = home_delta.get('delta', 0.0)
                     sign = '+' if d_h >= 0 else ''
                     delta_str_parts.append(f"Victòria Local: {home_delta.get('before', 33)}% ➔ {home_delta.get('after', 33)}% ({sign}{d_h:.1f}%)")
-                
+
                 items.append(f"   • [{c_name} J{j_num}] {m_title}: De '{p_ref}' ➔ '{n_ref}'")
                 if delta_str_parts:
                     items.append(f"     └ Impacte model: {' | '.join(delta_str_parts)}")
