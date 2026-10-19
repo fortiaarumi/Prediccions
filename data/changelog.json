@@ -1,5 +1,105 @@
 [
   {
+    "date": "2026-10-19",
+    "timestamp": "2026-10-19T14:38:23.838995",
+    "title": "Actualització Diària del Model · 19/10/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 2 partit(s):",
+      "   • [LaLiga EA Sports J9] Getafe CF vs Rayo Vallecano: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Alejandro Quintero González'",
+      "     └ Impacte model: Targetes >4.5: 53.0% ➔ 53.5% (+0.5%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 40.9% ➔ 40.9% (+0.0%)",
+      "   • [LaLiga Hypermotion J10] Celta de Vigo B vs CD Tenerife: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Romero G.'",
+      "     └ Impacte model: Targetes >4.5: 53.3% ➔ 66.7% (+13.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 41.8% ➔ 41.8% (+0.0%)"
+    ],
+    "matches": [],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": [
+      {
+        "match_id": "LALIGA_J9_GET_RAY",
+        "matchup": "Getafe CF vs Rayo Vallecano",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 9,
+        "date": "19.10.2026 21:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Alejandro Quintero González",
+        "ref_stats": {
+          "yellow_avg": 4.5,
+          "red_avg": 0.2,
+          "fouls_avg": 24.8,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.0,
+            "after": 53.5,
+            "delta": 0.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 18.1,
+            "delta": -4.0
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 24.8,
+            "delta": 0.3
+          },
+          "home_win_prob": {
+            "before": 40.9,
+            "after": 40.9,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Alejandro Quintero González (índex severitat 1.0). Mitjana històrica de 4.5 grogues i 0.2 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J10_CDV_TEN",
+        "matchup": "Celta de Vigo B vs CD Tenerife",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 10,
+        "date": "19.10.2026 20:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Romero G.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.3,
+            "after": 66.7,
+            "delta": 13.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 41.8,
+            "after": 41.8,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Romero G. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      }
+    ]
+  },
+  {
     "date": "2026-10-18",
     "timestamp": "2026-10-18T22:16:40.536386",
     "title": "Actualització Diària del Model · 18/10/2026",

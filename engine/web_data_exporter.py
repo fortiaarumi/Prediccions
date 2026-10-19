@@ -1531,7 +1531,7 @@ class WebDataExporter:
                             single_pred["bet_analysis"] = self.value_engine.analyze_match_betting(single_pred, odds, bet365_odds=odds_b365)
 
                         day_matches.append(single_pred)
-                        existing_matchup_keys.add(key)
+                        existing_matchup_keys.update(keys_to_test)
                     except Exception as e_pred:
                         print(f"   [!] Error preparant predicció diària per a {mr.get('id')}: {e_pred}")
 
