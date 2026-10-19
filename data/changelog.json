@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-10-19",
-    "timestamp": "2026-10-19T14:38:23.838995",
+    "timestamp": "2026-10-19T15:15:09.330458",
     "title": "Actualització Diària del Model · 19/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -9,11 +9,13 @@
       "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
       "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 2 partit(s):",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 3 partit(s):",
       "   • [LaLiga EA Sports J9] Getafe CF vs Rayo Vallecano: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Alejandro Quintero González'",
       "     └ Impacte model: Targetes >4.5: 53.0% ➔ 53.5% (+0.5%) | Vermella: 22.1% ➔ 18.1% (-4.0%) | Victòria Local: 40.9% ➔ 40.9% (+0.0%)",
       "   • [LaLiga Hypermotion J10] Celta de Vigo B vs CD Tenerife: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Romero G.'",
-      "     └ Impacte model: Targetes >4.5: 53.3% ➔ 66.7% (+13.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 41.8% ➔ 41.8% (+0.0%)"
+      "     └ Impacte model: Targetes >4.5: 53.3% ➔ 66.7% (+13.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 41.8% ➔ 41.8% (+0.0%)",
+      "   • [Serie A J7] Parma Calcio vs Torino FC: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Ayroldi G.'",
+      "     └ Impacte model: Targetes >4.5: 35.7% ➔ 39.2% (+3.5%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 40.7% ➔ 40.7% (+0.0%)"
     ],
     "matches": [],
     "combos_evaluated": [],
@@ -95,6 +97,45 @@
             "delta": 0.0
           },
           "summary": "Designació oficial de Romero G. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "SERIEA_J7_PAR_TOR",
+        "matchup": "Parma Calcio vs Torino FC",
+        "competition_id": "SERIEA",
+        "competition_name": "Serie A",
+        "jornada": 7,
+        "date": "19.10.2026 20:45",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Ayroldi G.",
+        "ref_stats": {
+          "yellow_avg": 4.6,
+          "red_avg": 0.22,
+          "fouls_avg": 25.0,
+          "strictness_index": 1.05
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 35.7,
+            "after": 39.2,
+            "delta": 3.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 19.7,
+            "delta": -2.4
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 25.0,
+            "delta": 0.5
+          },
+          "home_win_prob": {
+            "before": 40.7,
+            "after": 40.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Ayroldi G. (índex severitat 1.05). Mitjana històrica de 4.6 grogues i 0.22 vermelles per partit."
         }
       }
     ]

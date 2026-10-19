@@ -192,6 +192,17 @@ class LiveCrawler:
                                     if same_day_rounds:
                                         from collections import Counter
                                         live_round = Counter(same_day_rounds).most_common(1)[0][0]
+                                    else:
+                                        try:
+                                            with _db.get_connection() as _conn2:
+                                                _db_r = _conn2.cursor().execute(
+                                                    "SELECT jornada FROM matches WHERE competition_id = ? AND date_time LIKE ? AND jornada > 0 ORDER BY jornada DESC LIMIT 1",
+                                                    (comp_id, f"{m_date_prefix}%")
+                                                ).fetchone()
+                                                if _db_r:
+                                                    live_round = _db_r[0]
+                                        except Exception:
+                                            pass
 
                                 r_str = f"Jornada {live_round}" if isinstance(live_round, int) else (live_round or f"Jornada {jornada}")
                                 all_matches.append({

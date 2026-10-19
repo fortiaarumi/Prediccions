@@ -404,7 +404,7 @@ class WebDataExporter:
                             "id": m_id,
                             "competition_id": competition_id,
                             "season": "2026-2027",
-                            "jornada": active_jornada,
+                            "jornada": int(f.get("jornada") or active_jornada),
                             "home_team_id": h_id,
                             "away_team_id": a_id,
                             "date_time": f.get("date", "Pendent"),

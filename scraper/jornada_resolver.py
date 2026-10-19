@@ -7,6 +7,7 @@ Resolució dinàmica i robusta dels partits de qualsevol jornada.
 
 from pathlib import Path
 from typing import List, Dict, Any
+import re
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
@@ -60,8 +61,14 @@ class JornadaResolver:
                 h_goals = None
                 a_goals = None
 
+            r_str = fix.get("round_str", "")
+            r_m = re.search(r'(\d+)', str(r_str))
+            r_num = int(r_m.group(1)) if r_m else jornada
+
             resolved.append({
                 "competition_id": self.competition_id,
+                "jornada": r_num,
+                "round_str": r_str,
                 "home_team": fix["home"],
                 "away_team": fix["away"],
                 "home": fix["home"],

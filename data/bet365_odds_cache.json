@@ -3090,5 +3090,293 @@
       "Under 8.5 Córners": 1.8
     },
     "combos": {}
+  },
+  "LIGUE1_stadebrestois29_ogcnice": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Stade Brestois 29 vs OGC Nice",
+    "matched": true,
+    "1X2": {
+      "1": 2.18,
+      "X": 3.64,
+      "2": 2.98
+    },
+    "double_chance": {
+      "1X": 1.38,
+      "12": 1.33,
+      "X2": 1.7
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LIGUE1_toulousefc_estroyesac": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Toulouse FC vs ES Troyes AC",
+    "matched": true,
+    "1X2": {
+      "1": 1.62,
+      "X": 4.3,
+      "2": 4.58
+    },
+    "double_chance": {
+      "1X": 1.2,
+      "12": 1.26,
+      "X2": 2.27
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LIGUE1_rclens_parisfc": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "RC Lens vs Paris FC",
+    "matched": true,
+    "1X2": {
+      "1": 2.28,
+      "X": 3.74,
+      "2": 2.74
+    },
+    "double_chance": {
+      "1X": 1.44,
+      "12": 1.32,
+      "X2": 1.64
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LIGUE1_asmonaco_lilleosc": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "AS Monaco vs Lille OSC",
+    "matched": true,
+    "1X2": {
+      "1": 2.13,
+      "X": 3.38,
+      "2": 3.38
+    },
+    "double_chance": {
+      "1X": 1.32,
+      "12": 1.37,
+      "X2": 1.74
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LIGUE1_angerssco_fclorient": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Angers SCO vs FC Lorient",
+    "matched": true,
+    "1X2": {
+      "1": 2.59,
+      "X": 3.43,
+      "2": 2.54
+    },
+    "double_chance": {
+      "1X": 1.52,
+      "12": 1.36,
+      "X2": 1.48
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LIGUE1_ajauxerre_lemansfc": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "AJ Auxerre vs Le Mans FC",
+    "matched": true,
+    "1X2": {
+      "1": 2.13,
+      "X": 3.64,
+      "2": 3.13
+    },
+    "double_chance": {
+      "1X": 1.36,
+      "12": 1.33,
+      "X2": 1.74
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LIGUE1_olympiquedemarseille_lehavreac": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Olympique de Marseille vs Le Havre AC",
+    "matched": true,
+    "1X2": {
+      "1": 1.54,
+      "X": 4.71,
+      "2": 4.88
+    },
+    "double_chance": {
+      "1X": 1.18,
+      "12": 1.23,
+      "X2": 2.47
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LIGUE1_staderennais_rcstrasbourg": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Stade Rennais vs RC Strasbourg",
+    "matched": true,
+    "1X2": {
+      "1": 1.73,
+      "X": 4.41,
+      "2": 3.88
+    },
+    "double_chance": {
+      "1X": 1.26,
+      "12": 1.25,
+      "X2": 2.07
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
+  },
+  "LIGUE1_parissaintgermain_olympiquelyonnais": {
+    "source": "Bet365 Espanya (LIGUE1)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "tournament_url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": null,
+    "matched_title": "Paris Saint-Germain vs Olympique Lyonnais",
+    "matched": true,
+    "1X2": {
+      "1": 1.35,
+      "X": 5.94,
+      "2": 6.47
+    },
+    "double_chance": {
+      "1X": 1.09,
+      "12": 1.17,
+      "X2": 3.18
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.98,
+      "under": 1.87
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.93,
+      "no": 1.92
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {}
   }
 }
