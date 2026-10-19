@@ -22,17 +22,17 @@
   "BUNDESLIGA": {
     "last_predicted_jornada": 0,
     "last_predicted_date": "",
-    "last_scraped_jornada": 0
+    "last_scraped_jornada": 6
   },
   "LIGUE1": {
     "last_predicted_jornada": 0,
     "last_predicted_date": "",
-    "last_scraped_jornada": 0
+    "last_scraped_jornada": 2
   },
   "SERIEA": {
     "last_predicted_jornada": 0,
     "last_predicted_date": "",
-    "last_scraped_jornada": 0
+    "last_scraped_jornada": 2
   },
-  "updated_at": "2026-10-18T17:15:40.506306"
+  "updated_at": "2026-10-19T00:18:27.970172"
 }
