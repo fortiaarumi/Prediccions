@@ -516,7 +516,10 @@ class DatabaseManager:
             "cd castellon": "CAS",
             "cas": "CAS",
             "celta b": "CDV",
+            "celta vigo b": "CDV",
             "celta de vigo b": "CDV",
+            "rc celta b": "CDV",
+            "rc celta de vigo b": "CDV",
             "celta fortuna": "CDV",
             "rc celta fortuna": "CDV",
             "cdv": "CDV",
@@ -1089,9 +1092,50 @@ class DatabaseManager:
             return [dict(r) for r in rows]
 
     def save_match(self, match_data: Dict[str, Any]):
-        """Desa o actualitza un partit a la base de dades."""
+        """Desa o actualitza un partit a la base de dades amb identitat única canònica."""
         with self.get_connection() as conn:
             cursor = conn.cursor()
+            m_id = match_data["id"]
+            comp_id = match_data.get("competition_id", "LALIGA")
+            season = match_data.get("season", "2026-2027")
+            jornada = match_data.get("jornada")
+            h_id = match_data["home_team_id"]
+            a_id = match_data["away_team_id"]
+            url = match_data.get("url")
+
+            # 1. Comprovar si ja existeix pel mateix ID
+            cursor.execute("SELECT id, url FROM matches WHERE id = ?", (m_id,))
+            existing = cursor.fetchone()
+
+            # 2. Si no es troba per ID, comprovar per URL externa (Flashscore) si és present
+            if not existing and url and "/partido/" in url:
+                url_code = url.split("/partido/")[1].split("/")[0] if "/partido/" in url else ""
+                if url_code:
+                    cursor.execute(
+                        "SELECT id, url FROM matches WHERE url LIKE ? AND competition_id = ?",
+                        (f"%{url_code}%", comp_id)
+                    )
+                    existing = cursor.fetchone()
+
+            # 3. Comprovar per identitat natural (competició, temporada, jornada, equips)
+            # Només unir si un d'ells és format tradicional o no hi ha conflicte d'URLs externes
+            if not existing and jornada is not None:
+                cursor.execute(
+                    "SELECT id, url FROM matches WHERE competition_id = ? AND season = ? AND jornada = ? AND home_team_id = ? AND away_team_id = ?",
+                    (comp_id, season, jornada, h_id, a_id)
+                )
+                cand = cursor.fetchone()
+                if cand:
+                    cand_id = cand["id"]
+                    cand_url = cand["url"] or ""
+                    is_cand_trad = f"_J{jornada}_" in cand_id
+                    is_new_trad = f"_J{jornada}_" in m_id
+                    same_url_or_empty = (not cand_url) or (not url) or (cand_url == url)
+                    if (is_cand_trad or is_new_trad) and same_url_or_empty:
+                        existing = cand
+
+            target_id = existing["id"] if existing else m_id
+
             cursor.execute(
                 """INSERT OR REPLACE INTO matches (
                     id, competition_id, season, jornada, date_time,
@@ -1102,13 +1146,13 @@ class DatabaseManager:
                     status, url
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
-                    match_data["id"],
-                    match_data.get("competition_id", "LALIGA"),
-                    match_data.get("season", "2026-2027"),
-                    match_data.get("jornada"),
+                    target_id,
+                    comp_id,
+                    season,
+                    jornada,
                     match_data["date_time"],
-                    match_data["home_team_id"],
-                    match_data["away_team_id"],
+                    h_id,
+                    a_id,
                     match_data.get("referee_id", "REF_DEFAULT"),
                     match_data.get("home_goals"),
                     match_data.get("away_goals"),
@@ -1123,7 +1167,7 @@ class DatabaseManager:
                     match_data.get("home_fouls"),
                     match_data.get("away_fouls"),
                     match_data.get("status", "FINISHED"),
-                    match_data.get("url"),
+                    url,
                 )
             )
             conn.commit()
@@ -1269,6 +1313,19 @@ class DatabaseManager:
         legs = combo_summary.get("legs", [])
         if not legs:
             return ""
+
+        # Deduplicació defensiva de seleccions per clau canònica abans de desar
+        unique_legs = []
+        seen_leg_keys = set()
+        for leg in legs:
+            matchup = (leg.get("matchup") or "").strip().lower()
+            name = (leg.get("name") or leg.get("selection_name") or "").strip().lower()
+            cat = (leg.get("category") or "").strip().lower()
+            key = f"{matchup}::{cat}::{name}"
+            if key not in seen_leg_keys:
+                seen_leg_keys.add(key)
+                unique_legs.append(leg)
+        legs = unique_legs
 
         import re
         safe_prof = re.sub(r'[^A-Za-z0-9_]', '_', profile).strip('_').upper()

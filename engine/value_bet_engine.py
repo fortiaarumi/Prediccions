@@ -108,8 +108,10 @@ class ValueBetEngine:
         prob_corners_o105 = max(0.08, prob_corners_o95 * 0.75)
 
         single_markets = []
-        h_name = model_prediction.get("home_team", "Local")
-        a_name = model_prediction.get("away_team", "Visitant")
+        h_raw = model_prediction.get("home_team", "Local")
+        a_raw = model_prediction.get("away_team", "Visitant")
+        h_name = h_raw.get("name", "Local") if isinstance(h_raw, dict) else str(h_raw or "Local")
+        a_name = a_raw.get("name", "Visitant") if isinstance(a_raw, dict) else str(a_raw or "Visitant")
 
         # 1. Mercat 1X2 (Híbrid: Winamax preferent, fallback Bet365)
         o_1x2 = winamax_odds.get("1X2", {})

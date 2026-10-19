@@ -100,11 +100,21 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
 
         with _db.get_connection() as conn:
             c = conn.cursor()
-            # Si SQLite ja té una jornada amb partits en curs (SCHEDULED o LIVE), aquesta és la jornada activa
+            # Si SQLite ja té una jornada amb partits en curs (SCHEDULED o LIVE), ordenem per la data més propera
+            # per evitar que un partit ajornat d'una jornada anterior (ex: J6 al 21/10) usurpi la jornada activa (ex: J9 al 19/10).
             in_prog = c.execute("""
-                SELECT jornada FROM matches
+                SELECT jornada, min(
+                    CASE
+                        WHEN date_time LIKE '__.__.____ __:__'
+                        THEN substr(date_time, 7, 4) || '-' || substr(date_time, 4, 2) || '-' || substr(date_time, 1, 2) || ' ' || substr(date_time, 12, 5)
+                        ELSE date_time
+                    END
+                ) as min_dt
+                FROM matches
                 WHERE competition_id = ? AND status IN ('SCHEDULED', 'LIVE')
-                ORDER BY jornada ASC LIMIT 1
+                GROUP BY jornada
+                ORDER BY min_dt ASC
+                LIMIT 1
             """, (comp,)).fetchone()
             if in_prog:
                 dt_row = c.execute("""
@@ -420,14 +430,24 @@ def run_daily_autonomous_check(force: bool = False):
         if purged_cnt > 0:
             print(f"   🧹 S'han netejat {purged_cnt} combinades de dies futurs bloquejades prematurament a SQLite.")
 
+        def _get_match_key(m_dict):
+            h = m_dict.get("home_team")
+            a = m_dict.get("away_team")
+            h_id = (h.get("id") or h.get("name") if isinstance(h, dict) else str(h or m_dict.get("home_team_id") or "")).strip().lower()
+            a_id = (a.get("id") or a.get("name") if isinstance(a, dict) else str(a or m_dict.get("away_team_id") or "")).strip().lower()
+            if h_id and a_id:
+                return f"{h_id}_{a_id}"
+            matchup = (m_dict.get("matchup") or "").strip().lower()
+            return matchup or str(m_dict.get("id") or m_dict.get("match_id"))
+
         all_today_matches = []
         today_match_keys = set()
         for m in all_predicted_matches:
             if _norm_date(m.get("date", "")) == today_iso:
-                all_today_matches.append(m)
-                h_id = m.get("home_team", {}).get("id") if isinstance(m.get("home_team"), dict) else m.get("home_team_id")
-                a_id = m.get("away_team", {}).get("id") if isinstance(m.get("away_team"), dict) else m.get("away_team_id")
-                today_match_keys.add(f"{h_id}_{a_id}")
+                k = _get_match_key(m)
+                if k not in today_match_keys:
+                    today_match_keys.add(k)
+                    all_today_matches.append(m)
 
         for comp_meta in COMPETITIONS_META:
             cid = comp_meta["id"]
@@ -436,11 +456,9 @@ def run_daily_autonomous_check(force: bool = False):
                     pred_data = exporter.get_upcoming_predictions(cid)
                     for m in pred_data.get("matches", []):
                         if _norm_date(m.get("date", "")) == today_iso:
-                            h_id = m.get("home_team", {}).get("id")
-                            a_id = m.get("away_team", {}).get("id")
-                            key = f"{h_id}_{a_id}"
-                            if key not in today_match_keys:
-                                today_match_keys.add(key)
+                            k = _get_match_key(m)
+                            if k not in today_match_keys:
+                                today_match_keys.add(k)
                                 all_today_matches.append(m)
                 except Exception as e_c:
                     print(f"   [!] Error consultant partits d'avui per a {cid}: {e_c}")
