@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-20T11:53:42.237265",
-    "formatted_date": "20/10/2026 a les 11:53",
+    "generated_at": "2026-10-20T18:03:08.076358",
+    "formatted_date": "20/10/2026 a les 18:03",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -67,7 +67,7 @@
   "changelog": [
     {
       "date": "2026-10-20",
-      "timestamp": "2026-10-20T11:54:01.567932",
+      "timestamp": "2026-10-20T18:03:21.671754",
       "title": "Actualització Diària del Model · 20/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -71113,7 +71113,7 @@
           "formatted_date": "Divendres, 16 d'octubre",
           "has_matches": true,
           "matches_count": 6,
-          "league_note": "Partits del dia de múltiples lligues (Serie A, Ligue 1, LaLiga Hypermotion, EFL Championship, Bundesliga, LaLiga EA Sports) · 6 partits",
+          "league_note": "Partits del dia de múltiples lligues (Ligue 1, EFL Championship, LaLiga EA Sports, Serie A, Bundesliga, LaLiga Hypermotion) · 6 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-16_SAFE_1",
@@ -71626,7 +71626,7 @@
           "formatted_date": "Dissabte, 17 d'octubre",
           "has_matches": true,
           "matches_count": 36,
-          "league_note": "Partits del dia de múltiples lligues (Serie A, LaLiga Hypermotion, Premier League, Ligue 1, EFL Championship, Bundesliga, LaLiga EA Sports) · 36 partits",
+          "league_note": "Partits del dia de múltiples lligues (EFL Championship, Ligue 1, LaLiga EA Sports, Premier League, Serie A, Bundesliga, LaLiga Hypermotion) · 36 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -72139,7 +72139,7 @@
           "formatted_date": "Diumenge, 18 d'octubre",
           "has_matches": true,
           "matches_count": 24,
-          "league_note": "Partits del dia de múltiples lligues (Ligue 1, Serie A, LaLiga Hypermotion, Premier League, Bundesliga, LaLiga EA Sports) · 24 partits",
+          "league_note": "Partits del dia de múltiples lligues (Ligue 1, LaLiga EA Sports, Premier League, Serie A, Bundesliga, LaLiga Hypermotion) · 24 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -72700,7 +72700,7 @@
           "formatted_date": "Dilluns, 19 d'octubre",
           "has_matches": true,
           "matches_count": 5,
-          "league_note": "Partits del dia de múltiples lligues (Serie A, LaLiga Hypermotion, LaLiga EA Sports, Premier League) · 5 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, Premier League, Serie A, LaLiga EA Sports) · 5 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -73896,7 +73896,7 @@
           "formatted_date": "Divendres, 23 d'octubre",
           "has_matches": true,
           "matches_count": 5,
-          "league_note": "Partits programats: 5 (Serie A, Ligue 1, LaLiga Hypermotion, EFL Championship, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 5 (Ligue 1, EFL Championship, Serie A, Bundesliga, LaLiga Hypermotion). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -73906,7 +73906,7 @@
           "formatted_date": "Dissabte, 24 d'octubre",
           "has_matches": true,
           "matches_count": 28,
-          "league_note": "Partits programats: 28 (Serie A, Ligue 1, LaLiga Hypermotion, EFL Championship, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 28 (Ligue 1, EFL Championship, Serie A, Bundesliga, LaLiga Hypermotion). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -73916,7 +73916,7 @@
           "formatted_date": "Diumenge, 25 d'octubre",
           "has_matches": true,
           "matches_count": 17,
-          "league_note": "Partits programats: 17 (Serie A, Ligue 1, LaLiga Hypermotion, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 17 (LaLiga Hypermotion, Serie A, Ligue 1, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -74503,7 +74503,7 @@
         "formatted_date": "Divendres, 16 d'octubre",
         "has_matches": true,
         "matches_count": 6,
-        "league_note": "Partits del dia de múltiples lligues (Serie A, Ligue 1, LaLiga Hypermotion, EFL Championship, Bundesliga, LaLiga EA Sports) · 6 partits",
+        "league_note": "Partits del dia de múltiples lligues (Ligue 1, EFL Championship, LaLiga EA Sports, Serie A, Bundesliga, LaLiga Hypermotion) · 6 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-16_SAFE_1",
@@ -75016,7 +75016,7 @@
         "formatted_date": "Dissabte, 17 d'octubre",
         "has_matches": true,
         "matches_count": 36,
-        "league_note": "Partits del dia de múltiples lligues (Serie A, LaLiga Hypermotion, Premier League, Ligue 1, EFL Championship, Bundesliga, LaLiga EA Sports) · 36 partits",
+        "league_note": "Partits del dia de múltiples lligues (EFL Championship, Ligue 1, LaLiga EA Sports, Premier League, Serie A, Bundesliga, LaLiga Hypermotion) · 36 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -75529,7 +75529,7 @@
         "formatted_date": "Diumenge, 18 d'octubre",
         "has_matches": true,
         "matches_count": 24,
-        "league_note": "Partits del dia de múltiples lligues (Ligue 1, Serie A, LaLiga Hypermotion, Premier League, Bundesliga, LaLiga EA Sports) · 24 partits",
+        "league_note": "Partits del dia de múltiples lligues (Ligue 1, LaLiga EA Sports, Premier League, Serie A, Bundesliga, LaLiga Hypermotion) · 24 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -76090,7 +76090,7 @@
         "formatted_date": "Dilluns, 19 d'octubre",
         "has_matches": true,
         "matches_count": 5,
-        "league_note": "Partits del dia de múltiples lligues (Serie A, LaLiga Hypermotion, LaLiga EA Sports, Premier League) · 5 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, Premier League, Serie A, LaLiga EA Sports) · 5 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -77286,7 +77286,7 @@
         "formatted_date": "Divendres, 23 d'octubre",
         "has_matches": true,
         "matches_count": 5,
-        "league_note": "Partits programats: 5 (Serie A, Ligue 1, LaLiga Hypermotion, EFL Championship, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 5 (Ligue 1, EFL Championship, Serie A, Bundesliga, LaLiga Hypermotion). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -77296,7 +77296,7 @@
         "formatted_date": "Dissabte, 24 d'octubre",
         "has_matches": true,
         "matches_count": 28,
-        "league_note": "Partits programats: 28 (Serie A, Ligue 1, LaLiga Hypermotion, EFL Championship, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 28 (Ligue 1, EFL Championship, Serie A, Bundesliga, LaLiga Hypermotion). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -77306,7 +77306,7 @@
         "formatted_date": "Diumenge, 25 d'octubre",
         "has_matches": true,
         "matches_count": 17,
-        "league_note": "Partits programats: 17 (Serie A, Ligue 1, LaLiga Hypermotion, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 17 (LaLiga Hypermotion, Serie A, Ligue 1, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
