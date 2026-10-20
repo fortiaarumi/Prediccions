@@ -2,17 +2,17 @@
   "LALIGA": {
     "last_predicted_jornada": 9,
     "last_predicted_date": "2026-10-16",
-    "last_scraped_jornada": 8
+    "last_scraped_jornada": 9
   },
   "PREMIER": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-17",
-    "last_scraped_jornada": 6
+    "last_scraped_jornada": 7
   },
   "HYPERMOTION": {
     "last_predicted_jornada": 10,
     "last_predicted_date": "2026-10-16",
-    "last_scraped_jornada": 9
+    "last_scraped_jornada": 10
   },
   "CHAMPIONSHIP": {
     "last_predicted_jornada": 11,
@@ -32,7 +32,7 @@
   "SERIEA": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-19",
-    "last_scraped_jornada": 6
+    "last_scraped_jornada": 7
   },
-  "updated_at": "2026-10-19T13:40:40.480670"
+  "updated_at": "2026-10-20T01:09:38.325501"
 }
