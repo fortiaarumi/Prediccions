@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-21T00:43:47.273839",
-    "formatted_date": "21/10/2026 a les 00:43",
+    "generated_at": "2026-10-21T12:05:20.808208",
+    "formatted_date": "21/10/2026 a les 12:05",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -67,202 +67,19 @@
   "changelog": [
     {
       "date": "2026-10-21",
-      "timestamp": "2026-10-21T00:44:08.326892",
+      "timestamp": "2026-10-21T12:05:44.392829",
       "title": "Actualització Diària del Model · 21/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
       "items": [
-        "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-        "   • [CHAMPIONSHIP J6] Wolves 1 - 1 Portsmouth | xG: 1.00-0.65 | Targetes: 6 🟨 | Córners: 8 🚩 | Àrbitre: Duckworth E.",
-        "📊 Actualització de Power Rànquings Elo:",
-        "   • Wolves (-6.8 ➔ 1609.0) | Portsmouth (+6.8 ➔ 1423.5)",
-        "📈 S'han resolt 2 combinades pendents (0 encertades, 2 fallades):",
-        "   • [DAILY J0] SEMI_2: ❌ NO ENCERTADA (Cuota @8.74 · Balanç: -10.00 €)",
-        "   • [DAILY J0] RISKY_2: ❌ NO ENCERTADA (Cuota @36.13 · Balanç: -5.00 €)",
-        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+        "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+        "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+        "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+        "ℹ️ Sincronització de les darreres dades i mètriques del model."
       ],
-      "matches": [
-        {
-          "match_id": "CHAMPIONSHIP_J6_WOL_POR",
-          "competition_id": "CHAMPIONSHIP",
-          "jornada": 6,
-          "home_team": "Wolves",
-          "away_team": "Portsmouth",
-          "home_team_id": "WOL",
-          "away_team_id": "POR",
-          "home_goals": 1,
-          "away_goals": 1,
-          "score": "1 - 1",
-          "home_xg": 1.0,
-          "away_xg": 0.65,
-          "home_yellow_cards": 3,
-          "away_yellow_cards": 3,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 6,
-          "away_corners": 2,
-          "referee": "Duckworth E.",
-          "elo_change_home": -6.8,
-          "elo_change_away": 6.8,
-          "new_elo_home": 1609.0,
-          "new_elo_away": 1423.5,
-          "date": "20.10.2026 18:45"
-        }
-      ],
-      "combos_evaluated": [
-        {
-          "id": "COMBO_DAILY_2026-10-20_SEMI_2",
-          "competition_id": "DAILY",
-          "season": "2026-2027",
-          "jornada": 0,
-          "profile": "SEMI_2",
-          "stake": 10.0,
-          "combined_odd": 8.74,
-          "combined_prob_pct": 10.5,
-          "fair_odd": 9.54,
-          "ev_pct": -8.4,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -10.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-20 01:09:37",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 2588,
-              "combo_id": "COMBO_DAILY_2026-10-20_SEMI_2",
-              "matchup": "Wolverhampton Wanderers vs Portsmouth",
-              "selection_name": "X2 - Empat o Portsmouth",
-              "category": "Doble Oportunitat",
-              "bookie_odd": 2.37,
-              "model_prob": 43.6,
-              "match_date": "20.10.2026 18:45",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "home_team_id": "WOL",
-              "away_team_id": "POR",
-              "status": "WON",
-              "actual_result": "1-1 (X2 encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 2589,
-              "combo_id": "COMBO_DAILY_2026-10-20_SEMI_2",
-              "matchup": "Millwall U21 vs Sheffield Utd U21",
-              "selection_name": "Més de 9.5 Córners",
-              "category": "Córners",
-              "bookie_odd": 1.92,
-              "model_prob": 47.8,
-              "match_date": "20.10.2026 18:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "home_team_id": "MI1",
-              "away_team_id": "SUU",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar",
-              "evaluated_at": null
-            },
-            {
-              "id": 2590,
-              "combo_id": "COMBO_DAILY_2026-10-20_SEMI_2",
-              "matchup": "Wolverhampton Wanderers vs Portsmouth",
-              "selection_name": "Ambdós Equips Marquen (BTTS No)",
-              "category": "BTTS",
-              "bookie_odd": 1.92,
-              "model_prob": 50.3,
-              "match_date": "20.10.2026 18:45",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "home_team_id": "WOL",
-              "away_team_id": "POR",
-              "status": "LOST",
-              "actual_result": "1-1 (han marcat ambdós)",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_DAILY_2026-10-20_RISKY_2",
-          "competition_id": "DAILY",
-          "season": "2026-2027",
-          "jornada": 0,
-          "profile": "RISKY_2",
-          "stake": 5.0,
-          "combined_odd": 36.13,
-          "combined_prob_pct": 2.4,
-          "fair_odd": 41.79,
-          "ev_pct": -13.5,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -5.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-20 01:09:37",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 2595,
-              "combo_id": "COMBO_DAILY_2026-10-20_RISKY_2",
-              "matchup": "Wolverhampton Wanderers vs Portsmouth",
-              "selection_name": "Més de 2.5 Gols (Over 2.5)",
-              "category": "Gols",
-              "bookie_odd": 1.98,
-              "model_prob": 49.0,
-              "match_date": "20.10.2026 18:45",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "home_team_id": "WOL",
-              "away_team_id": "POR",
-              "status": "LOST",
-              "actual_result": "2 gols (Under 2.5)",
-              "evaluated_at": null
-            },
-            {
-              "id": 2596,
-              "combo_id": "COMBO_DAILY_2026-10-20_RISKY_2",
-              "matchup": "Wolverhampton Wanderers vs Portsmouth",
-              "selection_name": "X - Empat",
-              "category": "1X2",
-              "bookie_odd": 4.1,
-              "model_prob": 25.7,
-              "match_date": "20.10.2026 18:45",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "home_team_id": "WOL",
-              "away_team_id": "POR",
-              "status": "WON",
-              "actual_result": "1-1 (Empat encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 2597,
-              "combo_id": "COMBO_DAILY_2026-10-20_RISKY_2",
-              "matchup": "Millwall U21 vs Sheffield Utd U21",
-              "selection_name": "Ambdós Equips Marquen (BTTS No)",
-              "category": "BTTS",
-              "bookie_odd": 2.07,
-              "model_prob": 44.5,
-              "match_date": "20.10.2026 18:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "home_team_id": "MI1",
-              "away_team_id": "SUU",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar",
-              "evaluated_at": null
-            },
-            {
-              "id": 2598,
-              "combo_id": "COMBO_DAILY_2026-10-20_RISKY_2",
-              "matchup": "Millwall U21 vs Sheffield Utd U21",
-              "selection_name": "1 - Victòria Millwall U21",
-              "category": "1X2",
-              "bookie_odd": 2.15,
-              "model_prob": 42.7,
-              "match_date": "20.10.2026 18:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-              "home_team_id": "MI1",
-              "away_team_id": "SUU",
-              "status": "PENDING",
-              "actual_result": "Pendent de disputar",
-              "evaluated_at": null
-            }
-          ]
-        }
-      ],
+      "matches": [],
+      "combos_evaluated": [],
       "combos_generated": [],
       "referee_updates": []
     },
@@ -72149,7 +71966,7 @@
           "formatted_date": "Divendres, 16 d'octubre",
           "has_matches": true,
           "matches_count": 6,
-          "league_note": "Partits del dia de múltiples lligues (Bundesliga, LaLiga Hypermotion, Ligue 1, LaLiga EA Sports, Serie A, EFL Championship) · 6 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga, EFL Championship, Ligue 1) · 6 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-16_SAFE_1",
@@ -72662,7 +72479,7 @@
           "formatted_date": "Dissabte, 17 d'octubre",
           "has_matches": true,
           "matches_count": 36,
-          "league_note": "Partits del dia de múltiples lligues (Bundesliga, LaLiga Hypermotion, Ligue 1, LaLiga EA Sports, Serie A, Premier League, EFL Championship) · 36 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Serie A, Bundesliga, Premier League, EFL Championship, Ligue 1) · 36 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -73175,7 +72992,7 @@
           "formatted_date": "Diumenge, 18 d'octubre",
           "has_matches": true,
           "matches_count": 24,
-          "league_note": "Partits del dia de múltiples lligues (Bundesliga, LaLiga Hypermotion, Ligue 1, LaLiga EA Sports, Serie A, Premier League) · 24 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Serie A, Bundesliga, Premier League, Ligue 1) · 24 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -73736,7 +73553,7 @@
           "formatted_date": "Dilluns, 19 d'octubre",
           "has_matches": true,
           "matches_count": 5,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League, LaLiga Hypermotion, Serie A) · 5 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Premier League, Serie A) · 5 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -74441,7 +74258,7 @@
           "formatted_date": "Dimarts, 20 d'octubre",
           "has_matches": true,
           "matches_count": 2,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, EFL Championship) · 2 partits",
+          "league_note": "Partits del dia de múltiples lligues (EFL Championship, Premier League) · 2 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-20_SAFE_1",
@@ -74922,16 +74739,16 @@
           "formatted_date": "Dimecres, 21 d'octubre",
           "has_matches": true,
           "matches_count": 2,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 2 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-21_SAFE_1",
-              "profile": "Mega-Combinada Multi-Lliga Segura #1 (Cuota 2-3)",
+              "profile": "SAFE_1",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 2.15,
               "combined_odd_winamax": 2.15,
-              "combined_odd_bet365": 2.19,
+              "combined_odd_bet365": 2.23,
               "combined_prob_pct": 55.0,
               "fair_odd": 1.82,
               "ev_pct": 18.3,
@@ -74942,7 +74759,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Segura #1 (Cuota 2-3)\nCuota Total Bet365: @2.19\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més d'1.5 Gols (Over 1.5) (@1.23)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.78)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @2.23\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més d'1.5 Gols (Over 1.5) (@1.23)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.81)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -74953,6 +74770,7 @@
               },
               "legs": [
                 {
+                  "id": 2599,
                   "matchup": "Norwich U21 vs Bristol City U21",
                   "selection_name": "Més d'1.5 Gols (Over 1.5)",
                   "category": "Gols",
@@ -74968,12 +74786,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2600,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "1X - Levante UD o Empat",
                   "category": "Doble Oportunitat",
                   "bookie_odd": 1.78,
                   "bookie_odd_winamax": 1.78,
-                  "bookie_odd_bet365": 1.78,
+                  "bookie_odd_bet365": 1.81,
                   "model_prob": 72.1,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -74986,12 +74805,12 @@
             },
             {
               "id": "COMBO_DAILY_2026-10-21_SAFE_2",
-              "profile": "Mega-Combinada Multi-Lliga Segura #2 (Cuota 2-3 Alternativa)",
+              "profile": "SAFE_2",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 2.3,
               "combined_odd_winamax": 2.3,
-              "combined_odd_bet365": 2.33,
+              "combined_odd_bet365": 2.37,
               "combined_prob_pct": 51.6,
               "fair_odd": 1.94,
               "ev_pct": 18.6,
@@ -75002,7 +74821,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: @2.33\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.78)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @2.37\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.81)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -75013,6 +74832,7 @@
               },
               "legs": [
                 {
+                  "id": 2601,
                   "matchup": "Norwich U21 vs Bristol City U21",
                   "selection_name": "Menys de 3.5 Gols (Under 3.5)",
                   "category": "Gols",
@@ -75028,12 +74848,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2602,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "1X - Levante UD o Empat",
                   "category": "Doble Oportunitat",
                   "bookie_odd": 1.78,
                   "bookie_odd_winamax": 1.78,
-                  "bookie_odd_bet365": 1.78,
+                  "bookie_odd_bet365": 1.81,
                   "model_prob": 72.1,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75048,12 +74869,12 @@
           "semi": [
             {
               "id": "COMBO_DAILY_2026-10-21_SEMI_1",
-              "profile": "Mega-Combinada Multi-Lliga Semi-Arriscada #1 (Cuota ~10.0)",
+              "profile": "SEMI_1",
               "category_code": "SEMI",
               "stake": 10.0,
               "combined_odd": 8.59,
               "combined_odd_winamax": 8.59,
-              "combined_odd_bet365": 8.55,
+              "combined_odd_bet365": 8.99,
               "combined_prob_pct": 16.7,
               "fair_odd": 5.97,
               "ev_pct": 43.9,
@@ -75064,7 +74885,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: @8.55\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n",
+              "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: @8.99\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -75075,6 +74896,7 @@
               },
               "legs": [
                 {
+                  "id": 2603,
                   "matchup": "Norwich U21 vs Bristol City U21",
                   "selection_name": "Menys de 3.5 Gols (Under 3.5)",
                   "category": "Gols",
@@ -75090,12 +74912,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2604,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                   "category": "BTTS",
                   "bookie_odd": 1.93,
                   "bookie_odd_winamax": 1.93,
-                  "bookie_odd_bet365": 1.93,
+                  "bookie_odd_bet365": 1.96,
                   "model_prob": 53.6,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75105,12 +74928,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2605,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "1 - Victòria Local (Levante UD)",
                   "category": "1X2",
                   "bookie_odd": 3.45,
                   "bookie_odd_winamax": 3.45,
-                  "bookie_odd_bet365": 3.38,
+                  "bookie_odd_bet365": 3.5,
                   "model_prob": 43.7,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75123,12 +74947,12 @@
             },
             {
               "id": "COMBO_DAILY_2026-10-21_SEMI_2",
-              "profile": "Mega-Combinada Multi-Lliga Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+              "profile": "SEMI_2",
               "category_code": "SEMI",
               "stake": 10.0,
               "combined_odd": 8.59,
               "combined_odd_winamax": 8.59,
-              "combined_odd_bet365": 8.55,
+              "combined_odd_bet365": 8.99,
               "combined_prob_pct": 16.7,
               "fair_odd": 5.98,
               "ev_pct": 43.7,
@@ -75139,7 +74963,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: @8.55\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més de 3.5 Targetes (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n",
+              "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: @8.99\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més de 3.5 Targetes (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -75150,6 +74974,7 @@
               },
               "legs": [
                 {
+                  "id": 2606,
                   "matchup": "Norwich U21 vs Bristol City U21",
                   "selection_name": "Més de 3.5 Targetes",
                   "category": "Targetes",
@@ -75165,12 +74990,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2607,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                   "category": "BTTS",
                   "bookie_odd": 1.93,
                   "bookie_odd_winamax": 1.93,
-                  "bookie_odd_bet365": 1.93,
+                  "bookie_odd_bet365": 1.96,
                   "model_prob": 53.6,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75180,12 +75006,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2608,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "1 - Victòria Local (Levante UD)",
                   "category": "1X2",
                   "bookie_odd": 3.45,
                   "bookie_odd_winamax": 3.45,
-                  "bookie_odd_bet365": 3.38,
+                  "bookie_odd_bet365": 3.5,
                   "model_prob": 43.7,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75200,12 +75027,12 @@
           "risky": [
             {
               "id": "COMBO_DAILY_2026-10-21_RISKY_1",
-              "profile": "Mega-Combinada Multi-Lliga Arriscada #1 (Cuota >= 30.0)",
+              "profile": "RISKY_1",
               "category_code": "RISKY",
               "stake": 5.0,
               "combined_odd": 29.63,
               "combined_odd_winamax": 29.63,
-              "combined_odd_bet365": 29.86,
+              "combined_odd_bet365": 31.41,
               "combined_prob_pct": 4.5,
               "fair_odd": 22.47,
               "ev_pct": 31.9,
@@ -75216,7 +75043,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: @29.86\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
+              "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: @31.41\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -75227,6 +75054,7 @@
               },
               "legs": [
                 {
+                  "id": 2609,
                   "matchup": "Norwich U21 vs Bristol City U21",
                   "selection_name": "Ambdós Equips Marquen (BTTS No)",
                   "category": "BTTS",
@@ -75242,12 +75070,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2610,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                   "category": "BTTS",
                   "bookie_odd": 1.93,
                   "bookie_odd_winamax": 1.93,
-                  "bookie_odd_bet365": 1.93,
+                  "bookie_odd_bet365": 1.96,
                   "model_prob": 53.6,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75257,12 +75086,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2611,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "1 - Victòria Local (Levante UD)",
                   "category": "1X2",
                   "bookie_odd": 3.45,
                   "bookie_odd_winamax": 3.45,
-                  "bookie_odd_bet365": 3.38,
+                  "bookie_odd_bet365": 3.5,
                   "model_prob": 43.7,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75272,6 +75102,7 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2612,
                   "matchup": "Norwich U21 vs Bristol City U21",
                   "selection_name": "1 - Victòria Norwich U21",
                   "category": "1X2",
@@ -75290,12 +75121,12 @@
             },
             {
               "id": "COMBO_DAILY_2026-10-21_RISKY_2",
-              "profile": "Mega-Combinada Multi-Lliga Arriscada #2 (Cuota >= 30.0 Alternativa)",
+              "profile": "RISKY_2",
               "category_code": "RISKY",
               "stake": 5.0,
               "combined_odd": 28.71,
               "combined_odd_winamax": 28.71,
-              "combined_odd_bet365": 28.94,
+              "combined_odd_bet365": 30.44,
               "combined_prob_pct": 4.3,
               "fair_odd": 23.34,
               "ev_pct": 23.0,
@@ -75306,7 +75137,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: @28.94\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Levante UD vs Athletic Club] 👉 Menys de 2.5 Gols (Under 2.5) (@1.87)\n2. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
+              "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @30.44\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Levante UD vs Athletic Club] 👉 Menys de 2.5 Gols (Under 2.5) (@1.90)\n2. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -75317,12 +75148,13 @@
               },
               "legs": [
                 {
+                  "id": 2613,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "Menys de 2.5 Gols (Under 2.5)",
                   "category": "Gols",
                   "bookie_odd": 1.87,
                   "bookie_odd_winamax": 1.87,
-                  "bookie_odd_bet365": 1.87,
+                  "bookie_odd_bet365": 1.9,
                   "model_prob": 51.6,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75332,6 +75164,7 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2614,
                   "matchup": "Norwich U21 vs Bristol City U21",
                   "selection_name": "Ambdós Equips Marquen (BTTS No)",
                   "category": "BTTS",
@@ -75347,12 +75180,13 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2615,
                   "matchup": "Levante UD vs Athletic Club",
                   "selection_name": "1 - Victòria Local (Levante UD)",
                   "category": "1X2",
                   "bookie_odd": 3.45,
                   "bookie_odd_winamax": 3.45,
-                  "bookie_odd_bet365": 3.38,
+                  "bookie_odd_bet365": 3.5,
                   "model_prob": 43.7,
                   "date": "21.10.2026 18:00",
                   "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75362,6 +75196,7 @@
                   "actual_result": "Pendent de disputar"
                 },
                 {
+                  "id": 2616,
                   "matchup": "Norwich U21 vs Bristol City U21",
                   "selection_name": "1 - Victòria Norwich U21",
                   "category": "1X2",
@@ -75385,7 +75220,7 @@
           "formatted_date": "Divendres, 23 d'octubre",
           "has_matches": true,
           "matches_count": 5,
-          "league_note": "Partits programats: 5 (Bundesliga, LaLiga Hypermotion, Ligue 1, Serie A, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 5 (LaLiga Hypermotion, Serie A, Bundesliga, EFL Championship, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -75395,7 +75230,7 @@
           "formatted_date": "Dissabte, 24 d'octubre",
           "has_matches": true,
           "matches_count": 28,
-          "league_note": "Partits programats: 28 (Bundesliga, LaLiga Hypermotion, Ligue 1, Serie A, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 28 (LaLiga Hypermotion, Serie A, Bundesliga, EFL Championship, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -75405,7 +75240,7 @@
           "formatted_date": "Diumenge, 25 d'octubre",
           "has_matches": true,
           "matches_count": 17,
-          "league_note": "Partits programats: 17 (Bundesliga, Ligue 1, LaLiga Hypermotion, Serie A). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 17 (LaLiga Hypermotion, Bundesliga, Ligue 1, Serie A). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -75423,16 +75258,16 @@
       },
       "has_matches": true,
       "matches_count": 2,
-      "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 2 partits",
+      "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
       "safe": [
         {
           "id": "COMBO_DAILY_2026-10-21_SAFE_1",
-          "profile": "Mega-Combinada Multi-Lliga Segura #1 (Cuota 2-3)",
+          "profile": "SAFE_1",
           "category_code": "SAFE",
           "stake": 25.0,
           "combined_odd": 2.15,
           "combined_odd_winamax": 2.15,
-          "combined_odd_bet365": 2.19,
+          "combined_odd_bet365": 2.23,
           "combined_prob_pct": 55.0,
           "fair_odd": 1.82,
           "ev_pct": 18.3,
@@ -75443,7 +75278,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Segura #1 (Cuota 2-3)\nCuota Total Bet365: @2.19\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més d'1.5 Gols (Over 1.5) (@1.23)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.78)\n",
+          "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @2.23\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més d'1.5 Gols (Over 1.5) (@1.23)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.81)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -75454,6 +75289,7 @@
           },
           "legs": [
             {
+              "id": 2599,
               "matchup": "Norwich U21 vs Bristol City U21",
               "selection_name": "Més d'1.5 Gols (Over 1.5)",
               "category": "Gols",
@@ -75469,12 +75305,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2600,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "1X - Levante UD o Empat",
               "category": "Doble Oportunitat",
               "bookie_odd": 1.78,
               "bookie_odd_winamax": 1.78,
-              "bookie_odd_bet365": 1.78,
+              "bookie_odd_bet365": 1.81,
               "model_prob": 72.1,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75487,12 +75324,12 @@
         },
         {
           "id": "COMBO_DAILY_2026-10-21_SAFE_2",
-          "profile": "Mega-Combinada Multi-Lliga Segura #2 (Cuota 2-3 Alternativa)",
+          "profile": "SAFE_2",
           "category_code": "SAFE",
           "stake": 25.0,
           "combined_odd": 2.3,
           "combined_odd_winamax": 2.3,
-          "combined_odd_bet365": 2.33,
+          "combined_odd_bet365": 2.37,
           "combined_prob_pct": 51.6,
           "fair_odd": 1.94,
           "ev_pct": 18.6,
@@ -75503,7 +75340,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: @2.33\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.78)\n",
+          "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @2.37\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.81)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -75514,6 +75351,7 @@
           },
           "legs": [
             {
+              "id": 2601,
               "matchup": "Norwich U21 vs Bristol City U21",
               "selection_name": "Menys de 3.5 Gols (Under 3.5)",
               "category": "Gols",
@@ -75529,12 +75367,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2602,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "1X - Levante UD o Empat",
               "category": "Doble Oportunitat",
               "bookie_odd": 1.78,
               "bookie_odd_winamax": 1.78,
-              "bookie_odd_bet365": 1.78,
+              "bookie_odd_bet365": 1.81,
               "model_prob": 72.1,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75549,12 +75388,12 @@
       "semi": [
         {
           "id": "COMBO_DAILY_2026-10-21_SEMI_1",
-          "profile": "Mega-Combinada Multi-Lliga Semi-Arriscada #1 (Cuota ~10.0)",
+          "profile": "SEMI_1",
           "category_code": "SEMI",
           "stake": 10.0,
           "combined_odd": 8.59,
           "combined_odd_winamax": 8.59,
-          "combined_odd_bet365": 8.55,
+          "combined_odd_bet365": 8.99,
           "combined_prob_pct": 16.7,
           "fair_odd": 5.97,
           "ev_pct": 43.9,
@@ -75565,7 +75404,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: @8.55\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n",
+          "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: @8.99\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -75576,6 +75415,7 @@
           },
           "legs": [
             {
+              "id": 2603,
               "matchup": "Norwich U21 vs Bristol City U21",
               "selection_name": "Menys de 3.5 Gols (Under 3.5)",
               "category": "Gols",
@@ -75591,12 +75431,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2604,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
               "category": "BTTS",
               "bookie_odd": 1.93,
               "bookie_odd_winamax": 1.93,
-              "bookie_odd_bet365": 1.93,
+              "bookie_odd_bet365": 1.96,
               "model_prob": 53.6,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75606,12 +75447,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2605,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "1 - Victòria Local (Levante UD)",
               "category": "1X2",
               "bookie_odd": 3.45,
               "bookie_odd_winamax": 3.45,
-              "bookie_odd_bet365": 3.38,
+              "bookie_odd_bet365": 3.5,
               "model_prob": 43.7,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75624,12 +75466,12 @@
         },
         {
           "id": "COMBO_DAILY_2026-10-21_SEMI_2",
-          "profile": "Mega-Combinada Multi-Lliga Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+          "profile": "SEMI_2",
           "category_code": "SEMI",
           "stake": 10.0,
           "combined_odd": 8.59,
           "combined_odd_winamax": 8.59,
-          "combined_odd_bet365": 8.55,
+          "combined_odd_bet365": 8.99,
           "combined_prob_pct": 16.7,
           "fair_odd": 5.98,
           "ev_pct": 43.7,
@@ -75640,7 +75482,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: @8.55\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més de 3.5 Targetes (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n",
+          "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: @8.99\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més de 3.5 Targetes (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -75651,6 +75493,7 @@
           },
           "legs": [
             {
+              "id": 2606,
               "matchup": "Norwich U21 vs Bristol City U21",
               "selection_name": "Més de 3.5 Targetes",
               "category": "Targetes",
@@ -75666,12 +75509,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2607,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
               "category": "BTTS",
               "bookie_odd": 1.93,
               "bookie_odd_winamax": 1.93,
-              "bookie_odd_bet365": 1.93,
+              "bookie_odd_bet365": 1.96,
               "model_prob": 53.6,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75681,12 +75525,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2608,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "1 - Victòria Local (Levante UD)",
               "category": "1X2",
               "bookie_odd": 3.45,
               "bookie_odd_winamax": 3.45,
-              "bookie_odd_bet365": 3.38,
+              "bookie_odd_bet365": 3.5,
               "model_prob": 43.7,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75701,12 +75546,12 @@
       "risky": [
         {
           "id": "COMBO_DAILY_2026-10-21_RISKY_1",
-          "profile": "Mega-Combinada Multi-Lliga Arriscada #1 (Cuota >= 30.0)",
+          "profile": "RISKY_1",
           "category_code": "RISKY",
           "stake": 5.0,
           "combined_odd": 29.63,
           "combined_odd_winamax": 29.63,
-          "combined_odd_bet365": 29.86,
+          "combined_odd_bet365": 31.41,
           "combined_prob_pct": 4.5,
           "fair_odd": 22.47,
           "ev_pct": 31.9,
@@ -75717,7 +75562,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: @29.86\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
+          "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: @31.41\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -75728,6 +75573,7 @@
           },
           "legs": [
             {
+              "id": 2609,
               "matchup": "Norwich U21 vs Bristol City U21",
               "selection_name": "Ambdós Equips Marquen (BTTS No)",
               "category": "BTTS",
@@ -75743,12 +75589,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2610,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
               "category": "BTTS",
               "bookie_odd": 1.93,
               "bookie_odd_winamax": 1.93,
-              "bookie_odd_bet365": 1.93,
+              "bookie_odd_bet365": 1.96,
               "model_prob": 53.6,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75758,12 +75605,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2611,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "1 - Victòria Local (Levante UD)",
               "category": "1X2",
               "bookie_odd": 3.45,
               "bookie_odd_winamax": 3.45,
-              "bookie_odd_bet365": 3.38,
+              "bookie_odd_bet365": 3.5,
               "model_prob": 43.7,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75773,6 +75621,7 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2612,
               "matchup": "Norwich U21 vs Bristol City U21",
               "selection_name": "1 - Victòria Norwich U21",
               "category": "1X2",
@@ -75791,12 +75640,12 @@
         },
         {
           "id": "COMBO_DAILY_2026-10-21_RISKY_2",
-          "profile": "Mega-Combinada Multi-Lliga Arriscada #2 (Cuota >= 30.0 Alternativa)",
+          "profile": "RISKY_2",
           "category_code": "RISKY",
           "stake": 5.0,
           "combined_odd": 28.71,
           "combined_odd_winamax": 28.71,
-          "combined_odd_bet365": 28.94,
+          "combined_odd_bet365": 30.44,
           "combined_prob_pct": 4.3,
           "fair_odd": 23.34,
           "ev_pct": 23.0,
@@ -75807,7 +75656,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: @28.94\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Levante UD vs Athletic Club] 👉 Menys de 2.5 Gols (Under 2.5) (@1.87)\n2. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
+          "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @30.44\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Levante UD vs Athletic Club] 👉 Menys de 2.5 Gols (Under 2.5) (@1.90)\n2. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -75818,12 +75667,13 @@
           },
           "legs": [
             {
+              "id": 2613,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "Menys de 2.5 Gols (Under 2.5)",
               "category": "Gols",
               "bookie_odd": 1.87,
               "bookie_odd_winamax": 1.87,
-              "bookie_odd_bet365": 1.87,
+              "bookie_odd_bet365": 1.9,
               "model_prob": 51.6,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75833,6 +75683,7 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2614,
               "matchup": "Norwich U21 vs Bristol City U21",
               "selection_name": "Ambdós Equips Marquen (BTTS No)",
               "category": "BTTS",
@@ -75848,12 +75699,13 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2615,
               "matchup": "Levante UD vs Athletic Club",
               "selection_name": "1 - Victòria Local (Levante UD)",
               "category": "1X2",
               "bookie_odd": 3.45,
               "bookie_odd_winamax": 3.45,
-              "bookie_odd_bet365": 3.38,
+              "bookie_odd_bet365": 3.5,
               "model_prob": 43.7,
               "date": "21.10.2026 18:00",
               "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -75863,6 +75715,7 @@
               "actual_result": "Pendent de disputar"
             },
             {
+              "id": 2616,
               "matchup": "Norwich U21 vs Bristol City U21",
               "selection_name": "1 - Victòria Norwich U21",
               "category": "1X2",
@@ -75974,7 +75827,7 @@
         "formatted_date": "Divendres, 16 d'octubre",
         "has_matches": true,
         "matches_count": 6,
-        "league_note": "Partits del dia de múltiples lligues (Bundesliga, LaLiga Hypermotion, Ligue 1, LaLiga EA Sports, Serie A, EFL Championship) · 6 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga, EFL Championship, Ligue 1) · 6 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-16_SAFE_1",
@@ -76487,7 +76340,7 @@
         "formatted_date": "Dissabte, 17 d'octubre",
         "has_matches": true,
         "matches_count": 36,
-        "league_note": "Partits del dia de múltiples lligues (Bundesliga, LaLiga Hypermotion, Ligue 1, LaLiga EA Sports, Serie A, Premier League, EFL Championship) · 36 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Serie A, Bundesliga, Premier League, EFL Championship, Ligue 1) · 36 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -77000,7 +76853,7 @@
         "formatted_date": "Diumenge, 18 d'octubre",
         "has_matches": true,
         "matches_count": 24,
-        "league_note": "Partits del dia de múltiples lligues (Bundesliga, LaLiga Hypermotion, Ligue 1, LaLiga EA Sports, Serie A, Premier League) · 24 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Serie A, Bundesliga, Premier League, Ligue 1) · 24 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -77561,7 +77414,7 @@
         "formatted_date": "Dilluns, 19 d'octubre",
         "has_matches": true,
         "matches_count": 5,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League, LaLiga Hypermotion, Serie A) · 5 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Premier League, Serie A) · 5 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -78266,7 +78119,7 @@
         "formatted_date": "Dimarts, 20 d'octubre",
         "has_matches": true,
         "matches_count": 2,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, EFL Championship) · 2 partits",
+        "league_note": "Partits del dia de múltiples lligues (EFL Championship, Premier League) · 2 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-20_SAFE_1",
@@ -78747,16 +78600,16 @@
         "formatted_date": "Dimecres, 21 d'octubre",
         "has_matches": true,
         "matches_count": 2,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 2 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-21_SAFE_1",
-            "profile": "Mega-Combinada Multi-Lliga Segura #1 (Cuota 2-3)",
+            "profile": "SAFE_1",
             "category_code": "SAFE",
             "stake": 25.0,
             "combined_odd": 2.15,
             "combined_odd_winamax": 2.15,
-            "combined_odd_bet365": 2.19,
+            "combined_odd_bet365": 2.23,
             "combined_prob_pct": 55.0,
             "fair_odd": 1.82,
             "ev_pct": 18.3,
@@ -78767,7 +78620,7 @@
             "status": "PENDING",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AS/B1/",
-            "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Segura #1 (Cuota 2-3)\nCuota Total Bet365: @2.19\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més d'1.5 Gols (Over 1.5) (@1.23)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.78)\n",
+            "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @2.23\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més d'1.5 Gols (Over 1.5) (@1.23)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.81)\n",
             "progress": {
               "won_count": 0,
               "lost_count": 0,
@@ -78778,6 +78631,7 @@
             },
             "legs": [
               {
+                "id": 2599,
                 "matchup": "Norwich U21 vs Bristol City U21",
                 "selection_name": "Més d'1.5 Gols (Over 1.5)",
                 "category": "Gols",
@@ -78793,12 +78647,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2600,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "1X - Levante UD o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.78,
                 "bookie_odd_winamax": 1.78,
-                "bookie_odd_bet365": 1.78,
+                "bookie_odd_bet365": 1.81,
                 "model_prob": 72.1,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -78811,12 +78666,12 @@
           },
           {
             "id": "COMBO_DAILY_2026-10-21_SAFE_2",
-            "profile": "Mega-Combinada Multi-Lliga Segura #2 (Cuota 2-3 Alternativa)",
+            "profile": "SAFE_2",
             "category_code": "SAFE",
             "stake": 25.0,
             "combined_odd": 2.3,
             "combined_odd_winamax": 2.3,
-            "combined_odd_bet365": 2.33,
+            "combined_odd_bet365": 2.37,
             "combined_prob_pct": 51.6,
             "fair_odd": 1.94,
             "ev_pct": 18.6,
@@ -78827,7 +78682,7 @@
             "status": "PENDING",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AS/B1/",
-            "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: @2.33\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.78)\n",
+            "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @2.37\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.81)\n",
             "progress": {
               "won_count": 0,
               "lost_count": 0,
@@ -78838,6 +78693,7 @@
             },
             "legs": [
               {
+                "id": 2601,
                 "matchup": "Norwich U21 vs Bristol City U21",
                 "selection_name": "Menys de 3.5 Gols (Under 3.5)",
                 "category": "Gols",
@@ -78853,12 +78709,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2602,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "1X - Levante UD o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.78,
                 "bookie_odd_winamax": 1.78,
-                "bookie_odd_bet365": 1.78,
+                "bookie_odd_bet365": 1.81,
                 "model_prob": 72.1,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -78873,12 +78730,12 @@
         "semi": [
           {
             "id": "COMBO_DAILY_2026-10-21_SEMI_1",
-            "profile": "Mega-Combinada Multi-Lliga Semi-Arriscada #1 (Cuota ~10.0)",
+            "profile": "SEMI_1",
             "category_code": "SEMI",
             "stake": 10.0,
             "combined_odd": 8.59,
             "combined_odd_winamax": 8.59,
-            "combined_odd_bet365": 8.55,
+            "combined_odd_bet365": 8.99,
             "combined_prob_pct": 16.7,
             "fair_odd": 5.97,
             "ev_pct": 43.9,
@@ -78889,7 +78746,7 @@
             "status": "PENDING",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AS/B1/",
-            "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: @8.55\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n",
+            "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: @8.99\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n",
             "progress": {
               "won_count": 0,
               "lost_count": 0,
@@ -78900,6 +78757,7 @@
             },
             "legs": [
               {
+                "id": 2603,
                 "matchup": "Norwich U21 vs Bristol City U21",
                 "selection_name": "Menys de 3.5 Gols (Under 3.5)",
                 "category": "Gols",
@@ -78915,12 +78773,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2604,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                 "category": "BTTS",
                 "bookie_odd": 1.93,
                 "bookie_odd_winamax": 1.93,
-                "bookie_odd_bet365": 1.93,
+                "bookie_odd_bet365": 1.96,
                 "model_prob": 53.6,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -78930,12 +78789,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2605,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "1 - Victòria Local (Levante UD)",
                 "category": "1X2",
                 "bookie_odd": 3.45,
                 "bookie_odd_winamax": 3.45,
-                "bookie_odd_bet365": 3.38,
+                "bookie_odd_bet365": 3.5,
                 "model_prob": 43.7,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -78948,12 +78808,12 @@
           },
           {
             "id": "COMBO_DAILY_2026-10-21_SEMI_2",
-            "profile": "Mega-Combinada Multi-Lliga Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+            "profile": "SEMI_2",
             "category_code": "SEMI",
             "stake": 10.0,
             "combined_odd": 8.59,
             "combined_odd_winamax": 8.59,
-            "combined_odd_bet365": 8.55,
+            "combined_odd_bet365": 8.99,
             "combined_prob_pct": 16.7,
             "fair_odd": 5.98,
             "ev_pct": 43.7,
@@ -78964,7 +78824,7 @@
             "status": "PENDING",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AS/B1/",
-            "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: @8.55\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més de 3.5 Targetes (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n",
+            "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: @8.99\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més de 3.5 Targetes (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n",
             "progress": {
               "won_count": 0,
               "lost_count": 0,
@@ -78975,6 +78835,7 @@
             },
             "legs": [
               {
+                "id": 2606,
                 "matchup": "Norwich U21 vs Bristol City U21",
                 "selection_name": "Més de 3.5 Targetes",
                 "category": "Targetes",
@@ -78990,12 +78851,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2607,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                 "category": "BTTS",
                 "bookie_odd": 1.93,
                 "bookie_odd_winamax": 1.93,
-                "bookie_odd_bet365": 1.93,
+                "bookie_odd_bet365": 1.96,
                 "model_prob": 53.6,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79005,12 +78867,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2608,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "1 - Victòria Local (Levante UD)",
                 "category": "1X2",
                 "bookie_odd": 3.45,
                 "bookie_odd_winamax": 3.45,
-                "bookie_odd_bet365": 3.38,
+                "bookie_odd_bet365": 3.5,
                 "model_prob": 43.7,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79025,12 +78888,12 @@
         "risky": [
           {
             "id": "COMBO_DAILY_2026-10-21_RISKY_1",
-            "profile": "Mega-Combinada Multi-Lliga Arriscada #1 (Cuota >= 30.0)",
+            "profile": "RISKY_1",
             "category_code": "RISKY",
             "stake": 5.0,
             "combined_odd": 29.63,
             "combined_odd_winamax": 29.63,
-            "combined_odd_bet365": 29.86,
+            "combined_odd_bet365": 31.41,
             "combined_prob_pct": 4.5,
             "fair_odd": 22.47,
             "ev_pct": 31.9,
@@ -79041,7 +78904,7 @@
             "status": "PENDING",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AS/B1/",
-            "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: @29.86\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
+            "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: @31.41\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
             "progress": {
               "won_count": 0,
               "lost_count": 0,
@@ -79052,6 +78915,7 @@
             },
             "legs": [
               {
+                "id": 2609,
                 "matchup": "Norwich U21 vs Bristol City U21",
                 "selection_name": "Ambdós Equips Marquen (BTTS No)",
                 "category": "BTTS",
@@ -79067,12 +78931,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2610,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                 "category": "BTTS",
                 "bookie_odd": 1.93,
                 "bookie_odd_winamax": 1.93,
-                "bookie_odd_bet365": 1.93,
+                "bookie_odd_bet365": 1.96,
                 "model_prob": 53.6,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79082,12 +78947,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2611,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "1 - Victòria Local (Levante UD)",
                 "category": "1X2",
                 "bookie_odd": 3.45,
                 "bookie_odd_winamax": 3.45,
-                "bookie_odd_bet365": 3.38,
+                "bookie_odd_bet365": 3.5,
                 "model_prob": 43.7,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79097,6 +78963,7 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2612,
                 "matchup": "Norwich U21 vs Bristol City U21",
                 "selection_name": "1 - Victòria Norwich U21",
                 "category": "1X2",
@@ -79115,12 +78982,12 @@
           },
           {
             "id": "COMBO_DAILY_2026-10-21_RISKY_2",
-            "profile": "Mega-Combinada Multi-Lliga Arriscada #2 (Cuota >= 30.0 Alternativa)",
+            "profile": "RISKY_2",
             "category_code": "RISKY",
             "stake": 5.0,
             "combined_odd": 28.71,
             "combined_odd_winamax": 28.71,
-            "combined_odd_bet365": 28.94,
+            "combined_odd_bet365": 30.44,
             "combined_prob_pct": 4.3,
             "fair_odd": 23.34,
             "ev_pct": 23.0,
@@ -79131,7 +78998,7 @@
             "status": "PENDING",
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
             "bet365_url": "https://www.bet365.es/#/AS/B1/",
-            "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: @28.94\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Levante UD vs Athletic Club] 👉 Menys de 2.5 Gols (Under 2.5) (@1.87)\n2. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
+            "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @30.44\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Levante UD vs Athletic Club] 👉 Menys de 2.5 Gols (Under 2.5) (@1.90)\n2. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
             "progress": {
               "won_count": 0,
               "lost_count": 0,
@@ -79142,12 +79009,13 @@
             },
             "legs": [
               {
+                "id": 2613,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "Menys de 2.5 Gols (Under 2.5)",
                 "category": "Gols",
                 "bookie_odd": 1.87,
                 "bookie_odd_winamax": 1.87,
-                "bookie_odd_bet365": 1.87,
+                "bookie_odd_bet365": 1.9,
                 "model_prob": 51.6,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79157,6 +79025,7 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2614,
                 "matchup": "Norwich U21 vs Bristol City U21",
                 "selection_name": "Ambdós Equips Marquen (BTTS No)",
                 "category": "BTTS",
@@ -79172,12 +79041,13 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2615,
                 "matchup": "Levante UD vs Athletic Club",
                 "selection_name": "1 - Victòria Local (Levante UD)",
                 "category": "1X2",
                 "bookie_odd": 3.45,
                 "bookie_odd_winamax": 3.45,
-                "bookie_odd_bet365": 3.38,
+                "bookie_odd_bet365": 3.5,
                 "model_prob": 43.7,
                 "date": "21.10.2026 18:00",
                 "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79187,6 +79057,7 @@
                 "actual_result": "Pendent de disputar"
               },
               {
+                "id": 2616,
                 "matchup": "Norwich U21 vs Bristol City U21",
                 "selection_name": "1 - Victòria Norwich U21",
                 "category": "1X2",
@@ -79210,7 +79081,7 @@
         "formatted_date": "Divendres, 23 d'octubre",
         "has_matches": true,
         "matches_count": 5,
-        "league_note": "Partits programats: 5 (Bundesliga, LaLiga Hypermotion, Ligue 1, Serie A, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 5 (LaLiga Hypermotion, Serie A, Bundesliga, EFL Championship, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -79220,7 +79091,7 @@
         "formatted_date": "Dissabte, 24 d'octubre",
         "has_matches": true,
         "matches_count": 28,
-        "league_note": "Partits programats: 28 (Bundesliga, LaLiga Hypermotion, Ligue 1, Serie A, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 28 (LaLiga Hypermotion, Serie A, Bundesliga, EFL Championship, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -79230,7 +79101,7 @@
         "formatted_date": "Diumenge, 25 d'octubre",
         "has_matches": true,
         "matches_count": 17,
-        "league_note": "Partits programats: 17 (Bundesliga, Ligue 1, LaLiga Hypermotion, Serie A). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 17 (LaLiga Hypermotion, Bundesliga, Ligue 1, Serie A). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -79248,16 +79119,16 @@
     },
     "has_matches": true,
     "matches_count": 2,
-    "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 2 partits",
+    "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
     "safe": [
       {
         "id": "COMBO_DAILY_2026-10-21_SAFE_1",
-        "profile": "Mega-Combinada Multi-Lliga Segura #1 (Cuota 2-3)",
+        "profile": "SAFE_1",
         "category_code": "SAFE",
         "stake": 25.0,
         "combined_odd": 2.15,
         "combined_odd_winamax": 2.15,
-        "combined_odd_bet365": 2.19,
+        "combined_odd_bet365": 2.23,
         "combined_prob_pct": 55.0,
         "fair_odd": 1.82,
         "ev_pct": 18.3,
@@ -79268,7 +79139,7 @@
         "status": "PENDING",
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "bet365_url": "https://www.bet365.es/#/AS/B1/",
-        "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Segura #1 (Cuota 2-3)\nCuota Total Bet365: @2.19\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més d'1.5 Gols (Over 1.5) (@1.23)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.78)\n",
+        "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: @2.23\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més d'1.5 Gols (Over 1.5) (@1.23)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.81)\n",
         "progress": {
           "won_count": 0,
           "lost_count": 0,
@@ -79279,6 +79150,7 @@
         },
         "legs": [
           {
+            "id": 2599,
             "matchup": "Norwich U21 vs Bristol City U21",
             "selection_name": "Més d'1.5 Gols (Over 1.5)",
             "category": "Gols",
@@ -79294,12 +79166,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2600,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "1X - Levante UD o Empat",
             "category": "Doble Oportunitat",
             "bookie_odd": 1.78,
             "bookie_odd_winamax": 1.78,
-            "bookie_odd_bet365": 1.78,
+            "bookie_odd_bet365": 1.81,
             "model_prob": 72.1,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79312,12 +79185,12 @@
       },
       {
         "id": "COMBO_DAILY_2026-10-21_SAFE_2",
-        "profile": "Mega-Combinada Multi-Lliga Segura #2 (Cuota 2-3 Alternativa)",
+        "profile": "SAFE_2",
         "category_code": "SAFE",
         "stake": 25.0,
         "combined_odd": 2.3,
         "combined_odd_winamax": 2.3,
-        "combined_odd_bet365": 2.33,
+        "combined_odd_bet365": 2.37,
         "combined_prob_pct": 51.6,
         "fair_odd": 1.94,
         "ev_pct": 18.6,
@@ -79328,7 +79201,7 @@
         "status": "PENDING",
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "bet365_url": "https://www.bet365.es/#/AS/B1/",
-        "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: @2.33\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.78)\n",
+        "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: @2.37\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 1X - Levante UD o Empat (@1.81)\n",
         "progress": {
           "won_count": 0,
           "lost_count": 0,
@@ -79339,6 +79212,7 @@
         },
         "legs": [
           {
+            "id": 2601,
             "matchup": "Norwich U21 vs Bristol City U21",
             "selection_name": "Menys de 3.5 Gols (Under 3.5)",
             "category": "Gols",
@@ -79354,12 +79228,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2602,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "1X - Levante UD o Empat",
             "category": "Doble Oportunitat",
             "bookie_odd": 1.78,
             "bookie_odd_winamax": 1.78,
-            "bookie_odd_bet365": 1.78,
+            "bookie_odd_bet365": 1.81,
             "model_prob": 72.1,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79374,12 +79249,12 @@
     "semi": [
       {
         "id": "COMBO_DAILY_2026-10-21_SEMI_1",
-        "profile": "Mega-Combinada Multi-Lliga Semi-Arriscada #1 (Cuota ~10.0)",
+        "profile": "SEMI_1",
         "category_code": "SEMI",
         "stake": 10.0,
         "combined_odd": 8.59,
         "combined_odd_winamax": 8.59,
-        "combined_odd_bet365": 8.55,
+        "combined_odd_bet365": 8.99,
         "combined_prob_pct": 16.7,
         "fair_odd": 5.97,
         "ev_pct": 43.9,
@@ -79390,7 +79265,7 @@
         "status": "PENDING",
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "bet365_url": "https://www.bet365.es/#/AS/B1/",
-        "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: @8.55\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n",
+        "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: @8.99\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Menys de 3.5 Gols (Under 3.5) (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n",
         "progress": {
           "won_count": 0,
           "lost_count": 0,
@@ -79401,6 +79276,7 @@
         },
         "legs": [
           {
+            "id": 2603,
             "matchup": "Norwich U21 vs Bristol City U21",
             "selection_name": "Menys de 3.5 Gols (Under 3.5)",
             "category": "Gols",
@@ -79416,12 +79292,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2604,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
             "category": "BTTS",
             "bookie_odd": 1.93,
             "bookie_odd_winamax": 1.93,
-            "bookie_odd_bet365": 1.93,
+            "bookie_odd_bet365": 1.96,
             "model_prob": 53.6,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79431,12 +79308,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2605,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "1 - Victòria Local (Levante UD)",
             "category": "1X2",
             "bookie_odd": 3.45,
             "bookie_odd_winamax": 3.45,
-            "bookie_odd_bet365": 3.38,
+            "bookie_odd_bet365": 3.5,
             "model_prob": 43.7,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79449,12 +79327,12 @@
       },
       {
         "id": "COMBO_DAILY_2026-10-21_SEMI_2",
-        "profile": "Mega-Combinada Multi-Lliga Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+        "profile": "SEMI_2",
         "category_code": "SEMI",
         "stake": 10.0,
         "combined_odd": 8.59,
         "combined_odd_winamax": 8.59,
-        "combined_odd_bet365": 8.55,
+        "combined_odd_bet365": 8.99,
         "combined_prob_pct": 16.7,
         "fair_odd": 5.98,
         "ev_pct": 43.7,
@@ -79465,7 +79343,7 @@
         "status": "PENDING",
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "bet365_url": "https://www.bet365.es/#/AS/B1/",
-        "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: @8.55\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més de 3.5 Targetes (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n",
+        "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: @8.99\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Més de 3.5 Targetes (@1.31)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n",
         "progress": {
           "won_count": 0,
           "lost_count": 0,
@@ -79476,6 +79354,7 @@
         },
         "legs": [
           {
+            "id": 2606,
             "matchup": "Norwich U21 vs Bristol City U21",
             "selection_name": "Més de 3.5 Targetes",
             "category": "Targetes",
@@ -79491,12 +79370,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2607,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
             "category": "BTTS",
             "bookie_odd": 1.93,
             "bookie_odd_winamax": 1.93,
-            "bookie_odd_bet365": 1.93,
+            "bookie_odd_bet365": 1.96,
             "model_prob": 53.6,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79506,12 +79386,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2608,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "1 - Victòria Local (Levante UD)",
             "category": "1X2",
             "bookie_odd": 3.45,
             "bookie_odd_winamax": 3.45,
-            "bookie_odd_bet365": 3.38,
+            "bookie_odd_bet365": 3.5,
             "model_prob": 43.7,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79526,12 +79407,12 @@
     "risky": [
       {
         "id": "COMBO_DAILY_2026-10-21_RISKY_1",
-        "profile": "Mega-Combinada Multi-Lliga Arriscada #1 (Cuota >= 30.0)",
+        "profile": "RISKY_1",
         "category_code": "RISKY",
         "stake": 5.0,
         "combined_odd": 29.63,
         "combined_odd_winamax": 29.63,
-        "combined_odd_bet365": 29.86,
+        "combined_odd_bet365": 31.41,
         "combined_prob_pct": 4.5,
         "fair_odd": 22.47,
         "ev_pct": 31.9,
@@ -79542,7 +79423,7 @@
         "status": "PENDING",
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "bet365_url": "https://www.bet365.es/#/AS/B1/",
-        "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: @29.86\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.93)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
+        "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: @31.41\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n2. [Levante UD vs Athletic Club] 👉 Ambdós Equips Marquen (BTTS Sí) (@1.96)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
         "progress": {
           "won_count": 0,
           "lost_count": 0,
@@ -79553,6 +79434,7 @@
         },
         "legs": [
           {
+            "id": 2609,
             "matchup": "Norwich U21 vs Bristol City U21",
             "selection_name": "Ambdós Equips Marquen (BTTS No)",
             "category": "BTTS",
@@ -79568,12 +79450,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2610,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
             "category": "BTTS",
             "bookie_odd": 1.93,
             "bookie_odd_winamax": 1.93,
-            "bookie_odd_bet365": 1.93,
+            "bookie_odd_bet365": 1.96,
             "model_prob": 53.6,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79583,12 +79466,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2611,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "1 - Victòria Local (Levante UD)",
             "category": "1X2",
             "bookie_odd": 3.45,
             "bookie_odd_winamax": 3.45,
-            "bookie_odd_bet365": 3.38,
+            "bookie_odd_bet365": 3.5,
             "model_prob": 43.7,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79598,6 +79482,7 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2612,
             "matchup": "Norwich U21 vs Bristol City U21",
             "selection_name": "1 - Victòria Norwich U21",
             "category": "1X2",
@@ -79616,12 +79501,12 @@
       },
       {
         "id": "COMBO_DAILY_2026-10-21_RISKY_2",
-        "profile": "Mega-Combinada Multi-Lliga Arriscada #2 (Cuota >= 30.0 Alternativa)",
+        "profile": "RISKY_2",
         "category_code": "RISKY",
         "stake": 5.0,
         "combined_odd": 28.71,
         "combined_odd_winamax": 28.71,
-        "combined_odd_bet365": 28.94,
+        "combined_odd_bet365": 30.44,
         "combined_prob_pct": 4.3,
         "fair_odd": 23.34,
         "ev_pct": 23.0,
@@ -79632,7 +79517,7 @@
         "status": "PENDING",
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
         "bet365_url": "https://www.bet365.es/#/AS/B1/",
-        "bet365_slip_text": "🟢 BET365 · Mega-Combinada Multi-Lliga Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: @28.94\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Levante UD vs Athletic Club] 👉 Menys de 2.5 Gols (Under 2.5) (@1.87)\n2. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.38)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
+        "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: @30.44\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Levante UD vs Athletic Club] 👉 Menys de 2.5 Gols (Under 2.5) (@1.90)\n2. [Norwich U21 vs Bristol City U21] 👉 Ambdós Equips Marquen (BTTS No) (@2.10)\n3. [Levante UD vs Athletic Club] 👉 1 - Victòria Local (Levante UD) (@3.50)\n4. [Norwich U21 vs Bristol City U21] 👉 1 - Victòria Norwich U21 (@2.18)\n",
         "progress": {
           "won_count": 0,
           "lost_count": 0,
@@ -79643,12 +79528,13 @@
         },
         "legs": [
           {
+            "id": 2613,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "Menys de 2.5 Gols (Under 2.5)",
             "category": "Gols",
             "bookie_odd": 1.87,
             "bookie_odd_winamax": 1.87,
-            "bookie_odd_bet365": 1.87,
+            "bookie_odd_bet365": 1.9,
             "model_prob": 51.6,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79658,6 +79544,7 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2614,
             "matchup": "Norwich U21 vs Bristol City U21",
             "selection_name": "Ambdós Equips Marquen (BTTS No)",
             "category": "BTTS",
@@ -79673,12 +79560,13 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2615,
             "matchup": "Levante UD vs Athletic Club",
             "selection_name": "1 - Victòria Local (Levante UD)",
             "category": "1X2",
             "bookie_odd": 3.45,
             "bookie_odd_winamax": 3.45,
-            "bookie_odd_bet365": 3.38,
+            "bookie_odd_bet365": 3.5,
             "model_prob": 43.7,
             "date": "21.10.2026 18:00",
             "url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
@@ -79688,6 +79576,7 @@
             "actual_result": "Pendent de disputar"
           },
           {
+            "id": 2616,
             "matchup": "Norwich U21 vs Bristol City U21",
             "selection_name": "1 - Victòria Norwich U21",
             "category": "1X2",
