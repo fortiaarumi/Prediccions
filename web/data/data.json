@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-21T12:05:20.808208",
-    "formatted_date": "21/10/2026 a les 12:05",
+    "generated_at": "2026-10-21T18:10:12.892522",
+    "formatted_date": "21/10/2026 a les 18:10",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -12,7 +12,7 @@
         "country": "Espanya",
         "flag": "🇪🇸",
         "active_jornada": 6,
-        "matches_count": 10
+        "matches_count": 11
       },
       {
         "id": "PREMIER",
@@ -67,7 +67,7 @@
   "changelog": [
     {
       "date": "2026-10-21",
-      "timestamp": "2026-10-21T12:05:44.392829",
+      "timestamp": "2026-10-21T18:10:31.725482",
       "title": "Actualització Diària del Model · 21/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -12292,7 +12292,7 @@
             "match_id": "LALIGA_J6_LEV_ATH",
             "competition_id": "LALIGA",
             "jornada": 6,
-            "status": "SCHEDULED",
+            "status": "LIVE",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
@@ -12308,9 +12308,9 @@
               "elo": 1731.8
             },
             "date": "21.10.2026 18:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
+            "home_goals": 0,
+            "away_goals": 0,
+            "final_score": "0 - 0 (En joc)",
             "actual_1x2": null,
             "predicted_1x2": "1",
             "is_hit_1x2": null,
@@ -12339,30 +12339,30 @@
             "prob_over_corners_95": 47.8,
             "cards_home": 2.4,
             "cards_away": 2.4,
-            "cards_total": 4.9,
-            "prob_over_cards_35": 71.8,
-            "prob_over_cards_45": 53.8,
+            "cards_total": 4.8,
+            "prob_over_cards_35": 71.4,
+            "prob_over_cards_45": 53.3,
             "referee": {
-              "name": "Alejandro Quintero González",
-              "is_official": true,
-              "yellow_avg": 4.55,
-              "red_avg": 0.2,
-              "fouls_avg": 24.8
+              "name": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+              "is_official": false,
+              "yellow_avg": 4.5,
+              "red_avg": 0.25,
+              "fouls_avg": 25.0
             },
             "odds_1x2": {
-              "1": 3.45,
-              "X": 3.3,
-              "2": 2.1
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_1x2_winamax": {
-              "1": 3.45,
-              "X": 3.3,
-              "2": 2.1
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_1x2_bet365": {
-              "1": 3.38,
-              "X": 3.38,
-              "2": 2.08
+              "1": null,
+              "X": null,
+              "2": null
             },
             "odds_dc_winamax": {
               "1X": null,
@@ -12370,9 +12370,9 @@
               "X2": null
             },
             "odds_dc_bet365": {
-              "1X": 1.78,
-              "12": 1.37,
-              "X2": 1.33
+              "1X": null,
+              "12": null,
+              "X2": null
             },
             "odds_ou25": {
               "over": null,
@@ -12383,8 +12383,8 @@
               "under": null
             },
             "odds_ou25_bet365": {
-              "over": 1.98,
-              "under": 1.87
+              "over": null,
+              "under": null
             },
             "odds_btts": {
               "yes": null,
@@ -12395,59 +12395,140 @@
               "no": null
             },
             "odds_btts_bet365": {
-              "yes": 1.93,
-              "no": 1.92
+              "yes": null,
+              "no": null
             },
-            "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/74801144",
-            "url_bet365": "https://www.bet365.es/#/AS/B1/",
-            "has_winamax_odds": true,
-            "has_bet365_odds": true,
-            "missing_odds": false,
-            "missing_bookmakers": [],
-            "value_bets": [
-              {
-                "model_prob": 43.7,
-                "bookie_odd": 3.45,
-                "fair_odd": 2.29,
-                "implied_prob": 29.0,
-                "ev_pct": 50.8,
-                "kelly_pct": 5.2,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1 - Victòria Local (Levante UD)",
-                "category": "1X2",
-                "bookie_odd_winamax": 3.45,
-                "bookie_odd_bet365": 3.38
-              },
-              {
-                "model_prob": 72.1,
-                "bookie_odd": 1.78,
-                "fair_odd": 1.39,
-                "implied_prob": 56.2,
-                "ev_pct": 28.3,
-                "kelly_pct": 9.1,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1X - Levante UD o Empat",
-                "category": "Doble Oportunitat",
-                "bookie_odd_winamax": 1.78,
-                "bookie_odd_bet365": 1.78
-              },
-              {
-                "model_prob": 53.6,
-                "bookie_odd": 1.93,
-                "fair_odd": 1.87,
-                "implied_prob": 51.8,
-                "ev_pct": 3.4,
-                "kelly_pct": 0.9,
-                "is_value": true,
-                "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                "name": "Ambdós Equips Marquen (BTTS Sí)",
-                "category": "BTTS",
-                "bookie_odd_winamax": 1.93,
-                "bookie_odd_bet365": 1.93
-              }
-            ]
+            "url_winamax": "https://www.winamax.es",
+            "url_bet365": "https://www.bet365.es",
+            "has_winamax_odds": false,
+            "has_bet365_odds": false,
+            "missing_odds": true,
+            "missing_bookmakers": [
+              "Winamax",
+              "Bet365"
+            ],
+            "value_bets": []
+          },
+          {
+            "match_id": "LALIGA_J6_LEV_AT1",
+            "competition_id": "LALIGA",
+            "jornada": 6,
+            "status": "LIVE",
+            "is_suspended": false,
+            "suspension_reason": "",
+            "home_team": {
+              "id": "LEV",
+              "name": "Levante UD",
+              "short_name": "Levante",
+              "elo": 1529.7
+            },
+            "away_team": {
+              "id": "AT1",
+              "name": "Ath Bilbao",
+              "short_name": "Ath Bilbao",
+              "elo": 1500.0
+            },
+            "date": "21.10.2026 18:00",
+            "home_goals": 0,
+            "away_goals": 0,
+            "final_score": "0 - 0 (En joc)",
+            "actual_1x2": null,
+            "predicted_1x2": "1",
+            "is_hit_1x2": null,
+            "is_exact_score": null,
+            "xg_diff_home": null,
+            "xg_diff_away": null,
+            "real_corners_home": null,
+            "real_corners_away": null,
+            "real_cards_home": null,
+            "real_cards_away": null,
+            "verdict": "Victòria Local (Levante UD)",
+            "prob_1": 60.5,
+            "prob_x": 23.9,
+            "prob_2": 15.6,
+            "xg_home": 1.9,
+            "xg_away": 0.87,
+            "most_likely_score": "1-1",
+            "prob_over_25": 52.2,
+            "prob_under_25": 47.8,
+            "prob_btts_yes": 50.4,
+            "prob_btts_no": 49.6,
+            "corners_home": 5.0,
+            "corners_away": 4.5,
+            "corners_total": 9.5,
+            "prob_over_corners_85": 60.8,
+            "prob_over_corners_95": 47.8,
+            "cards_home": 2.3,
+            "cards_away": 2.3,
+            "cards_total": 4.5,
+            "prob_over_cards_35": 66.1,
+            "prob_over_cards_45": 47.2,
+            "referee": {
+              "name": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+              "is_official": false,
+              "yellow_avg": 4.5,
+              "red_avg": 0.25,
+              "fouls_avg": 25.0
+            },
+            "odds_1x2": {
+              "1": null,
+              "X": null,
+              "2": null
+            },
+            "odds_1x2_winamax": {
+              "1": null,
+              "X": null,
+              "2": null
+            },
+            "odds_1x2_bet365": {
+              "1": null,
+              "X": null,
+              "2": null
+            },
+            "odds_dc_winamax": {
+              "1X": null,
+              "12": null,
+              "X2": null
+            },
+            "odds_dc_bet365": {
+              "1X": null,
+              "12": null,
+              "X2": null
+            },
+            "odds_ou25": {
+              "over": null,
+              "under": null
+            },
+            "odds_ou25_winamax": {
+              "over": null,
+              "under": null
+            },
+            "odds_ou25_bet365": {
+              "over": null,
+              "under": null
+            },
+            "odds_btts": {
+              "yes": null,
+              "no": null
+            },
+            "odds_btts_winamax": {
+              "yes": null,
+              "no": null
+            },
+            "odds_btts_bet365": {
+              "yes": null,
+              "no": null
+            },
+            "url_winamax": "https://www.winamax.es",
+            "url_bet365": "https://www.bet365.es",
+            "has_winamax_odds": false,
+            "has_bet365_odds": false,
+            "missing_odds": true,
+            "missing_bookmakers": [
+              "Winamax",
+              "Bet365"
+            ],
+            "value_bets": []
           }
         ],
         "7": [
@@ -15144,7 +15225,7 @@
           "match_id": "LALIGA_J6_LEV_ATH",
           "competition_id": "LALIGA",
           "jornada": 6,
-          "status": "SCHEDULED",
+          "status": "LIVE",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
@@ -15160,9 +15241,9 @@
             "elo": 1731.8
           },
           "date": "21.10.2026 18:00",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
+          "home_goals": 0,
+          "away_goals": 0,
+          "final_score": "0 - 0 (En joc)",
           "actual_1x2": null,
           "predicted_1x2": "1",
           "is_hit_1x2": null,
@@ -15191,30 +15272,30 @@
           "prob_over_corners_95": 47.8,
           "cards_home": 2.4,
           "cards_away": 2.4,
-          "cards_total": 4.9,
-          "prob_over_cards_35": 71.8,
-          "prob_over_cards_45": 53.8,
+          "cards_total": 4.8,
+          "prob_over_cards_35": 71.4,
+          "prob_over_cards_45": 53.3,
           "referee": {
-            "name": "Alejandro Quintero González",
-            "is_official": true,
-            "yellow_avg": 4.55,
-            "red_avg": 0.2,
-            "fouls_avg": 24.8
+            "name": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+            "is_official": false,
+            "yellow_avg": 4.5,
+            "red_avg": 0.25,
+            "fouls_avg": 25.0
           },
           "odds_1x2": {
-            "1": 3.45,
-            "X": 3.3,
-            "2": 2.1
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_1x2_winamax": {
-            "1": 3.45,
-            "X": 3.3,
-            "2": 2.1
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_1x2_bet365": {
-            "1": 3.38,
-            "X": 3.38,
-            "2": 2.08
+            "1": null,
+            "X": null,
+            "2": null
           },
           "odds_dc_winamax": {
             "1X": null,
@@ -15222,9 +15303,9 @@
             "X2": null
           },
           "odds_dc_bet365": {
-            "1X": 1.78,
-            "12": 1.37,
-            "X2": 1.33
+            "1X": null,
+            "12": null,
+            "X2": null
           },
           "odds_ou25": {
             "over": null,
@@ -15235,8 +15316,8 @@
             "under": null
           },
           "odds_ou25_bet365": {
-            "over": 1.98,
-            "under": 1.87
+            "over": null,
+            "under": null
           },
           "odds_btts": {
             "yes": null,
@@ -15247,59 +15328,140 @@
             "no": null
           },
           "odds_btts_bet365": {
-            "yes": 1.93,
-            "no": 1.92
+            "yes": null,
+            "no": null
           },
-          "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/74801144",
-          "url_bet365": "https://www.bet365.es/#/AS/B1/",
-          "has_winamax_odds": true,
-          "has_bet365_odds": true,
-          "missing_odds": false,
-          "missing_bookmakers": [],
-          "value_bets": [
-            {
-              "model_prob": 43.7,
-              "bookie_odd": 3.45,
-              "fair_odd": 2.29,
-              "implied_prob": 29.0,
-              "ev_pct": 50.8,
-              "kelly_pct": 5.2,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "1 - Victòria Local (Levante UD)",
-              "category": "1X2",
-              "bookie_odd_winamax": 3.45,
-              "bookie_odd_bet365": 3.38
-            },
-            {
-              "model_prob": 72.1,
-              "bookie_odd": 1.78,
-              "fair_odd": 1.39,
-              "implied_prob": 56.2,
-              "ev_pct": 28.3,
-              "kelly_pct": 9.1,
-              "is_value": true,
-              "rating": "🔥 EXCEL·LENT (+15% EV)",
-              "name": "1X - Levante UD o Empat",
-              "category": "Doble Oportunitat",
-              "bookie_odd_winamax": 1.78,
-              "bookie_odd_bet365": 1.78
-            },
-            {
-              "model_prob": 53.6,
-              "bookie_odd": 1.93,
-              "fair_odd": 1.87,
-              "implied_prob": 51.8,
-              "ev_pct": 3.4,
-              "kelly_pct": 0.9,
-              "is_value": true,
-              "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-              "name": "Ambdós Equips Marquen (BTTS Sí)",
-              "category": "BTTS",
-              "bookie_odd_winamax": 1.93,
-              "bookie_odd_bet365": 1.93
-            }
-          ]
+          "url_winamax": "https://www.winamax.es",
+          "url_bet365": "https://www.bet365.es",
+          "has_winamax_odds": false,
+          "has_bet365_odds": false,
+          "missing_odds": true,
+          "missing_bookmakers": [
+            "Winamax",
+            "Bet365"
+          ],
+          "value_bets": []
+        },
+        {
+          "match_id": "LALIGA_J6_LEV_AT1",
+          "competition_id": "LALIGA",
+          "jornada": 6,
+          "status": "LIVE",
+          "is_suspended": false,
+          "suspension_reason": "",
+          "home_team": {
+            "id": "LEV",
+            "name": "Levante UD",
+            "short_name": "Levante",
+            "elo": 1529.7
+          },
+          "away_team": {
+            "id": "AT1",
+            "name": "Ath Bilbao",
+            "short_name": "Ath Bilbao",
+            "elo": 1500.0
+          },
+          "date": "21.10.2026 18:00",
+          "home_goals": 0,
+          "away_goals": 0,
+          "final_score": "0 - 0 (En joc)",
+          "actual_1x2": null,
+          "predicted_1x2": "1",
+          "is_hit_1x2": null,
+          "is_exact_score": null,
+          "xg_diff_home": null,
+          "xg_diff_away": null,
+          "real_corners_home": null,
+          "real_corners_away": null,
+          "real_cards_home": null,
+          "real_cards_away": null,
+          "verdict": "Victòria Local (Levante UD)",
+          "prob_1": 60.5,
+          "prob_x": 23.9,
+          "prob_2": 15.6,
+          "xg_home": 1.9,
+          "xg_away": 0.87,
+          "most_likely_score": "1-1",
+          "prob_over_25": 52.2,
+          "prob_under_25": 47.8,
+          "prob_btts_yes": 50.4,
+          "prob_btts_no": 49.6,
+          "corners_home": 5.0,
+          "corners_away": 4.5,
+          "corners_total": 9.5,
+          "prob_over_corners_85": 60.8,
+          "prob_over_corners_95": 47.8,
+          "cards_home": 2.3,
+          "cards_away": 2.3,
+          "cards_total": 4.5,
+          "prob_over_cards_35": 66.1,
+          "prob_over_cards_45": 47.2,
+          "referee": {
+            "name": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+            "is_official": false,
+            "yellow_avg": 4.5,
+            "red_avg": 0.25,
+            "fouls_avg": 25.0
+          },
+          "odds_1x2": {
+            "1": null,
+            "X": null,
+            "2": null
+          },
+          "odds_1x2_winamax": {
+            "1": null,
+            "X": null,
+            "2": null
+          },
+          "odds_1x2_bet365": {
+            "1": null,
+            "X": null,
+            "2": null
+          },
+          "odds_dc_winamax": {
+            "1X": null,
+            "12": null,
+            "X2": null
+          },
+          "odds_dc_bet365": {
+            "1X": null,
+            "12": null,
+            "X2": null
+          },
+          "odds_ou25": {
+            "over": null,
+            "under": null
+          },
+          "odds_ou25_winamax": {
+            "over": null,
+            "under": null
+          },
+          "odds_ou25_bet365": {
+            "over": null,
+            "under": null
+          },
+          "odds_btts": {
+            "yes": null,
+            "no": null
+          },
+          "odds_btts_winamax": {
+            "yes": null,
+            "no": null
+          },
+          "odds_btts_bet365": {
+            "yes": null,
+            "no": null
+          },
+          "url_winamax": "https://www.winamax.es",
+          "url_bet365": "https://www.bet365.es",
+          "has_winamax_odds": false,
+          "has_bet365_odds": false,
+          "missing_odds": true,
+          "missing_bookmakers": [
+            "Winamax",
+            "Bet365"
+          ],
+          "value_bets": []
         }
       ]
     },
@@ -18031,7 +18193,7 @@
             "match_id": "PREMIER_2026-2027_OUCHBiYr",
             "competition_id": "PREMIER",
             "jornada": 5,
-            "status": "SCHEDULED",
+            "status": "LIVE",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
@@ -18047,9 +18209,9 @@
               "elo": 1500.0
             },
             "date": "21.10.2026 18:00",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
+            "home_goals": 0,
+            "away_goals": 1,
+            "final_score": "0 - 1 (En joc)",
             "actual_1x2": null,
             "predicted_1x2": "1",
             "is_hit_1x2": null,
@@ -60217,25 +60379,6 @@
       "bet365_url": "https://www.bet365.es/#/AS/B1/"
     },
     {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Levante UD vs Athletic Club",
-      "date": "21.10.2026 18:00",
-      "selection": "1 - Victòria Local (Levante UD)",
-      "category": "1X2",
-      "bookie_odd": 3.45,
-      "bookie_odd_winamax": 3.45,
-      "bookie_odd_bet365": 3.38,
-      "model_prob": 43.7,
-      "fair_odd": 2.29,
-      "edge_pct": 50.8,
-      "edge_pct_winamax": 50.8,
-      "edge_pct_bet365": 47.7,
-      "kelly_stake": 5.2,
-      "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-      "bet365_url": "https://www.bet365.es/#/AS/B1/"
-    },
-    {
       "competition_id": "BUNDESLIGA",
       "competition_name": "Bundesliga",
       "matchup": "VfB Stuttgart vs Borussia M'gladbach",
@@ -60574,25 +60717,6 @@
       "edge_pct_winamax": 28.8,
       "edge_pct_bet365": 28.8,
       "kelly_stake": 5.7,
-      "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-      "bet365_url": "https://www.bet365.es/#/AS/B1/"
-    },
-    {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Levante UD vs Athletic Club",
-      "date": "21.10.2026 18:00",
-      "selection": "1X - Levante UD o Empat",
-      "category": "Doble Oportunitat",
-      "bookie_odd": 1.78,
-      "bookie_odd_winamax": 1.78,
-      "bookie_odd_bet365": 1.78,
-      "model_prob": 72.1,
-      "fair_odd": 1.39,
-      "edge_pct": 28.3,
-      "edge_pct_winamax": 28.3,
-      "edge_pct_bet365": 28.3,
-      "kelly_stake": 9.1,
       "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
       "bet365_url": "https://www.bet365.es/#/AS/B1/"
     },
@@ -62440,25 +62564,6 @@
       "bet365_url": "https://www.bet365.es/#/AS/B1/"
     },
     {
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Levante UD vs Athletic Club",
-      "date": "21.10.2026 18:00",
-      "selection": "Ambdós Equips Marquen (BTTS Sí)",
-      "category": "BTTS",
-      "bookie_odd": 1.93,
-      "bookie_odd_winamax": 1.93,
-      "bookie_odd_bet365": 1.93,
-      "model_prob": 53.6,
-      "fair_odd": 1.87,
-      "edge_pct": 3.4,
-      "edge_pct_winamax": 3.4,
-      "edge_pct_bet365": 3.4,
-      "kelly_stake": 0.9,
-      "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-      "bet365_url": "https://www.bet365.es/#/AS/B1/"
-    },
-    {
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
       "matchup": "Cardiff City vs Birmingham City",
@@ -63130,7 +63235,7 @@
       "total_near_arbs": 5,
       "max_profit_pct": -1.82,
       "avg_profit_pct": 0.0,
-      "evaluated_matches": 72
+      "evaluated_matches": 73
     },
     "surebets": [],
     "near_arbs": [
@@ -71923,7 +72028,7 @@
           "date": "2026-10-21",
           "formatted_date": "Dimecres, 21 d'octubre",
           "label": "Avui (Dimecres, 21 d'octubre)",
-          "matches_count": 2,
+          "matches_count": 3,
           "has_matches": true,
           "is_today": true
         },
@@ -71966,7 +72071,7 @@
           "formatted_date": "Divendres, 16 d'octubre",
           "has_matches": true,
           "matches_count": 6,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga, EFL Championship, Ligue 1) · 6 partits",
+          "league_note": "Partits del dia de múltiples lligues (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 6 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-16_SAFE_1",
@@ -72479,7 +72584,7 @@
           "formatted_date": "Dissabte, 17 d'octubre",
           "has_matches": true,
           "matches_count": 36,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Serie A, Bundesliga, Premier League, EFL Championship, Ligue 1) · 36 partits",
+          "league_note": "Partits del dia de múltiples lligues (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, EFL Championship, Premier League, LaLiga EA Sports) · 36 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -72992,7 +73097,7 @@
           "formatted_date": "Diumenge, 18 d'octubre",
           "has_matches": true,
           "matches_count": 24,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Serie A, Bundesliga, Premier League, Ligue 1) · 24 partits",
+          "league_note": "Partits del dia de múltiples lligues (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, Premier League, LaLiga EA Sports) · 24 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -73553,7 +73658,7 @@
           "formatted_date": "Dilluns, 19 d'octubre",
           "has_matches": true,
           "matches_count": 5,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Premier League, Serie A) · 5 partits",
+          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, Serie A, LaLiga EA Sports) · 5 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -74258,7 +74363,7 @@
           "formatted_date": "Dimarts, 20 d'octubre",
           "has_matches": true,
           "matches_count": 2,
-          "league_note": "Partits del dia de múltiples lligues (EFL Championship, Premier League) · 2 partits",
+          "league_note": "Partits del dia de múltiples lligues (Premier League, EFL Championship) · 2 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-20_SAFE_1",
@@ -74738,8 +74843,8 @@
           "date": "2026-10-21",
           "formatted_date": "Dimecres, 21 d'octubre",
           "has_matches": true,
-          "matches_count": 2,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
+          "matches_count": 3,
+          "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 3 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-21_SAFE_1",
@@ -75220,7 +75325,7 @@
           "formatted_date": "Divendres, 23 d'octubre",
           "has_matches": true,
           "matches_count": 5,
-          "league_note": "Partits programats: 5 (LaLiga Hypermotion, Serie A, Bundesliga, EFL Championship, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 5 (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -75230,7 +75335,7 @@
           "formatted_date": "Dissabte, 24 d'octubre",
           "has_matches": true,
           "matches_count": 28,
-          "league_note": "Partits programats: 28 (LaLiga Hypermotion, Serie A, Bundesliga, EFL Championship, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 28 (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -75240,7 +75345,7 @@
           "formatted_date": "Diumenge, 25 d'octubre",
           "has_matches": true,
           "matches_count": 17,
-          "league_note": "Partits programats: 17 (LaLiga Hypermotion, Bundesliga, Ligue 1, Serie A). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 17 (Bundesliga, Ligue 1, LaLiga Hypermotion, Serie A). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -75257,8 +75362,8 @@
         }
       },
       "has_matches": true,
-      "matches_count": 2,
-      "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
+      "matches_count": 3,
+      "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 3 partits",
       "safe": [
         {
           "id": "COMBO_DAILY_2026-10-21_SAFE_1",
@@ -75784,7 +75889,7 @@
         "date": "2026-10-21",
         "formatted_date": "Dimecres, 21 d'octubre",
         "label": "Avui (Dimecres, 21 d'octubre)",
-        "matches_count": 2,
+        "matches_count": 3,
         "has_matches": true,
         "is_today": true
       },
@@ -75827,7 +75932,7 @@
         "formatted_date": "Divendres, 16 d'octubre",
         "has_matches": true,
         "matches_count": 6,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga, EFL Championship, Ligue 1) · 6 partits",
+        "league_note": "Partits del dia de múltiples lligues (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, EFL Championship, LaLiga EA Sports) · 6 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-16_SAFE_1",
@@ -76340,7 +76445,7 @@
         "formatted_date": "Dissabte, 17 d'octubre",
         "has_matches": true,
         "matches_count": 36,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Serie A, Bundesliga, Premier League, EFL Championship, Ligue 1) · 36 partits",
+        "league_note": "Partits del dia de múltiples lligues (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, EFL Championship, Premier League, LaLiga EA Sports) · 36 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-17_SAFE_1",
@@ -76853,7 +76958,7 @@
         "formatted_date": "Diumenge, 18 d'octubre",
         "has_matches": true,
         "matches_count": 24,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Serie A, Bundesliga, Premier League, Ligue 1) · 24 partits",
+        "league_note": "Partits del dia de múltiples lligues (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, Premier League, LaLiga EA Sports) · 24 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-18_SAFE_1",
@@ -77414,7 +77519,7 @@
         "formatted_date": "Dilluns, 19 d'octubre",
         "has_matches": true,
         "matches_count": 5,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, LaLiga Hypermotion, Premier League, Serie A) · 5 partits",
+        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga Hypermotion, Serie A, LaLiga EA Sports) · 5 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-19_SAFE_1",
@@ -78119,7 +78224,7 @@
         "formatted_date": "Dimarts, 20 d'octubre",
         "has_matches": true,
         "matches_count": 2,
-        "league_note": "Partits del dia de múltiples lligues (EFL Championship, Premier League) · 2 partits",
+        "league_note": "Partits del dia de múltiples lligues (Premier League, EFL Championship) · 2 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-20_SAFE_1",
@@ -78599,8 +78704,8 @@
         "date": "2026-10-21",
         "formatted_date": "Dimecres, 21 d'octubre",
         "has_matches": true,
-        "matches_count": 2,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
+        "matches_count": 3,
+        "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 3 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-21_SAFE_1",
@@ -79081,7 +79186,7 @@
         "formatted_date": "Divendres, 23 d'octubre",
         "has_matches": true,
         "matches_count": 5,
-        "league_note": "Partits programats: 5 (LaLiga Hypermotion, Serie A, Bundesliga, EFL Championship, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 5 (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -79091,7 +79196,7 @@
         "formatted_date": "Dissabte, 24 d'octubre",
         "has_matches": true,
         "matches_count": 28,
-        "league_note": "Partits programats: 28 (LaLiga Hypermotion, Serie A, Bundesliga, EFL Championship, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 28 (Serie A, Bundesliga, Ligue 1, LaLiga Hypermotion, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -79101,7 +79206,7 @@
         "formatted_date": "Diumenge, 25 d'octubre",
         "has_matches": true,
         "matches_count": 17,
-        "league_note": "Partits programats: 17 (LaLiga Hypermotion, Bundesliga, Ligue 1, Serie A). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 17 (Bundesliga, Ligue 1, LaLiga Hypermotion, Serie A). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -79118,8 +79223,8 @@
       }
     },
     "has_matches": true,
-    "matches_count": 2,
-    "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Premier League) · 2 partits",
+    "matches_count": 3,
+    "league_note": "Partits del dia de múltiples lligues (Premier League, LaLiga EA Sports) · 3 partits",
     "safe": [
       {
         "id": "COMBO_DAILY_2026-10-21_SAFE_1",
