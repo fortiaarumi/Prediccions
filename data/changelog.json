@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-10-23",
-    "timestamp": "2026-10-23T00:48:08.614956",
+    "timestamp": "2026-10-23T11:54:05.986818",
     "title": "Actualització Diària del Model · 23/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -9,50 +9,12 @@
       "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
       "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "🎯 Generades 6 noves combinades recomanades (Segures, Semi i Arriscades) per a: DAILY.",
       "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
       "ℹ️ Sincronització de les darreres dades i mètriques del model."
     ],
     "matches": [],
     "combos_evaluated": [],
-    "combos_generated": [
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "SAFE_1",
-        "odd": 2.32
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "SAFE_2",
-        "odd": 2.16
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "SEMI_1",
-        "odd": 9.02
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "SEMI_2",
-        "odd": 8.51
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "RISKY_1",
-        "odd": 32.1
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "RISKY_2",
-        "odd": 29.35
-      }
-    ],
+    "combos_generated": [],
     "referee_updates": []
   },
   {
