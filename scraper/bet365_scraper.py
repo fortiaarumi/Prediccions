@@ -170,14 +170,31 @@ class Bet365Scraper:
                     cached_entry["provenance"] = cached_entry.get("provenance", "BET365_OFFICIAL_FEED")
                     return cached_entry
 
-        # 2. Comprovar font autoritzada (The Odds API) si hi ha clau de servei B2B configurada
+        # 2. Comprovar font especialitzada Bet365 autoritzada (Odds Data API) si hi ha token configurat
+        token = os.environ.get("ODDS_DATA_API_TOKEN")
+        if token:
+            try:
+                from scraper.odds_data_api_client import OddsDataApiClient
+                client = OddsDataApiClient(token=token)
+                api_odds = client.get_match_odds(home_team, away_team, comp_id)
+                if api_odds and api_odds.get("matched"):
+                    h_norm = self._normalize(home_team)
+                    a_norm = self._normalize(away_team)
+                    cache_key = f"{comp_id}_{h_norm}_{a_norm}"
+                    self._cache[cache_key] = api_odds
+                    self._save_cache()
+                    return api_odds
+            except Exception as e:
+                pass
+
+        # 3. Comprovar font autoritzada secundària (The Odds API) si hi ha clau de servei B2B configurada
         api_key = os.environ.get("THE_ODDS_API_KEY") or os.environ.get("ODDS_API_KEY")
         if api_key:
             api_odds = self._fetch_odds_api(home_team, away_team, comp_id, api_key)
             if api_odds and api_odds.get("matched"):
                 return api_odds
 
-        # 3. NO DEPENDRE DE WINAMAX NI INVENTAR QUOTES:
+        # 4. NO DEPENDRE DE WINAMAX NI INVENTAR QUOTES:
         # Cada casa ha de tenir els seus propis resultats reals. Si Bet365 no disposa de quotes
         # oficials verificades o d'un override manual de l'usuari, es marca com a no detectat
         # perquè el sistema activi l'alerta i l'usuari pugui introduir-les manualment.
@@ -188,9 +205,14 @@ class Bet365Scraper:
         odds_data["btts"] = {}
         odds_data["status"] = "PENDING_REAL_ODDS"
         odds_data["error"] = "NO_ODDS_DETECTED"
-        odds_data["access_status"] = "CLOUDFLARE_BLOCKED_REQUIRES_AUTHORIZED_KEY"
-        odds_data["access_diagnostics"] = "Bloqueig per Cloudflare Enterprise Challenge a nivell de xarxa. Requereix THE_ODDS_API_KEY."
+        odds_data["access_status"] = "REQUIRES_ODDS_DATA_API_TOKEN"
+        odds_data["access_diagnostics"] = "Bloqueig per Cloudflare Enterprise Challenge a nivell de xarxa per accés directe a bet365.es. Requereix ODDS_DATA_API_TOKEN per a dades prematch oficials (https://api.odds-data-api.com/)."
         return odds_data
+
+    def get_odds_data_api_info(self) -> Dict[str, Any]:
+        """Retorna la informació del catàleg, plans i guia de configuració d'Odds Data API."""
+        from scraper.odds_data_api_client import OddsDataApiClient
+        return OddsDataApiClient.get_service_info()
 
     def check_direct_access(self) -> Dict[str, Any]:
         """

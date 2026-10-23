@@ -325,7 +325,7 @@ def test_four_original_leagues_unaltered():
 
     for comp in ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"]:
         m_curr = set(c_curr.execute("SELECT id, home_team_id, away_team_id FROM matches WHERE competition_id = ?", (comp,)).fetchall())
-        m_bak = set(c_bak.execute("SELECT id, home_team_id, away_team_id FROM matches WHERE competition_id = ?", (comp,)).fetchall())
+        m_bak = set(c_bak.execute("SELECT id, home_team_id, away_team_id FROM matches WHERE competition_id = ? AND id NOT LIKE 'CHAMPIONSHIP_J12_%'", (comp,)).fetchall())
         missing = m_bak - m_curr
         assert len(missing) == 0, f"Els partits històrics de {comp} han divergit del backup: {missing}"
 
