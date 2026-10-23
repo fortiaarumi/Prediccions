@@ -346,9 +346,9 @@ class ValueBetEngine:
                     if not card_odd or card_odd <= 1.0:
                         continue
                     is_under = "under" in card_key.lower()
-                    m_c_th = re.search(r'(\d+)_(\d+)', card_key)
+                    m_c_th = re.search(r'(\d+(?:\.\d+)?)', card_key) or re.search(r'(\d+)_(\d+)', card_key)
                     if m_c_th:
-                        thresh = float(f"{m_c_th.group(1)}.{m_c_th.group(2)}")
+                        thresh = float(f"{m_c_th.group(1)}.{m_c_th.group(2)}") if m_c_th.lastindex == 2 else float(m_c_th.group(1))
                         k_max = int(thresh)
                         prob_under = float(poisson.cdf(k_max, lambda_cards))
                         prob_over = 1.0 - prob_under
@@ -371,9 +371,9 @@ class ValueBetEngine:
                 if not c_odd or c_odd <= 1.0:
                     continue
                 is_under = "under" in c_key.lower() or "menys" in c_key.lower()
-                m_thresh = re.search(r'(\d+(?:\.\d+)?)', c_key)
+                m_thresh = re.search(r'(\d+(?:\.\d+)?)', c_key) or re.search(r'(\d+)_(\d+)', c_key)
                 if m_thresh:
-                    thresh = float(m_thresh.group(1))
+                    thresh = float(f"{m_thresh.group(1)}.{m_thresh.group(2)}") if m_thresh.lastindex == 2 else float(m_thresh.group(1))
                     if thresh < 5.5 or thresh > 15.5:
                         continue
                     k_max = int(thresh)
@@ -392,9 +392,9 @@ class ValueBetEngine:
                 if not c_odd or c_odd <= 1.0:
                     continue
                 is_under = "under" in c_key.lower()
-                m_thresh = re.search(r'(\d+)_(\d+)', c_key)
+                m_thresh = re.search(r'(\d+(?:\.\d+)?)', c_key) or re.search(r'(\d+)_(\d+)', c_key)
                 if m_thresh:
-                    thresh = float(f"{m_thresh.group(1)}.{m_thresh.group(2)}")
+                    thresh = float(f"{m_thresh.group(1)}.{m_thresh.group(2)}") if m_thresh.lastindex == 2 else float(m_thresh.group(1))
                     if thresh < 5.5 or thresh > 15.5:
                         continue
                     k_max = int(thresh)

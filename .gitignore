@@ -15,6 +15,7 @@ reports/*.pdf
 data/*_urls.txt
 database/*.db
 data/*_backup*.db
+data/ligues.db
 scratch/
 
 # Fitxers de sistema

@@ -1,4 +1,65 @@
 {
-  "count": 0,
-  "alerts": []
+  "count": 3,
+  "alerts": [
+    {
+      "id": "sec_HYPERMOTION_albacetebalompie_cdeldense",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Albacete Balompié vs CD Eldense",
+      "home_team": "Albacete Balompié",
+      "away_team": "CD Eldense",
+      "date": "25.10.2026 15:15",
+      "jornada": 11,
+      "alert_type": "MISSING_SECONDARY_MARKET",
+      "missing_markets": [
+        "Over/Under 2.5",
+        "BTTS (Ambdós Marquen)"
+      ],
+      "missing_bookmakers": [
+        "Bet365 (Over/Under 2.5, BTTS (Ambdós Marquen))"
+      ],
+      "severity": "info",
+      "message": "Bet365 no ofereix línia oberta de Over/Under 2.5, BTTS (Ambdós Marquen) per a Albacete Balompié vs CD Eldense."
+    },
+    {
+      "id": "sec_HYPERMOTION_cadizcf_adceuta",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "Cádiz CF vs AD Ceuta",
+      "home_team": "Cádiz CF",
+      "away_team": "AD Ceuta",
+      "date": "25.10.2026 15:15",
+      "jornada": 11,
+      "alert_type": "MISSING_SECONDARY_MARKET",
+      "missing_markets": [
+        "Over/Under 2.5",
+        "BTTS (Ambdós Marquen)"
+      ],
+      "missing_bookmakers": [
+        "Bet365 (Over/Under 2.5, BTTS (Ambdós Marquen))"
+      ],
+      "severity": "info",
+      "message": "Bet365 no ofereix línia oberta de Over/Under 2.5, BTTS (Ambdós Marquen) per a Cádiz CF vs AD Ceuta."
+    },
+    {
+      "id": "sec_HYPERMOTION_fcandorra_burgoscf",
+      "competition_id": "HYPERMOTION",
+      "competition_name": "LaLiga Hypermotion",
+      "matchup": "FC Andorra vs Burgos CF",
+      "home_team": "FC Andorra",
+      "away_team": "Burgos CF",
+      "date": "26.10.2026 19:30",
+      "jornada": 11,
+      "alert_type": "MISSING_SECONDARY_MARKET",
+      "missing_markets": [
+        "Over/Under 2.5",
+        "BTTS (Ambdós Marquen)"
+      ],
+      "missing_bookmakers": [
+        "Bet365 (Over/Under 2.5, BTTS (Ambdós Marquen))"
+      ],
+      "severity": "info",
+      "message": "Bet365 no ofereix línia oberta de Over/Under 2.5, BTTS (Ambdós Marquen) per a FC Andorra vs Burgos CF."
+    }
+  ]
 }

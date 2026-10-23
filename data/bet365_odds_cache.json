@@ -1,35 +1,42 @@
 {
   "LALIGA_fcbarcelona_realmadrid": {
-    "source": "Bet365 via MoviOdds (FI: 99901)",
+    "source": "Bet365 via MoviOdds (FI: 77101)",
     "bookmaker": "BET365",
     "url": "https://www.bet365.es/#/AS/B1/",
-    "match_id": "99901",
+    "match_id": "77101",
     "matched_title": "Barcelona vs Real Madrid",
     "matched": true,
     "is_manual_override": false,
     "provenance": "BET365_MOVIODDS",
-    "cached_at": 1792794577.4705834,
-    "kickoff_utc": null,
-    "polled_at": null,
+    "kickoff_utc": "2026-10-25T20:00:00Z",
+    "polled_at": "2026-10-23T23:09:48.513214+00:00",
+    "is_stale": false,
+    "market_status": {
+      "Full Time Result": {
+        "polled_at": "2026-10-23T23:09:48.513214+00:00",
+        "ts": "",
+        "stale": false
+      }
+    },
     "1X2": {
-      "1": 1.62,
-      "X": 5.75,
-      "2": 4.0
+      "1": 1.95,
+      "X": 3.8,
+      "2": 3.9
     },
     "double_chance": {},
-    "over_under_2_5": {
-      "Over 2.5": 1.5,
-      "over": 1.5,
-      "Under 2.5": 2.6,
-      "under": 2.6
-    },
-    "btts": {
-      "Sí": 1.53,
-      "yes": 1.53,
-      "No": 2.38,
-      "no": 2.38
-    },
+    "over_under_2_5": {},
+    "btts": {},
     "corners": {},
     "cards": {}
+  },
+  "LALIGA_barcelona_realmadrid": {
+    "matched": true,
+    "provenance": "BET365_MOVIODDS",
+    "polled_at": "2026-10-23T23:09:48.513214+00:00",
+    "1X2": {
+      "1": 1.4,
+      "X": 4.5,
+      "2": 7.0
+    }
   }
 }

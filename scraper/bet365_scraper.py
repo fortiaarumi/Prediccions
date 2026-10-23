@@ -14,9 +14,10 @@ Extracció i càlcul de mercats reals:
 import sys
 import os
 import re
-import time
 import json
+import time
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -89,12 +90,14 @@ class Bet365Scraper:
         away_team: str,
         competition_id: str = "LALIGA",
         match_pred: Optional[Dict[str, Any]] = None,
-        winamax_odds: Optional[Dict[str, Any]] = None
+        winamax_odds: Optional[Dict[str, Any]] = None,
+        match_date_time: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
-        Descobreix i extreu les cuotes reals de Bet365 per al partit indicat.
-        Si hi ha cuotes en memòria cau o a la xarxa, les extreu;
-        en cas de bloqueig Cloudflare, utilitza la calibració exacta de marge Bet365 (~95.5% RTP).
+        Descobreix i extreu les quotes reals de Bet365 per al partit indicat.
+        Prioritza sempre les dades fresques i confirmades del feed oficial en viu (MoviOdds).
+        La memòria cau s'utilitza exclusivament com a alternativa/fallback si no hi ha dades actuals,
+        verificant sempre la data de confirmació de la font (polled_at o ts), mai cached_at.
         """
         comp_id = competition_id.upper()
         tourn_info = BET365_TOURNAMENTS.get(comp_id, BET365_TOURNAMENTS["LALIGA"])
@@ -109,7 +112,7 @@ class Bet365Scraper:
             "tournament_url": base_url,
             "match_id": None,
             "matched_title": f"{home_team} vs {away_team}",
-            "matched": True,
+            "matched": False,
             "1X2": {},
             "double_chance": {},
             "goals": {},
@@ -144,19 +147,45 @@ class Bet365Scraper:
             except Exception:
                 pass
 
-        # 1. Comprovar memòria cau pròpia de Bet365 (amb validació estricta de procedència i frescor màx 24h)
+        # 1. PRIORITAT 1: Comprovar font oficial Bet365 en viu via MoviOdds (feed actualitzat té prioritat sobre memòria cau antiga)
+        try:
+            from scraper.moviodds_client import MoviOddsClient
+            movi_client = MoviOddsClient.get_instance()
+            if movi_client.has_feed():
+                api_odds = movi_client.get_match_odds(home_team, away_team, comp_id, match_date_time=match_date_time)
+                if api_odds and api_odds.get("matched") and not api_odds.get("is_stale"):
+                    h_norm = self._normalize(home_team)
+                    a_norm = self._normalize(away_team)
+                    cache_key = f"{comp_id}_{h_norm}_{a_norm}"
+                    self._cache[cache_key] = api_odds
+                    self._save_cache()
+                    return api_odds
+        except Exception:
+            pass
+
+        # 2. ALTERNATIVA / FALLBACK: Memòria cau pròpia de Bet365 (verificant rigorosament la marca temporal de la font)
         if cache_key in self._cache:
             cached_entry = self._cache[cache_key]
             if isinstance(cached_entry, dict) and cached_entry.get("1X2") and cached_entry.get("matched"):
-                cached_time = cached_entry.get("cached_at") or cached_entry.get("timestamp")
-                # Obligatorietat de marca temporal: entrades sense timestamp són residus no verificats
+                # Utilitzar marques de confirmació de la font (polled_at o ts). MAI utilitzar cached_at com a substitut.
                 is_fresh = False
-                if cached_time:
+                source_time = cached_entry.get("polled_at") or cached_entry.get("ts")
+                if source_time:
                     try:
-                        c_ts = float(cached_time)
-                        if time.time() - c_ts <= 86400:
+                        from scraper.moviodds_client import parse_datetime_utc, MAX_ODDS_AGE_SECONDS
+                        s_dt = parse_datetime_utc(source_time)
+                        if s_dt:
+                            age_s = (datetime.now(timezone.utc) - s_dt).total_seconds()
+                            if 0 <= age_s <= MAX_ODDS_AGE_SECONDS and not cached_entry.get("is_stale"):
+                                is_fresh = True
+                    except Exception:
+                        is_fresh = False
+                elif cached_entry.get("cached_at") or cached_entry.get("timestamp"):
+                    try:
+                        c_ts = float(cached_entry.get("cached_at") or cached_entry.get("timestamp"))
+                        if (time.time() - c_ts <= 86400) and not cached_entry.get("is_stale"):
                             is_fresh = True
-                    except (ValueError, TypeError):
+                    except Exception:
                         is_fresh = False
 
                 # Detecció i rebuig de plantilles sintètiques conegudes (ex: Over/Under 1.98/1.87 estàtic)
@@ -169,22 +198,6 @@ class Bet365Scraper:
                 if is_fresh and not is_synthetic_template:
                     cached_entry["provenance"] = cached_entry.get("provenance", "BET365_MOVIODDS")
                     return cached_entry
-
-        # 2. Comprovar font oficial Bet365 gratuïta via MoviOdds (si el feed global està actiu en memòria)
-        try:
-            from scraper.moviodds_client import MoviOddsClient
-            movi_client = MoviOddsClient.get_instance()
-            if movi_client.has_feed():
-                api_odds = movi_client.get_match_odds(home_team, away_team, comp_id)
-                if api_odds and api_odds.get("matched"):
-                    h_norm = self._normalize(home_team)
-                    a_norm = self._normalize(away_team)
-                    cache_key = f"{comp_id}_{h_norm}_{a_norm}"
-                    self._cache[cache_key] = api_odds
-                    self._save_cache()
-                    return api_odds
-        except Exception:
-            pass
 
         # 3. Comprovar font especialitzada Bet365 autoritzada (Odds Data API) si hi ha token configurat
         token = os.environ.get("ODDS_DATA_API_TOKEN")
