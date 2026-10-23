@@ -99,11 +99,8 @@ function cleanMatchup(matchup, leg) {
       if (sel.includes('levante') || sel.includes('sevilla')) {
         return 'Levante UD vs Sevilla FC';
       }
-      if (sel.includes('west ham') || sel.includes('qpr')) {
-        return 'West Ham United vs Queens Park Rangers';
-      }
     }
-    return 'Partit Oficial';
+    return 'Pendent de resoldre';
   }
   return matchup.replace(/\{['"]id['"]:\s*['"][^'"]*['"],\s*['"]name['"]:\s*['"]([^'"]*)['"]\}/g, '$1');
 }
