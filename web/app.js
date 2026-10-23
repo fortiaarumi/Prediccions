@@ -2639,6 +2639,7 @@ const PersonalBets = {
                     legIcon = '❌';
                     legColor = 'var(--accent-rose)';
                     legBg = 'rgba(244, 63, 94, 0.08)';
+                  }
                   const cMatch = cleanMatchup(l.matchup, l);
                   const homeShort = cMatch.includes(' vs ') ? cMatch.split(' vs ')[0] : cMatch;
                   return `
