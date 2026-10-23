@@ -760,6 +760,7 @@ def test_odds_data_api_missing_token_safe_behavior():
     """Comprova que en absència d'ODDS_DATA_API_TOKEN el sistema no sintetitza dades i diagnostica la causa."""
     with patch.dict(os.environ, {}, clear=True):
         b365 = Bet365Scraper()
+        b365._cache = {}
         odds = b365.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
         assert odds["matched"] is False
         assert odds["1X2"] == {}
@@ -794,6 +795,140 @@ def test_championship_exact_twelve_unique_matches_in_sqlite_and_export():
     # No hi ha d'haver cap enfrontament duplicat
     matchups = [(r[1], r[2]) for r in rows]
     assert len(matchups) == len(set(matchups)), "Hi ha enfrontaments duplicats a la jornada 12 de Championship"
+
+
+# -----------------------------------------------------------------------------
+# 23. MoviOdds: Extracció exhaustiva de mercats reals Bet365
+# -----------------------------------------------------------------------------
+def test_moviodds_client_parsing_and_market_extraction():
+    """Valida que MoviOddsClient extreu 1X2, Doble Oportunitat, Over/Under 2.5, BTTS, Córners i Targetes."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+
+    fixture = {
+        "id": 201587974,
+        "home": "Barcelona",
+        "away": "Real Madrid",
+        "kickoff_utc": "2026-10-25T20:00:00Z",
+        "polled_at": "2026-10-23T22:00:00Z",
+        "quotes": [
+            {"group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.62, "ts": "2026-10-23T20:21:17Z"},
+            {"group_name": "Full Time Result", "label": "Draw", "odds_dec": 5.75, "ts": "2026-10-23T20:21:17Z"},
+            {"group_name": "Full Time Result", "label": "Real Madrid", "odds_dec": 4.00, "ts": "2026-10-23T20:21:17Z"},
+            {"group_name": "Double Chance", "label": "Barcelona or Draw", "odds_dec": 1.18},
+            {"group_name": "Goals Over/Under", "label": "Over", "line": "2.5", "odds_dec": 1.50},
+            {"group_name": "Goals Over/Under", "label": "Under", "line": "2.5", "odds_dec": 2.60},
+            {"group_name": "Both Teams to Score", "label": "Yes", "odds_dec": 1.53},
+            {"group_name": "Both Teams to Score", "label": "No", "odds_dec": 2.38},
+            {"group_name": "Asian Total Corners", "label": "Over", "line": "10.5", "odds_dec": 1.80},
+            {"group_name": "Cards", "label": "Lamine Yamal", "odds_dec": 19.00},
+            # Selecció suspesa: no s'ha d'incloure
+            {"group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.10, "suspended": True}
+        ]
+    }
+
+    res = client.parse_match_odds(fixture, "LALIGA")
+    assert res["matched"] is True
+    assert res["bookmaker"] == "BET365"
+    assert res["provenance"] == "BET365_MOVIODDS"
+    assert res["1X2"]["1"] == 1.62
+    assert res["1X2"]["X"] == 5.75
+    assert res["1X2"]["2"] == 4.00
+    assert res["over_under_2_5"]["Over 2.5"] == 1.50
+    assert res["over_under_2_5"]["Under 2.5"] == 2.60
+    assert res["btts"]["Sí"] == 1.53
+    assert res["btts"]["No"] == 2.38
+    assert "Asian Total Corners Over 10.5" in res["corners"]
+    assert "Cards Lamine Yamal" in res["cards"]
+    assert res["ts"] == "2026-10-23T20:21:17Z"
+
+
+# -----------------------------------------------------------------------------
+# 24. MoviOdds: Associació inequívoca de partits i àlies canònics
+# -----------------------------------------------------------------------------
+def test_moviodds_client_unambiguous_match_association():
+    """Garanteix que MoviOddsClient només associa si coincideixen TOTS DOS equips i la lliga és compatible."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+
+    client._raw_matches = [
+        {"id": 101, "league": "England Championship", "home": "Sheff Utd", "away": "Derby", "quotes": []},
+        {"id": 102, "league": "England Championship", "home": "QPR", "away": "Swansea", "quotes": []},
+        {"id": 103, "league": "Germany Bundesliga I", "home": "Cologne", "away": "Schalke", "quotes": []},
+        {"id": 104, "league": "Spain La Liga", "home": "Barcelona", "away": "Real Madrid", "quotes": []}
+    ]
+    client._last_fetch_time = time.time()
+    client._index_matches()
+
+    # Coincidència canònica amb resolució d'àlies
+    m1 = client.match_fixture("Sheffield United", "Derby County", "CHAMPIONSHIP")
+    assert m1 is not None
+    assert m1["id"] == 101
+
+    m2 = client.match_fixture("Queens Park Rangers", "Swansea City", "CHAMPIONSHIP")
+    assert m2 is not None
+    assert m2["id"] == 102
+
+    m3 = client.match_fixture("1. FC Colonia", "FC Schalke 04", "BUNDESLIGA")
+    assert m3 is not None
+    assert m3["id"] == 103
+
+    # Mismatch d'equip visitant: NO HA D'ASSOCIAR
+    m_mismatch = client.match_fixture("Sheffield United", "Watford", "CHAMPIONSHIP")
+    assert m_mismatch is None
+
+    # Mismatch de competició: Barcelona vs Real Madrid a Premier League NO HA D'ASSOCIAR
+    m_comp_mismatch = client.match_fixture("FC Barcelona", "Real Madrid", "PREMIER")
+    assert m_comp_mismatch is None
+
+
+# -----------------------------------------------------------------------------
+# 25. MoviOdds: Integració amb Bet365Scraper
+# -----------------------------------------------------------------------------
+def test_moviodds_integration_with_bet365_scraper():
+    """Valida que quan MoviOddsClient conté el feed en memòria, Bet365Scraper l'utilitza de forma transparent."""
+    from scraper.moviodds_client import MoviOddsClient
+    from scraper.bet365_scraper import Bet365Scraper
+
+    movi = MoviOddsClient.get_instance()
+    movi._raw_matches = [
+        {
+            "id": 99901,
+            "league": "Spain La Liga",
+            "home": "Barcelona",
+            "away": "Real Madrid",
+            "quotes": [
+                {"group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.62},
+                {"group_name": "Full Time Result", "label": "Draw", "odds_dec": 5.75},
+                {"group_name": "Full Time Result", "label": "Real Madrid", "odds_dec": 4.00},
+                {"group_name": "Goals Over/Under", "label": "Over", "line": "2.5", "odds_dec": 1.50},
+                {"group_name": "Goals Over/Under", "label": "Under", "line": "2.5", "odds_dec": 2.60},
+                {"group_name": "Both Teams to Score", "label": "Yes", "odds_dec": 1.53},
+                {"group_name": "Both Teams to Score", "label": "No", "odds_dec": 2.38}
+            ]
+        }
+    ]
+    movi._last_fetch_time = time.time()
+    movi._index_matches()
+
+    scraper = Bet365Scraper()
+    scraper._cache = {}  # Sense memòria cau prèvia
+
+    odds = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+    assert odds["matched"] is True
+    assert odds["provenance"] == "BET365_MOVIODDS"
+    assert odds["1X2"]["1"] == 1.62
+    assert odds["1X2"]["X"] == 5.75
+    assert odds["1X2"]["2"] == 4.00
+    assert odds["over_under_2_5"]["Over 2.5"] == 1.50
+    assert odds["btts"]["Sí"] == 1.53
+
+    # Reset per no contaminar altres proves
+    movi._raw_matches = []
+    movi._last_fetch_time = 0.0
+    movi._indexed_matches.clear()
+    movi._parsed_odds_cache.clear()
+
 
 
 

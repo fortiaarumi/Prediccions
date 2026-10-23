@@ -167,10 +167,26 @@ class Bet365Scraper:
                 )
 
                 if is_fresh and not is_synthetic_template:
-                    cached_entry["provenance"] = cached_entry.get("provenance", "BET365_OFFICIAL_FEED")
+                    cached_entry["provenance"] = cached_entry.get("provenance", "BET365_MOVIODDS")
                     return cached_entry
 
-        # 2. Comprovar font especialitzada Bet365 autoritzada (Odds Data API) si hi ha token configurat
+        # 2. Comprovar font oficial Bet365 gratuïta via MoviOdds (si el feed global està actiu en memòria)
+        try:
+            from scraper.moviodds_client import MoviOddsClient
+            movi_client = MoviOddsClient.get_instance()
+            if movi_client.has_feed():
+                api_odds = movi_client.get_match_odds(home_team, away_team, comp_id)
+                if api_odds and api_odds.get("matched"):
+                    h_norm = self._normalize(home_team)
+                    a_norm = self._normalize(away_team)
+                    cache_key = f"{comp_id}_{h_norm}_{a_norm}"
+                    self._cache[cache_key] = api_odds
+                    self._save_cache()
+                    return api_odds
+        except Exception:
+            pass
+
+        # 3. Comprovar font especialitzada Bet365 autoritzada (Odds Data API) si hi ha token configurat
         token = os.environ.get("ODDS_DATA_API_TOKEN")
         if token:
             try:
@@ -187,14 +203,14 @@ class Bet365Scraper:
             except Exception as e:
                 pass
 
-        # 3. Comprovar font autoritzada secundària (The Odds API) si hi ha clau de servei B2B configurada
+        # 4. Comprovar font autoritzada secundària (The Odds API) si hi ha clau de servei B2B configurada
         api_key = os.environ.get("THE_ODDS_API_KEY") or os.environ.get("ODDS_API_KEY")
         if api_key:
             api_odds = self._fetch_odds_api(home_team, away_team, comp_id, api_key)
             if api_odds and api_odds.get("matched"):
                 return api_odds
 
-        # 4. NO DEPENDRE DE WINAMAX NI INVENTAR QUOTES:
+        # 5. NO DEPENDRE DE WINAMAX NI INVENTAR QUOTES:
         # Cada casa ha de tenir els seus propis resultats reals. Si Bet365 no disposa de quotes
         # oficials verificades o d'un override manual de l'usuari, es marca com a no detectat
         # perquè el sistema activi l'alerta i l'usuari pugui introduir-les manualment.
