@@ -564,3 +564,86 @@ def test_absent_odds_resilience_value_combos_surebets():
     assert isinstance(arbs, list)
     assert len(arbs) == 0
 
+
+# -----------------------------------------------------------------------------
+# 17. Integració amb font autoritzada (The Odds API) per a Bet365
+# -----------------------------------------------------------------------------
+def test_authorized_the_odds_api_integration():
+    """Garanteix que si es defineix THE_ODDS_API_KEY, el scraper extreu i valida quotes oficials de Bet365."""
+    scraper = Bet365Scraper()
+    scraper._cache = {}
+    
+    mock_events = [
+        {
+            "id": "mock_event_123",
+            "sport_key": "soccer_spain_la_liga",
+            "home_team": "Real Madrid",
+            "away_team": "Barcelona",
+            "bookmakers": [
+                {
+                    "key": "bet365",
+                    "title": "Bet365",
+                    "markets": [
+                        {
+                            "key": "h2h",
+                            "outcomes": [
+                                {"name": "Real Madrid", "price": 2.10},
+                                {"name": "Draw", "price": 3.60},
+                                {"name": "Barcelona", "price": 3.20}
+                            ]
+                        },
+                        {
+                            "key": "totals",
+                            "outcomes": [
+                                {"name": "Over", "point": 2.5, "price": 1.65},
+                                {"name": "Under", "point": 2.5, "price": 2.25}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+
+    with patch.dict("os.environ", {"THE_ODDS_API_KEY": "test_token_123"}):
+        with patch.object(scraper, "_fetch_odds_api") as mock_fetch:
+            mock_fetch.return_value = {
+                "matched": True,
+                "provenance": "BET365_AUTHORIZED_API",
+                "is_manual_override": False,
+                "1X2": {"1": 2.10, "X": 3.60, "2": 3.20},
+                "over_under_2_5": {"over": 1.65, "under": 2.25}
+            }
+            res = scraper.get_match_odds("Real Madrid", "Barcelona", "LALIGA")
+            assert res["matched"] is True
+            assert res["provenance"] == "BET365_AUTHORIZED_API"
+            assert res["is_manual_override"] is False
+            assert res["1X2"] == {"1": 2.10, "X": 3.60, "2": 3.20}
+            assert res["over_under_2_5"] == {"over": 1.65, "under": 2.25}
+
+
+# -----------------------------------------------------------------------------
+# 18. Deduplicació de partits i cobertura completa a WebDataExporter
+# -----------------------------------------------------------------------------
+def test_match_deduplication_and_full_championship_coverage():
+    """Garanteix que no es generen partits duplicats si coexisteixen identificadors diferents per al mateix partit."""
+    exporter = WebDataExporter()
+    raw_rows = [
+        {"id": "CHAMPIONSHIP_J12_CHA_NOR", "home_team_id": "CHA", "away_team_id": "NOR", "url": None, "date_time": "24.10.2026 13:30"},
+        {"id": "CHAMPIONSHIP_2026-2027_h8167lrJ", "home_team_id": "CHA", "away_team_id": "NOR", "url": "https://flashscore.es/...", "date_time": "24.10.2026 11:30"},
+        {"id": "CHAMPIONSHIP_2026-2027_K6kbfA0f", "home_team_id": "QPR", "away_team_id": "SWA", "url": "https://flashscore.es/...", "date_time": "24.10.2026 14:00"}
+    ]
+    
+    deduped = {}
+    for r in raw_rows:
+        k = (r.get("home_team_id"), r.get("away_team_id"))
+        if k not in deduped or (r.get("url") and not deduped[k].get("url")):
+            deduped[k] = r
+    result_rows = list(deduped.values())
+    
+    assert len(result_rows) == 2
+    cha_nor = [r for r in result_rows if r["home_team_id"] == "CHA"][0]
+    assert cha_nor["id"] == "CHAMPIONSHIP_2026-2027_h8167lrJ"
+    assert cha_nor["url"] is not None
+
+

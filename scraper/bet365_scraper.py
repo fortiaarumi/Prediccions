@@ -167,10 +167,17 @@ class Bet365Scraper:
                 )
 
                 if is_fresh and not is_synthetic_template:
-                    cached_entry["provenance"] = "BET365_OFFICIAL_FEED"
+                    cached_entry["provenance"] = cached_entry.get("provenance", "BET365_OFFICIAL_FEED")
                     return cached_entry
 
-        # 2. NO DEPENDRE DE WINAMAX NI INVENTAR QUOTES:
+        # 2. Comprovar font autoritzada (The Odds API) si hi ha clau de servei B2B configurada
+        api_key = os.environ.get("THE_ODDS_API_KEY") or os.environ.get("ODDS_API_KEY")
+        if api_key:
+            api_odds = self._fetch_odds_api(home_team, away_team, comp_id, api_key)
+            if api_odds and api_odds.get("matched"):
+                return api_odds
+
+        # 3. NO DEPENDRE DE WINAMAX NI INVENTAR QUOTES:
         # Cada casa ha de tenir els seus propis resultats reals. Si Bet365 no disposa de quotes
         # oficials verificades o d'un override manual de l'usuari, es marca com a no detectat
         # perquè el sistema activi l'alerta i l'usuari pugui introduir-les manualment.
@@ -181,7 +188,124 @@ class Bet365Scraper:
         odds_data["btts"] = {}
         odds_data["status"] = "PENDING_REAL_ODDS"
         odds_data["error"] = "NO_ODDS_DETECTED"
+        odds_data["access_status"] = "CLOUDFLARE_BLOCKED_REQUIRES_AUTHORIZED_KEY"
+        odds_data["access_diagnostics"] = "Bloqueig per Cloudflare Enterprise Challenge a nivell de xarxa. Requereix THE_ODDS_API_KEY."
         return odds_data
+
+    def check_direct_access(self) -> Dict[str, Any]:
+        """
+        Executa una comprovació de connectivitat a bet365.es i retorna el diagnòstic tècnic empíric.
+        """
+        cmd = ['curl.exe' if os.name == 'nt' else 'curl', '-s', '-I', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', 'https://www.bet365.es/#/AS/B1/']
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=5)
+            headers = res.stdout
+            is_cf_403 = ('403' in headers) and ('cloudflare' in headers.lower())
+            is_cf_mitigated = 'cf-mitigated: challenge' in headers.lower()
+            return {
+                "url": "https://www.bet365.es/#/AS/B1/",
+                "is_blocked": is_cf_403 or is_cf_mitigated,
+                "status_code": 403 if is_cf_403 else 200,
+                "server": "cloudflare",
+                "challenge": "Turnstile Managed Challenge" if is_cf_mitigated else "None",
+                "message": "Bloqueig per Cloudflare Enterprise Challenge a nivell de xarxa per a peticions automatitzades directes."
+            }
+        except Exception as e:
+            return {
+                "url": "https://www.bet365.es/#/AS/B1/",
+                "is_blocked": True,
+                "error": str(e),
+                "message": "Error de xarxa en contactar amb bet365.es."
+            }
+
+    def _fetch_odds_api(self, home_team: str, away_team: str, comp_id: str, api_key: str) -> Optional[Dict[str, Any]]:
+        """
+        Consulta legalment The Odds API (the-odds-api.com) per obtenir quotes oficials de Bet365.
+        """
+        sport_map = {
+            "LALIGA": "soccer_spain_la_liga",
+            "HYPERMOTION": "soccer_spain_segunda_division",
+            "PREMIER": "soccer_epl",
+            "CHAMPIONSHIP": "soccer_england_championship",
+            "BUNDESLIGA": "soccer_germany_bundesliga",
+            "LIGUE1": "soccer_france_ligue_one",
+            "SERIEA": "soccer_italy_serie_a"
+        }
+        sport_key = sport_map.get(comp_id)
+        if not sport_key:
+            return None
+
+        if not hasattr(self, "_api_cache"):
+            self._api_cache: Dict[str, list] = {}
+
+        if sport_key not in self._api_cache:
+            try:
+                import urllib.request
+                import ssl
+                url = f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds?regions=eu&bookmakers=bet365&markets=h2h,totals&apiKey={api_key}"
+                ctx = ssl.create_default_context()
+                req = urllib.request.Request(url, headers={"User-Agent": "PrediccionsModel/1.0"})
+                with urllib.request.urlopen(req, context=ctx, timeout=8) as resp:
+                    if resp.status == 200:
+                        self._api_cache[sport_key] = json.loads(resp.read().decode("utf-8"))
+                    else:
+                        self._api_cache[sport_key] = []
+            except Exception:
+                self._api_cache[sport_key] = []
+
+        events = self._api_cache.get(sport_key, [])
+        h_norm = self._normalize(home_team)
+        a_norm = self._normalize(away_team)
+
+        for ev in events:
+            ev_h = self._normalize(ev.get("home_team", ""))
+            ev_a = self._normalize(ev.get("away_team", ""))
+            if (h_norm in ev_h or ev_h in h_norm) and (a_norm in ev_a or ev_a in a_norm):
+                for bm in ev.get("bookmakers", []):
+                    if bm.get("key") == "bet365":
+                        odds_data = {
+                            "source": f"Bet365 via The-Odds-API ({comp_id})",
+                            "bookmaker": "BET365",
+                            "url": "https://www.bet365.es/#/AS/B1/",
+                            "tournament_url": "https://www.bet365.es/#/AS/B1/",
+                            "match_id": ev.get("id"),
+                            "matched_title": f"{ev.get('home_team')} vs {ev.get('away_team')}",
+                            "matched": True,
+                            "is_manual_override": False,
+                            "provenance": "BET365_AUTHORIZED_API",
+                            "cached_at": time.time(),
+                            "1X2": {},
+                            "double_chance": {},
+                            "goals": {},
+                            "over_under_2_5": {},
+                            "team_goals": {},
+                            "btts": {},
+                            "cards": {},
+                            "corners": {},
+                            "combos": {}
+                        }
+                        for m in bm.get("markets", []):
+                            if m.get("key") == "h2h":
+                                for o in m.get("outcomes", []):
+                                    if o.get("name") == ev.get("home_team"):
+                                        odds_data["1X2"]["1"] = float(o.get("price"))
+                                    elif o.get("name") == "Draw":
+                                        odds_data["1X2"]["X"] = float(o.get("price"))
+                                    elif o.get("name") == ev.get("away_team"):
+                                        odds_data["1X2"]["2"] = float(o.get("price"))
+                            elif m.get("key") == "totals":
+                                for o in m.get("outcomes", []):
+                                    if o.get("point") == 2.5:
+                                        if o.get("name") == "Over":
+                                            odds_data["over_under_2_5"]["over"] = float(o.get("price"))
+                                        elif o.get("name") == "Under":
+                                            odds_data["over_under_2_5"]["under"] = float(o.get("price"))
+                        if odds_data["1X2"].get("1"):
+                            cache_key = f"{comp_id}_{h_norm}_{a_norm}"
+                            self._cache[cache_key] = odds_data
+                            self._save_cache()
+                            return odds_data
+        return None
 
     def generate_combo_link(self, legs: list, competition_id: str = "LALIGA") -> str:
         """

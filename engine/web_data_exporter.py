@@ -368,6 +368,15 @@ class WebDataExporter:
             """, (competition_id, active_jornada))
             rows = [dict(r) for r in c.fetchall()]
 
+        # Deduplicar files per enfrontament per evitar duplicats si coexisteixen IDs provisionals i oficials
+        deduped_rows = {}
+        for r in rows:
+            k_match = (r.get("home_team_id"), r.get("away_team_id"))
+            if k_match not in deduped_rows or (r.get("url") and not deduped_rows[k_match].get("url")):
+                deduped_rows[k_match] = r
+        rows = list(deduped_rows.values())
+        rows.sort(key=lambda x: x.get("date_time", "9999"))
+
         # Si a SQLite no hi ha suficients partits O hi ha partits pendents/en joc (SCHEDULED o LIVE), consultar JornadaResolver per sincronitzar estats reals
         has_pending = any(r.get("status") in ("SCHEDULED", "LIVE") for r in rows)
         if len(rows) < 8 or has_pending:
