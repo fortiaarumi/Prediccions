@@ -584,7 +584,8 @@ def run_daily_autonomous_check(force: bool = False):
         elif today_matches:
             comps_today = set(m.get("competition_id") for m in today_matches if m.get("competition_id"))
             print(f"   • S'han detectat {len(today_matches)} partits per al dia d'avui ({today_iso}) involucrant {len(comps_today)} lligues ({', '.join(comps_today)}).")
-            if not db.has_daily_combos(today_iso, min_expected=6):
+            min_m = min(len(today_matches), 2)
+            if not db.has_daily_combos(today_iso, min_expected=6, min_matches=min_m):
                 print(f"   [*] Generant les 6 combinades oficials del dia per a {today_iso} (Primer pipeline 08:23h o fallback 15:23h)...")
                 db.delete_daily_combos_for_date(today_iso)
                 daily_suite = combo_engine.generate_daily_combos_suite(today_matches)

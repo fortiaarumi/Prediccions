@@ -1674,10 +1674,22 @@ class WebDataExporter:
                 league_note = f"Partits del dia de múltiples lligues ({', '.join(comp_names)}) · {len(day_matches)} partits"
 
             expected_combos_count = 6 if len(day_matches) >= 4 else (len(day_matches) * 2 if len(day_matches) in [1, 2, 3] else 2)
+            existing_unique_matchups = set()
+            for c in existing_daily:
+                for leg in c.get("legs", []):
+                    m_str, h_id, a_id = self._resolve_leg_matchup_and_teams(leg, default_date=target_date)
+                    if m_str and m_str != "Pendent de resoldre":
+                        existing_unique_matchups.add(m_str)
+
+            # Si el dia té 2 o més partits, una suite existent que només contingui seleccions d'1 sol partit
+            # és un residu d'una execució prèvia amb partits incomplets i s'ha de regenerar.
+            is_single_match_residue = (len(day_matches) >= 2 and len(existing_unique_matchups) < 2)
+
             has_valid_suite = (
                 existing_daily
                 and len(existing_daily) >= expected_combos_count
                 and all(len(c.get("legs", [])) > 0 for c in existing_daily)
+                and not is_single_match_residue
             )
             if has_valid_suite:
                 # 3. Ja existien: avaluar progrés en viu sense sobreescriure les seleccions

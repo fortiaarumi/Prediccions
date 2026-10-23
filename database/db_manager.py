@@ -1420,8 +1420,8 @@ class DatabaseManager:
                 cursor.execute("DELETE FROM combo_recommendations WHERE id = ?", (c_id,))
             conn.commit()
 
-    def has_daily_combos(self, date_str: str, min_expected: int = 6) -> bool:
-        """Indica si ja existeixen combinades registrades per a aquest dia amb seleccions vàlides."""
+    def has_daily_combos(self, date_str: str, min_expected: int = 6, min_matches: int = 1) -> bool:
+        """Indica si ja existeixen combinades registrades per a aquest dia amb seleccions vàlides i cobertura de partits."""
         with self.get_connection() as conn:
             rows = conn.cursor().execute(
                 "SELECT id FROM combo_recommendations WHERE competition_id = 'DAILY' AND id LIKE ?",
@@ -1429,10 +1429,20 @@ class DatabaseManager:
             ).fetchall()
             if len(rows) < min_expected:
                 return False
+            unique_matchups = set()
             for r in rows:
-                c_legs = conn.cursor().execute("SELECT COUNT(*) FROM combo_legs WHERE combo_id = ?", (r[0],)).fetchone()[0]
-                if c_legs == 0:
+                legs = conn.cursor().execute(
+                    "SELECT matchup, home_team_id, away_team_id FROM combo_legs WHERE combo_id = ?",
+                    (r[0],)
+                ).fetchall()
+                if not legs:
                     return False
+                for l in legs:
+                    m_val = l[0] or f"{l[1]}_{l[2]}"
+                    if m_val and m_val != "Pendent de resoldre":
+                        unique_matchups.add(m_val)
+            if min_matches > 1 and len(unique_matchups) < min_matches:
+                return False
             return True
 
     def get_all_daily_combo_dates(self) -> List[str]:
