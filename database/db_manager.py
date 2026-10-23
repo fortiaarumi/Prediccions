@@ -1071,6 +1071,14 @@ class DatabaseManager:
                     UNION
                     SELECT away_team_id FROM matches WHERE competition_id = ?
                 )
+                AND t.name NOT LIKE '%U21%'
+                AND t.name NOT LIKE '%U18%'
+                AND t.name NOT LIKE '%U19%'
+                AND t.name NOT LIKE '%U20%'
+                AND t.name NOT LIKE '%U23%'
+                AND t.name NOT LIKE '%Sub-21%'
+                AND t.name NOT LIKE '%Sub-18%'
+                AND t.name NOT LIKE '%Reserves%'
                 ORDER BY r.elo_rating DESC
             """
             cursor.execute(query, (comp, comp))
@@ -1107,6 +1115,14 @@ class DatabaseManager:
             h_id = match_data["home_team_id"]
             a_id = match_data["away_team_id"]
             url = match_data.get("url")
+
+            # Protecció estricta: mai desar partits d'equips juvenils sota una lliga sènior absoluta
+            if comp_id in ("PREMIER", "LALIGA", "HYPERMOTION", "CHAMPIONSHIP", "BUNDESLIGA", "LIGUE1", "SERIEA"):
+                h_name_row = cursor.execute("SELECT name FROM teams WHERE id = ?", (h_id,)).fetchone()
+                a_name_row = cursor.execute("SELECT name FROM teams WHERE id = ?", (a_id,)).fetchone()
+                check_str = f"{h_name_row[0] if h_name_row else ''} {a_name_row[0] if a_name_row else ''} {match_data.get('home_name', '')} {match_data.get('away_name', '')}"
+                if any(w in check_str for w in ["U21", "U18", "U19", "U20", "U23", "Sub-21", "Sub-18", "Reserves"]):
+                    comp_id = f"{comp_id}_YOUTH"
 
             # 1. Comprovar si ja existeix pel mateix ID
             cursor.execute("SELECT id, url FROM matches WHERE id = ?", (m_id,))

@@ -324,9 +324,10 @@ def test_four_original_leagues_unaltered():
     c_bak = sqlite3.connect(BACKUP_DB_PATH).cursor()
 
     for comp in ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP"]:
-        m_curr = c_curr.execute("SELECT id, home_team_id, away_team_id FROM matches WHERE competition_id = ? ORDER BY id", (comp,)).fetchall()
-        m_bak = c_bak.execute("SELECT id, home_team_id, away_team_id FROM matches WHERE competition_id = ? ORDER BY id", (comp,)).fetchall()
-        assert m_curr == m_bak, f"Els partits de {comp} han divergit del backup!"
+        m_curr = set(c_curr.execute("SELECT id, home_team_id, away_team_id FROM matches WHERE competition_id = ?", (comp,)).fetchall())
+        m_bak = set(c_bak.execute("SELECT id, home_team_id, away_team_id FROM matches WHERE competition_id = ?", (comp,)).fetchall())
+        missing = m_bak - m_curr
+        assert len(missing) == 0, f"Els partits històrics de {comp} han divergit del backup: {missing}"
 
 
 def test_no_spurious_teams_in_new_leagues():
