@@ -26,8 +26,11 @@ import json
 import re
 import subprocess
 from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
+
+MADRID_TZ = ZoneInfo("Europe/Madrid")
 
 # UTF-8 a la consola
 if hasattr(sys.stdout, 'reconfigure'):
@@ -47,6 +50,118 @@ from engine.combo_bet_engine import ComboBetEngine
 from engine.combo_tracker import ComboTracker
 from engine.pdf_report_generator import PDFReportGenerator
 COMPETITIONS = ["LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP", "BUNDESLIGA", "LIGUE1", "SERIEA"]
+
+
+def update_referees_for_round(comp_id: str, jornada: int, db: DatabaseManager) -> int:
+    """Actualitza les designacions arbitrals oficials des de Flashscore abans de calcular les combinades."""
+    try:
+        from scraper.live_crawler import LiveCrawler
+        from scraper.match_scraper import MatchScraper
+        crawler = LiveCrawler(headless=True)
+        fixtures = crawler.crawl_jornada_fixtures_from_web(jornada, competition_id=comp_id)
+        scraper = MatchScraper(headless=True)
+        updated = 0
+        for f in fixtures:
+            url = f.get("url") or ""
+            if "partido" in url:
+                m_code = crawler.extract_match_code(url)
+                if m_code:
+                    res = scraper._scrape_feed(m_code)
+                    if res and res.get("referee") and res["referee"] != "REF_DEFAULT":
+                        ref_id = db.get_or_create_referee(res["referee"], competition_id=comp_id)
+                        with db.get_connection() as conn:
+                            conn.execute(
+                                "UPDATE matches SET referee_id = ? WHERE (url LIKE ? OR id LIKE ?) AND (referee_id IS NULL OR referee_id = 'REF_DEFAULT')",
+                                (ref_id, f"%{m_code}%", f"%{m_code}%")
+                            )
+                            conn.commit()
+                        updated += 1
+        return updated
+    except Exception as e:
+        print(f"   [!] Error actualitzant designacions arbitrals per a {comp_id} J{jornada}: {e}")
+        return 0
+
+
+def has_sufficient_referees(comp_id: str, jornada: int, db: DatabaseManager) -> bool:
+    """Verifica si hi ha informació arbitral suficient per a la jornada."""
+    try:
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            row = cursor.execute("""
+                SELECT COUNT(*),
+                       COUNT(CASE WHEN referee_id IS NOT NULL AND referee_id != 'REF_DEFAULT' THEN 1 END)
+                FROM matches
+                WHERE competition_id = ? AND jornada = ?
+            """, (comp_id, jornada)).fetchone()
+            if not row or row[0] == 0:
+                return True
+            total, with_refs = row
+            return with_refs >= max(1, int(total * 0.4))
+    except Exception:
+        return True
+
+
+def should_generate_league_combos(
+    comp_id: str,
+    jornada: int,
+    first_match_dt: datetime,
+    current_dt_madrid: Optional[datetime] = None,
+    db: Optional[DatabaseManager] = None,
+    state: Optional[Dict[str, Any]] = None,
+    force: bool = False,
+    check_referees: bool = True
+) -> Tuple[bool, str]:
+    """
+    Determina si s'han de generar les combinades de lliga per a una competició i jornada,
+    complint les regles de planificació:
+    1. Dia natural del primer partit a Europe/Madrid (NO el dia anterior).
+    2. Abans de l'inici del partit (si ja ha començat, no crear prematch tardà).
+    3. Designacions arbitrals actualitzades i suficients.
+    4. Congelació de combinades existents (no duplicar).
+    """
+    if current_dt_madrid is None:
+        now_m = datetime.now(MADRID_TZ)
+    elif current_dt_madrid.tzinfo is None:
+        now_m = current_dt_madrid.replace(tzinfo=MADRID_TZ)
+    else:
+        now_m = current_dt_madrid.astimezone(MADRID_TZ)
+
+    if first_match_dt.tzinfo is None:
+        first_dt_m = first_match_dt.replace(tzinfo=MADRID_TZ)
+    else:
+        first_dt_m = first_match_dt.astimezone(MADRID_TZ)
+
+    _db = db or DatabaseManager()
+
+    # Regla 7: Combinada ja generada i guardada es manté congelada (no duplicar)
+    if not force:
+        saved_combos = _db.get_combos_for_jornada(comp_id, jornada)
+        if saved_combos and len(saved_combos) >= 2:
+            return False, f"ALREADY_SAVED: La combinada de {comp_id} J{jornada} ja està congelada a SQLite ({len(saved_combos)} combinades)."
+
+        if state and state.get(comp_id, {}).get("last_predicted_jornada", 0) >= jornada:
+            return False, f"ALREADY_PREDICTED: La jornada {jornada} de {comp_id} ja consta com a predita."
+
+    # Regla 4: El dia anterior no generis la combinada de lliga
+    if now_m.date() < first_dt_m.date() and not force:
+        days_diff = (first_dt_m.date() - now_m.date()).days
+        return False, f"WAITING_FOR_MATCHDAY: Falten {days_diff} dies per a l'inici ({first_dt_m.strftime('%d/%m/%Y %H:%M')}). Les combinades es generen el mateix dia d'inici per tenir els àrbitres oficials."
+
+    # Regla 8: Si arriba l'hora d'inici sense haver-la pogut generar, no creïs una combinada prematch tardana
+    if now_m >= first_dt_m and not force:
+        return False, f"MATCH_ALREADY_STARTED: L'hora d'inici del primer partit ({first_dt_m.strftime('%d/%m/%Y %H:%M')}) ja ha passat. No es creen combinades prematch tardanes."
+
+    # Regles 3, 5 i 6: El dia correcte abans del primer partit, comprovar àrbitres
+    if check_referees and not force:
+        has_refs = has_sufficient_referees(comp_id, jornada, _db)
+        if not has_refs:
+            updated = update_referees_for_round(comp_id, jornada, _db)
+            has_refs = has_sufficient_referees(comp_id, jornada, _db)
+            if not has_refs:
+                return False, f"WAITING_FOR_REFEREES: Informació arbitral oficial insuficient per a {comp_id} J{jornada}. Es reintentarà abans del primer partit."
+
+    hours_left = (first_dt_m - now_m).total_seconds() / 3600.0
+    return True, f"READY: El primer partit comença avui a les {first_dt_m.strftime('%H:%M')} (falten {hours_left:.1f}h). Àrbitres confirmats."
 
 
 def load_state() -> Dict[str, Any]:
@@ -318,7 +433,8 @@ def run_daily_autonomous_check(force: bool = False):
     # -----------------------------------------------------------------
     # FASE 2: DETECCIÓ D'INICI DE NOVA JORNADA I FINESTRA D'ÀRBITRES
     # -----------------------------------------------------------------
-    print("\n[*] FASE 2: Comprovació de l'inici de noves jornades i calendari...")
+    print("\n[*] FASE 2: Comprovació de l'inici de noves jornades i calendari (Horari Europe/Madrid)...")
+    now_madrid = datetime.now(MADRID_TZ)
     leagues_to_predict = []
     round_infos = {}
 
@@ -330,26 +446,23 @@ def run_daily_autonomous_check(force: bool = False):
 
         j = info["jornada"]
         first_dt = info["first_match_dt"]
-        hours_to_start = (first_dt - now).total_seconds() / 3600.0
         round_infos[comp] = info
 
-        last_pred = state[comp].get("last_predicted_jornada", 0)
+        should_gen, reason = should_generate_league_combos(
+            comp_id=comp,
+            jornada=j,
+            first_match_dt=first_dt,
+            current_dt_madrid=now_madrid,
+            db=db,
+            state=state,
+            force=force
+        )
 
-        # Si ja s'havia predit aquesta jornada: NO TORNAR A CÓRRER
-        if last_pred >= j and not force:
-            print(f"   • {comp} J{j}: [JA PREDITA] Va ser predita el {state[comp].get('last_predicted_date')}. S'omet per no repetir correus.")
-            continue
-
-        # Finestra d'or per a les designacions arbitrals:
-        # Entre 0 i 30 hores abans del primer partit (o partits que comencen avui)
-        if 0 <= hours_to_start <= 30.0 or force:
-            print(f"   • {comp} J{j}: 🔥 COMENÇA AVIAT! (Primer partit: {first_dt.strftime('%d/%m %H:%M')}, en {hours_to_start:.1f}h). Àrbitres oficials assignats.")
+        if should_gen:
+            print(f"   • {comp} J{j}: 🔥 COMENÇA AVUI! {reason}")
             leagues_to_predict.append(comp)
-        elif hours_to_start < 0:
-            print(f"   • {comp} J{j}: ⚽ En curs (primer partit començat a les {first_dt.strftime('%d/%m %H:%M')}). Combinades congelades oficials amb seguiment de progrés en directe.")
         else:
-            days_to_start = hours_to_start / 24.0
-            print(f"   • {comp} J{j}: Falten {days_to_start:.1f} dies ({first_dt.strftime('%d/%m %H:%M')}). Esperant que s'apropi per tenir les designacions arbitrals oficials.")
+            print(f"   • {comp} J{j}: ⏳ SALT DE GENERACIÓ: {reason}")
 
     # -----------------------------------------------------------------
     # FASE 3: GENERACIÓ DE PREDICCIONS I INFORMES

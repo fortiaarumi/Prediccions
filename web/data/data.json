@@ -70976,7 +70976,7 @@
               "legs": [
                 {
                   "id": 1154,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "1 - Victòria Levante UD",
                   "category": "1X2",
                   "bookie_odd": 1.2,
@@ -70988,11 +70988,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1155,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Més de 4.5 Targetes",
                   "category": "Targetes",
                   "bookie_odd": 1.65,
@@ -71004,7 +71006,9 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 }
               ]
             },
@@ -71038,7 +71042,7 @@
               "legs": [
                 {
                   "id": 1156,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Més de 2.5 Gols (Over 2.5)",
                   "category": "Gols",
                   "bookie_odd": 1.52,
@@ -71050,11 +71054,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1157,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Més de 3.5 Targetes",
                   "category": "Targetes",
                   "bookie_odd": 1.25,
@@ -71066,7 +71072,9 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 }
               ]
             }
@@ -71102,7 +71110,7 @@
               "legs": [
                 {
                   "id": 1158,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "1X - Levante UD o Empat",
                   "category": "Doble Oportunitat",
                   "bookie_odd": 1.1,
@@ -71114,11 +71122,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1159,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                   "category": "BTTS",
                   "bookie_odd": 2.45,
@@ -71130,11 +71140,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1160,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Més de 4.5 Targetes",
                   "category": "Targetes",
                   "bookie_odd": 1.65,
@@ -71146,11 +71158,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1161,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Més de 9.5 Córners",
                   "category": "Córners",
                   "bookie_odd": 1.92,
@@ -71162,7 +71176,9 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 }
               ]
             },
@@ -71196,7 +71212,7 @@
               "legs": [
                 {
                   "id": 1162,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "1X - Levante UD o Empat",
                   "category": "Doble Oportunitat",
                   "bookie_odd": 1.1,
@@ -71208,11 +71224,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1163,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Menys de 2.5 Gols (Under 2.5)",
                   "category": "Gols",
                   "bookie_odd": 2.32,
@@ -71224,11 +71242,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1164,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Ambdós Equips Marquen (BTTS No)",
                   "category": "BTTS",
                   "bookie_odd": 1.47,
@@ -71240,11 +71260,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1165,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Més de 5.5 Targetes",
                   "category": "Targetes",
                   "bookie_odd": 2.41,
@@ -71256,7 +71278,9 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 }
               ]
             }
@@ -71292,7 +71316,7 @@
               "legs": [
                 {
                   "id": 1166,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "X2 - Empat o Sevilla FC",
                   "category": "Doble Oportunitat",
                   "bookie_odd": 5.11,
@@ -71304,11 +71328,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1167,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Més de 8.5 Córners",
                   "category": "Córners",
                   "bookie_odd": 1.51,
@@ -71320,11 +71346,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1168,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Marcador Exacte: 3-0",
                   "category": "Marcador Exacte",
                   "bookie_odd": 6.67,
@@ -71336,7 +71364,9 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 }
               ]
             },
@@ -71370,7 +71400,7 @@
               "legs": [
                 {
                   "id": 1169,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "X2 - Empat o Sevilla FC",
                   "category": "Doble Oportunitat",
                   "bookie_odd": 5.11,
@@ -71382,11 +71412,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1170,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Més de 3.5 Targetes",
                   "category": "Targetes",
                   "bookie_odd": 1.25,
@@ -71398,11 +71430,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 },
                 {
                   "id": 1171,
-                  "matchup": "Partit",
+                  "matchup": "Levante UD vs Sevilla FC",
                   "selection_name": "Marcador Exacte: 1-0",
                   "category": "Marcador Exacte",
                   "bookie_odd": 8.07,
@@ -71414,7 +71448,9 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Pendent de disputar",
+                  "home_team_id": "LEV",
+                  "away_team_id": "SEV"
                 }
               ]
             }
@@ -74590,7 +74626,7 @@
             "legs": [
               {
                 "id": 1154,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "1 - Victòria Levante UD",
                 "category": "1X2",
                 "bookie_odd": 1.2,
@@ -74606,7 +74642,7 @@
               },
               {
                 "id": 1155,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 4.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.65,
@@ -74652,7 +74688,7 @@
             "legs": [
               {
                 "id": 1156,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 2.5 Gols (Over 2.5)",
                 "category": "Gols",
                 "bookie_odd": 1.52,
@@ -74668,7 +74704,7 @@
               },
               {
                 "id": 1157,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 3.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.25,
@@ -74716,7 +74752,7 @@
             "legs": [
               {
                 "id": 1158,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "1X - Levante UD o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.1,
@@ -74732,7 +74768,7 @@
               },
               {
                 "id": 1159,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                 "category": "BTTS",
                 "bookie_odd": 2.45,
@@ -74748,7 +74784,7 @@
               },
               {
                 "id": 1160,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 4.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.65,
@@ -74764,7 +74800,7 @@
               },
               {
                 "id": 1161,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 9.5 Córners",
                 "category": "Córners",
                 "bookie_odd": 1.92,
@@ -74810,7 +74846,7 @@
             "legs": [
               {
                 "id": 1162,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "1X - Levante UD o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.1,
@@ -74826,7 +74862,7 @@
               },
               {
                 "id": 1163,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Menys de 2.5 Gols (Under 2.5)",
                 "category": "Gols",
                 "bookie_odd": 2.32,
@@ -74842,7 +74878,7 @@
               },
               {
                 "id": 1164,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Ambdós Equips Marquen (BTTS No)",
                 "category": "BTTS",
                 "bookie_odd": 1.47,
@@ -74858,7 +74894,7 @@
               },
               {
                 "id": 1165,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 5.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 2.41,
@@ -74906,7 +74942,7 @@
             "legs": [
               {
                 "id": 1166,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "X2 - Empat o Sevilla FC",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 5.11,
@@ -74922,7 +74958,7 @@
               },
               {
                 "id": 1167,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 8.5 Córners",
                 "category": "Córners",
                 "bookie_odd": 1.51,
@@ -74938,7 +74974,7 @@
               },
               {
                 "id": 1168,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Marcador Exacte: 3-0",
                 "category": "Marcador Exacte",
                 "bookie_odd": 6.67,
@@ -74984,7 +75020,7 @@
             "legs": [
               {
                 "id": 1169,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "X2 - Empat o Sevilla FC",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 5.11,
@@ -75000,7 +75036,7 @@
               },
               {
                 "id": 1170,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 3.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.25,
@@ -75016,7 +75052,7 @@
               },
               {
                 "id": 1171,
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Marcador Exacte: 1-0",
                 "category": "Marcador Exacte",
                 "bookie_odd": 8.07,
@@ -82973,7 +83009,7 @@
               {
                 "id": 1166,
                 "combo_id": "COMBO_DAILY_2026-10-12_RISKY_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "X2 - Empat o Sevilla FC",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 5.11,
@@ -82989,7 +83025,7 @@
               {
                 "id": 1167,
                 "combo_id": "COMBO_DAILY_2026-10-12_RISKY_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 8.5 Córners",
                 "category": "Córners",
                 "bookie_odd": 1.51,
@@ -83005,7 +83041,7 @@
               {
                 "id": 1168,
                 "combo_id": "COMBO_DAILY_2026-10-12_RISKY_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Marcador Exacte: 3-0",
                 "category": "Marcador Exacte",
                 "bookie_odd": 6.67,
@@ -83041,7 +83077,7 @@
               {
                 "id": 1334,
                 "combo_id": "COMBO_DAILY_2026-10-09_RISKY_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Ambdós Equips Marquen (BTTS No)",
                 "category": "BTTS",
                 "bookie_odd": 1.76,
@@ -83057,7 +83093,7 @@
               {
                 "id": 1335,
                 "combo_id": "COMBO_DAILY_2026-10-09_RISKY_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 5.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 3.47,
@@ -83073,7 +83109,7 @@
               {
                 "id": 1336,
                 "combo_id": "COMBO_DAILY_2026-10-09_RISKY_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Marcador Exacte: 1-0",
                 "category": "Marcador Exacte",
                 "bookie_odd": 8.51,
@@ -83557,7 +83593,7 @@
               {
                 "id": 1169,
                 "combo_id": "COMBO_DAILY_2026-10-12_RISKY_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "X2 - Empat o Sevilla FC",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 5.11,
@@ -83573,7 +83609,7 @@
               {
                 "id": 1170,
                 "combo_id": "COMBO_DAILY_2026-10-12_RISKY_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 3.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.25,
@@ -83589,7 +83625,7 @@
               {
                 "id": 1171,
                 "combo_id": "COMBO_DAILY_2026-10-12_RISKY_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Marcador Exacte: 1-0",
                 "category": "Marcador Exacte",
                 "bookie_odd": 8.07,
@@ -83625,7 +83661,7 @@
               {
                 "id": 1337,
                 "combo_id": "COMBO_DAILY_2026-10-09_RISKY_2",
-                "matchup": "Partit",
+                "matchup": "West Ham United vs Queens Park Rangers",
                 "selection_name": "1X - West Ham United o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.1,
@@ -83641,7 +83677,7 @@
               {
                 "id": 1338,
                 "combo_id": "COMBO_DAILY_2026-10-09_RISKY_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                 "category": "BTTS",
                 "bookie_odd": 1.93,
@@ -83657,7 +83693,7 @@
               {
                 "id": 1339,
                 "combo_id": "COMBO_DAILY_2026-10-09_RISKY_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 5.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 3.47,
@@ -83673,7 +83709,7 @@
               {
                 "id": 1340,
                 "combo_id": "COMBO_DAILY_2026-10-09_RISKY_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Marcador Exacte: 2-0",
                 "category": "Marcador Exacte",
                 "bookie_odd": 6.9,
@@ -84209,7 +84245,7 @@
               {
                 "id": 1154,
                 "combo_id": "COMBO_DAILY_2026-10-12_SAFE_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "1 - Victòria Levante UD",
                 "category": "1X2",
                 "bookie_odd": 1.2,
@@ -84225,7 +84261,7 @@
               {
                 "id": 1155,
                 "combo_id": "COMBO_DAILY_2026-10-12_SAFE_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 4.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.65,
@@ -84261,7 +84297,7 @@
               {
                 "id": 1323,
                 "combo_id": "COMBO_DAILY_2026-10-09_SAFE_1",
-                "matchup": "Partit",
+                "matchup": "West Ham United vs Queens Park Rangers",
                 "selection_name": "1X - West Ham United o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.1,
@@ -84277,7 +84313,7 @@
               {
                 "id": 1324,
                 "combo_id": "COMBO_DAILY_2026-10-09_SAFE_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Ambdós Equips Marquen (BTTS No)",
                 "category": "BTTS",
                 "bookie_odd": 1.76,
@@ -84573,7 +84609,7 @@
               {
                 "id": 1156,
                 "combo_id": "COMBO_DAILY_2026-10-12_SAFE_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 2.5 Gols (Over 2.5)",
                 "category": "Gols",
                 "bookie_odd": 1.52,
@@ -84589,7 +84625,7 @@
               {
                 "id": 1157,
                 "combo_id": "COMBO_DAILY_2026-10-12_SAFE_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 3.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.25,
@@ -84625,7 +84661,7 @@
               {
                 "id": 1325,
                 "combo_id": "COMBO_DAILY_2026-10-09_SAFE_2",
-                "matchup": "Partit",
+                "matchup": "West Ham United vs Queens Park Rangers",
                 "selection_name": "1 - Victòria West Ham United",
                 "category": "1X2",
                 "bookie_odd": 1.29,
@@ -84641,7 +84677,7 @@
               {
                 "id": 1326,
                 "combo_id": "COMBO_DAILY_2026-10-09_SAFE_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 3.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.47,
@@ -84953,7 +84989,7 @@
               {
                 "id": 1158,
                 "combo_id": "COMBO_DAILY_2026-10-12_SEMI_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "1X - Levante UD o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.1,
@@ -84969,7 +85005,7 @@
               {
                 "id": 1159,
                 "combo_id": "COMBO_DAILY_2026-10-12_SEMI_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                 "category": "BTTS",
                 "bookie_odd": 2.45,
@@ -84985,7 +85021,7 @@
               {
                 "id": 1160,
                 "combo_id": "COMBO_DAILY_2026-10-12_SEMI_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 4.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 1.65,
@@ -85001,7 +85037,7 @@
               {
                 "id": 1161,
                 "combo_id": "COMBO_DAILY_2026-10-12_SEMI_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 9.5 Córners",
                 "category": "Córners",
                 "bookie_odd": 1.92,
@@ -85037,7 +85073,7 @@
               {
                 "id": 1327,
                 "combo_id": "COMBO_DAILY_2026-10-09_SEMI_1",
-                "matchup": "Partit",
+                "matchup": "West Ham United vs Queens Park Rangers",
                 "selection_name": "1X - West Ham United o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.1,
@@ -85053,7 +85089,7 @@
               {
                 "id": 1328,
                 "combo_id": "COMBO_DAILY_2026-10-09_SEMI_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
                 "category": "BTTS",
                 "bookie_odd": 1.93,
@@ -85069,7 +85105,7 @@
               {
                 "id": 1329,
                 "combo_id": "COMBO_DAILY_2026-10-09_SEMI_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 4.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 2.13,
@@ -85085,7 +85121,7 @@
               {
                 "id": 1330,
                 "combo_id": "COMBO_DAILY_2026-10-09_SEMI_1",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 9.5 Córners",
                 "category": "Córners",
                 "bookie_odd": 1.92,
@@ -85525,7 +85561,7 @@
               {
                 "id": 1162,
                 "combo_id": "COMBO_DAILY_2026-10-12_SEMI_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "1X - Levante UD o Empat",
                 "category": "Doble Oportunitat",
                 "bookie_odd": 1.1,
@@ -85541,7 +85577,7 @@
               {
                 "id": 1163,
                 "combo_id": "COMBO_DAILY_2026-10-12_SEMI_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Menys de 2.5 Gols (Under 2.5)",
                 "category": "Gols",
                 "bookie_odd": 2.32,
@@ -85557,7 +85593,7 @@
               {
                 "id": 1164,
                 "combo_id": "COMBO_DAILY_2026-10-12_SEMI_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Ambdós Equips Marquen (BTTS No)",
                 "category": "BTTS",
                 "bookie_odd": 1.47,
@@ -85573,7 +85609,7 @@
               {
                 "id": 1165,
                 "combo_id": "COMBO_DAILY_2026-10-12_SEMI_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 5.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 2.41,
@@ -85609,7 +85645,7 @@
               {
                 "id": 1331,
                 "combo_id": "COMBO_DAILY_2026-10-09_SEMI_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Menys de 2.5 Gols (Under 2.5)",
                 "category": "Gols",
                 "bookie_odd": 2.19,
@@ -85625,7 +85661,7 @@
               {
                 "id": 1332,
                 "combo_id": "COMBO_DAILY_2026-10-09_SEMI_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 4.5 Targetes",
                 "category": "Targetes",
                 "bookie_odd": 2.13,
@@ -85641,7 +85677,7 @@
               {
                 "id": 1333,
                 "combo_id": "COMBO_DAILY_2026-10-09_SEMI_2",
-                "matchup": "Partit",
+                "matchup": "Levante UD vs Sevilla FC",
                 "selection_name": "Més de 9.5 Córners",
                 "category": "Córners",
                 "bookie_odd": 1.92,
@@ -87798,7 +87834,7 @@
           {
             "id": 1166,
             "combo_id": "COMBO_DAILY_2026-10-12_RISKY_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "X2 - Empat o Sevilla FC",
             "category": "Doble Oportunitat",
             "bookie_odd": 5.11,
@@ -87814,7 +87850,7 @@
           {
             "id": 1167,
             "combo_id": "COMBO_DAILY_2026-10-12_RISKY_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 8.5 Córners",
             "category": "Córners",
             "bookie_odd": 1.51,
@@ -87830,7 +87866,7 @@
           {
             "id": 1168,
             "combo_id": "COMBO_DAILY_2026-10-12_RISKY_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Marcador Exacte: 3-0",
             "category": "Marcador Exacte",
             "bookie_odd": 6.67,
@@ -87866,7 +87902,7 @@
           {
             "id": 1334,
             "combo_id": "COMBO_DAILY_2026-10-09_RISKY_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Ambdós Equips Marquen (BTTS No)",
             "category": "BTTS",
             "bookie_odd": 1.76,
@@ -87882,7 +87918,7 @@
           {
             "id": 1335,
             "combo_id": "COMBO_DAILY_2026-10-09_RISKY_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 5.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 3.47,
@@ -87898,7 +87934,7 @@
           {
             "id": 1336,
             "combo_id": "COMBO_DAILY_2026-10-09_RISKY_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Marcador Exacte: 1-0",
             "category": "Marcador Exacte",
             "bookie_odd": 8.51,
@@ -88382,7 +88418,7 @@
           {
             "id": 1169,
             "combo_id": "COMBO_DAILY_2026-10-12_RISKY_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "X2 - Empat o Sevilla FC",
             "category": "Doble Oportunitat",
             "bookie_odd": 5.11,
@@ -88398,7 +88434,7 @@
           {
             "id": 1170,
             "combo_id": "COMBO_DAILY_2026-10-12_RISKY_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 3.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 1.25,
@@ -88414,7 +88450,7 @@
           {
             "id": 1171,
             "combo_id": "COMBO_DAILY_2026-10-12_RISKY_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Marcador Exacte: 1-0",
             "category": "Marcador Exacte",
             "bookie_odd": 8.07,
@@ -88450,7 +88486,7 @@
           {
             "id": 1337,
             "combo_id": "COMBO_DAILY_2026-10-09_RISKY_2",
-            "matchup": "Partit",
+            "matchup": "West Ham United vs Queens Park Rangers",
             "selection_name": "1X - West Ham United o Empat",
             "category": "Doble Oportunitat",
             "bookie_odd": 1.1,
@@ -88466,7 +88502,7 @@
           {
             "id": 1338,
             "combo_id": "COMBO_DAILY_2026-10-09_RISKY_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
             "category": "BTTS",
             "bookie_odd": 1.93,
@@ -88482,7 +88518,7 @@
           {
             "id": 1339,
             "combo_id": "COMBO_DAILY_2026-10-09_RISKY_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 5.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 3.47,
@@ -88498,7 +88534,7 @@
           {
             "id": 1340,
             "combo_id": "COMBO_DAILY_2026-10-09_RISKY_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Marcador Exacte: 2-0",
             "category": "Marcador Exacte",
             "bookie_odd": 6.9,
@@ -89034,7 +89070,7 @@
           {
             "id": 1154,
             "combo_id": "COMBO_DAILY_2026-10-12_SAFE_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "1 - Victòria Levante UD",
             "category": "1X2",
             "bookie_odd": 1.2,
@@ -89050,7 +89086,7 @@
           {
             "id": 1155,
             "combo_id": "COMBO_DAILY_2026-10-12_SAFE_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 4.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 1.65,
@@ -89086,7 +89122,7 @@
           {
             "id": 1323,
             "combo_id": "COMBO_DAILY_2026-10-09_SAFE_1",
-            "matchup": "Partit",
+            "matchup": "West Ham United vs Queens Park Rangers",
             "selection_name": "1X - West Ham United o Empat",
             "category": "Doble Oportunitat",
             "bookie_odd": 1.1,
@@ -89102,7 +89138,7 @@
           {
             "id": 1324,
             "combo_id": "COMBO_DAILY_2026-10-09_SAFE_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Ambdós Equips Marquen (BTTS No)",
             "category": "BTTS",
             "bookie_odd": 1.76,
@@ -89398,7 +89434,7 @@
           {
             "id": 1156,
             "combo_id": "COMBO_DAILY_2026-10-12_SAFE_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 2.5 Gols (Over 2.5)",
             "category": "Gols",
             "bookie_odd": 1.52,
@@ -89414,7 +89450,7 @@
           {
             "id": 1157,
             "combo_id": "COMBO_DAILY_2026-10-12_SAFE_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 3.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 1.25,
@@ -89450,7 +89486,7 @@
           {
             "id": 1325,
             "combo_id": "COMBO_DAILY_2026-10-09_SAFE_2",
-            "matchup": "Partit",
+            "matchup": "West Ham United vs Queens Park Rangers",
             "selection_name": "1 - Victòria West Ham United",
             "category": "1X2",
             "bookie_odd": 1.29,
@@ -89466,7 +89502,7 @@
           {
             "id": 1326,
             "combo_id": "COMBO_DAILY_2026-10-09_SAFE_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 3.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 1.47,
@@ -89778,7 +89814,7 @@
           {
             "id": 1158,
             "combo_id": "COMBO_DAILY_2026-10-12_SEMI_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "1X - Levante UD o Empat",
             "category": "Doble Oportunitat",
             "bookie_odd": 1.1,
@@ -89794,7 +89830,7 @@
           {
             "id": 1159,
             "combo_id": "COMBO_DAILY_2026-10-12_SEMI_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
             "category": "BTTS",
             "bookie_odd": 2.45,
@@ -89810,7 +89846,7 @@
           {
             "id": 1160,
             "combo_id": "COMBO_DAILY_2026-10-12_SEMI_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 4.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 1.65,
@@ -89826,7 +89862,7 @@
           {
             "id": 1161,
             "combo_id": "COMBO_DAILY_2026-10-12_SEMI_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 9.5 Córners",
             "category": "Córners",
             "bookie_odd": 1.92,
@@ -89862,7 +89898,7 @@
           {
             "id": 1327,
             "combo_id": "COMBO_DAILY_2026-10-09_SEMI_1",
-            "matchup": "Partit",
+            "matchup": "West Ham United vs Queens Park Rangers",
             "selection_name": "1X - West Ham United o Empat",
             "category": "Doble Oportunitat",
             "bookie_odd": 1.1,
@@ -89878,7 +89914,7 @@
           {
             "id": 1328,
             "combo_id": "COMBO_DAILY_2026-10-09_SEMI_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
             "category": "BTTS",
             "bookie_odd": 1.93,
@@ -89894,7 +89930,7 @@
           {
             "id": 1329,
             "combo_id": "COMBO_DAILY_2026-10-09_SEMI_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 4.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 2.13,
@@ -89910,7 +89946,7 @@
           {
             "id": 1330,
             "combo_id": "COMBO_DAILY_2026-10-09_SEMI_1",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 9.5 Córners",
             "category": "Córners",
             "bookie_odd": 1.92,
@@ -90350,7 +90386,7 @@
           {
             "id": 1162,
             "combo_id": "COMBO_DAILY_2026-10-12_SEMI_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "1X - Levante UD o Empat",
             "category": "Doble Oportunitat",
             "bookie_odd": 1.1,
@@ -90366,7 +90402,7 @@
           {
             "id": 1163,
             "combo_id": "COMBO_DAILY_2026-10-12_SEMI_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Menys de 2.5 Gols (Under 2.5)",
             "category": "Gols",
             "bookie_odd": 2.32,
@@ -90382,7 +90418,7 @@
           {
             "id": 1164,
             "combo_id": "COMBO_DAILY_2026-10-12_SEMI_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Ambdós Equips Marquen (BTTS No)",
             "category": "BTTS",
             "bookie_odd": 1.47,
@@ -90398,7 +90434,7 @@
           {
             "id": 1165,
             "combo_id": "COMBO_DAILY_2026-10-12_SEMI_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 5.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 2.41,
@@ -90434,7 +90470,7 @@
           {
             "id": 1331,
             "combo_id": "COMBO_DAILY_2026-10-09_SEMI_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Menys de 2.5 Gols (Under 2.5)",
             "category": "Gols",
             "bookie_odd": 2.19,
@@ -90450,7 +90486,7 @@
           {
             "id": 1332,
             "combo_id": "COMBO_DAILY_2026-10-09_SEMI_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 4.5 Targetes",
             "category": "Targetes",
             "bookie_odd": 2.13,
@@ -90466,7 +90502,7 @@
           {
             "id": 1333,
             "combo_id": "COMBO_DAILY_2026-10-09_SEMI_2",
-            "matchup": "Partit",
+            "matchup": "Levante UD vs Sevilla FC",
             "selection_name": "Més de 9.5 Córners",
             "category": "Córners",
             "bookie_odd": 1.92,

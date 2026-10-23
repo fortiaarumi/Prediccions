@@ -992,6 +992,92 @@ class WebDataExporter:
                 pass
         return None
 
+    def _resolve_leg_matchup_and_teams(self, leg: Dict[str, Any], default_date: str = "") -> Tuple[str, Optional[str], Optional[str]]:
+        """
+        Resol el nom real del partit (Local vs Visitant) i els IDs dels equips per a una pota de combinada.
+        Si el matchup guardat era 'Partit' o erroni, el reconstrueix a partir de SQLite.
+        """
+        matchup_str = str(leg.get("matchup") or "").strip()
+        h_id = leg.get("home_team_id")
+        a_id = leg.get("away_team_id")
+
+        if " vs " in matchup_str and matchup_str.lower() not in ["partit vs partit", "partit", "partit sense nom"]:
+            parts = matchup_str.split(" vs ", 1)
+            h_id = h_id or (self.db.find_team_id(parts[0].strip()) if self.db else None)
+            a_id = a_id or (self.db.find_team_id(parts[1].strip()) if self.db else None)
+            return matchup_str, h_id, a_id
+
+        if h_id and a_id and self.db:
+            h_team = self.db.get_team(h_id)
+            a_team = self.db.get_team(a_id)
+            h_name = h_team.get("name", h_id) if h_team else h_id
+            a_name = a_team.get("name", a_id) if a_team else a_id
+            return f"{h_name} vs {a_name}", h_id, a_id
+
+        m_date = leg.get("match_date") or leg.get("date") or default_date
+        sel_text = (leg.get("selection_name") or leg.get("name") or "").lower()
+
+        date_patterns = []
+        if m_date:
+            clean_d = str(m_date).strip().split(" ")[0]
+            if "-" in clean_d:
+                p = clean_d.split("-")
+                if len(p) == 3:
+                    date_patterns.append(f"{p[2]}.{p[1]}.{p[0]}%")
+                    date_patterns.append(f"{p[0]}-{p[1]}-{p[2]}%")
+            elif "." in clean_d:
+                p = clean_d.split(".")
+                if len(p) == 3:
+                    date_patterns.append(f"{p[0]}.{p[1]}.{p[2]}%")
+                    date_patterns.append(f"{p[2]}-{p[1]}-{p[0]}%")
+
+        candidates = []
+        if self.db:
+            try:
+                with self.db.get_connection() as conn:
+                    cursor = conn.cursor()
+                    for dp in date_patterns:
+                        cursor.execute("""
+                            SELECT m.id, m.home_team_id, m.away_team_id, t1.name as h_name, t2.name as a_name
+                            FROM matches m
+                            JOIN teams t1 ON m.home_team_id = t1.id
+                            JOIN teams t2 ON m.away_team_id = t2.id
+                            WHERE m.date_time LIKE ?
+                        """, (dp,))
+                        candidates.extend(cursor.fetchall())
+            except Exception:
+                candidates = []
+
+        best = None
+        if candidates:
+            for c in candidates:
+                hn = (c[3] or "").lower()
+                an = (c[4] or "").lower()
+                if (hn and hn in sel_text) or (an and an in sel_text):
+                    best = c
+                    break
+            if not best and len(candidates) == 1:
+                best = candidates[0]
+
+        if best:
+            resolved_h_id = best[1]
+            resolved_a_id = best[2]
+            resolved_matchup = f"{best[3]} vs {best[4]}"
+            if leg.get("id") and self.db:
+                try:
+                    with self.db.get_connection() as conn_up:
+                        conn_up.cursor().execute("""
+                            UPDATE combo_legs
+                            SET matchup = ?, home_team_id = ?, away_team_id = ?
+                            WHERE id = ?
+                        """, (resolved_matchup, resolved_h_id, resolved_a_id, leg["id"]))
+                        conn_up.commit()
+                except Exception:
+                    pass
+            return resolved_matchup, resolved_h_id, resolved_a_id
+
+        return matchup_str or "Partit", h_id, a_id
+
     def _get_jornada_cluster_start_date(self, dates: List[Any]) -> Optional[Any]:
         if not dates:
             return None
@@ -1083,16 +1169,8 @@ class WebDataExporter:
                 any_lost = False
 
                 for leg in c.get("legs", []):
-                    h_id = leg.get("home_team_id")
-                    a_id = leg.get("away_team_id")
+                    m_str, h_id, a_id = self._resolve_leg_matchup_and_teams(leg, default_date="")
                     match_row = None
-
-                    if not h_id or not a_id:
-                        m_str = leg.get("matchup", "")
-                        if " vs " in m_str:
-                            p_parts = m_str.split(" vs ", 1)
-                            h_id = h_id or self.db.find_team_id(p_parts[0].strip())
-                            a_id = a_id or self.db.find_team_id(p_parts[1].strip())
 
                     if h_id and a_id:
                         with self.db.get_connection() as conn:
@@ -1137,7 +1215,7 @@ class WebDataExporter:
                     b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
                     legs_evaluated.append({
                         "id": leg.get("id"),
-                        "matchup": leg.get("matchup", ""),
+                        "matchup": m_str,
                         "selection_name": leg.get("selection_name", ""),
                         "category": leg.get("category", ""),
                         "bookie_odd": w_odd,
@@ -1609,15 +1687,7 @@ class WebDataExporter:
                     any_lost = False
 
                     for leg in c.get("legs", []):
-                        h_id = leg.get("home_team_id")
-                        a_id = leg.get("away_team_id")
-                        if not h_id or not a_id:
-                            m_str = leg.get("matchup", "")
-                            if " vs " in m_str:
-                                p_parts = m_str.split(" vs ", 1)
-                                h_id = h_id or self.db.find_team_id(p_parts[0].strip())
-                                a_id = a_id or self.db.find_team_id(p_parts[1].strip())
-
+                        m_str, h_id, a_id = self._resolve_leg_matchup_and_teams(leg, default_date=target_date)
                         match_row = None
                         if h_id and a_id:
                             with self.db.get_connection() as conn:
@@ -1655,7 +1725,7 @@ class WebDataExporter:
                         b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
                         legs_evaluated.append({
                             "id": leg.get("id"),
-                            "matchup": leg.get("matchup", ""),
+                            "matchup": m_str,
                             "selection_name": leg.get("selection_name", ""),
                             "category": leg.get("category", ""),
                             "bookie_odd": w_odd,
