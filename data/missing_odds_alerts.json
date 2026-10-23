@@ -1,5 +1,5 @@
 {
-  "count": 37,
+  "count": 63,
   "alerts": [
     {
       "id": "LALIGA_rayovallecano_elchecf",
@@ -448,6 +448,422 @@
         "Bet365"
       ],
       "message": "Quotes no detectades a Bet365 per al partit FC Andorra vs Burgos CF."
+    },
+    {
+      "id": "CHAMPIONSHIP_charltonathletic_norwichcity",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Charlton Athletic vs Norwich City",
+      "home_team": "Charlton Athletic",
+      "away_team": "Norwich City",
+      "date": "24.10.2026 11:30",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Charlton Athletic vs Norwich City."
+    },
+    {
+      "id": "CHAMPIONSHIP_portsmouth_millwall",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Portsmouth vs Millwall",
+      "home_team": "Portsmouth",
+      "away_team": "Millwall",
+      "date": "24.10.2026 11:30",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Portsmouth vs Millwall."
+    },
+    {
+      "id": "CHAMPIONSHIP_sheffieldunited_derbycounty",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Sheffield United vs Derby County",
+      "home_team": "Sheffield United",
+      "away_team": "Derby County",
+      "date": "24.10.2026 11:30",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Sheffield United vs Derby County."
+    },
+    {
+      "id": "CHAMPIONSHIP_charltonathletic_norwichcity",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Charlton Athletic vs Norwich City",
+      "home_team": "Charlton Athletic",
+      "away_team": "Norwich City",
+      "date": "24.10.2026 13:30",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Charlton Athletic vs Norwich City."
+    },
+    {
+      "id": "CHAMPIONSHIP_portsmouth_millwall",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Portsmouth vs Millwall",
+      "home_team": "Portsmouth",
+      "away_team": "Millwall",
+      "date": "24.10.2026 13:30",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Portsmouth vs Millwall."
+    },
+    {
+      "id": "CHAMPIONSHIP_sheffieldunited_derbycounty",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Sheffield United vs Derby County",
+      "home_team": "Sheffield United",
+      "away_team": "Derby County",
+      "date": "24.10.2026 13:30",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Sheffield United vs Derby County."
+    },
+    {
+      "id": "CHAMPIONSHIP_blackburnrovers_wrexham",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Blackburn Rovers vs Wrexham",
+      "home_team": "Blackburn Rovers",
+      "away_team": "Wrexham",
+      "date": "24.10.2026 14:00",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Blackburn Rovers vs Wrexham."
+    },
+    {
+      "id": "CHAMPIONSHIP_cardiffcity_birminghamcity",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Cardiff City vs Birmingham City",
+      "home_team": "Cardiff City",
+      "away_team": "Birmingham City",
+      "date": "24.10.2026 14:00",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Cardiff City vs Birmingham City."
+    },
+    {
+      "id": "CHAMPIONSHIP_lincolncity_burnley",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Lincoln City vs Burnley",
+      "home_team": "Lincoln City",
+      "away_team": "Burnley",
+      "date": "24.10.2026 14:00",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Lincoln City vs Burnley."
+    },
+    {
+      "id": "CHAMPIONSHIP_prestonnorthend_westbromwichalbion",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Preston North End vs West Bromwich Albion",
+      "home_team": "Preston North End",
+      "away_team": "West Bromwich Albion",
+      "date": "24.10.2026 14:00",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Preston North End vs West Bromwich Albion."
+    },
+    {
+      "id": "BUNDESLIGA_fcaugsburgo_1fcunionberlin",
+      "competition_id": "BUNDESLIGA",
+      "competition_name": "Bundesliga",
+      "matchup": "FC Augsburgo vs 1. FC Union Berlin",
+      "home_team": "FC Augsburgo",
+      "away_team": "1. FC Union Berlin",
+      "date": "24.10.2026 13:30",
+      "jornada": 7,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit FC Augsburgo vs 1. FC Union Berlin."
+    },
+    {
+      "id": "BUNDESLIGA_1fccolonia_fcschalke04",
+      "competition_id": "BUNDESLIGA",
+      "competition_name": "Bundesliga",
+      "matchup": "1. FC Colonia vs FC Schalke 04",
+      "home_team": "1. FC Colonia",
+      "away_team": "FC Schalke 04",
+      "date": "24.10.2026 13:30",
+      "jornada": 7,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit 1. FC Colonia vs FC Schalke 04."
+    },
+    {
+      "id": "BUNDESLIGA_1fsvmainz05_werderbremen",
+      "competition_id": "BUNDESLIGA",
+      "competition_name": "Bundesliga",
+      "matchup": "1. FSV Mainz 05 vs Werder Bremen",
+      "home_team": "1. FSV Mainz 05",
+      "away_team": "Werder Bremen",
+      "date": "24.10.2026 13:30",
+      "jornada": 7,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit 1. FSV Mainz 05 vs Werder Bremen."
+    },
+    {
+      "id": "BUNDESLIGA_scpaderborn07_hamburgersv",
+      "competition_id": "BUNDESLIGA",
+      "competition_name": "Bundesliga",
+      "matchup": "SC Paderborn 07 vs Hamburger SV",
+      "home_team": "SC Paderborn 07",
+      "away_team": "Hamburger SV",
+      "date": "24.10.2026 13:30",
+      "jornada": 7,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit SC Paderborn 07 vs Hamburger SV."
+    },
+    {
+      "id": "BUNDESLIGA_rbleipzig_svelversberg",
+      "competition_id": "BUNDESLIGA",
+      "competition_name": "Bundesliga",
+      "matchup": "RB Leipzig vs SV Elversberg",
+      "home_team": "RB Leipzig",
+      "away_team": "SV Elversberg",
+      "date": "24.10.2026 13:30",
+      "jornada": 7,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit RB Leipzig vs SV Elversberg."
+    },
+    {
+      "id": "BUNDESLIGA_borussiadortmund_eintrachtfrancfort",
+      "competition_id": "BUNDESLIGA",
+      "competition_name": "Bundesliga",
+      "matchup": "Borussia Dortmund vs Eintracht Fráncfort",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Eintracht Fráncfort",
+      "date": "24.10.2026 16:30",
+      "jornada": 7,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Borussia Dortmund vs Eintracht Fráncfort."
+    },
+    {
+      "id": "BUNDESLIGA_tsghoffenheim_bayerleverkusen",
+      "competition_id": "BUNDESLIGA",
+      "competition_name": "Bundesliga",
+      "matchup": "TSG Hoffenheim vs Bayer Leverkusen",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Bayer Leverkusen",
+      "date": "25.10.2026 14:30",
+      "jornada": 7,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit TSG Hoffenheim vs Bayer Leverkusen."
+    },
+    {
+      "id": "BUNDESLIGA_scfriburgo_bayernmunich",
+      "competition_id": "BUNDESLIGA",
+      "competition_name": "Bundesliga",
+      "matchup": "SC Friburgo vs Bayern Múnich",
+      "home_team": "SC Friburgo",
+      "away_team": "Bayern Múnich",
+      "date": "25.10.2026 16:30",
+      "jornada": 7,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit SC Friburgo vs Bayern Múnich."
+    },
+    {
+      "id": "LIGUE1_toulousefc_estroyesac",
+      "competition_id": "LIGUE1",
+      "competition_name": "Ligue 1",
+      "matchup": "Toulouse FC vs ES Troyes AC",
+      "home_team": "Toulouse FC",
+      "away_team": "ES Troyes AC",
+      "date": "24.10.2026 17:15",
+      "jornada": 8,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Toulouse FC vs ES Troyes AC."
+    },
+    {
+      "id": "LIGUE1_rclens_parisfc",
+      "competition_id": "LIGUE1",
+      "competition_name": "Ligue 1",
+      "matchup": "RC Lens vs Paris FC",
+      "home_team": "RC Lens",
+      "away_team": "Paris FC",
+      "date": "24.10.2026 20:45",
+      "jornada": 8,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit RC Lens vs Paris FC."
+    },
+    {
+      "id": "LIGUE1_asmonaco_lilleosc",
+      "competition_id": "LIGUE1",
+      "competition_name": "Ligue 1",
+      "matchup": "AS Monaco vs Lille OSC",
+      "home_team": "AS Monaco",
+      "away_team": "Lille OSC",
+      "date": "25.10.2026 15:00",
+      "jornada": 8,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit AS Monaco vs Lille OSC."
+    },
+    {
+      "id": "LIGUE1_angerssco_fclorient",
+      "competition_id": "LIGUE1",
+      "competition_name": "Ligue 1",
+      "matchup": "Angers SCO vs FC Lorient",
+      "home_team": "Angers SCO",
+      "away_team": "FC Lorient",
+      "date": "25.10.2026 17:15",
+      "jornada": 8,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Angers SCO vs FC Lorient."
+    },
+    {
+      "id": "LIGUE1_ajauxerre_lemansfc",
+      "competition_id": "LIGUE1",
+      "competition_name": "Ligue 1",
+      "matchup": "AJ Auxerre vs Le Mans FC",
+      "home_team": "AJ Auxerre",
+      "away_team": "Le Mans FC",
+      "date": "25.10.2026 17:15",
+      "jornada": 8,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit AJ Auxerre vs Le Mans FC."
+    },
+    {
+      "id": "LIGUE1_olympiquedemarseille_lehavreac",
+      "competition_id": "LIGUE1",
+      "competition_name": "Ligue 1",
+      "matchup": "Olympique de Marseille vs Le Havre AC",
+      "home_team": "Olympique de Marseille",
+      "away_team": "Le Havre AC",
+      "date": "25.10.2026 17:15",
+      "jornada": 8,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Olympique de Marseille vs Le Havre AC."
+    },
+    {
+      "id": "LIGUE1_staderennais_rcstrasbourg",
+      "competition_id": "LIGUE1",
+      "competition_name": "Ligue 1",
+      "matchup": "Stade Rennais vs RC Strasbourg",
+      "home_team": "Stade Rennais",
+      "away_team": "RC Strasbourg",
+      "date": "25.10.2026 17:15",
+      "jornada": 8,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Stade Rennais vs RC Strasbourg."
+    },
+    {
+      "id": "LIGUE1_parissaintgermain_olympiquelyonnais",
+      "competition_id": "LIGUE1",
+      "competition_name": "Ligue 1",
+      "matchup": "Paris Saint-Germain vs Olympique Lyonnais",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Olympique Lyonnais",
+      "date": "25.10.2026 20:45",
+      "jornada": 8,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Paris Saint-Germain vs Olympique Lyonnais."
     },
     {
       "id": "SERIEA_cagliaricalcio_bolognafc",
