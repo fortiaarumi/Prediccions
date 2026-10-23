@@ -551,7 +551,7 @@ class WebDataExporter:
                     m_key = f"{h_id}_{a_id}"
                     if m_key in existing_match_odds_b365:
                         cand_b = existing_match_odds_b365[m_key]
-                        if cand_b.get("is_manual_override") or cand_b.get("provenance") == "BET365_OFFICIAL_FEED":
+                        if cand_b.get("is_manual_override") or cand_b.get("provenance") in ("BET365_OFFICIAL_FEED", "BET365_MOVIODDS", "BET365_ODDS_DATA_API"):
                             odds_b365 = cand_b
 
             w_has_1x2 = bool(odds and odds.get("matched") and (odds.get("1X2") or {}).get("1"))
@@ -2238,7 +2238,7 @@ class WebDataExporter:
         ou = match_data.get("odds_ou_bet365") or match_data.get("odds_ou25_bet365") or {}
         btts = match_data.get("odds_btts_bet365") or {}
         is_synth = (ou == {"over": 1.98, "under": 1.87} or btts == {"yes": 1.93, "no": 1.92})
-        has_valid_source = match_data.get("is_manual_override") or match_data.get("odds_bet365", {}).get("provenance") == "BET365_OFFICIAL_FEED"
+        has_valid_source = match_data.get("is_manual_override") or match_data.get("odds_bet365", {}).get("provenance") in ("BET365_OFFICIAL_FEED", "BET365_MOVIODDS", "BET365_ODDS_DATA_API")
         
         if is_synth or not has_valid_source:
             match_data["odds_1x2_bet365"] = {}
@@ -2303,12 +2303,12 @@ class WebDataExporter:
                             ou_b365 = pm.get("odds_ou25_bet365", {})
                             btts_b365 = pm.get("odds_btts_bet365", {})
                             is_synth = (ou_b365 == {"over": 1.98, "under": 1.87} or btts_b365 == {"yes": 1.93, "no": 1.92})
-                            is_valid_origin = pm.get("is_manual_override") or pm.get("odds_bet365", {}).get("provenance") == "BET365_OFFICIAL_FEED"
+                            is_valid_origin = pm.get("is_manual_override") or pm.get("odds_bet365", {}).get("provenance") in ("BET365_OFFICIAL_FEED", "BET365_MOVIODDS", "BET365_ODDS_DATA_API")
                             if o_b365_1x2 and o_b365_1x2.get("1") is not None and not is_synth and is_valid_origin:
                                 existing_match_odds_b365[key] = {
                                     "matched": True,
                                     "is_manual_override": pm.get("is_manual_override", False),
-                                    "provenance": pm.get("odds_bet365", {}).get("provenance", "BET365_OFFICIAL_FEED"),
+                                    "provenance": pm.get("odds_bet365", {}).get("provenance", "BET365_MOVIODDS"),
                                     "1X2": o_b365_1x2,
                                     "over_under_2_5": ou_b365,
                                     "btts": btts_b365,
@@ -2322,6 +2322,13 @@ class WebDataExporter:
 
         all_referee_updates = []
         seen_referee_match_ids: set = set()  # Per deduplicar dins de la mateixa execució
+
+        # Escalfament de quotes oficials Bet365 via MoviOdds (1 sola crida comprimida per a totes les lligues)
+        try:
+            from scraper.moviodds_client import MoviOddsClient
+            MoviOddsClient.get_instance().fetch_feed()
+        except Exception as e:
+            print(f"   [!] Error inicialitzant MoviOddsClient: {e}")
 
         # 1. Processar cada lliga
         for meta in COMPETITIONS_META:

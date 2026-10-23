@@ -1,1 +1,35 @@
-{}
+{
+  "LALIGA_fcbarcelona_realmadrid": {
+    "source": "Bet365 via MoviOdds (FI: 99901)",
+    "bookmaker": "BET365",
+    "url": "https://www.bet365.es/#/AS/B1/",
+    "match_id": "99901",
+    "matched_title": "Barcelona vs Real Madrid",
+    "matched": true,
+    "is_manual_override": false,
+    "provenance": "BET365_MOVIODDS",
+    "cached_at": 1792794577.4705834,
+    "kickoff_utc": null,
+    "polled_at": null,
+    "1X2": {
+      "1": 1.62,
+      "X": 5.75,
+      "2": 4.0
+    },
+    "double_chance": {},
+    "over_under_2_5": {
+      "Over 2.5": 1.5,
+      "over": 1.5,
+      "Under 2.5": 2.6,
+      "under": 2.6
+    },
+    "btts": {
+      "Sí": 1.53,
+      "yes": 1.53,
+      "No": 2.38,
+      "no": 2.38
+    },
+    "corners": {},
+    "cards": {}
+  }
+}
