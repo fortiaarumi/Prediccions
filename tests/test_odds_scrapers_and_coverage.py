@@ -19,8 +19,11 @@ import pytest
 import json
 import sqlite3
 import time
+import os
 from pathlib import Path
 from unittest.mock import patch, mock_open
+
+ROOT = Path(__file__).resolve().parent.parent
 
 from database.db_manager import DatabaseManager
 from scraper.winamax_scraper import WinamaxScraper
@@ -645,5 +648,152 @@ def test_match_deduplication_and_full_championship_coverage():
     cha_nor = [r for r in result_rows if r["home_team_id"] == "CHA"][0]
     assert cha_nor["id"] == "CHAMPIONSHIP_2026-2027_h8167lrJ"
     assert cha_nor["url"] is not None
+
+
+# -----------------------------------------------------------------------------
+# 19. Extracció de mercats i procedència a Odds Data API
+# -----------------------------------------------------------------------------
+def test_odds_data_api_market_extraction_and_provenance():
+    """Valida que OddsDataApiClient extreu 1X2, Over/Under, BTTS, Doble Oportunitat, Córners i Targetes."""
+    from scraper.odds_data_api_client import OddsDataApiClient
+    
+    client = OddsDataApiClient(token="test_token_dummy")
+    sample_raw_event = {
+        "id": "158211790",
+        "sport_id": "1",
+        "time": "1719586800",
+        "time_status": "0",
+        "league": {"id": "1001", "name": "English Premier League", "cc": "en"},
+        "home": {"id": "501", "name": "Arsenal"},
+        "away": {"id": "502", "name": "Chelsea"},
+        "main": {
+            "full_time_result": {
+                "odds": [
+                    {"id": "1", "name": "Arsenal", "odds": "1.72"},
+                    {"id": "2", "name": "Draw", "odds": "3.80"},
+                    {"id": "3", "name": "Chelsea", "odds": "4.50"}
+                ]
+            },
+            "double_chance": {
+                "odds": [
+                    {"id": "1", "name": "Arsenal or Draw", "odds": "1.20"},
+                    {"id": "2", "name": "Arsenal or Chelsea", "odds": "1.28"},
+                    {"id": "3", "name": "Draw or Chelsea", "odds": "2.05"}
+                ]
+            }
+        },
+        "goals": {
+            "goals_over_under": {
+                "odds": [
+                    {"id": "1", "name": "Over", "handicap": "2.5", "odds": "1.80"},
+                    {"id": "2", "name": "Under", "handicap": "2.5", "odds": "2.00"}
+                ]
+            },
+            "both_teams_to_score": {
+                "odds": [
+                    {"id": "1", "name": "Yes", "odds": "1.75"},
+                    {"id": "2", "name": "No", "odds": "2.05"}
+                ]
+            }
+        },
+        "corners": {
+            "total_corners": {
+                "odds": [
+                    {"name": "Over", "handicap": "9.5", "odds": "1.85"},
+                    {"name": "Under", "handicap": "9.5", "odds": "1.95"}
+                ]
+            }
+        },
+        "cards": {
+            "total_cards": {
+                "odds": [
+                    {"name": "Over", "handicap": "4.5", "odds": "1.70"},
+                    {"name": "Under", "handicap": "4.5", "odds": "2.10"}
+                ]
+            }
+        }
+    }
+
+    parsed = client.parse_prematch_markets(sample_raw_event)
+    assert parsed["matched"] is True
+    assert parsed["provenance"] == "BET365_ODDS_DATA_API"
+    assert parsed["is_manual_override"] is False
+    assert parsed["1X2"] == {"1": 1.72, "X": 3.80, "2": 4.50}
+    assert parsed["over_under_2_5"] == {"Over 2.5": 1.80, "over": 1.80, "Under 2.5": 2.00, "under": 2.00}
+    assert parsed["btts"] == {"Sí": 1.75, "yes": 1.75, "No": 2.05, "no": 2.05}
+    assert parsed["double_chance"]["1X"] == 1.20
+    assert "Over 9.5 Córners" in parsed["corners"]
+    assert "Over 4.5 Targetes" in parsed["cards"]
+
+
+# -----------------------------------------------------------------------------
+# 20. Associació inequívoca de partits (exigeix ambdós equips)
+# -----------------------------------------------------------------------------
+def test_odds_data_api_unambiguous_match_association():
+    """Garanteix que OddsDataApiClient mai associa un partit només perquè comparteix un equip."""
+    from scraper.odds_data_api_client import OddsDataApiClient
+    client = OddsDataApiClient(token="test_token_dummy")
+
+    fixtures = [
+        {"id": "1001", "home": {"name": "Arsenal"}, "away": {"name": "Chelsea"}},
+        {"id": "1002", "home": {"name": "Liverpool"}, "away": {"name": "Everton"}},
+        {"id": "1003", "home": {"name": "Manchester City"}, "away": {"name": "Tottenham"}}
+    ]
+
+    # Coincidència exacta d'ambdós equips
+    fi_ok = client.match_fixture_id("Arsenal FC", "Chelsea FC", "PREMIER", fixtures)
+    assert fi_ok == "1001"
+
+    # Només coincideix l'equip local (Arsenal vs Watford): NO HA D'ASSOCIAR
+    fi_mismatch_away = client.match_fixture_id("Arsenal", "Watford", "PREMIER", fixtures)
+    assert fi_mismatch_away is None
+
+    # Només coincideix l'equip visitant (Aston Villa vs Chelsea): NO HA D'ASSOCIAR
+    fi_mismatch_home = client.match_fixture_id("Aston Villa", "Chelsea", "PREMIER", fixtures)
+    assert fi_mismatch_home is None
+
+
+# -----------------------------------------------------------------------------
+# 21. Comportament segur en absència de token
+# -----------------------------------------------------------------------------
+def test_odds_data_api_missing_token_safe_behavior():
+    """Comprova que en absència d'ODDS_DATA_API_TOKEN el sistema no sintetitza dades i diagnostica la causa."""
+    with patch.dict(os.environ, {}, clear=True):
+        b365 = Bet365Scraper()
+        odds = b365.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+        assert odds["matched"] is False
+        assert odds["1X2"] == {}
+        assert odds["error"] == "NO_ODDS_DETECTED"
+        assert odds["access_status"] == "REQUIRES_ODDS_DATA_API_TOKEN"
+        assert "ODDS_DATA_API_TOKEN" in odds["access_diagnostics"]
+
+
+# -----------------------------------------------------------------------------
+# 22. Exactament 12 partits únics de Championship a SQLite i absència de placeholders
+# -----------------------------------------------------------------------------
+def test_championship_exact_twelve_unique_matches_in_sqlite_and_export():
+    """Verifica que a SQLite existeixen exactament 12 partits de Championship J12 sense cap duplicat ni placeholder."""
+    db_path = ROOT / "data" / "laliga.db"
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    rows = c.execute("""
+        SELECT id, home_team_id, away_team_id, jornada, status, url
+        FROM matches
+        WHERE competition_id = 'CHAMPIONSHIP' AND jornada = 12
+    """).fetchall()
+
+    assert len(rows) == 12, f"S'esperaven exactament 12 partits per a Championship J12, s'han trobat {len(rows)}"
+
+    # Cap registre pot començar per CHAMPIONSHIP_J12_
+    for r in rows:
+        assert not r[0].startswith("CHAMPIONSHIP_J12_"), f"S'ha trobat un ID placeholder no purgat: {r[0]}"
+        assert r[0].startswith("CHAMPIONSHIP_2026-2027_"), f"ID no oficial: {r[0]}"
+        assert r[5] is not None and "flashscore" in r[5], f"URL oficial absent a {r[0]}"
+
+    # No hi ha d'haver cap enfrontament duplicat
+    matchups = [(r[1], r[2]) for r in rows]
+    assert len(matchups) == len(set(matchups)), "Hi ha enfrontaments duplicats a la jornada 12 de Championship"
+
 
 
