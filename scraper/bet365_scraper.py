@@ -183,19 +183,23 @@ class Bet365Scraper:
         tourn = BET365_TOURNAMENTS.get(comp_id, BET365_TOURNAMENTS["LALIGA"])
         return tourn["url"]
 
-    def format_bet365_slip_text(self, profile: str, odd: float, legs: list, url: str) -> str:
+    def format_bet365_slip_text(self, profile: str, odd: Any, legs: list, url: str) -> str:
         """
         Formata un text net del cupó Bet365 per copiar al porta-retalls amb 1 sol clic.
         """
         text = f"🟢 BET365 · {profile}\n"
-        text += f"Cuota Total Bet365: @{odd:.2f}\n"
+        if odd is not None:
+            text += f"Cuota Total Bet365: @{float(odd):.2f}\n"
+        else:
+            text += "Cuota Total Bet365: No disponible\n"
         text += f"Enllaç directe: {url}\n\n"
         text += "SELECCIONS DEL CUPÓ:\n"
         for idx, leg in enumerate(legs, 1):
             m = leg.get("matchup", "")
             s = leg.get("selection_name", "")
-            o = leg.get("bookie_odd_bet365") or leg.get("bookie_odd", 1.0)
-            text += f"{idx}. [{m}] 👉 {s} (@{o:.2f})\n"
+            b_odd = leg.get("bookie_odd_bet365")
+            odd_str = f"@{float(b_odd):.2f}" if b_odd is not None else "Sense quota Bet365"
+            text += f"{idx}. [{m}] 👉 {s} ({odd_str})\n"
         return text
 
     def _normalize(self, name: Any) -> str:

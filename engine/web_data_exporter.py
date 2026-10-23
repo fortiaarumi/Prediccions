@@ -350,7 +350,7 @@ class WebDataExporter:
             # La jornada activa és la propera jornada natural
             return max_f + 1
 
-    def get_upcoming_predictions(self, competition_id: str, max_matches: int = 12, existing_match_odds: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def get_upcoming_predictions(self, competition_id: str, max_matches: int = 12, existing_match_odds: Optional[Dict[str, Any]] = None, existing_match_odds_b365: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Recupera tots els partits de la jornada activa (tant els ja jugats com els pendents de disputar),
         calcula les prediccions completes, i per als partits ja disputats n'avalua el marcador final
@@ -533,41 +533,54 @@ class WebDataExporter:
                     match_pred=pred,
                     winamax_odds=odds
                 )
-
-                w_has_1x2 = bool(odds and odds.get("matched") and (odds.get("1X2") or {}).get("1"))
-                b_has_1x2 = bool(odds_b365 and odds_b365.get("matched") and (odds_b365.get("1X2") or {}).get("1"))
-
-                # Si falten quotes en un partit PENDENT DE DISPUTAR (futur), registrar alerta per a l'usuari
-                if not w_has_1x2 or not b_has_1x2:
-                    missing_bookies = []
-                    if not w_has_1x2:
-                        missing_bookies.append("Winamax")
-                    if not b_has_1x2:
-                        missing_bookies.append("Bet365")
-
-                    c_meta = [c for c in COMPETITIONS_META if c["id"] == competition_id]
-                    c_name = c_meta[0]["name"] if c_meta else competition_id
-                    alert_item = {
-                        "id": f"{competition_id}_{self.bet365._normalize(home_data['name'])}_{self.bet365._normalize(away_data['name'])}",
-                        "competition_id": competition_id,
-                        "competition_name": c_name,
-                        "matchup": f"{home_data['name']} vs {away_data['name']}",
-                        "home_team": home_data["name"],
-                        "away_team": away_data["name"],
-                        "date": match_date or "Pendent",
-                        "jornada": active_jornada,
-                        "missing_winamax": not w_has_1x2,
-                        "missing_bet365": not b_has_1x2,
-                        "missing_bookmakers": missing_bookies,
-                        "message": f"Quotes no detectades a {', '.join(missing_bookies)} per al partit {home_data['name']} vs {away_data['name']}."
-                    }
-                    self.odds_alerts.append(alert_item)
-
-                bet_analysis = self.value_engine.analyze_match_betting(pred, odds, bet365_odds=odds_b365)
-                if (not bet_analysis.get("value_bets")) and existing_match_odds:
+                if (not odds_b365.get("matched")) and existing_match_odds_b365:
                     m_key = f"{h_id}_{a_id}"
-                    if m_key in existing_match_odds and existing_match_odds[m_key].get("cached_value_bets"):
-                        bet_analysis["value_bets"] = existing_match_odds[m_key]["cached_value_bets"]
+                    if m_key in existing_match_odds_b365:
+                        odds_b365 = existing_match_odds_b365[m_key]
+            else:
+                if existing_match_odds:
+                    m_key = f"{h_id}_{a_id}"
+                    if m_key in existing_match_odds:
+                        odds = existing_match_odds[m_key]
+                if existing_match_odds_b365:
+                    m_key = f"{h_id}_{a_id}"
+                    if m_key in existing_match_odds_b365:
+                        odds_b365 = existing_match_odds_b365[m_key]
+
+            w_has_1x2 = bool(odds and odds.get("matched") and (odds.get("1X2") or {}).get("1"))
+            b_has_1x2 = bool(odds_b365 and odds_b365.get("matched") and (odds_b365.get("1X2") or {}).get("1"))
+
+            # Si falten quotes en un partit PENDENT DE DISPUTAR (futur), registrar alerta per a l'usuari
+            if (not is_finished and not is_live_match and not match_is_past) and (not w_has_1x2 or not b_has_1x2):
+                missing_bookies = []
+                if not w_has_1x2:
+                    missing_bookies.append("Winamax")
+                if not b_has_1x2:
+                    missing_bookies.append("Bet365")
+
+                c_meta = [c for c in COMPETITIONS_META if c["id"] == competition_id]
+                c_name = c_meta[0]["name"] if c_meta else competition_id
+                alert_item = {
+                    "id": f"{competition_id}_{self.bet365._normalize(home_data['name'])}_{self.bet365._normalize(away_data['name'])}",
+                    "competition_id": competition_id,
+                    "competition_name": c_name,
+                    "matchup": f"{home_data['name']} vs {away_data['name']}",
+                    "home_team": home_data["name"],
+                    "away_team": away_data["name"],
+                    "date": match_date or "Pendent",
+                    "jornada": active_jornada,
+                    "missing_winamax": not w_has_1x2,
+                    "missing_bet365": not b_has_1x2,
+                    "missing_bookmakers": missing_bookies,
+                    "message": f"Quotes no detectades a {', '.join(missing_bookies)} per al partit {home_data['name']} vs {away_data['name']}."
+                }
+                self.odds_alerts.append(alert_item)
+
+            bet_analysis = self.value_engine.analyze_match_betting(pred, odds, bet365_odds=odds_b365)
+            if (not bet_analysis.get("value_bets")) and existing_match_odds:
+                m_key = f"{h_id}_{a_id}"
+                if m_key in existing_match_odds and existing_match_odds[m_key].get("cached_value_bets"):
+                    bet_analysis["value_bets"] = existing_match_odds[m_key]["cached_value_bets"]
 
             pred["odds"] = odds
             pred["odds_winamax"] = odds
@@ -818,29 +831,33 @@ class WebDataExporter:
                     "X2": b_dc.get("X2")
                 },
                 "odds_ou25": {
-                    "over": o_ou.get("over"),
-                    "under": o_ou.get("under")
+                    "over": o_ou.get("over") or o_ou.get("Over 2.5"),
+                    "under": o_ou.get("under") or o_ou.get("Under 2.5")
                 },
                 "odds_ou25_winamax": {
-                    "over": o_ou.get("over"),
-                    "under": o_ou.get("under")
+                    "over": o_ou.get("over") or o_ou.get("Over 2.5"),
+                    "under": o_ou.get("under") or o_ou.get("Under 2.5")
                 },
                 "odds_ou25_bet365": {
-                    "over": (odds_b365.get("over_under_2_5") or {}).get("over"),
-                    "under": (odds_b365.get("over_under_2_5") or {}).get("under")
+                    "over": (odds_b365.get("over_under_2_5") or {}).get("over") or (odds_b365.get("over_under_2_5") or {}).get("Over 2.5"),
+                    "under": (odds_b365.get("over_under_2_5") or {}).get("under") or (odds_b365.get("over_under_2_5") or {}).get("Under 2.5")
                 },
                 "odds_btts": {
-                    "yes": o_btts.get("yes"),
-                    "no": o_btts.get("no")
+                    "yes": o_btts.get("yes") or o_btts.get("Sí") or o_btts.get("si"),
+                    "no": o_btts.get("no") or o_btts.get("No")
                 },
                 "odds_btts_winamax": {
-                    "yes": o_btts.get("yes"),
-                    "no": o_btts.get("no")
+                    "yes": o_btts.get("yes") or o_btts.get("Sí") or o_btts.get("si"),
+                    "no": o_btts.get("no") or o_btts.get("No")
                 },
                 "odds_btts_bet365": {
-                    "yes": (odds_b365.get("btts") or {}).get("yes"),
-                    "no": (odds_b365.get("btts") or {}).get("no")
+                    "yes": (odds_b365.get("btts") or {}).get("yes") or (odds_b365.get("btts") or {}).get("Sí") or (odds_b365.get("btts") or {}).get("si"),
+                    "no": (odds_b365.get("btts") or {}).get("no") or (odds_b365.get("btts") or {}).get("No")
                 },
+                "odds_corners_winamax": odds.get("corners") or {},
+                "odds_corners_bet365": odds_b365.get("corners") or {},
+                "odds_cards_winamax": odds.get("cards") or {},
+                "odds_cards_bet365": odds_b365.get("cards") or {},
                 "url_winamax": odds.get("url") or "https://www.winamax.es",
                 "url_bet365": odds_b365.get("url") or "https://www.bet365.es",
                 "has_winamax_odds": w_has_1x2,
@@ -1213,7 +1230,8 @@ class WebDataExporter:
                             conn_leg.commit()
 
                     w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
-                    b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
+                    b365_odd_val = leg.get("bookie_odd_bet365")
+                    b365_odd = float(b365_odd_val) if b365_odd_val is not None else None
                     legs_evaluated.append({
                         "id": leg.get("id"),
                         "matchup": m_str,
@@ -1237,12 +1255,20 @@ class WebDataExporter:
                 boosted_odd = round(odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else odd
 
                 b365_comb_odd = 1.0
+                b365_has_all = True
                 for l in legs_evaluated:
-                    b365_comb_odd *= float(l.get("bookie_odd_bet365", 1.0))
-                b365_comb_odd = round(b365_comb_odd, 2)
+                    l_b365 = l.get("bookie_odd_bet365")
+                    if l_b365 is not None:
+                        try:
+                            b365_comb_odd *= float(l_b365)
+                        except (ValueError, TypeError):
+                            b365_has_all = False
+                    else:
+                        b365_has_all = False
+                b365_comb_final = round(b365_comb_odd, 2) if (b365_has_all and legs_evaluated) else None
                 b365_combo_url = self.bet365.generate_combo_link(legs_evaluated, competition_id)
                 b365_slip_text = self.bet365.format_bet365_slip_text(
-                    c.get("profile", ""), b365_comb_odd, legs_evaluated, b365_combo_url
+                    c.get("profile", ""), b365_comb_final, legs_evaluated, b365_combo_url
                 )
 
                 if any_lost:
@@ -1281,7 +1307,7 @@ class WebDataExporter:
                     "stake": stake,
                     "combined_odd": odd,
                     "combined_odd_winamax": odd,
-                    "combined_odd_bet365": b365_comb_odd,
+                    "combined_odd_bet365": b365_comb_final,
                     "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
                     "fair_odd": float(c.get("fair_odd", 1.0)),
                     "ev_pct": float(c.get("ev_pct", 0.0)),
@@ -1355,10 +1381,15 @@ class WebDataExporter:
                 return {}
             legs = []
             b365_comb_odd = 1.0
+            has_b365_all = True
             for leg in c.get("legs", []):
                 w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
-                b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
-                b365_comb_odd *= b365_odd
+                b365_odd_val = leg.get("bookie_odd_bet365")
+                b365_odd = float(b365_odd_val) if b365_odd_val is not None else None
+                if b365_odd is not None:
+                    b365_comb_odd *= b365_odd
+                else:
+                    has_b365_all = False
                 legs.append({
                     "matchup": leg.get("matchup", ""),
                     "selection_name": leg.get("name", ""),
@@ -1382,10 +1413,10 @@ class WebDataExporter:
             payout = round(stake * boosted_odd, 2)
             profit = round(payout - stake, 2)
 
-            b365_comb_odd = round(b365_comb_odd, 2)
+            b365_comb_final = round(b365_comb_odd, 2) if has_b365_all else None
             b365_combo_url = self.bet365.generate_combo_link(legs, competition_id)
             b365_slip_text = self.bet365.format_bet365_slip_text(
-                c.get("profile", ""), b365_comb_odd, legs, b365_combo_url
+                c.get("profile", ""), b365_comb_final, legs, b365_combo_url
             )
 
             # Desar a la BD per garantir persistència durant tot el cap de setmana
@@ -1410,7 +1441,7 @@ class WebDataExporter:
                 "stake": stake,
                 "combined_odd": odd,
                 "combined_odd_winamax": odd,
-                "combined_odd_bet365": b365_comb_odd,
+                "combined_odd_bet365": b365_comb_final,
                 "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
                 "fair_odd": float(c.get("fair_odd", 1.0)),
                 "ev_pct": float(c.get("ev_pct", 0.0)),
@@ -1573,8 +1604,9 @@ class WebDataExporter:
                     FROM matches m
                     JOIN teams th ON m.home_team_id = th.id
                     JOIN teams ta ON m.away_team_id = ta.id
-                    WHERE substr(m.date_time, 7, 4) || '-' || substr(m.date_time, 4, 2) || '-' || substr(m.date_time, 1, 2) = ?
-                       OR substr(m.date_time, 1, 10) = ?
+                    WHERE (substr(m.date_time, 7, 4) || '-' || substr(m.date_time, 4, 2) || '-' || substr(m.date_time, 1, 2) = ?
+                       OR substr(m.date_time, 1, 10) = ?)
+                      AND m.competition_id IN ('LALIGA', 'PREMIER', 'HYPERMOTION', 'CHAMPIONSHIP', 'BUNDESLIGA', 'LIGUE1', 'SERIEA')
                     ORDER BY m.date_time ASC
                 """, (target_date, target_date))
                 db_m_rows = [dict(r) for r in c.fetchall()]
@@ -1735,7 +1767,8 @@ class WebDataExporter:
                                 conn_leg.commit()
 
                         w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
-                        b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
+                        b365_odd_val = leg.get("bookie_odd_bet365")
+                        b365_odd = float(b365_odd_val) if b365_odd_val is not None else None
                         legs_evaluated.append({
                             "id": leg.get("id"),
                             "matchup": m_str,
@@ -1759,12 +1792,20 @@ class WebDataExporter:
                     boosted_odd = round(odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else odd
 
                     b365_comb_odd = 1.0
+                    b365_has_all = True
                     for l in legs_evaluated:
-                        b365_comb_odd *= float(l.get("bookie_odd_bet365", 1.0))
-                    b365_comb_odd = round(b365_comb_odd, 2)
+                        l_b365 = l.get("bookie_odd_bet365")
+                        if l_b365 is not None:
+                            try:
+                                b365_comb_odd *= float(l_b365)
+                            except (ValueError, TypeError):
+                                b365_has_all = False
+                        else:
+                            b365_has_all = False
+                    b365_comb_final = round(b365_comb_odd, 2) if (b365_has_all and legs_evaluated) else None
                     b365_combo_url = self.bet365.generate_combo_link(legs_evaluated, "DAILY")
                     b365_slip_text = self.bet365.format_bet365_slip_text(
-                        c.get("profile", ""), b365_comb_odd, legs_evaluated, b365_combo_url
+                        c.get("profile", ""), b365_comb_final, legs_evaluated, b365_combo_url
                     )
 
                     if any_lost:
@@ -1802,7 +1843,7 @@ class WebDataExporter:
                         "stake": stake,
                         "combined_odd": odd,
                         "combined_odd_winamax": odd,
-                        "combined_odd_bet365": b365_comb_odd,
+                        "combined_odd_bet365": b365_comb_final,
                         "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
                         "fair_odd": float(c.get("fair_odd", 1.0)),
                         "ev_pct": float(c.get("ev_pct", 0.0)),
@@ -1843,10 +1884,15 @@ class WebDataExporter:
                         return {}
                     legs = []
                     b365_comb_odd = 1.0
+                    has_b365_all = True
                     for leg in c.get("legs", []):
                         w_odd = float(leg.get("bookie_odd_winamax") or leg.get("bookie_odd", 1.0))
-                        b365_odd = float(leg.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
-                        b365_comb_odd *= b365_odd
+                        b365_odd_val = leg.get("bookie_odd_bet365")
+                        b365_odd = float(b365_odd_val) if b365_odd_val is not None else None
+                        if b365_odd is not None:
+                            b365_comb_odd *= b365_odd
+                        else:
+                            has_b365_all = False
                         sel_name = leg.get("name") or leg.get("selection_name", "")
                         if isinstance(sel_name, str) and ("{'id':" in sel_name or '{"id":' in sel_name):
                             import re
@@ -1874,10 +1920,10 @@ class WebDataExporter:
                     payout = round(stake * boosted_odd, 2)
                     profit = round(payout - stake, 2)
 
-                    b365_comb_odd = round(b365_comb_odd, 2)
+                    b365_comb_final = round(b365_comb_odd, 2) if has_b365_all else None
                     b365_combo_url = self.bet365.generate_combo_link(legs, "DAILY")
                     b365_slip_text = self.bet365.format_bet365_slip_text(
-                        c.get("profile", ""), b365_comb_odd, legs, b365_combo_url
+                        c.get("profile", ""), b365_comb_final, legs, b365_combo_url
                     )
 
                     cat_code = c.get("category_code", "SAFE")
@@ -1902,7 +1948,7 @@ class WebDataExporter:
                         "stake": stake,
                         "combined_odd": odd,
                         "combined_odd_winamax": odd,
-                        "combined_odd_bet365": b365_comb_odd,
+                        "combined_odd_bet365": b365_comb_final,
                         "combined_prob_pct": float(c.get("combined_prob_pct", 0.0)),
                         "fair_odd": float(c.get("fair_odd", 1.0)),
                         "ev_pct": float(c.get("ev_pct", 0.0)),
@@ -2202,6 +2248,7 @@ class WebDataExporter:
         # Carregar dades prèvies de la web per protecció contra caigudes de Winamax o execució cloud
         previous_data = {}
         existing_match_odds = {}
+        existing_match_odds_b365 = {}
         if WEB_DATA_FILE.exists():
             try:
                 with open(WEB_DATA_FILE, "r", encoding="utf-8") as f:
@@ -2212,15 +2259,30 @@ class WebDataExporter:
                         aid = pm.get("away_team", {}).get("id")
                         if hid and aid:
                             key = f"{hid}_{aid}"
-                            o_1x2 = pm.get("odds_1x2")
+                            o_1x2 = pm.get("odds_1x2_winamax") or pm.get("odds_1x2")
                             if o_1x2 and o_1x2.get("1") is not None:
                                 existing_match_odds[key] = {
                                     "matched": True,
                                     "1X2": o_1x2,
-                                    "over_under_2_5": pm.get("odds_ou25", {}),
-                                    "btts": pm.get("odds_btts", {}),
-                                    "match_url": pm.get("winamax_url", "https://www.winamax.es"),
+                                    "over_under_2_5": pm.get("odds_ou25_winamax", pm.get("odds_ou25", {})),
+                                    "btts": pm.get("odds_btts_winamax", pm.get("odds_btts", {})),
+                                    "corners": pm.get("odds_corners_winamax", {}),
+                                    "cards": pm.get("odds_cards_winamax", {}),
+                                    "double_chance": pm.get("odds_dc_winamax", {}),
+                                    "url": pm.get("url_winamax", "https://www.winamax.es"),
                                     "cached_value_bets": pm.get("value_bets", [])
+                                }
+                            o_b365_1x2 = pm.get("odds_1x2_bet365")
+                            if o_b365_1x2 and o_b365_1x2.get("1") is not None:
+                                existing_match_odds_b365[key] = {
+                                    "matched": True,
+                                    "1X2": o_b365_1x2,
+                                    "over_under_2_5": pm.get("odds_ou25_bet365", {}),
+                                    "btts": pm.get("odds_btts_bet365", {}),
+                                    "corners": pm.get("odds_corners_bet365", {}),
+                                    "cards": pm.get("odds_cards_bet365", {}),
+                                    "double_chance": pm.get("odds_dc_bet365", {}),
+                                    "url": pm.get("url_bet365", "https://www.bet365.es")
                                 }
             except Exception as e:
                 print(f"   [!] Error llegint memòria cau prèvia de {WEB_DATA_FILE}: {e}")
@@ -2239,7 +2301,7 @@ class WebDataExporter:
             power_rankings[cid] = pr
 
             # B) Prediccions i Historial de Jornades
-            pred_data = self.get_upcoming_predictions(cid, existing_match_odds=existing_match_odds)
+            pred_data = self.get_upcoming_predictions(cid, existing_match_odds=existing_match_odds, existing_match_odds_b365=existing_match_odds_b365)
             if pred_data.get("referee_updates"):
                 for ru in pred_data["referee_updates"]:
                     mid = ru.get("match_id")
@@ -2294,9 +2356,10 @@ class WebDataExporter:
                         stake_val = vb.get("stake_pct", 2.5)
 
                     w_odd = float(vb.get("bookie_odd", 1.0))
-                    b365_odd = float(vb.get("bookie_odd_bet365") or round(w_odd * 1.015, 2))
+                    b365_odd_val = vb.get("bookie_odd_bet365")
+                    b365_odd = float(b365_odd_val) if b365_odd_val is not None else None
                     edge_w = round(float(edge_val), 1)
-                    edge_b365 = round((p_calc * b365_odd - 1.0) * 100.0, 1)
+                    edge_b365 = round((p_calc * b365_odd - 1.0) * 100.0, 1) if b365_odd is not None else None
 
                     from scraper.winamax_scraper import WINAMAX_TOURNAMENTS
                     w_base = f"https://www.winamax.es/apuestas-deportivas/sports/1/{WINAMAX_TOURNAMENTS.get(cid, '32')}"

@@ -125,21 +125,21 @@ class ValueBetEngine:
             v["name"] = f"1 - Victòria Local ({h_name})"
             v["category"] = "1X2"
             v["bookie_odd_winamax"] = o_1x2.get("1") or odd_1
-            v["bookie_odd_bet365"] = b_1x2.get("1") or round(odd_1 * 1.015, 2)
+            v["bookie_odd_bet365"] = b_1x2.get("1") if b_1x2.get("1") else None
             single_markets.append(v)
         if odd_x and odd_x > 1.0:
             v = self.calculate_market_value(prob_x, odd_x)
             v["name"] = "X - Empat"
             v["category"] = "1X2"
             v["bookie_odd_winamax"] = o_1x2.get("X") or odd_x
-            v["bookie_odd_bet365"] = b_1x2.get("X") or round(odd_x * 1.01, 2)
+            v["bookie_odd_bet365"] = b_1x2.get("X") if b_1x2.get("X") else None
             single_markets.append(v)
         if odd_2 and odd_2 > 1.0:
             v = self.calculate_market_value(prob_2, odd_2)
             v["name"] = f"2 - Victòria Visitant ({a_name})"
             v["category"] = "1X2"
             v["bookie_odd_winamax"] = o_1x2.get("2") or odd_2
-            v["bookie_odd_bet365"] = b_1x2.get("2") or round(odd_2 * 1.015, 2)
+            v["bookie_odd_bet365"] = b_1x2.get("2") if b_1x2.get("2") else None
             single_markets.append(v)
 
         # 2. Doble Oportunitat (Real de Winamax o Bet365)
@@ -154,21 +154,21 @@ class ValueBetEngine:
             v["name"] = f"1X - {h_name} o Empat"
             v["category"] = "Doble Oportunitat"
             v["bookie_odd_winamax"] = o_dc.get("1X") or odd_1x
-            v["bookie_odd_bet365"] = b_dc.get("1X") or round(odd_1x * 1.01, 2)
+            v["bookie_odd_bet365"] = b_dc.get("1X") if b_dc.get("1X") else None
             single_markets.append(v)
         if odd_x2 and odd_x2 > 1.0:
             v = self.calculate_market_value(prob_x2, odd_x2)
             v["name"] = f"X2 - Empat o {a_name}"
             v["category"] = "Doble Oportunitat"
             v["bookie_odd_winamax"] = o_dc.get("X2") or odd_x2
-            v["bookie_odd_bet365"] = b_dc.get("X2") or round(odd_x2 * 1.01, 2)
+            v["bookie_odd_bet365"] = b_dc.get("X2") if b_dc.get("X2") else None
             single_markets.append(v)
         if odd_12 and odd_12 > 1.0:
             v = self.calculate_market_value(prob_12, odd_12)
             v["name"] = f"12 - {h_name} o {a_name}"
             v["category"] = "Doble Oportunitat"
             v["bookie_odd_winamax"] = o_dc.get("12") or odd_12
-            v["bookie_odd_bet365"] = b_dc.get("12") or round(odd_12 * 1.01, 2)
+            v["bookie_odd_bet365"] = b_dc.get("12") if b_dc.get("12") else None
             single_markets.append(v)
 
         # 3. Gols Over / Under (1.5, 2.5, 3.5)
@@ -177,23 +177,23 @@ class ValueBetEngine:
         b_ou25 = bet365_odds.get("over_under_2_5", {})
         b_goals = bet365_odds.get("goals", {})
 
-        odd_o25 = o_goals.get("Over 2.5") or o_ou25.get("Over 2.5") or b_ou25.get("over")
-        odd_u25 = o_goals.get("Under 2.5") or o_ou25.get("Under 2.5") or b_ou25.get("under")
+        odd_o25 = o_goals.get("Over 2.5") or o_ou25.get("Over 2.5") or o_ou25.get("over") or b_ou25.get("over")
+        odd_u25 = o_goals.get("Under 2.5") or o_ou25.get("Under 2.5") or o_ou25.get("under") or b_ou25.get("under")
 
         if odd_o25 and odd_o25 > 1.0:
             v = self.calculate_market_value(prob_over25, odd_o25)
             v["name"] = "Més de 2.5 Gols (Over 2.5)"
             v["category"] = "Gols"
-            v["bookie_odd_winamax"] = o_goals.get("Over 2.5") or o_ou25.get("Over 2.5") or odd_o25
-            v["bookie_odd_bet365"] = b_ou25.get("over") or round(odd_o25 * 1.02, 2)
+            v["bookie_odd_winamax"] = o_goals.get("Over 2.5") or o_ou25.get("Over 2.5") or o_ou25.get("over") or odd_o25
+            v["bookie_odd_bet365"] = b_ou25.get("over") if b_ou25.get("over") else None
             single_markets.append(v)
 
         if odd_u25 and odd_u25 > 1.0:
             v = self.calculate_market_value(prob_under25, odd_u25)
             v["name"] = "Menys de 2.5 Gols (Under 2.5)"
             v["category"] = "Gols"
-            v["bookie_odd_winamax"] = o_goals.get("Under 2.5") or o_ou25.get("Under 2.5") or odd_u25
-            v["bookie_odd_bet365"] = b_ou25.get("under") or round(odd_u25 * 1.01, 2)
+            v["bookie_odd_winamax"] = o_goals.get("Under 2.5") or o_ou25.get("Under 2.5") or o_ou25.get("under") or odd_u25
+            v["bookie_odd_bet365"] = b_ou25.get("under") if b_ou25.get("under") else None
             single_markets.append(v)
 
         odd_o15 = o_goals.get("Over 1.5") or b_goals.get("Over 1.5")
@@ -203,7 +203,7 @@ class ValueBetEngine:
             v["name"] = "Més d'1.5 Gols (Over 1.5)"
             v["category"] = "Gols"
             v["bookie_odd_winamax"] = o_goals.get("Over 1.5") or odd_o15
-            v["bookie_odd_bet365"] = b_goals.get("Over 1.5") or round(odd_o15 * 1.01, 2)
+            v["bookie_odd_bet365"] = b_goals.get("Over 1.5") if b_goals.get("Over 1.5") else None
             single_markets.append(v)
 
         odd_u15 = o_goals.get("Under 1.5") or b_goals.get("Under 1.5")
@@ -213,7 +213,7 @@ class ValueBetEngine:
             v["name"] = "Menys d'1.5 Gols (Under 1.5)"
             v["category"] = "Gols"
             v["bookie_odd_winamax"] = o_goals.get("Under 1.5") or odd_u15
-            v["bookie_odd_bet365"] = b_goals.get("Under 1.5") or round(odd_u15 * 1.01, 2)
+            v["bookie_odd_bet365"] = b_goals.get("Under 1.5") if b_goals.get("Under 1.5") else None
             single_markets.append(v)
 
         odd_o35 = o_goals.get("Over 3.5") or b_goals.get("Over 3.5")
@@ -223,7 +223,7 @@ class ValueBetEngine:
             v["name"] = "Més de 3.5 Gols (Over 3.5)"
             v["category"] = "Gols"
             v["bookie_odd_winamax"] = o_goals.get("Over 3.5") or odd_o35
-            v["bookie_odd_bet365"] = b_goals.get("Over 3.5") or round(odd_o35 * 1.02, 2)
+            v["bookie_odd_bet365"] = b_goals.get("Over 3.5") if b_goals.get("Over 3.5") else None
             single_markets.append(v)
 
         odd_u35 = o_goals.get("Under 3.5") or b_goals.get("Under 3.5")
@@ -233,13 +233,16 @@ class ValueBetEngine:
             v["name"] = "Menys de 3.5 Gols (Under 3.5)"
             v["category"] = "Gols"
             v["bookie_odd_winamax"] = o_goals.get("Under 3.5") or odd_u35
-            v["bookie_odd_bet365"] = b_goals.get("Under 3.5") or round(odd_u35 * 1.01, 2)
+            v["bookie_odd_bet365"] = b_goals.get("Under 3.5") if b_goals.get("Under 3.5") else None
             single_markets.append(v)
 
         # Gols per equip (Team Goals)
-        o_team_goals = winamax_odds.get("team_goals", {}) or bet365_odds.get("team_goals", {})
+        o_team_goals = winamax_odds.get("team_goals", {})
+        b_team_goals = bet365_odds.get("team_goals", {})
         h_tg = o_team_goals.get("home", {})
         a_tg = o_team_goals.get("away", {})
+        b_h_tg = b_team_goals.get("home", {})
+        b_a_tg = b_team_goals.get("away", {})
 
         p_team_goals = p_goals.get("team_goals", {})
         prob_home_scores = p_team_goals.get("home_scores", 75.0) / 100.0
@@ -250,7 +253,7 @@ class ValueBetEngine:
             v["name"] = f"{h_name} marca (+0.5 gols)"
             v["category"] = "Gols"
             v["bookie_odd_winamax"] = h_tg["Over 0.5"]
-            v["bookie_odd_bet365"] = round(h_tg["Over 0.5"] * 1.01, 2)
+            v["bookie_odd_bet365"] = b_h_tg.get("Over 0.5") if b_h_tg else None
             single_markets.append(v)
         if "Over 1.5" in h_tg and h_tg["Over 1.5"] > 1.0:
             prob_h_o15 = min(0.95, prob_home_scores * 0.70)
@@ -258,7 +261,7 @@ class ValueBetEngine:
             v["name"] = f"{h_name} marca més d'1.5 gols"
             v["category"] = "Gols"
             v["bookie_odd_winamax"] = h_tg["Over 1.5"]
-            v["bookie_odd_bet365"] = round(h_tg["Over 1.5"] * 1.01, 2)
+            v["bookie_odd_bet365"] = b_h_tg.get("Over 1.5") if b_h_tg else None
             single_markets.append(v)
 
         if "Over 0.5" in a_tg and a_tg["Over 0.5"] > 1.0:
@@ -266,7 +269,7 @@ class ValueBetEngine:
             v["name"] = f"{a_name} marca (+0.5 gols)"
             v["category"] = "Gols"
             v["bookie_odd_winamax"] = a_tg["Over 0.5"]
-            v["bookie_odd_bet365"] = round(a_tg["Over 0.5"] * 1.01, 2)
+            v["bookie_odd_bet365"] = b_a_tg.get("Over 0.5") if b_a_tg else None
             single_markets.append(v)
         if "Over 1.5" in a_tg and a_tg["Over 1.5"] > 1.0:
             prob_a_o15 = min(0.95, prob_away_scores * 0.70)
@@ -274,7 +277,7 @@ class ValueBetEngine:
             v["name"] = f"{a_name} marca més d'1.5 gols"
             v["category"] = "Gols"
             v["bookie_odd_winamax"] = a_tg["Over 1.5"]
-            v["bookie_odd_bet365"] = round(a_tg["Over 1.5"] * 1.01, 2)
+            v["bookie_odd_bet365"] = b_a_tg.get("Over 1.5") if b_a_tg else None
             single_markets.append(v)
 
         # 4. Ambdós Marquen (BTTS)
@@ -288,7 +291,7 @@ class ValueBetEngine:
             v["name"] = "Ambdós Equips Marquen (BTTS Sí)"
             v["category"] = "BTTS"
             v["bookie_odd_winamax"] = o_btts.get("Sí") or odd_btts_yes
-            v["bookie_odd_bet365"] = b_btts.get("yes") or round(odd_btts_yes * 1.015, 2)
+            v["bookie_odd_bet365"] = b_btts.get("yes") if b_btts.get("yes") else None
             single_markets.append(v)
 
         if odd_btts_no and odd_btts_no > 1.0:
@@ -296,7 +299,7 @@ class ValueBetEngine:
             v["name"] = "Ambdós Equips Marquen (BTTS No)"
             v["category"] = "BTTS"
             v["bookie_odd_winamax"] = o_btts.get("No") or odd_btts_no
-            v["bookie_odd_bet365"] = b_btts.get("no") or round(odd_btts_no * 1.015, 2)
+            v["bookie_odd_bet365"] = b_btts.get("no") if b_btts.get("no") else None
             single_markets.append(v)
 
         # 5. Targetes (Regla estricta: la C no -> Si àrbitre és genèric / pendent, no s'avaluen)
@@ -320,7 +323,7 @@ class ValueBetEngine:
                         v["name"] = "Hi haurà Expulsió (Vermella Sí)"
                         v["category"] = "Targetes"
                         v["bookie_odd_winamax"] = card_odd
-                        v["bookie_odd_bet365"] = round(card_odd * 1.02, 2)
+                        v["bookie_odd_bet365"] = b_cards.get("Targeta Vermella (Sí)") if b_cards else None
                         single_markets.append(v)
                     else:
                         is_under = "under" in card_key.lower() or "menys" in card_key.lower()
@@ -336,7 +339,7 @@ class ValueBetEngine:
                             v["name"] = dir_label
                             v["category"] = "Targetes"
                             v["bookie_odd_winamax"] = card_odd
-                            v["bookie_odd_bet365"] = round(card_odd * 1.015, 2)
+                            v["bookie_odd_bet365"] = b_cards.get(card_key) if b_cards else None
                             single_markets.append(v)
             elif b_cards:
                 for card_key, card_odd in b_cards.items():
@@ -382,7 +385,7 @@ class ValueBetEngine:
                     v["name"] = dir_label
                     v["category"] = "Córners"
                     v["bookie_odd_winamax"] = c_odd
-                    v["bookie_odd_bet365"] = round(c_odd * 1.015, 2)
+                    v["bookie_odd_bet365"] = b_corners.get(c_key) if b_corners else None
                     single_markets.append(v)
         elif b_corners:
             for c_key, c_odd in b_corners.items():

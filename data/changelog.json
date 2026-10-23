@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-10-23",
-    "timestamp": "2026-10-23T21:16:12.385493",
+    "timestamp": "2026-10-23T22:03:27.672694",
     "title": "Actualització Diària del Model · 23/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -20,6 +20,8 @@
       "     └ Impacte model: Targetes >4.5: 63.8% ➔ 64.3% (+0.5%) | Vermella: 27.7% ➔ 22.9% (-4.8%) | Victòria Local: 29.2% ➔ 29.2% (+0.0%)",
       "   • [LaLiga EA Sports J10] Atlético de Madrid vs RC Deportivo de La Coruña: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'José María Sánchez Martínez'",
       "     └ Impacte model: Targetes >4.5: 45.9% ➔ 52.0% (+6.1%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 67.0% ➔ 67.0% (+0.0%)",
+      "   • [Premier League J8] Ipswich Town vs Nottingham Forest: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Thomas Bramall'",
+      "     └ Impacte model: Targetes >4.5: 49.1% ➔ 39.7% (-9.4%) | Vermella: 22.1% ➔ 9.5% (-12.6%) | Victòria Local: 30.7% ➔ 30.7% (+0.0%)",
       "   • [Premier League J8] Aston Villa vs Manchester City: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Peter Bankes'",
       "     └ Impacte model: Targetes >4.5: 51.0% ➔ 58.0% (+7.0%) | Vermella: 22.1% ➔ 13.9% (-8.2%) | Victòria Local: 35.9% ➔ 35.9% (+0.0%)",
       "   • [Premier League J8] Arsenal vs Everton: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Harrington T.'",
@@ -38,8 +40,6 @@
       "     └ Impacte model: Targetes >4.5: 49.4% ➔ 53.5% (+4.1%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 31.7% ➔ 31.7% (+0.0%)",
       "   • [Premier League J8] Sunderland vs Leeds Utd: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Stuart Attwell'",
       "     └ Impacte model: Targetes >4.5: 53.1% ➔ 48.5% (-4.6%) | Vermella: 22.1% ➔ 13.1% (-9.0%) | Victòria Local: 41.8% ➔ 41.8% (+0.0%)",
-      "   • [Premier League J8] Ipswich Town vs Nottingham Forest: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Thomas Bramall'",
-      "     └ Impacte model: Targetes >4.5: 49.1% ➔ 39.7% (-9.4%) | Vermella: 22.1% ➔ 9.5% (-12.6%) | Victòria Local: 30.7% ➔ 30.7% (+0.0%)",
       "   • [LaLiga Hypermotion J11] Granada CF vs Real Valladolid: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'De Aza M. H.'",
       "     └ Impacte model: Targetes >4.5: 46.9% ➔ 61.3% (+14.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 58.0% ➔ 58.0% (+0.0%)",
       "   • [LaLiga Hypermotion J11] Córdoba CF vs SD Eibar: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Gordillo J. M.'",
@@ -320,6 +320,45 @@
             "delta": 0.0
           },
           "summary": "Designació oficial de José María Sánchez Martínez (índex severitat 1.06). Mitjana històrica de 4.8 grogues i 0.22 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "PREMIER_J8_IPS_NFO",
+        "matchup": "Ipswich Town vs Nottingham Forest",
+        "competition_id": "PREMIER",
+        "competition_name": "Premier League",
+        "jornada": 8,
+        "date": "23.10.2026 21:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Thomas Bramall",
+        "ref_stats": {
+          "yellow_avg": 3.6,
+          "red_avg": 0.1,
+          "fouls_avg": 20.5,
+          "strictness_index": 1.0
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 49.1,
+            "after": 39.7,
+            "delta": -9.4
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 9.5,
+            "delta": -12.6
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 20.5,
+            "delta": -4.0
+          },
+          "home_win_prob": {
+            "before": 30.7,
+            "after": 30.7,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Thomas Bramall (índex severitat 1.0). Mitjana històrica de 3.6 grogues i 0.1 vermelles per partit."
         }
       },
       {
@@ -671,45 +710,6 @@
             "delta": 0.0
           },
           "summary": "Designació oficial de Stuart Attwell (índex severitat 1.08). Mitjana històrica de 3.8 grogues i 0.14 vermelles per partit."
-        }
-      },
-      {
-        "match_id": "PREMIER_J8_IPS_NFO",
-        "matchup": "Ipswich Town vs Nottingham Forest",
-        "competition_id": "PREMIER",
-        "competition_name": "Premier League",
-        "jornada": 8,
-        "date": "23.10.2026 21:00",
-        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
-        "new_referee": "Thomas Bramall",
-        "ref_stats": {
-          "yellow_avg": 3.6,
-          "red_avg": 0.1,
-          "fouls_avg": 20.5,
-          "strictness_index": 1.0
-        },
-        "changes": {
-          "cards_over_45": {
-            "before": 49.1,
-            "after": 39.7,
-            "delta": -9.4
-          },
-          "red_card_prob": {
-            "before": 22.1,
-            "after": 9.5,
-            "delta": -12.6
-          },
-          "fouls_exp": {
-            "before": 24.5,
-            "after": 20.5,
-            "delta": -4.0
-          },
-          "home_win_prob": {
-            "before": 30.7,
-            "after": 30.7,
-            "delta": 0.0
-          },
-          "summary": "Designació oficial de Thomas Bramall (índex severitat 1.0). Mitjana històrica de 3.6 grogues i 0.1 vermelles per partit."
         }
       },
       {
