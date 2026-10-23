@@ -540,7 +540,8 @@ class WebDataExporter:
                     away_data["name"],
                     competition_id=competition_id,
                     match_pred=pred,
-                    winamax_odds=odds
+                    winamax_odds=odds,
+                    match_date_time=match_date
                 )
             else:
                 if existing_match_odds:
@@ -555,39 +556,88 @@ class WebDataExporter:
                             odds_b365 = cand_b
 
             w_has_1x2 = bool(odds and odds.get("matched") and (odds.get("1X2") or {}).get("1"))
-            b_has_1x2 = bool(odds_b365 and odds_b365.get("matched") and (odds_b365.get("1X2") or {}).get("1"))
+            b_is_stale = bool(odds_b365 and odds_b365.get("is_stale"))
+            b_unassociated = bool(not odds_b365 or not odds_b365.get("matched"))
+            b_has_1x2 = bool(odds_b365 and odds_b365.get("matched") and (odds_b365.get("1X2") or {}).get("1") and not b_is_stale)
 
-            # Si falten quotes en un partit PENDENT DE DISPUTAR (futur), registrar alerta per a l'usuari
-            if (not is_finished and not is_live_match and not match_is_past) and (not w_has_1x2 or not b_has_1x2):
-                missing_bookies = []
-                if not w_has_1x2:
-                    missing_bookies.append("Winamax")
-                if not b_has_1x2:
-                    missing_bookies.append("Bet365")
-
+            # Rastreig d'alertes diferenciant absència d'1X2, obsolescència i mercats secundaris
+            if not is_finished and not is_live_match and not match_is_past:
                 c_meta = [c for c in COMPETITIONS_META if c["id"] == competition_id]
                 c_name = c_meta[0]["name"] if c_meta else competition_id
-                alert_item = {
-                    "id": f"{competition_id}_{self.bet365._normalize(home_data['name'])}_{self.bet365._normalize(away_data['name'])}",
-                    "competition_id": competition_id,
-                    "competition_name": c_name,
-                    "matchup": f"{home_data['name']} vs {away_data['name']}",
-                    "home_team": home_data["name"],
-                    "away_team": away_data["name"],
-                    "date": match_date or "Pendent",
-                    "jornada": active_jornada,
-                    "missing_winamax": not w_has_1x2,
-                    "missing_bet365": not b_has_1x2,
-                    "missing_bookmakers": missing_bookies,
-                    "message": f"Quotes no detectades a {', '.join(missing_bookies)} per al partit {home_data['name']} vs {away_data['name']}."
-                }
-                self.odds_alerts.append(alert_item)
+                h_norm = self.bet365._normalize(home_data["name"])
+                a_norm = self.bet365._normalize(away_data["name"])
+
+                if not w_has_1x2 or not b_has_1x2:
+                    missing_bookies = []
+                    if not w_has_1x2:
+                        missing_bookies.append("Winamax")
+                    if not b_has_1x2:
+                        missing_bookies.append("Bet365")
+
+                    alert_type = "STALE_ODDS" if b_is_stale else ("UNASSOCIATED_MATCH" if b_unassociated else "MISSING_1X2")
+                    alert_msg = (
+                        f"Quotes obsoletes o desactualitzades a Bet365 per al partit {home_data['name']} vs {away_data['name']}."
+                        if b_is_stale
+                        else f"Quotes 1X2 no detectades a {', '.join(missing_bookies)} per al partit {home_data['name']} vs {away_data['name']}."
+                    )
+                    alert_item = {
+                        "id": f"{competition_id}_{h_norm}_{a_norm}",
+                        "competition_id": competition_id,
+                        "competition_name": c_name,
+                        "matchup": f"{home_data['name']} vs {away_data['name']}",
+                        "home_team": home_data["name"],
+                        "away_team": away_data["name"],
+                        "date": match_date or "Pendent",
+                        "jornada": active_jornada,
+                        "alert_type": alert_type,
+                        "missing_winamax": not w_has_1x2,
+                        "missing_bet365": not b_has_1x2,
+                        "is_stale": b_is_stale,
+                        "is_unassociated": b_unassociated,
+                        "missing_bookmakers": missing_bookies,
+                        "message": alert_msg
+                    }
+                    self.odds_alerts.append(alert_item)
+
+                # Comprovar si 1X2 està disponible però manquen mercats secundaris (Over/Under 2.5, BTTS)
+                b_ou25 = (odds_b365.get("over_under_2_5") or {}).get("Over 2.5") or (odds_b365.get("over_under_2_5") or {}).get("over")
+                b_btts = (odds_b365.get("btts") or {}).get("Sí") or (odds_b365.get("btts") or {}).get("yes")
+                if b_has_1x2 and (not b_ou25 or not b_btts):
+                    missing_sec = []
+                    if not b_ou25:
+                        missing_sec.append("Over/Under 2.5")
+                    if not b_btts:
+                        missing_sec.append("BTTS (Ambdós Marquen)")
+                    sec_alert = {
+                        "id": f"sec_{competition_id}_{h_norm}_{a_norm}",
+                        "competition_id": competition_id,
+                        "competition_name": c_name,
+                        "matchup": f"{home_data['name']} vs {away_data['name']}",
+                        "home_team": home_data["name"],
+                        "away_team": away_data["name"],
+                        "date": match_date or "Pendent",
+                        "jornada": active_jornada,
+                        "alert_type": "MISSING_SECONDARY_MARKET",
+                        "missing_markets": missing_sec,
+                        "missing_bookmakers": [f"Bet365 ({', '.join(missing_sec)})"],
+                        "severity": "info",
+                        "message": f"Bet365 no ofereix línia oberta de {', '.join(missing_sec)} per a {home_data['name']} vs {away_data['name']}."
+                    }
+                    self.odds_alerts.append(sec_alert)
 
             bet_analysis = self.value_engine.analyze_match_betting(pred, odds, bet365_odds=odds_b365)
             if (not bet_analysis.get("value_bets")) and existing_match_odds:
                 m_key = f"{h_id}_{a_id}"
                 if m_key in existing_match_odds and existing_match_odds[m_key].get("cached_value_bets"):
-                    bet_analysis["value_bets"] = existing_match_odds[m_key]["cached_value_bets"]
+                    # Si es reutilitzen dades de contingència, s'identifiquen clarament com a obsoletes
+                    contingency_list = []
+                    for cvb in existing_match_odds[m_key]["cached_value_bets"]:
+                        item_c = dict(cvb)
+                        item_c["is_stale"] = True
+                        item_c["status"] = "OBSOLETE"
+                        item_c["provenance"] = "STALE_CACHE_CONTINGENCY"
+                        contingency_list.append(item_c)
+                    bet_analysis["value_bets"] = contingency_list
 
             pred["odds"] = odds
             pred["odds_winamax"] = odds
@@ -867,6 +917,9 @@ class WebDataExporter:
                 "odds_cards_bet365": odds_b365.get("cards") or {},
                 "url_winamax": odds.get("url") or "https://www.winamax.es",
                 "url_bet365": odds_b365.get("url") or "https://www.bet365.es",
+                "odds": odds,
+                "odds_winamax": odds,
+                "odds_bet365": odds_b365,
                 "has_winamax_odds": w_has_1x2,
                 "has_bet365_odds": b_has_1x2,
                 "missing_odds": not (w_has_1x2 and b_has_1x2) if (not is_finished and not match_is_past) else False,
@@ -1642,7 +1695,14 @@ class WebDataExporter:
                         # Només per al dia d'avui es cerquen quotes de mercat per a les combinades diàries
                         if target_date == today_iso and mr.get("status") != "FINISHED":
                             odds = self.winamax.get_match_odds(mr["home_name"], mr["away_name"], competition_id=mr["competition_id"])
-                            odds_b365 = self.bet365.get_match_odds(mr["home_name"], mr["away_name"], competition_id=mr["competition_id"], match_pred=single_pred, winamax_odds=odds)
+                            odds_b365 = self.bet365.get_match_odds(
+                                mr["home_name"],
+                                mr["away_name"],
+                                competition_id=mr["competition_id"],
+                                match_pred=single_pred,
+                                winamax_odds=odds,
+                                match_date_time=mr.get("date_time")
+                            )
                             single_pred["odds"] = odds
                             single_pred["odds_winamax"] = odds
                             single_pred["odds_bet365"] = odds_b365
@@ -2493,10 +2553,77 @@ class WebDataExporter:
         combos["DAILY"] = daily_combos
 
 
+        # Auditoria de cobertura i frescor de quotes per competició
+        audit_stats = {}
+        for meta in COMPETITIONS_META:
+            cid = meta["id"]
+            stat = {
+                "name": meta["name"],
+                "eligible": 0,
+                "associated": 0,
+                "valid_1x2": 0,
+                "valid_ou25": 0,
+                "valid_btts": 0,
+                "valid_corners": 0,
+                "valid_cards": 0,
+                "discarded_stale": 0,
+                "discarded_unmatched": 0,
+            }
+            c_matches = predictions.get(cid, {}).get("matches", [])
+            for m in c_matches:
+                if m.get("status") not in ("FINISHED", "LIVE") and m.get("home_goals") is None:
+                    stat["eligible"] += 1
+                    b_odds = m.get("odds_bet365") or {}
+                    if b_odds.get("matched"):
+                        stat["associated"] += 1
+                    else:
+                        stat["discarded_unmatched"] += 1
+                    if b_odds.get("is_stale"):
+                        stat["discarded_stale"] += 1
+                    if (m.get("odds_1x2_bet365") or {}).get("1") and not b_odds.get("is_stale"):
+                        stat["valid_1x2"] += 1
+                    if (m.get("odds_ou25_bet365") or {}).get("over"):
+                        stat["valid_ou25"] += 1
+                    if (m.get("odds_btts_bet365") or {}).get("yes"):
+                        stat["valid_btts"] += 1
+                    if m.get("odds_corners_bet365"):
+                        stat["valid_corners"] += 1
+                    if m.get("odds_cards_bet365"):
+                        stat["valid_cards"] += 1
+            audit_stats[cid] = stat
+
+        print("\n" + "=" * 88)
+        print("📊 AUDITORIA DE COBERTURA I FRESCOR DE QUOTES (BET365 / MOVIODDS)")
+        print("=" * 88)
+        print(f"{'COMPETICIÓ':<14} | {'ELEG.':<5} | {'ASSOC.':<6} | {'1X2':<5} | {'O/U2.5':<6} | {'BTTS':<5} | {'CÓRN':<5} | {'TARG':<5} | {'OBSOLET':<7} | {'NO ASSOC':<8}")
+        print("-" * 88)
+        tot_e = tot_a = tot_1 = tot_ou = tot_bt = tot_co = tot_ca = tot_st = tot_un = 0
+        for cid, st in audit_stats.items():
+            tot_e += st["eligible"]
+            tot_a += st["associated"]
+            tot_1 += st["valid_1x2"]
+            tot_ou += st["valid_ou25"]
+            tot_bt += st["valid_btts"]
+            tot_co += st["valid_corners"]
+            tot_ca += st["valid_cards"]
+            tot_st += st["discarded_stale"]
+            tot_un += st["discarded_unmatched"]
+            print(f"{cid:<14} | {st['eligible']:<5} | {st['associated']:<6} | {st['valid_1x2']:<5} | {st['valid_ou25']:<6} | {st['valid_btts']:<5} | {st['valid_corners']:<5} | {st['valid_cards']:<5} | {st['discarded_stale']:<7} | {st['discarded_unmatched']:<8}")
+        print("-" * 88)
+        print(f"{'TOTAL':<14} | {tot_e:<5} | {tot_a:<6} | {tot_1:<5} | {tot_ou:<6} | {tot_bt:<5} | {tot_co:<5} | {tot_ca:<5} | {tot_st:<7} | {tot_un:<8}")
+        print("=" * 88 + "\n")
+
         # Protecció de Value bets si el scraper de Winamax ha estat bloquejat al núvol
         if len(all_value_bets) == 0 and previous_data.get("value_bets"):
             print(f"   🛡️ PROTECCIÓ: Preservant {len(previous_data['value_bets'])} apostes de valor de la memòria cau prèvia (bloqueig IP cloud detectat).")
-            all_value_bets = previous_data["value_bets"]
+            stale_contingency = []
+            for vb in previous_data["value_bets"]:
+                vb_copy = dict(vb)
+                vb_copy["is_stale"] = True
+                vb_copy["status"] = "OBSOLETE"
+                vb_copy["provenance"] = "STALE_CACHE_CONTINGENCY"
+                stale_contingency.append(vb_copy)
+            all_value_bets = stale_contingency
 
         # Ordenar Value bets pel millor edge %
         all_value_bets.sort(key=lambda x: (float(x.get("edge_pct")) if x.get("edge_pct") is not None else -999.0), reverse=True)
@@ -2537,7 +2664,8 @@ class WebDataExporter:
             print("\n" + "=" * 78)
             print(f"⚠️  [ALERTA CRÍTICA DE DADES] S'han detectat {len(self.odds_alerts)} partits sense quotes a Winamax / Bet365:")
             for a in self.odds_alerts:
-                print(f"   • [{a['competition_name']}] {a['matchup']} ({a['date']}) -> Falten: {', '.join(a['missing_bookmakers'])}")
+                missing_str = ', '.join(a.get('missing_bookmakers') or a.get('missing_markets') or [])
+                print(f"   • [{a['competition_name']}] {a['matchup']} ({a['date']}) -> Falten: {missing_str}")
             print("=" * 78 + "\n")
             try:
                 from notifier.email_notifier import send_missing_odds_alert

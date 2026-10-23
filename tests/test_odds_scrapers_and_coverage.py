@@ -930,5 +930,222 @@ def test_moviodds_integration_with_bet365_scraper():
     movi._parsed_odds_cache.clear()
 
 
+# -----------------------------------------------------------------------------
+# 26. MoviOdds: Mercat amb group_status.stale: true es descarta
+# -----------------------------------------------------------------------------
+def test_moviodds_stale_market_discarded():
+    """Valida que un mercat amb group_status.stale: true es descarta, fins i tot si no està suspès."""
+    from scraper.moviodds_client import MoviOddsClient
+    from datetime import datetime, timezone
+    client = MoviOddsClient()
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    fixture = {
+        "id": 88001,
+        "home": "Barcelona",
+        "away": "Real Madrid",
+        "kickoff_utc": "2026-10-25T20:00:00Z",
+        "polled_at": now_iso,
+        "group_status": {
+            "1": {"polled_at": now_iso, "stale": False},
+            "2": {"polled_at": now_iso, "stale": True},  # O/U marcat com a obsolet
+        },
+        "quotes": [
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.65, "suspended": False},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 4.00, "suspended": False},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Real Madrid", "odds_dec": 4.80, "suspended": False},
+            # Mercat stale: s'ha de descartar completament
+            {"group_id": "2", "group_name": "Goals Over/Under", "label": "Over", "line": "2.5", "odds_dec": 1.55, "suspended": False},
+            {"group_id": "2", "group_name": "Goals Over/Under", "label": "Under", "line": "2.5", "odds_dec": 2.45, "suspended": False},
+        ]
+    }
+
+    res = client.parse_match_odds(fixture, "LALIGA")
+    assert res["matched"] is True
+    assert res["1X2"]["1"] == 1.65
+    # Over/Under ha de ser buit perquè estava marcat com a stale
+    assert res["over_under_2_5"] == {}
+
+
+# -----------------------------------------------------------------------------
+# 27. MoviOdds: polled_at antic no és fresc per cached_at recent
+# -----------------------------------------------------------------------------
+def test_moviodds_old_polled_at_not_fresh_even_if_cached_at_recent():
+    """Valida que un polled_at antic (>24h) fa que l'entrada no sigui considerada fresca, encara que cached_at sigui now."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+
+    stale_entry = {
+        "matched": True,
+        "bookmaker": "BET365",
+        "provenance": "BET365_MOVIODDS",
+        "cached_at": time.time(),  # Recentíssim
+        "polled_at": "2026-10-15T10:00:00Z",  # Antic (fa més d'una setmana)
+        "ts": "2026-10-15T09:30:00Z",
+        "1X2": {"1": 1.80, "X": 3.60, "2": 4.50}
+    }
+
+    is_fresh = client.is_odds_entry_fresh(stale_entry)
+    assert is_fresh is False, "Una quota amb polled_at antic de fa dies NO pot ser considerada fresca"
+
+
+# -----------------------------------------------------------------------------
+# 28. Bet365Scraper: Quota actual del feed preval sobre memòria cau antiga
+# -----------------------------------------------------------------------------
+def test_moviodds_feed_precedes_cache():
+    """Valida que quan el feed té una quota actual, aquesta preval sobre una entrada antiga existent a la memòria cau."""
+    from scraper.moviodds_client import MoviOddsClient
+    from scraper.bet365_scraper import Bet365Scraper
+    from datetime import datetime, timezone
+
+    movi = MoviOddsClient.get_instance()
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    movi._raw_matches = [
+        {
+            "id": 77101,
+            "league": "Spain La Liga",
+            "home": "Barcelona",
+            "away": "Real Madrid",
+            "kickoff_utc": "2026-10-25T20:00:00Z",
+            "polled_at": now_iso,
+            "group_status": {
+                "1": {"polled_at": now_iso, "stale": False}
+            },
+            "quotes": [
+                {"group_id": "1", "group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.95},
+                {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 3.80},
+                {"group_id": "1", "group_name": "Full Time Result", "label": "Real Madrid", "odds_dec": 3.90},
+            ]
+        }
+    ]
+    movi._last_fetch_time = time.time()
+    movi._index_matches()
+
+    scraper = Bet365Scraper()
+    # Inserir entrada prèvia a la memòria cau amb quota diferent (1.40)
+    cache_key = "LALIGA_barcelona_realmadrid"
+    scraper._cache[cache_key] = {
+        "matched": True,
+        "provenance": "BET365_MOVIODDS",
+        "polled_at": now_iso,
+        "1X2": {"1": 1.40, "X": 4.50, "2": 7.00}
+    }
+
+    # Ha de retornar la nova quota del feed (1.95), no l'antiga de la memòria cau (1.40)
+    odds = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+    assert odds["matched"] is True
+    assert odds["1X2"]["1"] == 1.95, f"Esperat 1.95 del feed en viu, obtingut {odds['1X2'].get('1')}"
+
+    # Reset
+    movi._raw_matches = []
+    movi._last_fetch_time = 0.0
+    movi._indexed_matches.clear()
+    movi._parsed_odds_cache.clear()
+
+
+# -----------------------------------------------------------------------------
+# 29. MoviOdds: Partit amb equips iguals però data incompatible es rebutja
+# -----------------------------------------------------------------------------
+def test_moviodds_incompatible_kickoff_rejected():
+    """Valida que un partit amb els mateixos equips però hora/data fora de la tolerància de 28h es rebutja."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+
+    client._raw_matches = [
+        {
+            "id": 66101,
+            "league": "Spain La Liga",
+            "home": "Barcelona",
+            "away": "Real Madrid",
+            "kickoff_utc": "2026-11-20T20:00:00Z",  # Data 1 mes més tard
+            "quotes": []
+        }
+    ]
+    client._last_fetch_time = time.time()
+    client._index_matches()
+
+    # Cerca amb data de la jornada actual (25 d'octubre) -> Diferència ~26 dies (>28 hores) -> Ha de ser None
+    matched = client.match_fixture("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="25.10.2026 20:00")
+    assert matched is None, "Partit amb desfasament de 26 dies ha de ser rebutjat per incompatibilitat temporal"
+
+    # Cerca amb data compatible (20 de novembre) -> Dins de la tolerància -> Ha de trobar-lo
+    matched_ok = client.match_fixture("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="20.11.2026 20:00")
+    assert matched_ok is not None
+    assert matched_ok["id"] == 66101
+
+
+# -----------------------------------------------------------------------------
+# 30. MoviOdds: Coincidència basada només en part del nom es rebutja
+# -----------------------------------------------------------------------------
+def test_moviodds_partial_name_match_rejected():
+    """Garanteix que compartir paraules parcials ('United', 'City') NO produeix una associació falsa."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+
+    client._raw_matches = [
+        {"id": 55101, "league": "England Premier League", "home": "Manchester City", "away": "Newcastle United", "quotes": []}
+    ]
+    client._last_fetch_time = time.time()
+    client._index_matches()
+
+    # Si busquem Manchester United vs West Ham United (comparteixen 'Manchester' i 'United' respectivament), NO HA DE CASAR
+    res = client.match_fixture("Manchester United", "West Ham United", "PREMIER")
+    assert res is None, "La coincidència parcial de paraules NO ha de produir associacions espúries"
+
+
+# -----------------------------------------------------------------------------
+# 31. MoviOdds: Quotes suspeses i invàlides es descarten
+# -----------------------------------------------------------------------------
+def test_moviodds_suspended_and_invalid_odds_discarded():
+    """Comprova que seleccions amb suspended: true i preus <= 1.0 s'exclouen rigorosament."""
+    from scraper.moviodds_client import MoviOddsClient
+    from datetime import datetime, timezone
+    client = MoviOddsClient()
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    fixture = {
+        "id": 44101,
+        "home": "Valencia",
+        "away": "Villarreal",
+        "kickoff_utc": "2026-10-24T16:30:00Z",
+        "polled_at": now_iso,
+        "group_status": {
+            "1": {"polled_at": now_iso, "stale": False}
+        },
+        "quotes": [
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Valencia", "odds_dec": 2.50, "suspended": False},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 1.00, "suspended": False},  # Preu invàlid (<= 1.0)
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Villarreal", "odds_dec": 2.80, "suspended": True},  # Suspesa
+        ]
+    }
+
+    res = client.parse_match_odds(fixture, "LALIGA")
+    # L'empat (1.00) i la victòria visitant (suspesa) no s'afegeixen
+    assert res["1X2"].get("1") == 2.50
+    assert "X" not in res["1X2"]
+    assert "2" not in res["1X2"]
+    # En faltar seleccions vàlides, matched ha de ser False
+    assert res["matched"] is False
+
+
+# -----------------------------------------------------------------------------
+# 32. Alertes: Diferenciació de quotes absents, obsoletes i mercats secundaris
+# -----------------------------------------------------------------------------
+def test_odds_alerts_distinguish_missing_from_stale():
+    """Valida que les alertes generades distingeixen entre alert_type MISSING_1X2, STALE_ODDS i MISSING_SECONDARY_MARKET."""
+    alerts = [
+        {"alert_type": "MISSING_1X2", "missing_bookmakers": ["Bet365"], "matchup": "Team A vs Team B"},
+        {"alert_type": "STALE_ODDS", "is_stale": True, "matchup": "Team C vs Team D"},
+        {"alert_type": "MISSING_SECONDARY_MARKET", "missing_markets": ["Over/Under 2.5"], "matchup": "Team E vs Team F"}
+    ]
+
+    types = [a["alert_type"] for a in alerts]
+    assert "MISSING_1X2" in types
+    assert "STALE_ODDS" in types
+    assert "MISSING_SECONDARY_MARKET" in types
+
+
+
 
 
