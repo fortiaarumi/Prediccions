@@ -1178,7 +1178,7 @@ function renderValueBets() {
   // Mapejar i calcular exactament l'edge real per a la casa d'apostes activa
   let bets = rawBets.map(b => {
     const odd = isB365
-      ? (b.bookie_odd_bet365 != null ? b.bookie_odd_bet365 : (b.bookie_odd != null ? +(b.bookie_odd * 1.015).toFixed(2) : null))
+      ? (b.bookie_odd_bet365 != null ? b.bookie_odd_bet365 : null)
       : (b.bookie_odd_winamax != null ? b.bookie_odd_winamax : b.bookie_odd);
 
     const prob = (b.model_prob != null ? b.model_prob : 0) / 100.0;
@@ -1835,11 +1835,11 @@ function renderComboCardsHtml(allCards, lKey, leagueTitle) {
     const isB365 = (currentBookie === 'BET365');
 
     const baseOdd = isB365
-      ? (c.combined_odd_bet365 || (c.combined_odd ? c.combined_odd * 1.015 : 1.0))
+      ? (c.combined_odd_bet365 != null ? c.combined_odd_bet365 : null)
       : (c.combined_odd_winamax || c.combined_odd || 1.0);
     const boosterPct = isB365 ? 0 : (c.booster_pct || 0);
-    const boostedOdd = (!isB365 && boosterPct > 0) ? (c.boosted_odd || (baseOdd * (1.0 + boosterPct / 100.0))) : baseOdd;
-    const effectivePayout = effectiveStake * boostedOdd;
+    const boostedOdd = (!isB365 && boosterPct > 0) ? (c.boosted_odd || (baseOdd ? baseOdd * (1.0 + boosterPct / 100.0) : null)) : baseOdd;
+    const effectivePayout = (effectiveStake && boostedOdd) ? effectiveStake * boostedOdd : 0;
 
     window.combosRegistry[comboKey] = {
       ...c,
@@ -1897,8 +1897,8 @@ function renderComboCardsHtml(allCards, lKey, leagueTitle) {
             </div>
           </div>
           <div style="text-align: right;">
-            <div class="combo-odd-pill ${oddCls}">@ ${boostedOdd.toFixed(2)}</div>
-            ${hasBooster ? `<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">base @${baseOdd.toFixed(2)}</div>` : `<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">${isB365 ? '🟢 Bet365' : '🔴 Winamax'}</div>`}
+            <div class="combo-odd-pill ${oddCls}">${boostedOdd != null ? `@ ${boostedOdd.toFixed(2)}` : 'Pendent de quotes'}</div>
+            ${hasBooster ? `<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">base @${baseOdd != null ? baseOdd.toFixed(2) : '-'}</div>` : `<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">${isB365 ? '🟢 Bet365' : '🔴 Winamax'}</div>`}
           </div>
         </div>
 
@@ -1958,7 +1958,7 @@ function renderComboCardsHtml(allCards, lKey, leagueTitle) {
             const catTag = cat ? `<span class="leg-category-tag">${catIcon} ${cat}</span>` : '';
             const modelProb = l.model_prob != null ? l.model_prob.toFixed(1) : '-';
             const legOdd = isB365
-              ? (l.bookie_odd_bet365 != null ? l.bookie_odd_bet365.toFixed(2) : (l.bookie_odd != null ? (l.bookie_odd * 1.015).toFixed(2) : '-'))
+              ? (l.bookie_odd_bet365 != null ? l.bookie_odd_bet365.toFixed(2) : '-')
               : (l.bookie_odd_winamax != null ? l.bookie_odd_winamax.toFixed(2) : (l.bookie_odd != null ? l.bookie_odd.toFixed(2) : '-'));
 
             return `
@@ -4068,7 +4068,7 @@ function openQuickAssistant(comboKey) {
 
       const isB365 = (currentBookie === 'BET365');
       const legOdd = isB365
-        ? (leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : (leg.bookie_odd != null ? (leg.bookie_odd * 1.015).toFixed(2) : '-'))
+        ? (leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : '-')
         : (leg.bookie_odd_winamax != null ? leg.bookie_odd_winamax.toFixed(2) : (leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-'));
       const modelProb = leg.model_prob != null ? leg.model_prob.toFixed(1) : '-';
       const legUrl = isB365
@@ -4181,7 +4181,7 @@ function copyModalComboSummary() {
 
   (combo.legs || []).forEach((leg, i) => {
     const lOdd = isB365
-      ? (leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : (leg.bookie_odd != null ? (leg.bookie_odd * 1.015).toFixed(2) : '-'))
+      ? (leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : '-')
       : (leg.bookie_odd_winamax != null ? leg.bookie_odd_winamax.toFixed(2) : (leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-'));
     text += `${i + 1}. [${leg.matchup}] 👉 ${leg.selection_name} (@${lOdd}) [Model: ${leg.model_prob}%]\n`;
     const lUrl = isB365 ? (leg.url_bet365 || directLink) : (leg.url || directLink);

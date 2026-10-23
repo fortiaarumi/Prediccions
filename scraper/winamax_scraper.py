@@ -368,9 +368,11 @@ class WinamaxScraper:
                                     elif "más de 2,5" in lbl_lower or "más de 2.5" in lbl_lower:
                                         odds_data["goals"]["Over 2.5"] = float(val)
                                         odds_data["over_under_2_5"]["Over 2.5"] = float(val)
+                                        odds_data["over_under_2_5"]["over"] = float(val)
                                     elif "menos de 2,5" in lbl_lower or "menos de 2.5" in lbl_lower:
                                         odds_data["goals"]["Under 2.5"] = float(val)
                                         odds_data["over_under_2_5"]["Under 2.5"] = float(val)
+                                        odds_data["over_under_2_5"]["under"] = float(val)
                                     elif "más de 3,5" in lbl_lower or "más de 3.5" in lbl_lower:
                                         odds_data["goals"]["Over 3.5"] = float(val)
                                     elif "menos de 3,5" in lbl_lower or "menos de 3.5" in lbl_lower:
@@ -405,8 +407,10 @@ class WinamaxScraper:
                                 if val is not None:
                                     if lbl.lower() in ["sí", "si", "yes"]:
                                         odds_data["btts"]["Sí"] = float(val)
+                                        odds_data["btts"]["yes"] = float(val)
                                     elif lbl.lower() in ["no"]:
                                         odds_data["btts"]["No"] = float(val)
+                                        odds_data["btts"]["no"] = float(val)
 
                         # Targetes
                         elif "tarjeta" in b_cat_lower and b_title_lower == "número total de tarjetas":
