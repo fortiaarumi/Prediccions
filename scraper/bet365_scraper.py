@@ -142,95 +142,36 @@ class Bet365Scraper:
             except Exception:
                 pass
 
-        # 1. Comprovar memòria cau
+        # 1. Comprovar memòria cau pròpia de Bet365 (amb validació de frescor, màxim 24h)
         if cache_key in self._cache:
             cached_entry = self._cache[cache_key]
             if isinstance(cached_entry, dict) and cached_entry.get("1X2") and cached_entry.get("matched"):
-                return cached_entry
+                cached_time = cached_entry.get("cached_at") or cached_entry.get("timestamp")
+                # Si té data de memòria cau, verificar que no sigui més antiga de 24h
+                is_fresh = True
+                if cached_time:
+                    try:
+                        c_ts = float(cached_time)
+                        if time.time() - c_ts > 86400:
+                            is_fresh = False
+                    except (ValueError, TypeError):
+                        pass
+                # No acceptar entrades sintètiques derivades antigues
+                if is_fresh and not cached_entry.get("is_derived_from_winamax"):
+                    return cached_entry
 
-        # 2. Generar les quotes Bet365 calibrades fidelment respecte al mercat real espanyol
-        # Bet365 opera típicament amb un marge del ~4.5% (RTP ~95.5%), molt proper a Winamax (~94.5% - 95.0%).
-        # Per evitar anomalies o quotes irreals, s'ancora SEMPRE a les quotes de mercat reals de Winamax si estan disponibles.
-        has_winamax_1x2 = winamax_odds and isinstance(winamax_odds.get("1X2"), dict) and winamax_odds["1X2"].get("1")
-
-        if has_winamax_1x2:
-            w_1x2 = winamax_odds.get("1X2", {})
-            w_dc = winamax_odds.get("double_chance", {})
-            w_ou = winamax_odds.get("over_under_2_5", {})
-            w_btts = winamax_odds.get("btts", {})
-
-            w1 = float(w_1x2.get("1") or 2.0)
-            wx = float(w_1x2.get("X") or 3.2)
-            w2 = float(w_1x2.get("2") or 2.5)
-
-            # Bet365 sol oferir un retorn lleugerament superior en empats o favorits
-            b1 = round(w1 * (1.015 if w1 <= w2 else 0.995), 2)
-            bx = round(wx * 1.025, 2)
-            b2 = round(w2 * (1.015 if w2 < w1 else 0.995), 2)
-
-            odds_data["1X2"] = {
-                "1": max(1.05, min(15.0, b1)),
-                "X": max(1.15, min(12.0, bx)),
-                "2": max(1.05, min(15.0, b2))
-            }
-            odds_data["matched"] = True
-
-            # Doble Oportunitat Bet365
-            w_1x = float(w_dc.get("1X") or (1.0 / (1.0 / w1 + 1.0 / wx)))
-            w_12 = float(w_dc.get("12") or (1.0 / (1.0 / w1 + 1.0 / w2)))
-            w_x2 = float(w_dc.get("X2") or (1.0 / (1.0 / wx + 1.0 / w2)))
-
-            odds_data["double_chance"] = {
-                "1X": round(max(1.02, min(5.0, w_1x * 1.01)), 2),
-                "12": round(max(1.02, min(5.0, w_12 * 1.01)), 2),
-                "X2": round(max(1.02, min(5.0, w_x2 * 1.01)), 2)
-            }
-
-            # Over / Under 2.5 Bet365
-            w_over = float(w_ou.get("over") or 1.95)
-            w_under = float(w_ou.get("under") or 1.85)
-            odds_data["over_under_2_5"] = {
-                "over": round(max(1.10, min(8.0, w_over * 1.015)), 2),
-                "under": round(max(1.10, min(8.0, w_under * 1.01)), 2)
-            }
-
-            # BTTS Bet365
-            w_byes = float(w_btts.get("yes") or 1.90)
-            w_bno = float(w_btts.get("no") or 1.90)
-            odds_data["btts"] = {
-                "yes": round(max(1.15, min(6.0, w_byes * 1.015)), 2),
-                "no": round(max(1.15, min(6.0, w_bno * 1.01)), 2)
-            }
-
-            # Córners i Targetes (si estan a Winamax o calibració segura)
-            w_corners = winamax_odds.get("corners", {})
-            if w_corners:
-                for k, v in w_corners.items():
-                    if v and v > 1.0:
-                        odds_data["corners"][k] = round(v * 1.01, 2)
-            w_cards = winamax_odds.get("cards", {})
-            if w_cards:
-                for k, v in w_cards.items():
-                    if v and v > 1.0:
-                        odds_data["cards"][k] = round(v * 1.01, 2)
-
-            # Desar a la memòria cau només si hi ha dades de mercat reals
-            self._cache[cache_key] = odds_data
-            self._save_cache()
-            return odds_data
-
-        else:
-            # NO INVENTAR QUOTES: Si no s'han detectat dades oficials a Winamax ni Bet365,
-            # mai no s'utilitza el model matemàtic com a fallback per inventar quotes.
-            # Es deixa com a no detectat perquè el sistema alerti l'usuari i es puguin introduir manualment.
-            odds_data["matched"] = False
-            odds_data["1X2"] = {}
-            odds_data["double_chance"] = {}
-            odds_data["over_under_2_5"] = {}
-            odds_data["btts"] = {}
-            odds_data["status"] = "PENDING_REAL_ODDS"
-            odds_data["error"] = "NO_ODDS_DETECTED"
-            return odds_data
+        # 2. NO DEPENDRE DE WINAMAX NI INVENTAR QUOTES:
+        # Cada casa ha de tenir els seus propis resultats reals. Si Bet365 no disposa de quotes
+        # oficials verificades o d'un override manual de l'usuari, es marca com a no detectat
+        # perquè el sistema activi l'alerta i l'usuari pugui introduir-les manualment.
+        odds_data["matched"] = False
+        odds_data["1X2"] = {}
+        odds_data["double_chance"] = {}
+        odds_data["over_under_2_5"] = {}
+        odds_data["btts"] = {}
+        odds_data["status"] = "PENDING_REAL_ODDS"
+        odds_data["error"] = "NO_ODDS_DETECTED"
+        return odds_data
 
     def generate_combo_link(self, legs: list, competition_id: str = "LALIGA") -> str:
         """

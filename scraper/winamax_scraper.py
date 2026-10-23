@@ -65,7 +65,7 @@ class WinamaxScraper:
         tid = str(WINAMAX_TOURNAMENTS.get(comp_id, "32"))
         base_tournament_url = f"https://www.winamax.es/apuestas-deportivas/sports/1/{tid}"
         print(f"\n[*] Cercant dinàmicament a Winamax ({comp_id} | Categoria {tid}): {home_team} vs {away_team}...")
-        
+
         odds_data = {
             "source": f"Winamax Espanya ({comp_id})",
             "url": base_tournament_url,
@@ -183,7 +183,7 @@ class WinamaxScraper:
             "roma": "roma", "lazio": "lazio",
             "fiorentina": "fiorentina", "bologna": "bolonia", "bolonia": "bolonia",
             "torino": "torino", "monza": "monza",
-            "genoa": "genoa", "udinese": "udinese",
+            "genoa": "genoa", "genova": "genoa", "udinese": "udinese",
             "cagliari": "cagliari", "lecce": "lecce",
             "parma": "parma", "como": "como",
             "venezia": "venecia", "venecia": "venecia",
@@ -215,11 +215,11 @@ class WinamaxScraper:
             else:
                 cmd = ['curl.exe' if os.name == 'nt' else 'curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', base_tournament_url]
                 res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
-                
+
                 start = res.stdout.find('var PRELOADED_STATE = ')
                 if start == -1:
                     start = res.stdout.find('PRELOADED_STATE = ')
-                
+
                 if start != -1:
                     state_str = res.stdout[start + len('var PRELOADED_STATE = '):] if 'var PRELOADED_STATE = ' in res.stdout[start:start+30] else res.stdout[start + len('PRELOADED_STATE = '):]
                     state, _ = json.JSONDecoder().raw_decode(state_str)

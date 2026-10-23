@@ -13,11 +13,26 @@
 
 let appData = null;
 let currentTab = 'novetats';
-let currentLeague = 'ALL';
+let currentLeague = 'ALL'; // Deprecated global fallback
+let selectedLeagueRankings = 'LALIGA';
+let selectedLeaguePredictions = 'ALL';
+let selectedLeagueValue = 'ALL';
+let selectedLeagueCombos = 'DAILY';
 let currentSearch = '';
 let currentMatchFilter = 'ALL';
 let activeModalComboKey = null;
 window.combosRegistry = {};
+
+try {
+  const lr = localStorage.getItem('prediccions_league_rankings');
+  if (lr && lr !== 'ALL' && lr !== 'DAILY') selectedLeagueRankings = lr;
+  const lp = localStorage.getItem('prediccions_league_predictions');
+  if (lp) selectedLeaguePredictions = lp;
+  const lv = localStorage.getItem('prediccions_league_value');
+  if (lv) selectedLeagueValue = lv;
+  const lc = localStorage.getItem('prediccions_league_combos');
+  if (lc) selectedLeagueCombos = lc;
+} catch (e) {}
 
 // Estat de la casa d'apostes seleccionada (WINAMAX vs BET365)
 let currentBookie = 'WINAMAX';
@@ -71,6 +86,26 @@ function cleanSelectionName(str) {
 }
 window.cleanSelectionName = cleanSelectionName;
 
+function cleanMatchup(matchup, leg) {
+  if (!matchup || typeof matchup !== 'string' || ['partit', 'partit sense nom', 'partit únic'].includes(matchup.trim().toLowerCase())) {
+    if (leg) {
+      if (leg.home_team && leg.away_team) {
+        return `${leg.home_team} vs ${leg.away_team}`;
+      }
+      if (leg.home_team_id && leg.away_team_id) {
+        return `${leg.home_team_id} vs ${leg.away_team_id}`;
+      }
+      const sel = (leg.selection_name || leg.name || '').toLowerCase();
+      if (sel.includes('levante') || sel.includes('sevilla')) {
+        return 'Levante UD vs Sevilla FC';
+      }
+    }
+    return 'Pendent de resoldre';
+  }
+  return matchup.replace(/\{['"]id['"]:\s*['"][^'"]*['"],\s*['"]name['"]:\s*['"]([^'"]*)['"]\}/g, '$1');
+}
+window.cleanMatchup = cleanMatchup;
+
 function copyBet365Slip(comboKey) {
   const combo = window.combosRegistry[comboKey];
   if (!combo) return;
@@ -84,7 +119,7 @@ function copyBet365Slip(comboKey) {
   text += `SELECCIONS DEL CUPÓ:\n`;
   legs.forEach((leg, i) => {
     const o = leg.bookie_odd_bet365 != null ? leg.bookie_odd_bet365.toFixed(2) : (leg.bookie_odd != null ? leg.bookie_odd.toFixed(2) : '-');
-    text += `${i + 1}. [${leg.matchup}] 👉 ${cleanSelectionName(leg.selection_name)}\n`;
+    text += `${i + 1}. [${cleanMatchup(leg.matchup, leg)}] 👉 ${cleanSelectionName(leg.selection_name)}\n`;
   });
 
   navigator.clipboard.writeText(text).then(() => {
@@ -152,15 +187,36 @@ window.onJornadaChange = function(type, val) {
     if (!isNaN(parsed)) jVal = parsed;
   }
   if (type === 'predictions') {
-    selectedJornadaPred[currentLeague] = jVal;
-    UserAuth.saveCurrentPreference(`jornada_pred_${currentLeague}`, jVal);
+    selectedJornadaPred[selectedLeaguePredictions] = jVal;
+    UserAuth.saveCurrentPreference(`jornada_pred_${selectedLeaguePredictions}`, jVal);
     renderPredictions();
   } else if (type === 'combos') {
-    selectedJornadaCombo[currentLeague] = jVal;
-    UserAuth.saveCurrentPreference(`jornada_combo_${currentLeague}`, jVal);
+    selectedJornadaCombo[selectedLeagueCombos] = jVal;
+    UserAuth.saveCurrentPreference(`jornada_combo_${selectedLeagueCombos}`, jVal);
     renderCombos();
   }
 };
+
+function onLeagueChange(section, league) {
+  if (section === 'rankings') {
+    selectedLeagueRankings = league;
+    try { localStorage.setItem('prediccions_league_rankings', league); } catch (e) {}
+    renderPowerRankings();
+  } else if (section === 'predictions') {
+    selectedLeaguePredictions = league;
+    try { localStorage.setItem('prediccions_league_predictions', league); } catch (e) {}
+    renderPredictions();
+  } else if (section === 'value') {
+    selectedLeagueValue = league;
+    try { localStorage.setItem('prediccions_league_value', league); } catch (e) {}
+    renderValueBets();
+  } else if (section === 'combos') {
+    selectedLeagueCombos = league;
+    try { localStorage.setItem('prediccions_league_combos', league); } catch (e) {}
+    renderCombos();
+  }
+}
+window.onLeagueChange = onLeagueChange;
 
 // Memòria cau local resilient per a combinades (evita que desapareguin durant canvis de jornada o càrrega)
 window._cachedCombos = {};
@@ -203,20 +259,22 @@ function initEventListeners() {
     });
   });
 
-  // League Selector Pills
+  // League Selector Pills (Legacy / Safe fallback)
   const leagueButtons = document.querySelectorAll('.pill-btn');
-  leagueButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      leagueButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentLeague = btn.getAttribute('data-league');
-      UserAuth.saveCurrentPreference('favoriteLeague', currentLeague);
-      if (currentLeague === 'DAILY' && currentTab !== 'combos') {
-        switchTab('combos');
-      }
-      applyFilters();
+  if (leagueButtons && leagueButtons.length > 0) {
+    leagueButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        leagueButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentLeague = btn.getAttribute('data-league');
+        UserAuth.saveCurrentPreference('favoriteLeague', currentLeague);
+        if (currentLeague === 'DAILY' && currentTab !== 'combos') {
+          switchTab('combos');
+        }
+        applyFilters();
+      });
     });
-  });
+  }
 
   // Search Box
   const searchInput = document.getElementById('global-search');
@@ -511,11 +569,16 @@ function renderPowerRankings() {
   const container = document.getElementById('rankings-tables-container');
   if (!container || !appData.power_rankings) return;
 
+  const sel = document.getElementById('select-league-rankings');
+  if (sel && sel.value !== selectedLeagueRankings) {
+    sel.value = selectedLeagueRankings;
+  }
+
   const comps = appData.metadata.competitions || [];
   let html = '';
 
   comps.forEach(c => {
-    if (currentLeague !== 'ALL' && currentLeague !== 'DAILY' && currentLeague !== c.id) return;
+    if (selectedLeagueRankings !== c.id) return;
 
     let teams = appData.power_rankings[c.id] || [];
     if (currentSearch) {
@@ -605,29 +668,34 @@ function renderPredictions() {
   const grid = document.getElementById('matches-grid');
   if (!grid || !appData.predictions) return;
 
+  const selLeague = document.getElementById('select-league-pred');
+  if (selLeague && selLeague.value !== selectedLeaguePredictions) {
+    selLeague.value = selectedLeaguePredictions;
+  }
+
   // Actualitzar Desplegable de Jornades
   const selPred = document.getElementById('select-jornada-pred');
   const badgePred = document.getElementById('badge-jornada-pred');
 
   if (selPred) {
-    if (currentLeague === 'ALL' || currentLeague === 'DAILY') {
+    if (selectedLeaguePredictions === 'ALL') {
       selPred.innerHTML = `<option value="ACTIVE" selected>Jornada en Curs de Cada Lliga</option>`;
       if (badgePred) {
-        badgePred.textContent = (currentLeague === 'DAILY') ? 'Totes les Lligues' : 'Totes les Lligues';
+        badgePred.textContent = 'Totes les Lligues';
         badgePred.className = 'jornada-badge badge-active';
       }
     } else {
-      const pData = appData.predictions[currentLeague];
+      const pData = appData.predictions[selectedLeaguePredictions];
       if (pData) {
         const activeJ = pData.active_jornada || pData.jornada || 8;
         const available = pData.available_jornadas || [activeJ];
         const maxJ = Math.max(...available, activeJ + 2);
         const minJ = 1;
 
-        let targetJ = selectedJornadaPred[currentLeague];
+        let targetJ = selectedJornadaPred[selectedLeaguePredictions];
         if (!targetJ || targetJ === 'ACTIVE') {
           targetJ = activeJ;
-          selectedJornadaPred[currentLeague] = activeJ;
+          selectedJornadaPred[selectedLeaguePredictions] = activeJ;
         }
 
         let optionsHtml = '';
@@ -664,12 +732,12 @@ function renderPredictions() {
   let futureJornadaNum = 0;
 
   comps.forEach(c => {
-    if (currentLeague !== 'ALL' && currentLeague !== 'DAILY' && currentLeague !== c.id) return;
+    if (selectedLeaguePredictions !== 'ALL' && selectedLeaguePredictions !== c.id) return;
     const pData = appData.predictions[c.id];
     if (!pData) return;
 
     const activeJ = pData.active_jornada || pData.jornada || 8;
-    const targetJ = (currentLeague === 'ALL') ? activeJ : (selectedJornadaPred[c.id] || activeJ);
+    const targetJ = (selectedLeaguePredictions === 'ALL') ? activeJ : (selectedJornadaPred[c.id] || activeJ);
 
     if (targetJ > activeJ) {
       isFutureSelected = true;
@@ -1057,6 +1125,11 @@ function renderValueBets() {
   const container = document.getElementById('value-bets-container');
   if (!container || !appData.value_bets) return;
 
+  const selValLeague = document.getElementById('select-league-value');
+  if (selValLeague && selValLeague.value !== selectedLeagueValue) {
+    selValLeague.value = selectedLeagueValue;
+  }
+
   const isB365 = (currentBookie === 'BET365');
   let rawBets = appData.value_bets || [];
 
@@ -1104,8 +1177,8 @@ function renderValueBets() {
   bets = bets.filter(b => b._activeEdge > 0.0);
 
   // Filtre 2: Lliga
-  if (currentLeague !== 'ALL' && currentLeague !== 'DAILY') {
-    bets = bets.filter(b => b.competition_id === currentLeague);
+  if (selectedLeagueValue !== 'ALL') {
+    bets = bets.filter(b => b.competition_id === selectedLeagueValue);
   }
 
   // Filtre 3: Cerca de text
@@ -1250,11 +1323,7 @@ function renderArbitrage() {
   let surebets = arbData.surebets || [];
   let nearArbs = arbData.near_arbs || [];
 
-  // Filtre per lliga
-  if (currentLeague !== 'ALL' && currentLeague !== 'DAILY') {
-    surebets = surebets.filter(a => a.competition_id === currentLeague);
-    nearArbs = nearArbs.filter(a => a.competition_id === currentLeague);
-  }
+  // Surebets: Sense selector de lliga. Vista global de totes les oportunitats.
 
   // Filtre per cerca de text
   if (currentSearch) {
@@ -1456,6 +1525,11 @@ function renderCombos() {
     badgeEl.innerHTML = `<span>Inversió per jornada: <strong>${safeFmt}</strong> Segura · <strong>${semiFmt}</strong> Semi · <strong>${riskyFmt}</strong> Arriscada</span>`;
   }
 
+  const selComboLeague = document.getElementById('select-league-combos');
+  if (selComboLeague && selComboLeague.value !== selectedLeagueCombos) {
+    selComboLeague.value = selectedLeagueCombos;
+  }
+
   // Actualitzar Desplegable de Jornades de Combinades
   const selCombo = document.getElementById('select-jornada-combo');
   const badgeCombo = document.getElementById('badge-jornada-combo');
@@ -1463,16 +1537,10 @@ function renderCombos() {
 
   if (selCombo) {
     if (lblCombo) {
-      lblCombo.textContent = (currentLeague === 'DAILY') ? '📅 Data de les Combinades:' : '📅 Jornada Combinades:';
+      lblCombo.textContent = (selectedLeagueCombos === 'DAILY') ? '📅 Data de les Combinades:' : '📅 Jornada Combinades:';
     }
 
-    if (currentLeague === 'ALL') {
-      selCombo.innerHTML = `<option value="ACTIVE" selected>Totes les Lligues & Avui</option>`;
-      if (badgeCombo) {
-        badgeCombo.textContent = 'Totes les Lligues';
-        badgeCombo.className = 'jornada-badge badge-active';
-      }
-    } else if (currentLeague === 'DAILY') {
+    if (selectedLeagueCombos === 'DAILY') {
       const dailySuite = appData.combos?.DAILY || appData.daily_combos;
       if (dailySuite) {
         const availableDates = dailySuite.available_dates || [];
@@ -1502,17 +1570,17 @@ function renderCombos() {
         }
       }
     } else {
-      const cData = appData.combos[currentLeague];
+      const cData = appData.combos[selectedLeagueCombos];
       if (cData) {
-        const activeJ = cData.active_jornada || (appData.predictions[currentLeague]?.active_jornada) || 8;
+        const activeJ = cData.active_jornada || (appData.predictions[selectedLeagueCombos]?.active_jornada) || 8;
         const available = cData.available_jornadas || [activeJ];
         const maxJ = Math.max(...available, activeJ + 2);
         const minJ = 1;
 
-        let targetJ = selectedJornadaCombo[currentLeague];
+        let targetJ = selectedJornadaCombo[selectedLeagueCombos];
         if (!targetJ || targetJ === 'ACTIVE') {
           targetJ = activeJ;
-          selectedJornadaCombo[currentLeague] = activeJ;
+          selectedJornadaCombo[selectedLeagueCombos] = activeJ;
         }
 
         let optionsHtml = '';
@@ -1551,14 +1619,14 @@ function renderCombos() {
   let futureComboJ = 0;
 
   leagueKeys.forEach(lKey => {
-    if (currentLeague !== 'ALL' && currentLeague !== lKey) return;
+    if (selectedLeagueCombos !== lKey) return;
 
     if (lKey === 'DAILY') {
       const dailySuite = appData.combos?.DAILY || appData.daily_combos;
       if (!dailySuite) return;
 
       const activeDate = dailySuite.active_date || dailySuite.date || '';
-      const targetDate = (currentLeague === 'DAILY') ? (selectedJornadaCombo['DAILY'] || activeDate) : activeDate;
+      const targetDate = selectedJornadaCombo['DAILY'] || activeDate;
 
       let dayData = dailySuite;
       if (dailySuite.by_date && dailySuite.by_date[targetDate]) {
@@ -1637,7 +1705,7 @@ function renderCombos() {
     if (!cData) return;
 
     const activeJ = cData.active_jornada || (appData.predictions[lKey]?.active_jornada) || 8;
-    const targetJ = (currentLeague === 'ALL') ? activeJ : (selectedJornadaCombo[lKey] || activeJ);
+    const targetJ = selectedJornadaCombo[lKey] || activeJ;
 
     if (targetJ > activeJ || (targetJ === activeJ && cData.has_started === false)) {
       isFutureCombos = true;
@@ -1801,17 +1869,18 @@ function renderComboCardsHtml(allCards, lKey, leagueTitle) {
           <div class="combo-progress-bar">
             ${legs.map((l, lIdx) => {
               let segCls = 'seg-pending';
-              let segTitle = `Partit ${lIdx + 1} (${l.matchup}): Pendent`;
+              const mName = cleanMatchup(l.matchup, l);
+              let segTitle = `Partit ${lIdx + 1} (${mName}): Pendent`;
               const isSuspended = l.status === 'SUSPENDED' || (l.actual_result && l.actual_result.toLowerCase().includes('suspès'));
               if (l.status === 'WON') {
                 segCls = 'seg-won';
-                segTitle = `Partit ${lIdx + 1} (${l.matchup}): Encertat! (${l.actual_result || ''})`;
+                segTitle = `Partit ${lIdx + 1} (${mName}): Encertat! (${l.actual_result || ''})`;
               } else if (l.status === 'LOST') {
                 segCls = 'seg-lost';
-                segTitle = `Partit ${lIdx + 1} (${l.matchup}): Fallat (${l.actual_result || ''})`;
+                segTitle = `Partit ${lIdx + 1} (${mName}): Fallat (${l.actual_result || ''})`;
               } else if (isSuspended) {
                 segCls = 'seg-suspended';
-                segTitle = `Partit ${lIdx + 1} (${l.matchup}): ⏸️ Suspès (${l.actual_result || ''})`;
+                segTitle = `Partit ${lIdx + 1} (${mName}): ⏸️ Suspès (${l.actual_result || ''})`;
               }
               return `<div class="combo-progress-segment ${segCls}" title="${segTitle}"></div>`;
             }).join('')}
@@ -1854,7 +1923,7 @@ function renderComboCardsHtml(allCards, lKey, leagueTitle) {
               <li class="combo-leg-item ${legItemCls}">
                 <div class="leg-desc">
                   <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 2px;">
-                    <span class="leg-matchup">${l.matchup}</span>
+                    <span class="leg-matchup">${cleanMatchup(l.matchup, l)}</span>
                     ${catTag}
                   </div>
                   <div class="leg-name">${cleanSelectionName(l.selection_name)}</div>
@@ -2015,11 +2084,12 @@ const UserAuth = {
     const account = users[user.username];
     if (account && account.preferences) {
       const p = account.preferences;
+      if (p.leagueRankings) selectedLeagueRankings = p.leagueRankings;
+      if (p.leaguePredictions) selectedLeaguePredictions = p.leaguePredictions;
+      if (p.leagueValue) selectedLeagueValue = p.leagueValue;
+      if (p.leagueCombos) selectedLeagueCombos = p.leagueCombos;
       if (p.favoriteLeague) {
         currentLeague = p.favoriteLeague;
-        document.querySelectorAll('.pill-btn').forEach(b => {
-          b.classList.toggle('active', b.getAttribute('data-league') === currentLeague);
-        });
       }
       if (p.matchFilter) {
         currentMatchFilter = p.matchFilter;
@@ -2111,6 +2181,10 @@ const UserAuth = {
         password: btoa(password),
         createdAt: new Date().toISOString(),
         preferences: {
+          leagueRankings: selectedLeagueRankings,
+          leaguePredictions: selectedLeaguePredictions,
+          leagueValue: selectedLeagueValue,
+          leagueCombos: selectedLeagueCombos,
           favoriteLeague: currentLeague,
           preferredTab: currentTab,
           matchFilter: currentMatchFilter
@@ -2539,13 +2613,14 @@ const PersonalBets = {
               <div class="combo-progress-bar" style="height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.08); overflow: hidden; display: flex; gap: 2px;">
                 ${legs.map((l, lIdx) => {
                   let segCls = 'seg-pending';
-                  let segTitle = `Partit ${lIdx + 1} (${l.matchup}): Pendent`;
+                  const mName = cleanMatchup(l.matchup, l);
+                  let segTitle = `Partit ${lIdx + 1} (${mName}): Pendent`;
                   if (l.status === 'WON') {
                     segCls = 'seg-won';
-                    segTitle = `Partit ${lIdx + 1} (${l.matchup}): Encertat! (${l.actual_result || ''})`;
+                    segTitle = `Partit ${lIdx + 1} (${mName}): Encertat! (${l.actual_result || ''})`;
                   } else if (l.status === 'LOST') {
                     segCls = 'seg-lost';
-                    segTitle = `Partit ${lIdx + 1} (${l.matchup}): Fallat (${l.actual_result || ''})`;
+                    segTitle = `Partit ${lIdx + 1} (${mName}): Fallat (${l.actual_result || ''})`;
                   }
                   return `<div class="combo-progress-segment ${segCls}" style="flex: 1;" title="${segTitle}"></div>`;
                 }).join('')}
@@ -2564,8 +2639,8 @@ const PersonalBets = {
                     legIcon = '❌';
                     legColor = 'var(--accent-rose)';
                     legBg = 'rgba(244, 63, 94, 0.08)';
-                  }
-                  const homeShort = l.matchup ? l.matchup.split(' vs ')[0] : '';
+                  const cMatch = cleanMatchup(l.matchup, l);
+                  const homeShort = cMatch.includes(' vs ') ? cMatch.split(' vs ')[0] : cMatch;
                   return `
                     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; padding: 4px 8px; background: ${legBg}; border-radius: 4px; border-left: 2px solid ${legColor};">
                       <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 82%;">

@@ -100,18 +100,6 @@
   <!-- Global Filter & Search Bar -->
   <section class="filter-bar-section">
     <div class="filter-bar-container">
-      <div class="league-pills" id="league-selector">
-        <button class="pill-btn active" data-league="ALL" id="pill-all">Totes les Lligues</button>
-        <button class="pill-btn" data-league="LALIGA" id="pill-laliga">🇪🇸 LaLiga EA Sports</button>
-        <button class="pill-btn" data-league="PREMIER" id="pill-premier">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</button>
-        <button class="pill-btn" data-league="HYPERMOTION" id="pill-hypermotion">🇪🇸 LaLiga Hypermotion</button>
-        <button class="pill-btn" data-league="CHAMPIONSHIP" id="pill-championship">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship</button>
-        <button class="pill-btn" data-league="BUNDESLIGA" id="pill-bundesliga">🇩🇪 Bundesliga</button>
-        <button class="pill-btn" data-league="LIGUE1" id="pill-ligue1">🇫🇷 Ligue 1</button>
-        <button class="pill-btn" data-league="SERIEA" id="pill-seriea">🇮🇹 Serie A</button>
-        <button class="pill-btn" data-league="DAILY" id="pill-daily">📅 Combinades del Dia</button>
-      </div>
-
       <div class="search-box">
         <span class="search-icon">🔍</span>
         <input type="text" id="global-search" placeholder="Cercar equip, partit o selecció..." aria-label="Cercar">
@@ -134,7 +122,7 @@
 
   <!-- Main Content Area -->
   <main class="main-content" id="main-content">
-    
+
     <!-- SECTION 1: NOVETATS I ACTUALITZACIONS DIÀRIES -->
     <section class="tab-content active" id="section-novetats" role="tabpanel">
       <div class="section-hero">
@@ -159,6 +147,23 @@
         <div class="hero-stats-row" id="rankings-summary-stats"></div>
       </div>
 
+      <div class="jornada-control-bar" id="rankings-control-bar">
+        <div class="jornada-select-group">
+          <label for="select-league-rankings" class="jornada-select-label">🏆 Competició:</label>
+          <div class="jornada-select-wrapper">
+            <select id="select-league-rankings" class="jornada-dropdown" onchange="onLeagueChange('rankings', this.value)" aria-label="Selecciona la lliga de Power Rànquings">
+              <option value="LALIGA" selected>🇪🇸 LaLiga EA Sports</option>
+              <option value="PREMIER">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+              <option value="HYPERMOTION">🇪🇸 LaLiga Hypermotion</option>
+              <option value="CHAMPIONSHIP">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship</option>
+              <option value="BUNDESLIGA">🇩🇪 Bundesliga</option>
+              <option value="LIGUE1">🇫🇷 Ligue 1</option>
+              <option value="SERIEA">🇮🇹 Serie A</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div id="rankings-tables-container" class="tables-grid">
         <!-- Taules generades dinàmicament per JS -->
       </div>
@@ -175,6 +180,22 @@
       </div>
 
       <div class="jornada-control-bar" id="predictions-jornada-bar">
+        <div class="jornada-select-group">
+          <label for="select-league-pred" class="jornada-select-label">🏆 Lliga:</label>
+          <div class="jornada-select-wrapper">
+            <select id="select-league-pred" class="jornada-dropdown" onchange="onLeagueChange('predictions', this.value)" aria-label="Selecciona la lliga de prediccions">
+              <option value="ALL" selected>🌍 Totes les Lligues</option>
+              <option value="LALIGA">🇪🇸 LaLiga EA Sports</option>
+              <option value="PREMIER">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+              <option value="HYPERMOTION">🇪🇸 LaLiga Hypermotion</option>
+              <option value="CHAMPIONSHIP">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship</option>
+              <option value="BUNDESLIGA">🇩🇪 Bundesliga</option>
+              <option value="LIGUE1">🇫🇷 Ligue 1</option>
+              <option value="SERIEA">🇮🇹 Serie A</option>
+            </select>
+          </div>
+        </div>
+
         <div class="jornada-select-group">
           <label for="select-jornada-pred" class="jornada-select-label">📅 Jornada:</label>
           <div class="jornada-select-wrapper">
@@ -209,6 +230,24 @@
         <div>
           <h1 class="section-title">💎 Apostes Recomanades (+EV%)</h1>
           <p class="section-subtitle">Seleccions on la probabilitat real del nostre model matemàtic supera clarament la probabilitat implícita a les cuotes de Winamax Espanya.</p>
+        </div>
+      </div>
+
+      <div class="jornada-control-bar" id="value-control-bar">
+        <div class="jornada-select-group">
+          <label for="select-league-value" class="jornada-select-label">🏆 Lliga:</label>
+          <div class="jornada-select-wrapper">
+            <select id="select-league-value" class="jornada-dropdown" onchange="onLeagueChange('value', this.value)" aria-label="Selecciona la lliga d'apostes de valor">
+              <option value="ALL" selected>🌍 Totes les Lligues</option>
+              <option value="LALIGA">🇪🇸 LaLiga EA Sports</option>
+              <option value="PREMIER">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+              <option value="HYPERMOTION">🇪🇸 LaLiga Hypermotion</option>
+              <option value="CHAMPIONSHIP">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship</option>
+              <option value="BUNDESLIGA">🇩🇪 Bundesliga</option>
+              <option value="LIGUE1">🇫🇷 Ligue 1</option>
+              <option value="SERIEA">🇮🇹 Serie A</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -299,7 +338,23 @@
 
       <div class="jornada-control-bar" id="combos-jornada-bar">
         <div class="jornada-select-group">
-          <label for="select-jornada-combo" class="jornada-select-label">📅 Jornada Combinades:</label>
+          <label for="select-league-combos" class="jornada-select-label">🎯 Tipus de Combinada:</label>
+          <div class="jornada-select-wrapper">
+            <select id="select-league-combos" class="jornada-dropdown" onchange="onLeagueChange('combos', this.value)" aria-label="Selecciona la categoria o lliga de combinades">
+              <option value="DAILY" selected>📅 Combinades del Dia</option>
+              <option value="LALIGA">🇪🇸 LaLiga EA Sports</option>
+              <option value="PREMIER">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+              <option value="HYPERMOTION">🇪🇸 LaLiga Hypermotion</option>
+              <option value="CHAMPIONSHIP">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EFL Championship</option>
+              <option value="BUNDESLIGA">🇩🇪 Bundesliga</option>
+              <option value="LIGUE1">🇫🇷 Ligue 1</option>
+              <option value="SERIEA">🇮🇹 Serie A</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="jornada-select-group" id="combos-jornada-group">
+          <label for="select-jornada-combo" class="jornada-select-label">📅 Data de les Combinades:</label>
           <div class="jornada-select-wrapper">
             <select id="select-jornada-combo" class="jornada-dropdown" onchange="onJornadaChange('combos', this.value)" aria-label="Selecciona la jornada de combinades">
               <!-- Opcions generades dinàmicament per JS -->
@@ -496,7 +551,7 @@
           <div class="guide-badge">💻 ORDINADOR (CHROME / EDGE / BRAVE / FIREFOX)</div>
           <h2 class="guide-title">Assistent Ràpid per a Ordinador</h2>
           <p class="guide-text">Obre cada partit en una pestanya amb un sol clic i afegeix directament les seleccions recomanades pel model.</p>
-          
+
           <div class="guide-steps">
             <div class="guide-step">
               <span class="step-num">1</span>
@@ -543,7 +598,7 @@
           <div class="guide-badge">📱 TELÈFON MÒBIL (IOS / ANDROID)</div>
           <h2 class="guide-title">Assistent Ràpid Universal (Sense Extensions)</h2>
           <p class="guide-text">Si apostes des del mòbil, no cal instal·lar absolutament res. Fes servir el nostre assistent dissenyat expressament per a la pantalla tàctil i l'App oficial.</p>
-          
+
           <div class="guide-steps">
             <div class="guide-step">
               <span class="step-num">1</span>
@@ -583,7 +638,7 @@
         <div class="guide-card" style="grid-column: 1 / -1;">
           <div class="guide-badge">💡 TRUCS I PREGUNTES FREQÜENTS</div>
           <h2 class="guide-title">Consells per aprofitar al màxim l'automatització</h2>
-          
+
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 14px;">
             <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 16px;">
               <strong style="color: var(--accent-cyan); font-size: 14px; display: block; margin-bottom: 6px;">⚽ On són les apostes de gols (ex: Barça marca +0.5)?</strong>

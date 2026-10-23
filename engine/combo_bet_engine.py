@@ -25,8 +25,9 @@ from collections import Counter
 from typing import List, Dict, Any, Optional, Tuple, Set
 
 class ComboBetEngine:
-    def __init__(self):
+    def __init__(self, db=None):
         self.winamax_base_url = "https://www.winamax.es/apuestas-deportivas/sports/1/32"
+        self.db = db
 
     def calculate_combined_probability(self, probabilities: List[float]) -> float:
         """
@@ -958,18 +959,49 @@ class ComboBetEngine:
         Extreu i prepara tots els mercats individuals i multimerkat d'un ÚNIC PARTIT,
         incloent 1X2, Doble Oportunitat, Gols, BTTS, Targetes, Córners i Marcadors Exactes.
         """
-        matchup = match.get("matchup", "Partit")
+        matchup = match.get("matchup") or ""
         comp_id = match.get("competition_id", "")
         date_str = match.get("date", "")
         url = match.get("url") or match.get("winamax_url") or self.winamax_base_url
 
-        if " vs " in matchup:
+        db = getattr(self, "db", None)
+        if db is None:
+            try:
+                from database.db_manager import DatabaseManager
+                db = DatabaseManager()
+            except Exception:
+                db = None
+
+        if " vs " in matchup and matchup.strip().lower() not in ["partit vs partit", "partit", "partit sense nom"]:
             parts = matchup.split(" vs ", 1)
             h_name = parts[0].strip()
             a_name = parts[1].strip()
         else:
-            h_name = match.get("home_team", {}).get("name") if isinstance(match.get("home_team"), dict) else str(match.get("home_team") or "Local")
-            a_name = match.get("away_team", {}).get("name") if isinstance(match.get("away_team"), dict) else str(match.get("away_team") or "Visitant")
+            h_name = match.get("home_team", {}).get("name") if isinstance(match.get("home_team"), dict) else str(match.get("home_team") or match.get("home_name") or "")
+            a_name = match.get("away_team", {}).get("name") if isinstance(match.get("away_team"), dict) else str(match.get("away_team") or match.get("away_name") or "")
+            if not h_name and match.get("home_team_id") and db:
+                try:
+                    h_team = db.get_team(match.get("home_team_id"))
+                    if h_team:
+                        h_name = h_team.get("name", match.get("home_team_id"))
+                except Exception:
+                    pass
+            if not a_name and match.get("away_team_id") and db:
+                try:
+                    a_team = db.get_team(match.get("away_team_id"))
+                    if a_team:
+                        a_name = a_team.get("name", match.get("away_team_id"))
+                except Exception:
+                    pass
+            h_name = h_name or "Local"
+            a_name = a_name or "Visitant"
+            if h_name != "Local" and a_name != "Visitant":
+                matchup = f"{h_name} vs {a_name}"
+            else:
+                matchup = matchup if (matchup and matchup.strip().lower() not in ["partit", "partit sense nom"]) else "Partit"
+
+        h_id = match.get("home_team_id") or (db.find_team_id(h_name) if db else None)
+        a_id = match.get("away_team_id") or (db.find_team_id(a_name) if db else None)
 
         raw_pred = match.get("raw_pred", match)
         bet_analysis = match.get("bet_analysis") or raw_pred.get("bet_analysis", {})
@@ -986,6 +1018,8 @@ class ComboBetEngine:
                 item["competition_id"] = comp_id
                 item["date"] = date_str
                 item["url"] = url
+                item["home_team_id"] = h_id
+                item["away_team_id"] = a_id
                 k = self._get_leg_key(item)
                 if k not in seen_keys:
                     seen_keys.add(k)
@@ -1119,7 +1153,13 @@ class ComboBetEngine:
             item_sc = {"matchup": matchup, "name": f"Marcador Exacte: {sc}", "category": "Marcador Exacte", "bookie_odd": sc_odd, "model_prob": sc_prob, "competition_id": comp_id, "date": date_str, "url": url}
             if self._get_leg_key(item_sc) not in seen_keys:
                 markets.append(item_sc)
-                seen_keys.add(self._get_leg_key(item_sc))
+        for m in markets:
+            if not m.get("home_team_id") and h_id:
+                m["home_team_id"] = h_id
+            if not m.get("away_team_id") and a_id:
+                m["away_team_id"] = a_id
+            if not m.get("matchup") or m.get("matchup") in ["Partit", "Partit Sense Nom"]:
+                m["matchup"] = matchup
 
         return markets
 

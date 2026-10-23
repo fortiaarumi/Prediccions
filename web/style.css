@@ -47,7 +47,7 @@
 
 body {
   background-color: var(--bg-primary);
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
     radial-gradient(circle at 85% 20%, rgba(16, 185, 129, 0.07) 0%, transparent 35%),
     radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 45%);
@@ -4009,14 +4009,14 @@ body {
 .jornada-control-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   background: rgba(17, 24, 39, 0.65);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   padding: 10px 16px;
   margin-bottom: 16px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 16px;
 }
 
 .jornada-select-group {
@@ -4282,34 +4282,37 @@ body {
     display: none;
   }
 
-  /* Desplaçament tàctil suau per al selector de lligues */
+  /* Barra de filtres i cerca superior a mòbil */
   .filter-bar-section {
-    padding: 6px 10px;
+    padding: 10px 14px;
   }
 
   .filter-bar-container {
     flex-direction: column;
-    gap: 8px;
+    align-items: stretch;
+    gap: 10px;
   }
 
-  .league-pills {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 6px;
-    padding-bottom: 4px;
+  .search-box {
     width: 100%;
-  }
-  .league-pills::-webkit-scrollbar {
-    display: none;
+    min-width: 100%;
+    min-height: 42px;
   }
 
-  .pill-btn {
+  .bookie-toggle-wrapper {
+    width: 100%;
+    justify-content: space-between;
+    min-height: 42px;
+  }
+
+  .bookie-toggle-group {
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .bookie-pill-btn {
     padding: 6px 12px;
-    font-size: 12px;
-    flex-shrink: 0;
+    font-size: 13px;
   }
 
   /* Desplaçament tàctil horitzontal per a pestanyes superiors */
@@ -4335,10 +4338,61 @@ body {
     white-space: nowrap;
   }
 
+  /* Desplegables de lliga i jornada per a mòbil */
+  .jornada-control-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+    gap: 12px;
+    border-radius: var(--radius-md);
+  }
+
+  .jornada-select-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .jornada-select-wrapper {
+    width: 100%;
+  }
+
+  .jornada-dropdown {
+    width: 100%;
+    min-height: 46px;
+    font-size: 14px;
+    padding: 10px 38px 10px 14px;
+    border-radius: var(--radius-sm);
+  }
+
+  .jornada-badge {
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+
   /* Targetes més compactes i intuïtives a mòbil */
   .match-card {
-    padding: 12px;
-    margin-bottom: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .match-card-header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .matchup-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .team-name {
+    font-size: 14px;
+    word-break: break-word;
   }
 
   .match-header {
@@ -4354,22 +4408,78 @@ body {
     gap: 8px;
   }
 
+  /* Value Bets i Targetes de Combinades */
+  .value-card {
+    padding: 14px;
+    overflow: hidden;
+  }
+
+  .value-metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .value-card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .value-card-actions button,
+  .value-card-actions a {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .combo-card {
-    padding: 12px;
+    padding: 14px;
+    overflow: hidden;
   }
 
   .combo-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .combo-legs-list {
-    gap: 6px;
+    gap: 8px;
   }
 
   .combo-leg-item {
-    padding: 8px 10px;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .leg-desc {
+    min-width: 170px;
+    flex: 1 1 auto;
+  }
+
+  .leg-odds-box {
+    min-width: 70px;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .combo-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .combo-actions button,
+  .combo-actions a {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Barra de Navegació Inferior (Dock per a Mòbil) */
