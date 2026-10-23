@@ -10,6 +10,7 @@ Recull, processa i exporta tota la informació a 'web/data/data.json':
 5. Les 6 Combinades recomanades per lliga (2 Segures @25€, 2 Semi @10€, 2 Arriscades @5€) + Multi-Lliga
 6. Tauler financer 'Què hagués passat si...' amb KPIs de rendibilitat, ROI i historial jornada a jornada.
 """
+from __future__ import annotations
 
 import sys
 if hasattr(sys.stdout, 'reconfigure'):
@@ -22,7 +23,7 @@ import os
 import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
