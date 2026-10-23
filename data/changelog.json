@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-10-23",
-    "timestamp": "2026-10-23T22:03:27.672694",
+    "timestamp": "2026-10-23T22:41:52.860671",
     "title": "Actualització Diària del Model · 23/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -9,7 +9,7 @@
       "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
       "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 56 partit(s):",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 53 partit(s):",
       "   • [LaLiga EA Sports J10] Deportivo Alavés vs Málaga CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Carlos Muñiz Muñoz'",
       "     └ Impacte model: Targetes >4.5: 50.4% ➔ 63.8% (+13.4%) | Vermella: 22.1% ➔ 24.4% (+2.3%) | Victòria Local: 50.9% ➔ 50.9% (+0.0%)",
       "   • [LaLiga EA Sports J10] Rayo Vallecano vs Elche CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Miguel Sesma Espinosa'",
@@ -40,8 +40,6 @@
       "     └ Impacte model: Targetes >4.5: 49.4% ➔ 53.5% (+4.1%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 31.7% ➔ 31.7% (+0.0%)",
       "   • [Premier League J8] Sunderland vs Leeds Utd: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Stuart Attwell'",
       "     └ Impacte model: Targetes >4.5: 53.1% ➔ 48.5% (-4.6%) | Vermella: 22.1% ➔ 13.1% (-9.0%) | Victòria Local: 41.8% ➔ 41.8% (+0.0%)",
-      "   • [LaLiga Hypermotion J11] Granada CF vs Real Valladolid: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'De Aza M. H.'",
-      "     └ Impacte model: Targetes >4.5: 46.9% ➔ 61.3% (+14.4%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 58.0% ➔ 58.0% (+0.0%)",
       "   • [LaLiga Hypermotion J11] Córdoba CF vs SD Eibar: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Gordillo J. M.'",
       "     └ Impacte model: Targetes >4.5: 45.9% ➔ 60.5% (+14.6%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 25.7% ➔ 25.7% (+0.0%)",
       "   • [LaLiga Hypermotion J11] CD Leganés vs RCD Mallorca: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Rivera Olmedo O.'",
@@ -66,8 +64,6 @@
       "     └ Impacte model: Targetes >4.5: 45.9% ➔ 38.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 19.3% ➔ 19.3% (+0.0%)",
       "   • [EFL Championship J12] Preston North End vs West Bromwich Albion: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Bell E.'",
       "     └ Impacte model: Targetes >4.5: 46.9% ➔ 39.5% (-7.4%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 28.5% ➔ 28.5% (+0.0%)",
-      "   • [Bundesliga J7] VfB Stuttgart vs Borussia M'gladbach: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Jollenbeck M.'",
-      "     └ Impacte model: Targetes >4.5: 54.3% ➔ 40.5% (-13.8%) | Vermella: 22.1% ➔ 9.5% (-12.6%) | Victòria Local: 44.8% ➔ 44.8% (+0.0%)",
       "   • [Bundesliga J7] FC Augsburgo vs 1. FC Union Berlin: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Braun R.'",
       "     └ Impacte model: Targetes >4.5: 54.3% ➔ 40.6% (-13.7%) | Vermella: 22.1% ➔ 9.5% (-12.6%) | Victòria Local: 45.1% ➔ 45.1% (+0.0%)",
       "   • [Bundesliga J7] 1. FC Colonia vs FC Schalke 04: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Osmers H.'",
@@ -102,8 +98,6 @@
       "     └ Impacte model: Targetes >4.5: 46.3% ➔ 37.9% (-8.4%) | Vermella: 22.1% ➔ 16.5% (-5.6%) | Victòria Local: 43.4% ➔ 43.4% (+0.0%)",
       "   • [Ligue 1 J8] Paris Saint-Germain vs Olympique Lyonnais: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Brisard J.'",
       "     └ Impacte model: Targetes >4.5: 35.8% ➔ 27.3% (-8.5%) | Vermella: 22.1% ➔ 16.5% (-5.6%) | Victòria Local: 42.4% ➔ 42.4% (+0.0%)",
-      "   • [Serie A J8] Torino FC vs AC Monza: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Marchetti M.'",
-      "     └ Impacte model: Targetes >4.5: 37.8% ➔ 41.3% (+3.5%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 41.7% ➔ 41.7% (+0.0%)",
       "   • [Serie A J8] Cagliari Calcio vs Bologna FC: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Bonacina K.'",
       "     └ Impacte model: Targetes >4.5: 44.8% ➔ 48.3% (+3.5%) | Vermella: 22.1% ➔ 19.7% (-2.4%) | Victòria Local: 41.5% ➔ 41.5% (+0.0%)",
       "   • [Serie A J8] Como 1907 vs US Sassuolo: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Di Marco D.'",
@@ -713,45 +707,6 @@
         }
       },
       {
-        "match_id": "HYPERMOTION_J11_GRA_VLL",
-        "matchup": "Granada CF vs Real Valladolid",
-        "competition_id": "HYPERMOTION",
-        "competition_name": "LaLiga Hypermotion",
-        "jornada": 11,
-        "date": "23.10.2026 18:30",
-        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
-        "new_referee": "De Aza M. H.",
-        "ref_stats": {
-          "yellow_avg": 5.2,
-          "red_avg": 0.3,
-          "fouls_avg": 26.5,
-          "strictness_index": 1.15
-        },
-        "changes": {
-          "cards_over_45": {
-            "before": 46.9,
-            "after": 61.3,
-            "delta": 14.4
-          },
-          "red_card_prob": {
-            "before": 22.1,
-            "after": 25.9,
-            "delta": 3.8
-          },
-          "fouls_exp": {
-            "before": 24.5,
-            "after": 26.5,
-            "delta": 2.0
-          },
-          "home_win_prob": {
-            "before": 58.0,
-            "after": 58.0,
-            "delta": 0.0
-          },
-          "summary": "Designació oficial de De Aza M. H. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
-        }
-      },
-      {
         "match_id": "HYPERMOTION_J11_COR_EIB",
         "matchup": "Córdoba CF vs SD Eibar",
         "competition_id": "HYPERMOTION",
@@ -1217,45 +1172,6 @@
             "delta": 0.0
           },
           "summary": "Designació oficial de Bell E. (índex severitat 1.0). Mitjana històrica de 3.8 grogues i 0.12 vermelles per partit."
-        }
-      },
-      {
-        "match_id": "BUNDESLIGA_J7_VFB_BMG",
-        "matchup": "VfB Stuttgart vs Borussia M'gladbach",
-        "competition_id": "BUNDESLIGA",
-        "competition_name": "Bundesliga",
-        "jornada": 7,
-        "date": "23.10.2026 18:30",
-        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
-        "new_referee": "Jollenbeck M.",
-        "ref_stats": {
-          "yellow_avg": 3.6,
-          "red_avg": 0.1,
-          "fouls_avg": 22.0,
-          "strictness_index": 0.88
-        },
-        "changes": {
-          "cards_over_45": {
-            "before": 54.3,
-            "after": 40.5,
-            "delta": -13.8
-          },
-          "red_card_prob": {
-            "before": 22.1,
-            "after": 9.5,
-            "delta": -12.6
-          },
-          "fouls_exp": {
-            "before": 24.5,
-            "after": 22.0,
-            "delta": -2.5
-          },
-          "home_win_prob": {
-            "before": 44.8,
-            "after": 44.8,
-            "delta": 0.0
-          },
-          "summary": "Designació oficial de Jollenbeck M. (índex severitat 0.88). Mitjana històrica de 3.6 grogues i 0.1 vermelles per partit."
         }
       },
       {
@@ -1919,45 +1835,6 @@
             "delta": 0.0
           },
           "summary": "Designació oficial de Brisard J. (índex severitat 0.95). Mitjana històrica de 3.9 grogues i 0.18 vermelles per partit."
-        }
-      },
-      {
-        "match_id": "SERIEA_J8_TOR_MNZ",
-        "matchup": "Torino FC vs AC Monza",
-        "competition_id": "SERIEA",
-        "competition_name": "Serie A",
-        "jornada": 8,
-        "date": "23.10.2026 18:45",
-        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
-        "new_referee": "Marchetti M.",
-        "ref_stats": {
-          "yellow_avg": 4.6,
-          "red_avg": 0.22,
-          "fouls_avg": 25.0,
-          "strictness_index": 1.05
-        },
-        "changes": {
-          "cards_over_45": {
-            "before": 37.8,
-            "after": 41.3,
-            "delta": 3.5
-          },
-          "red_card_prob": {
-            "before": 22.1,
-            "after": 19.7,
-            "delta": -2.4
-          },
-          "fouls_exp": {
-            "before": 24.5,
-            "after": 25.0,
-            "delta": 0.5
-          },
-          "home_win_prob": {
-            "before": 41.7,
-            "after": 41.7,
-            "delta": 0.0
-          },
-          "summary": "Designació oficial de Marchetti M. (índex severitat 1.05). Mitjana històrica de 4.6 grogues i 0.22 vermelles per partit."
         }
       },
       {

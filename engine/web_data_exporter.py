@@ -533,10 +533,6 @@ class WebDataExporter:
                     match_pred=pred,
                     winamax_odds=odds
                 )
-                if (not odds_b365.get("matched")) and existing_match_odds_b365:
-                    m_key = f"{h_id}_{a_id}"
-                    if m_key in existing_match_odds_b365:
-                        odds_b365 = existing_match_odds_b365[m_key]
             else:
                 if existing_match_odds:
                     m_key = f"{h_id}_{a_id}"
@@ -545,7 +541,9 @@ class WebDataExporter:
                 if existing_match_odds_b365:
                     m_key = f"{h_id}_{a_id}"
                     if m_key in existing_match_odds_b365:
-                        odds_b365 = existing_match_odds_b365[m_key]
+                        cand_b = existing_match_odds_b365[m_key]
+                        if cand_b.get("is_manual_override") or cand_b.get("provenance") == "BET365_OFFICIAL_FEED":
+                            odds_b365 = cand_b
 
             w_has_1x2 = bool(odds and odds.get("matched") and (odds.get("1X2") or {}).get("1"))
             b_has_1x2 = bool(odds_b365 and odds_b365.get("matched") and (odds_b365.get("1X2") or {}).get("1"))
@@ -2226,6 +2224,26 @@ class WebDataExporter:
             print(f"   [!] Error recuperant partits jugats de la jornada activa: {e}")
         return finished_matches
 
+    def _sanitize_bet365_odds(self, match_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Inutilitza i neteja quotes sintètiques de Bet365 residuals en objectes de partit."""
+        ou = match_data.get("odds_ou_bet365") or match_data.get("odds_ou25_bet365") or {}
+        btts = match_data.get("odds_btts_bet365") or {}
+        is_synth = (ou == {"over": 1.98, "under": 1.87} or btts == {"yes": 1.93, "no": 1.92})
+        has_valid_source = match_data.get("is_manual_override") or match_data.get("odds_bet365", {}).get("provenance") == "BET365_OFFICIAL_FEED"
+        
+        if is_synth or not has_valid_source:
+            match_data["odds_1x2_bet365"] = {}
+            match_data["odds_ou_bet365"] = {}
+            match_data["odds_ou25_bet365"] = {}
+            match_data["odds_btts_bet365"] = {}
+            match_data["odds_corners_bet365"] = {}
+            match_data["odds_cards_bet365"] = {}
+            match_data["odds_dc_bet365"] = {}
+            if "odds_bet365" in match_data and isinstance(match_data["odds_bet365"], dict):
+                match_data["odds_bet365"]["matched"] = False
+                match_data["odds_bet365"]["1X2"] = {}
+        return match_data
+
     def export_all(self, ingested_matches=None, evaluated_combos=None, new_combos=None, force_combos: bool = False) -> Path:
         """Executa la canalització completa i genera 'web/data/data.json'."""
         print("\n" + "=" * 75)
@@ -2273,12 +2291,18 @@ class WebDataExporter:
                                     "cached_value_bets": pm.get("value_bets", [])
                                 }
                             o_b365_1x2 = pm.get("odds_1x2_bet365")
-                            if o_b365_1x2 and o_b365_1x2.get("1") is not None:
+                            ou_b365 = pm.get("odds_ou25_bet365", {})
+                            btts_b365 = pm.get("odds_btts_bet365", {})
+                            is_synth = (ou_b365 == {"over": 1.98, "under": 1.87} or btts_b365 == {"yes": 1.93, "no": 1.92})
+                            is_valid_origin = pm.get("is_manual_override") or pm.get("odds_bet365", {}).get("provenance") == "BET365_OFFICIAL_FEED"
+                            if o_b365_1x2 and o_b365_1x2.get("1") is not None and not is_synth and is_valid_origin:
                                 existing_match_odds_b365[key] = {
                                     "matched": True,
+                                    "is_manual_override": pm.get("is_manual_override", False),
+                                    "provenance": pm.get("odds_bet365", {}).get("provenance", "BET365_OFFICIAL_FEED"),
                                     "1X2": o_b365_1x2,
-                                    "over_under_2_5": pm.get("odds_ou25_bet365", {}),
-                                    "btts": pm.get("odds_btts_bet365", {}),
+                                    "over_under_2_5": ou_b365,
+                                    "btts": btts_b365,
                                     "corners": pm.get("odds_corners_bet365", {}),
                                     "cards": pm.get("odds_cards_bet365", {}),
                                     "double_chance": pm.get("odds_dc_bet365", {}),

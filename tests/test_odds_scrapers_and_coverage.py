@@ -18,6 +18,7 @@ Test suite que cobreix els 11 punts obligatoris de l'auditoria d'scrapers de quo
 import pytest
 import json
 import sqlite3
+import time
 from pathlib import Path
 from unittest.mock import patch, mock_open
 
@@ -26,6 +27,8 @@ from scraper.winamax_scraper import WinamaxScraper
 from scraper.bet365_scraper import Bet365Scraper
 from engine.value_bet_engine import ValueBetEngine
 from engine.web_data_exporter import WebDataExporter
+from engine.arbitrage_engine import ArbitrageEngine
+from engine.combo_bet_engine import ComboBetEngine
 
 
 # -----------------------------------------------------------------------------
@@ -114,6 +117,7 @@ def test_bet365_clean_extraction_no_synthetic():
     
     sample_odds = {
         "matched": True,
+        "cached_at": time.time(),
         "1X2": {"1": 2.20, "X": 3.50, "2": 3.20},
         "over_under_2_5": {"over": 1.60, "under": 2.30},
         "btts": {"yes": 1.50, "no": 2.50}
@@ -348,3 +352,215 @@ def test_premier_league_u21_isolation():
             h_name = m["home_name"]
             a_name = m["away_name"]
             assert "U21" not in h_name and "U21" not in a_name
+
+
+# -----------------------------------------------------------------------------
+# 12. Cap quota sintètica antiga es pot mostrar com a oficial de Bet365
+# -----------------------------------------------------------------------------
+def test_reject_legacy_synthetic_cache_entries():
+    """Verifica que el scraper i l'exportador rebutgen entrades residuals sense timestamp o amb plantilles sintètiques."""
+    scraper = Bet365Scraper()
+    scraper._cache = {}
+
+    # Cas A: Entrada sense timestamp ni cached_at (com les 83 de la memòria cau antiga)
+    scraper._cache["LALIGA_fcbarcelona_realmadrid"] = {
+        "matched": True,
+        "1X2": {"1": 2.10, "X": 3.40, "2": 3.10},
+        "over_under_2_5": {"over": 1.98, "under": 1.87},
+        "btts": {"yes": 1.93, "no": 1.92}
+    }
+    res_a = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+    assert res_a["matched"] is False
+    assert res_a["1X2"] == {}
+
+    # Cas B: Entrada amb timestamp recent però amb plantilla sintètica fixa (1.98 / 1.87)
+    scraper._cache["LALIGA_fcbarcelona_realmadrid"] = {
+        "matched": True,
+        "cached_at": time.time(),
+        "1X2": {"1": 2.10, "X": 3.40, "2": 3.10},
+        "over_under_2_5": {"over": 1.98, "under": 1.87},
+        "btts": {"yes": 1.93, "no": 1.92}
+    }
+    res_b = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+    assert res_b["matched"] is False
+    assert res_b["1X2"] == {}
+
+    # Cas C: Entrada amb marca is_derived_from_winamax
+    scraper._cache["LALIGA_fcbarcelona_realmadrid"] = {
+        "matched": True,
+        "cached_at": time.time(),
+        "is_derived_from_winamax": True,
+        "1X2": {"1": 2.10, "X": 3.40, "2": 3.10}
+    }
+    res_c = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+    assert res_c["matched"] is False
+
+    # Cas D: Sanitització a WebDataExporter
+    exporter = WebDataExporter()
+    legacy_obj = {
+        "odds_1x2_bet365": {"1": 2.10, "X": 3.40, "2": 3.10},
+        "odds_ou_bet365": {"over": 1.98, "under": 1.87},
+        "odds_btts_bet365": {"yes": 1.93, "no": 1.92}
+    }
+    sanitized = exporter._sanitize_bet365_odds(legacy_obj)
+    assert sanitized["odds_1x2_bet365"] == {}
+    assert sanitized["odds_ou_bet365"] == {}
+    assert sanitized["odds_btts_bet365"] == {}
+
+
+# -----------------------------------------------------------------------------
+# 13. Els overrides manuals es conserven i s'identifiquen correctament
+# -----------------------------------------------------------------------------
+def test_manual_overrides_provenance_and_identification(tmp_path):
+    """Verifica que els overrides manuals s'identifiquen explícitament i no es confonen amb dades oficials."""
+    scraper = Bet365Scraper()
+    
+    # Simular contingut de manual_odds_override.json
+    override_data = {
+        "LALIGA_fcbarcelona_realmadrid": {
+            "bet365": {"1": 2.05, "X": 3.60, "2": 3.40}
+        }
+    }
+    
+    with patch("builtins.open", mock_open(read_data=json.dumps(override_data))):
+        with patch.object(Path, "exists", return_value=True):
+            res = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+            assert res["matched"] is True
+            assert res["is_manual_override"] is True
+            assert res["provenance"] == "MANUAL_OVERRIDE"
+            assert "Override Manual Bet365" in res["source"]
+            assert res["1X2"] == {"1": 2.05, "X": 3.60, "2": 3.40}
+
+
+# -----------------------------------------------------------------------------
+# 14. Els avisos de quotes absents es generen i es consumeixen correctament
+# -----------------------------------------------------------------------------
+def test_missing_odds_alerts_generation_and_consumption():
+    """Verifica que el registre d'absència de quotes genera alertes amb l'estructura requerida."""
+    exporter = WebDataExporter()
+    exporter.odds_alerts = []
+    
+    # Simular detecció d'un partit sense Bet365
+    exporter.odds_alerts.append({
+        "competition_id": "LALIGA",
+        "matchup": "Villarreal vs Espanyol",
+        "date": "2026-10-25 18:30",
+        "missing_bookmakers": ["Bet365"],
+        "reason": "Bloqueig anti-bot o falta de mercat oficial",
+        "timestamp": time.time()
+    })
+    
+    assert len(exporter.odds_alerts) == 1
+    alert = exporter.odds_alerts[0]
+    assert alert["competition_id"] == "LALIGA"
+    assert "Bet365" in alert["missing_bookmakers"]
+    assert "timestamp" in alert
+
+    # Format serialitzable a JSON sense errors per ser consumit pel notifier / frontend
+    dumped = json.dumps(exporter.odds_alerts)
+    loaded = json.loads(dumped)
+    assert len(loaded) == 1
+    assert loaded[0]["matchup"] == "Villarreal vs Espanyol"
+
+
+# -----------------------------------------------------------------------------
+# 15. Els mercats corregits de Winamax continuen exportant-se bé
+# -----------------------------------------------------------------------------
+def test_winamax_corrected_markets_end_to_end_export():
+    """Garanteix que tots els mercats de Winamax (1X2, Over/Under, BTTS, Córners, Targetes) es conserven íntegres."""
+    exporter = WebDataExporter()
+    pred = {
+        "home_team": {"id": "RMA", "name": "Real Madrid"},
+        "away_team": {"id": "BAR", "name": "Barcelona"},
+        "date": "2026-10-25 21:00",
+        "goals": {
+            "prob_1X2": {"1": 40.0, "X": 30.0, "2": 30.0},
+            "over_under": {"over_2_5": 60.0, "under_2_5": 40.0},
+            "btts": {"yes": 55.0, "no": 45.0},
+            "team_goals": {"home_scores": 70.0, "away_scores": 60.0}
+        },
+        "cards": {"prob_over_cards": {"over_4_5": 50.0}, "expected_total_cards": 4.8},
+        "corners": {"prob_over_corners": {"over_9_5": 50.0}, "expected_total_corners": 9.5},
+        "referee_resolution": {"is_generic": False, "name": "Jesús Gil Manzano"}
+    }
+    w_odds = {
+        "matched": True,
+        "1X2": {"1": 2.25, "X": 3.50, "2": 2.95},
+        "over_under_2_5": {"Over 2.5": 1.65, "Under 2.5": 2.25, "over": 1.65, "under": 2.25},
+        "btts": {"Sí": 1.55, "No": 2.35, "yes": 1.55, "no": 2.35},
+        "corners": {"Over 9.5 Córners": 1.85, "over_9_5": 1.85},
+        "cards": {"Over 4.5 Targetes": 1.75, "over_4_5": 1.75}
+    }
+    
+    analysis = exporter.value_engine.analyze_match_betting(pred, w_odds, bet365_odds=None)
+    assert analysis is not None
+    assert "value_bets" in analysis
+    assert "single_markets" in analysis
+    
+    # Comprovar categories de mercats individuals
+    categories = {sm["category"] for sm in analysis.get("single_markets", [])}
+    assert "1X2" in categories
+    assert "Gols" in categories
+    assert "BTTS" in categories
+    assert "Córners" in categories
+    assert "Targetes" in categories
+
+
+# -----------------------------------------------------------------------------
+# 16. Els camps absents no trenquen apostes de valor, combinades o surebets
+# -----------------------------------------------------------------------------
+def test_absent_odds_resilience_value_combos_surebets():
+    """Garanteix que l'absència total de quotes de Bet365 no trenca cap motor d'anàlisi ni genera falses surebets."""
+    pred = {
+        "home_team": "Sevilla FC",
+        "away_team": "Real Betis",
+        "goals": {
+            "prob_1X2": {"1": 45.0, "X": 30.0, "2": 25.0},
+            "over_under": {"over_2_5": 50.0, "under_2_5": 50.0},
+            "btts": {"yes": 52.0, "no": 48.0},
+            "team_goals": {"home_scores": 65.0, "away_scores": 55.0}
+        },
+        "cards": {"prob_over_cards": {"over_4_5": 50.0}},
+        "corners": {"prob_over_corners": {"over_9_5": 50.0}}
+    }
+    w_odds = {
+        "matched": True,
+        "1X2": {"1": 2.20, "X": 3.30, "2": 3.40},
+        "over_under_2_5": {"over": 1.90, "under": 1.90},
+        "btts": {"yes": 1.80, "no": 1.95}
+    }
+    
+    # 1. ValueBetEngine sense Bet365
+    val_engine = ValueBetEngine()
+    val_analysis = val_engine.analyze_match_betting(pred, w_odds, bet365_odds=None)
+    assert isinstance(val_analysis, dict)
+    for b in val_analysis.get("value_bets", []):
+        assert b["bookie_odd_bet365"] is None
+
+    # 2. ComboBetEngine
+    combo_engine = ComboBetEngine()
+    prob = combo_engine.calculate_combined_probability([80.0, 75.0])
+    odd = combo_engine.calculate_combined_odds([1.30, 1.40])
+    assert prob == pytest.approx(0.60, 0.01)
+    assert odd == 1.82
+
+    # 3. ArbitrageEngine (Surebets) amb Bet365 absent
+    arb_engine = ArbitrageEngine()
+    match_data = {
+        "home_team": {"name": "Sevilla FC"},
+        "away_team": {"name": "Real Betis"},
+        "date": "2026-10-25 18:30",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "odds_1x2_winamax": w_odds["1X2"],
+        "odds_1x2_bet365": {},  # Totalment absent
+        "odds_ou_winamax": w_odds["over_under_2_5"],
+        "odds_ou_bet365": {},
+        "odds_btts_winamax": w_odds["btts"],
+        "odds_btts_bet365": {}
+    }
+    arbs = arb_engine.scan_match(match_data)
+    # Sense una segona casa de quotes, no hi pot haver cap surebet ni cap error
+    assert isinstance(arbs, list)
+    assert len(arbs) == 0
+

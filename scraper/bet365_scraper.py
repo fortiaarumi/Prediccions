@@ -138,26 +138,36 @@ class Bet365Scraper:
                             }
                             odds_data["matched"] = True
                             odds_data["is_manual_override"] = True
+                            odds_data["source"] = f"Override Manual Bet365 ({comp_id})"
+                            odds_data["provenance"] = "MANUAL_OVERRIDE"
                             return odds_data
             except Exception:
                 pass
 
-        # 1. Comprovar memòria cau pròpia de Bet365 (amb validació de frescor, màxim 24h)
+        # 1. Comprovar memòria cau pròpia de Bet365 (amb validació estricta de procedència i frescor màx 24h)
         if cache_key in self._cache:
             cached_entry = self._cache[cache_key]
             if isinstance(cached_entry, dict) and cached_entry.get("1X2") and cached_entry.get("matched"):
                 cached_time = cached_entry.get("cached_at") or cached_entry.get("timestamp")
-                # Si té data de memòria cau, verificar que no sigui més antiga de 24h
-                is_fresh = True
+                # Obligatorietat de marca temporal: entrades sense timestamp són residus no verificats
+                is_fresh = False
                 if cached_time:
                     try:
                         c_ts = float(cached_time)
-                        if time.time() - c_ts > 86400:
-                            is_fresh = False
+                        if time.time() - c_ts <= 86400:
+                            is_fresh = True
                     except (ValueError, TypeError):
-                        pass
-                # No acceptar entrades sintètiques derivades antigues
-                if is_fresh and not cached_entry.get("is_derived_from_winamax"):
+                        is_fresh = False
+
+                # Detecció i rebuig de plantilles sintètiques conegudes (ex: Over/Under 1.98/1.87 estàtic)
+                is_synthetic_template = (
+                    cached_entry.get("is_derived_from_winamax")
+                    or cached_entry.get("over_under_2_5") == {"over": 1.98, "under": 1.87}
+                    or cached_entry.get("btts") == {"yes": 1.93, "no": 1.92}
+                )
+
+                if is_fresh and not is_synthetic_template:
+                    cached_entry["provenance"] = "BET365_OFFICIAL_FEED"
                     return cached_entry
 
         # 2. NO DEPENDRE DE WINAMAX NI INVENTAR QUOTES:
