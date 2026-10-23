@@ -1,5 +1,5 @@
 {
-  "count": 63,
+  "count": 64,
   "alerts": [
     {
       "id": "LALIGA_rayovallecano_elchecf",
@@ -498,54 +498,6 @@
       "message": "Quotes no detectades a Bet365 per al partit Sheffield United vs Derby County."
     },
     {
-      "id": "CHAMPIONSHIP_charltonathletic_norwichcity",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Charlton Athletic vs Norwich City",
-      "home_team": "Charlton Athletic",
-      "away_team": "Norwich City",
-      "date": "24.10.2026 13:30",
-      "jornada": 12,
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes no detectades a Bet365 per al partit Charlton Athletic vs Norwich City."
-    },
-    {
-      "id": "CHAMPIONSHIP_portsmouth_millwall",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Portsmouth vs Millwall",
-      "home_team": "Portsmouth",
-      "away_team": "Millwall",
-      "date": "24.10.2026 13:30",
-      "jornada": 12,
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes no detectades a Bet365 per al partit Portsmouth vs Millwall."
-    },
-    {
-      "id": "CHAMPIONSHIP_sheffieldunited_derbycounty",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Sheffield United vs Derby County",
-      "home_team": "Sheffield United",
-      "away_team": "Derby County",
-      "date": "24.10.2026 13:30",
-      "jornada": 12,
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes no detectades a Bet365 per al partit Sheffield United vs Derby County."
-    },
-    {
       "id": "CHAMPIONSHIP_blackburnrovers_wrexham",
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
@@ -608,6 +560,70 @@
         "Bet365"
       ],
       "message": "Quotes no detectades a Bet365 per al partit Preston North End vs West Bromwich Albion."
+    },
+    {
+      "id": "CHAMPIONSHIP_queensparkrangers_swanseacity",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Queens Park Rangers vs Swansea City",
+      "home_team": "Queens Park Rangers",
+      "away_team": "Swansea City",
+      "date": "24.10.2026 14:00",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Queens Park Rangers vs Swansea City."
+    },
+    {
+      "id": "CHAMPIONSHIP_stokecity_bristolcity",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Stoke City vs Bristol City",
+      "home_team": "Stoke City",
+      "away_team": "Bristol City",
+      "date": "24.10.2026 14:00",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Stoke City vs Bristol City."
+    },
+    {
+      "id": "CHAMPIONSHIP_westhamunited_southampton",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "West Ham United vs Southampton",
+      "home_team": "West Ham United",
+      "away_team": "Southampton",
+      "date": "24.10.2026 14:00",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit West Ham United vs Southampton."
+    },
+    {
+      "id": "CHAMPIONSHIP_wolverhamptonwanderers_watford",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Wolverhampton Wanderers vs Watford",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Watford",
+      "date": "24.10.2026 14:00",
+      "jornada": 12,
+      "missing_winamax": false,
+      "missing_bet365": true,
+      "missing_bookmakers": [
+        "Bet365"
+      ],
+      "message": "Quotes no detectades a Bet365 per al partit Wolverhampton Wanderers vs Watford."
     },
     {
       "id": "BUNDESLIGA_fcaugsburgo_1fcunionberlin",
