@@ -80,6 +80,11 @@ class LiveCrawler:
                 if 'ER' in fields:
                     current_round = fields['ER']
                 if 'AA' in fields and 'AE' in fields and 'AF' in fields:
+                    h_name = fields.get('AE', '')
+                    a_name = fields.get('AF', '')
+                    if comp_id in {"LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP", "BUNDESLIGA", "LIGUE1", "SERIEA"}:
+                        if re.search(r'\b(?:U21|U18|U19|U20|U23|Sub[- ]?21|Sub[- ]?18|Sub[- ]?19|Reserves|Youth)\b', f"{h_name} {a_name}", re.IGNORECASE):
+                            continue
                     ts = fields.get('AD')
                     dt_str = datetime.fromtimestamp(int(ts)).strftime('%d.%m.%Y %H:%M') if ts and ts.isdigit() else 'TBD'
                     am_note = fields.get('AM', '')
@@ -120,7 +125,7 @@ class LiveCrawler:
         # 3. Obtenir partits en joc (LIVE) o de la jornada d'avui que no figurin a fixtures/results
         comp_patterns = {
             "LALIGA": r'SPAIN:\s*LaLiga(?!\d| Women)',
-            "PREMIER": r'ENGLAND:\s*Premier League(?!\d| 2| Women)',
+            "PREMIER": r'ENGLAND:\s*Premier League(?!\s*(?:2|Cup|Women|U\d+|Sub|Summer|International|\d))',
             "HYPERMOTION": r'SPAIN:\s*(?:LaLiga2|LaLiga Hypermotion)',
             "CHAMPIONSHIP": r'ENGLAND:\s*Championship(?!\s*Women)',
             "BUNDESLIGA": r'GERMANY:\s*Bundesliga(?!\s*Women)',
@@ -145,6 +150,11 @@ class LiveCrawler:
                                     parts = re.split(r'[\xf7÷]', token, maxsplit=1)
                                     if len(parts) == 2:
                                         fields[parts[0]] = parts[1]
+                            h_raw = fields.get('AE', '')
+                            a_raw = fields.get('AF', '')
+                            if comp_id in {"LALIGA", "PREMIER", "HYPERMOTION", "CHAMPIONSHIP", "BUNDESLIGA", "LIGUE1", "SERIEA"}:
+                                if re.search(r'\b(?:U21|U18|U19|U20|U23|Sub[- ]?21|Sub[- ]?18|Sub[- ]?19|Reserves|Youth)\b', f"{h_raw} {a_raw}", re.IGNORECASE):
+                                    continue
                             ts = fields.get('AD')
                             dt_str = datetime.fromtimestamp(int(ts)).strftime('%d.%m.%Y %H:%M') if ts and ts.isdigit() else 'TBD'
                             am_note = fields.get('AM', '')

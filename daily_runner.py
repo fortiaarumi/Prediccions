@@ -216,18 +216,20 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
         with _db.get_connection() as conn:
             c = conn.cursor()
             # Si SQLite ja té una jornada amb partits en curs (SCHEDULED o LIVE), ordenem per la data més propera
-            # per evitar que un partit ajornat d'una jornada anterior (ex: J6 al 21/10) usurpi la jornada activa (ex: J9 al 19/10).
+            # per evitar que un partit ajornat d'una jornada anterior usurpi la jornada activa.
             in_prog = c.execute("""
-                SELECT jornada, min(
+                SELECT m.jornada, min(
                     CASE
-                        WHEN date_time LIKE '__.__.____ __:__'
-                        THEN substr(date_time, 7, 4) || '-' || substr(date_time, 4, 2) || '-' || substr(date_time, 1, 2) || ' ' || substr(date_time, 12, 5)
-                        ELSE date_time
+                        WHEN m.date_time LIKE '__.__.____ __:__'
+                        THEN substr(m.date_time, 7, 4) || '-' || substr(m.date_time, 4, 2) || '-' || substr(m.date_time, 1, 2) || ' ' || substr(m.date_time, 12, 5)
+                        ELSE m.date_time
                     END
                 ) as min_dt
-                FROM matches
-                WHERE competition_id = ? AND status IN ('SCHEDULED', 'LIVE')
-                GROUP BY jornada
+                FROM matches m
+                WHERE m.competition_id = ? AND m.status IN ('SCHEDULED', 'LIVE')
+                  AND m.home_team_id NOT IN (SELECT id FROM teams WHERE name LIKE '%U21%' OR name LIKE '%U18%' OR name LIKE '%U19%' OR name LIKE '%U23%' OR name LIKE '%Sub-21%' OR name LIKE '%Sub-18%' OR name LIKE '%Reserves%')
+                  AND m.away_team_id NOT IN (SELECT id FROM teams WHERE name LIKE '%U21%' OR name LIKE '%U18%' OR name LIKE '%U19%' OR name LIKE '%U23%' OR name LIKE '%Sub-21%' OR name LIKE '%Sub-18%' OR name LIKE '%Reserves%')
+                GROUP BY m.jornada
                 ORDER BY min_dt ASC
                 LIMIT 1
             """, (comp,)).fetchone()
@@ -257,12 +259,14 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
 
             # Una jornada només es considera completament acabada si té suficients partits jugats i ZERO pendents
             c_sql = c.execute("""
-                SELECT jornada FROM matches
-                WHERE competition_id = ?
-                GROUP BY jornada
-                HAVING COUNT(CASE WHEN status = 'FINISHED' THEN 1 END) >= 7
-                   AND COUNT(CASE WHEN status IN ('SCHEDULED', 'LIVE') THEN 1 END) = 0
-                ORDER BY jornada DESC LIMIT 1
+                SELECT m.jornada FROM matches m
+                WHERE m.competition_id = ?
+                  AND m.home_team_id NOT IN (SELECT id FROM teams WHERE name LIKE '%U21%' OR name LIKE '%U18%' OR name LIKE '%U19%' OR name LIKE '%U23%' OR name LIKE '%Sub-21%' OR name LIKE '%Sub-18%' OR name LIKE '%Reserves%')
+                  AND m.away_team_id NOT IN (SELECT id FROM teams WHERE name LIKE '%U21%' OR name LIKE '%U18%' OR name LIKE '%U19%' OR name LIKE '%U23%' OR name LIKE '%Sub-21%' OR name LIKE '%Sub-18%' OR name LIKE '%Reserves%')
+                GROUP BY m.jornada
+                HAVING COUNT(CASE WHEN m.status = 'FINISHED' THEN 1 END) >= 7
+                   AND COUNT(CASE WHEN m.status IN ('SCHEDULED', 'LIVE') THEN 1 END) = 0
+                ORDER BY m.jornada DESC LIMIT 1
             """, (comp,)).fetchone()
             sql_completed = c_sql[0] if c_sql else 0
             max_completed = max(sql_completed, state_completed)
@@ -304,6 +308,11 @@ def get_upcoming_round_info(comp_id: str, db: DatabaseManager = None) -> Optiona
                         parts = re.split(r'[\xf7÷]', token, maxsplit=1)
                         if len(parts) == 2:
                             fields[parts[0]] = parts[1]
+
+                h_check = fields.get('AE', '')
+                a_check = fields.get('AF', '')
+                if any(u in h_check.lower() or u in a_check.lower() for u in ['u21', 'u18', 'u19', 'u23', 'sub-21', 'sub-18', 'reserves']):
+                    continue
 
                 ts_str = fields.get('AD', '')
                 if ts_str.isdigit():

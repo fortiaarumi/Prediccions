@@ -106,6 +106,34 @@ function cleanMatchup(matchup, leg) {
 }
 window.cleanMatchup = cleanMatchup;
 
+function parseMatchDateToMs(dateStr) {
+  if (!dateStr || typeof dateStr !== 'string') return 9999999999999;
+  const s = dateStr.trim();
+  // Format DD.MM.YYYY HH:mm o DD/MM/YYYY HH:mm
+  const dmyMatch = s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+  if (dmyMatch) {
+    const day = parseInt(dmyMatch[1], 10);
+    const month = parseInt(dmyMatch[2], 10) - 1;
+    const year = parseInt(dmyMatch[3], 10);
+    const hour = dmyMatch[4] ? parseInt(dmyMatch[4], 10) : 0;
+    const minute = dmyMatch[5] ? parseInt(dmyMatch[5], 10) : 0;
+    return new Date(year, month, day, hour, minute).getTime();
+  }
+  // Format YYYY-MM-DD HH:mm o YYYY-MM-DDTHH:mm
+  const ymdMatch = s.match(/^(\d{4})[./-](\d{1,2})[./-](\d{1,2})(?:[T\s](\d{1,2}):(\d{2}))?/);
+  if (ymdMatch) {
+    const year = parseInt(ymdMatch[1], 10);
+    const month = parseInt(ymdMatch[2], 10) - 1;
+    const day = parseInt(ymdMatch[3], 10);
+    const hour = ymdMatch[4] ? parseInt(ymdMatch[4], 10) : 0;
+    const minute = ymdMatch[5] ? parseInt(ymdMatch[5], 10) : 0;
+    return new Date(year, month, day, hour, minute).getTime();
+  }
+  const parsed = Date.parse(s);
+  return isNaN(parsed) ? 9999999999999 : parsed;
+}
+window.parseMatchDateToMs = parseMatchDateToMs;
+
 function copyBet365Slip(comboKey) {
   const combo = window.combosRegistry[comboKey];
   if (!combo) return;
@@ -767,6 +795,20 @@ function renderPredictions() {
       m._targetJornada = targetJ;
       allMatches.push(m);
     });
+  });
+
+  // Ordenar sempre de forma cronològica ascendent pel començament del partit
+  // (Ordenació global quan es selecciona "Totes" i consistent quan es selecciona una lliga individual)
+  allMatches.sort((a, b) => {
+    const timeA = parseMatchDateToMs(a.date || a.date_time);
+    const timeB = parseMatchDateToMs(b.date || b.date_time);
+    if (timeA !== timeB) return timeA - timeB;
+    const compA = a.competition_id || a._compName || '';
+    const compB = b.competition_id || b._compName || '';
+    if (compA !== compB) return compA.localeCompare(compB);
+    const idA = a.match_id || a.id || '';
+    const idB = b.match_id || b.id || '';
+    return idA.localeCompare(idB);
   });
 
   if (currentSearch) {
