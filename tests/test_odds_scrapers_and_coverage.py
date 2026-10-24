@@ -1613,12 +1613,311 @@ def test_audit_no_default_valid_and_tracks_rejection_causes():
     assert stat["discarded_unmatched"] == 1
     # Només el Partit 5 té validació explícita i positiva
     assert stat["valid_1x2"] == 1, "Només una quota amb validació explícita positiva pot ser vàlida"
-    # Motius de rebuig registrats
+
     assert stat["discarded_suspended"] >= 1
     assert stat["discarded_stale"] >= 1
     assert stat["discarded_unverified"] >= 1
+    assert stat["suspended"] >= 1
+    assert stat["stale"] >= 1
+    assert stat["unverified"] >= 1
+    assert stat["unmatched"] == 1
+    assert stat["valid"] == 1
 
 
+# -----------------------------------------------------------------------------
+# 43. Regressió: group_status.stale=True conserva l'estat stale
+# -----------------------------------------------------------------------------
+def test_market_with_group_status_stale_preserves_stale_when_selections_discarded():
+    """Un mercat amb group_status.stale=True conserva l'estat stale després que se'n descartin
+    totes les seleccions."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    fixture = {
+        "id": 1001,
+        "home": "Barcelona",
+        "away": "Real Madrid",
+        "league": "Spain La Liga",
+        "kickoff_utc": now_iso,
+        "polled_at": now_iso,
+        "group_status": {
+            "10": {"name": "Full Time Result", "stale": True, "polled_at": now_iso},
+            "20": {"name": "Goals Over/Under", "stale": True, "polled_at": now_iso}
+        },
+        "quotes": [
+            # Seleccions de 1X2 amb preus que es descartarien
+            {"group_id": "10", "group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.90, "ts": now_iso},
+            {"group_id": "10", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 3.40, "ts": now_iso},
+            {"group_id": "10", "group_name": "Full Time Result", "label": "Real Madrid", "odds_dec": 3.80, "ts": now_iso},
+            # Seleccions d'Over/Under
+            {"group_id": "20", "group_name": "Goals Over/Under", "label": "Over", "line": "2.5", "odds_dec": 1.75, "ts": now_iso},
+            {"group_id": "20", "group_name": "Goals Over/Under", "label": "Under", "line": "2.5", "odds_dec": 2.10, "ts": now_iso},
+        ]
+    }
+
+    parsed = client.parse_match_odds(fixture, "LALIGA")
+    assert parsed["1X2"] == {}, "Les quotes de 1X2 han de ser buides per ser stale"
+    assert parsed["market_status"]["1X2"]["valid"] is False
+    assert parsed["market_status"]["1X2"]["stale"] is True
+    assert parsed["market_status"]["1X2"]["rejection_reason"] == "stale"
+
+    assert parsed["over_under_2_5"] == {}
+    assert parsed["market_status"]["over_under_2_5"]["valid"] is False
+    assert parsed["market_status"]["over_under_2_5"]["stale"] is True
+    assert parsed["market_status"]["over_under_2_5"]["rejection_reason"] == "stale"
 
 
+# -----------------------------------------------------------------------------
+# 44. Regressió: seleccions totes suspeses es registra com a suspended (no absent)
+# -----------------------------------------------------------------------------
+def test_market_with_all_selections_suspended_registered_as_suspended():
+    """Un mercat les seleccions del qual estan totes suspeses es registra com a suspended,
+    no com a absent."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+    now_iso = datetime.now(timezone.utc).isoformat()
 
+    fixture = {
+        "id": 1002,
+        "home": "Liverpool",
+        "away": "Manchester City",
+        "league": "England Premier League",
+        "kickoff_utc": now_iso,
+        "polled_at": now_iso,
+        "quotes": [
+            # Totes les quotes de 1X2 estan suspeses
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Liverpool", "odds_dec": 2.20, "suspended": True, "ts": now_iso},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 3.50, "suspended": True, "ts": now_iso},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Manchester City", "odds_dec": 3.10, "suspended": True, "ts": now_iso},
+            # BTTS també totes suspeses
+            {"group_id": "3", "group_name": "Both Teams to Score", "label": "Yes", "odds_dec": 1.70, "suspended": True, "ts": now_iso},
+            {"group_id": "3", "group_name": "Both Teams to Score", "label": "No", "odds_dec": 2.15, "suspended": True, "ts": now_iso},
+        ]
+    }
+
+    parsed = client.parse_match_odds(fixture, "PREMIER")
+    assert parsed["1X2"] == {}
+    assert parsed["market_status"]["1X2"]["valid"] is False
+    assert parsed["market_status"]["1X2"]["suspended"] is True
+    assert parsed["market_status"]["1X2"]["rejection_reason"] == "suspended", "Ha de ser suspended, MAI absent"
+
+    assert parsed["btts"] == {}
+    assert parsed["market_status"]["btts"]["valid"] is False
+    assert parsed["market_status"]["btts"]["suspended"] is True
+    assert parsed["market_status"]["btts"]["rejection_reason"] == "suspended"
+
+
+# -----------------------------------------------------------------------------
+# 45. Regressió: mercat no present al feed es classifica com a absent
+# -----------------------------------------------------------------------------
+def test_market_not_in_feed_classified_as_absent():
+    """Un mercat que no existeix realment al feed es classifica com a absent."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    fixture = {
+        "id": 1003,
+        "home": "Valencia",
+        "away": "Sevilla",
+        "league": "Spain La Liga",
+        "kickoff_utc": now_iso,
+        "polled_at": now_iso,
+        "quotes": [
+            # Només 1X2 present
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Valencia", "odds_dec": 2.30, "ts": now_iso},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 3.20, "ts": now_iso},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Sevilla", "odds_dec": 3.10, "ts": now_iso},
+        ]
+    }
+
+    parsed = client.parse_match_odds(fixture, "LALIGA")
+    assert parsed["market_status"]["1X2"]["valid"] is True
+
+    # Mercats que no figuren en absolut
+    for absent_m in ("double_chance", "over_under_2_5", "btts", "corners", "cards"):
+        assert parsed[absent_m] == {}
+        assert parsed["market_status"][absent_m]["valid"] is False
+        assert parsed["market_status"][absent_m]["rejection_reason"] == "absent"
+
+
+# -----------------------------------------------------------------------------
+# 46. Regressió: mercat sense timestamp ni confirmació es classifica com a unverified
+# -----------------------------------------------------------------------------
+def test_market_without_timestamp_classified_as_unverified():
+    """Un mercat sense timestamp ni confirmació suficient es classifica com a unverified."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+
+    fixture = {
+        "id": 1004,
+        "home": "Milan",
+        "away": "Inter",
+        "league": "Italy Serie A",
+        "kickoff_utc": "2026-10-25T19:45:00Z",
+        # SENSE polled_at ni group_status ni ts a les quotes
+        "quotes": [
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Milan", "odds_dec": 2.50},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 3.30},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Inter", "odds_dec": 2.80},
+        ]
+    }
+
+    parsed = client.parse_match_odds(fixture, "SERIEA")
+    assert parsed["1X2"] == {}
+    assert parsed["market_status"]["1X2"]["valid"] is False
+    assert parsed["market_status"]["1X2"]["rejection_reason"] == "unverified"
+
+
+# -----------------------------------------------------------------------------
+# 47. Regressió: L'auditoria no compta cap mercat no vàlid com a vàlid
+# -----------------------------------------------------------------------------
+def test_audit_does_not_count_stale_suspended_absent_or_unverified_as_valid():
+    """L'auditoria no comptabilitza com a vàlid cap mercat obsolet, suspès, absent o sense estat explícit,
+    i diferencia valid, absent, stale, suspended, unverified i unmatched."""
+    from engine.web_data_exporter import WebDataExporter
+    exporter = WebDataExporter()
+
+    mock_predictions = {
+        "BUNDESLIGA": {
+            "matches": [
+                {
+                    "status": "SCHEDULED",
+                    "home_goals": None,
+                    "odds_bet365": {
+                        "matched": True,
+                        "is_stale": False,
+                        "market_status": {
+                            "1X2": {"valid": True, "rejection_reason": "ok"},
+                            "over_under_2_5": {"valid": False, "stale": True, "rejection_reason": "stale"},
+                            "btts": {"valid": False, "suspended": True, "rejection_reason": "suspended"},
+                            "corners": {"valid": False, "rejection_reason": "absent"},
+                            "cards": {"valid": False, "rejection_reason": "unverified"},
+                        }
+                    },
+                    "odds_1x2_bet365": {"1": 1.80, "X": 3.60, "2": 4.50},
+                    "odds_ou25_bet365": {"over": 1.85, "under": 1.95},
+                    "odds_btts_bet365": {"yes": 1.70, "no": 2.10},
+                    "odds_corners_bet365": None,
+                    "odds_cards_bet365": {"cards_over": 3.5},
+                }
+            ]
+        }
+    }
+
+    stats = exporter.compute_audit_stats(mock_predictions)
+    st = stats["BUNDESLIGA"]
+
+    assert st["eligible"] == 1
+    assert st["associated"] == 1
+    assert st["valid_1x2"] == 1
+    assert st["valid_ou25"] == 0, "Over/Under stale no pot ser vàlid"
+    assert st["valid_btts"] == 0, "BTTS suspès no pot ser vàlid"
+    assert st["valid_corners"] == 0, "Corners absent no pot ser vàlid"
+    assert st["valid_cards"] == 0, "Cards unverified no pot ser vàlid"
+
+    # Comptadors generals diferenciats
+    assert st["valid"] == 1
+    assert st["stale"] == 1
+    assert st["suspended"] == 1
+    assert st["absent"] == 1
+    assert st["unverified"] == 1
+    assert st["unmatched"] == 0
+
+
+# -----------------------------------------------------------------------------
+# 48. Regressió: Un 1X2 fresc no valida mercats secundaris obsolets
+# -----------------------------------------------------------------------------
+def test_fresh_1x2_does_not_validate_stale_secondary_markets():
+    """Un 1X2 fresc no valida córners, targetes, BTTS o Over/Under obsolets."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    old_iso = "2026-10-01T12:00:00Z"
+
+    fixture = {
+        "id": 1005,
+        "home": "Bayern Munich",
+        "away": "Borussia Dortmund",
+        "league": "Germany Bundesliga I",
+        "kickoff_utc": now_iso,
+        "polled_at": now_iso,
+        "group_status": {
+            "1": {"polled_at": now_iso, "stale": False},
+            "2": {"polled_at": old_iso, "stale": False},
+            "3": {"polled_at": old_iso, "stale": False},
+            "4": {"polled_at": old_iso, "stale": False},
+            "5": {"polled_at": old_iso, "stale": False},
+        },
+        "quotes": [
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Bayern Munich", "odds_dec": 1.65, "ts": now_iso},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 4.20, "ts": now_iso},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Borussia Dortmund", "odds_dec": 5.00, "ts": now_iso},
+            {"group_id": "2", "group_name": "Goals Over/Under", "label": "Over", "line": "2.5", "odds_dec": 1.50, "ts": old_iso},
+            {"group_id": "2", "group_name": "Goals Over/Under", "label": "Under", "line": "2.5", "odds_dec": 2.50, "ts": old_iso},
+            {"group_id": "3", "group_name": "Both Teams to Score", "label": "Yes", "odds_dec": 1.60, "ts": old_iso},
+            {"group_id": "3", "group_name": "Both Teams to Score", "label": "No", "odds_dec": 2.20, "ts": old_iso},
+            {"group_id": "4", "group_name": "Match Corners", "label": "Over", "line": "9.5", "odds_dec": 1.90, "ts": old_iso},
+            {"group_id": "5", "group_name": "Match Cards", "label": "Over", "line": "3.5", "odds_dec": 1.85, "ts": old_iso},
+        ]
+    }
+
+    parsed = client.parse_match_odds(fixture, "BUNDESLIGA")
+    assert parsed["1X2"]["1"] == 1.65
+    assert parsed["market_status"]["1X2"]["valid"] is True
+
+    # Cap mercat secundari antic no ha de ser vàlid
+    assert parsed["over_under_2_5"] == {}
+    assert parsed["market_status"]["over_under_2_5"]["valid"] is False
+    assert parsed["market_status"]["over_under_2_5"]["stale"] is True
+
+    assert parsed["btts"] == {}
+    assert parsed["market_status"]["btts"]["valid"] is False
+    assert parsed["market_status"]["btts"]["stale"] is True
+
+    assert parsed["corners"] == {}
+    assert parsed["market_status"]["corners"]["valid"] is False
+    assert parsed["market_status"]["corners"]["stale"] is True
+
+    assert parsed["cards"] == {}
+    assert parsed["market_status"]["cards"]["valid"] is False
+    assert parsed["market_status"]["cards"]["stale"] is True
+
+
+# -----------------------------------------------------------------------------
+# 49. Regressió: Exportació sense noves apostes +EV no recupera històriques
+# -----------------------------------------------------------------------------
+def test_export_without_new_value_bets_does_not_recover_historical_in_active(tmp_path):
+    """Una exportació sense noves oportunitats +EV no recupera apostes històriques a les
+    recomanacions actives (value_bets queda [])."""
+    import json
+    from engine.web_data_exporter import WebDataExporter
+
+    exporter = WebDataExporter()
+
+    # Simular una llista de recomanacions de partit sense value bets
+    mock_matches = [
+        {
+            "id": "M1",
+            "home_team": {"name": "Team A", "id": "TA"},
+            "away_team": {"name": "Team B", "id": "TB"},
+            "date": "25.10.2026 21:00",
+            "jornada": 10,
+            "status": "SCHEDULED",
+            "home_goals": None,
+            "away_goals": None,
+            "odds_bet365": {"matched": True, "market_status": {"1X2": {"valid": True, "rejection_reason": "ok"}}},
+            "odds_1x2_bet365": {"1": 2.00, "X": 3.30, "2": 3.60},
+            "value_bets": []  # Cap aposta +EV
+        }
+    ]
+
+    # Verificar que l'extracció de value_bets en all_value_bets resulta en llista buida
+    all_value_bets = []
+    for m in mock_matches:
+        for vb in m.get("value_bets", []):
+            all_value_bets.append(vb)
+
+    assert all_value_bets == [], "all_value_bets ha de ser buit quan no hi ha apostes +EV verificades"

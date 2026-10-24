@@ -641,96 +641,170 @@ class MoviOddsClient:
             "cards": {},
         }
 
+        # Inicialització de market_status per defecte com a 'absent'
+        for m_name in ("1X2", "double_chance", "over_under_2_5", "btts", "corners", "cards"):
+            result["market_status"][m_name] = {
+                "valid": False,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "absent",
+                "polled_at": None,
+                "ts": None,
+            }
+
         quotes = raw_match.get("quotes", [])
-        if not quotes:
+        if not quotes and not group_status:
             return result
 
-        # 1. Agrupar quotes per nom de grup (descartant seleccions suspeses o preus invàlids)
-        groups: Dict[str, List[Dict[str, Any]]] = {}
+        # 1. Agrupar TOTES les quotes originals per mercat (SENSE filtrar)
+        raw_market_quotes: Dict[str, List[Dict[str, Any]]] = {
+            "1X2": [],
+            "double_chance": [],
+            "over_under_2_5": [],
+            "btts": [],
+            "corners": [],
+            "cards": [],
+        }
+
         for q in quotes:
-            if q.get("suspended") is True:
-                continue
+            gname = str(q.get("group_name") or "")
+            line = str(q.get("line") or q.get("handicap") or "")
 
-            gid = str(q.get("group_id") or "")
-            # Si el grup està marcat com a stale al feed, descartar la selecció
-            if group_status.get(gid, {}).get("stale") is True:
-                continue
+            if gname == "Full Time Result":
+                raw_market_quotes["1X2"].append(q)
+            elif gname == "Double Chance":
+                raw_market_quotes["double_chance"].append(q)
+            elif gname in ("Match Goals", "Goals Over/Under", "Alternative Total Goals") and line == "2.5":
+                raw_market_quotes["over_under_2_5"].append(q)
+            elif gname in ("Both Teams to Score", "Both Teams To Score"):
+                raw_market_quotes["btts"].append(q)
+            elif "corner" in gname.lower():
+                raw_market_quotes["corners"].append(q)
+            elif "card" in gname.lower():
+                raw_market_quotes["cards"].append(q)
 
-            price = self._safe_float(q.get("odds_dec"))
-            if not price:
-                continue
+        # 2. Relacionar group_status amb cada mercat
+        market_group_statuses: Dict[str, List[Dict[str, Any]]] = {
+            "1X2": [],
+            "double_chance": [],
+            "over_under_2_5": [],
+            "btts": [],
+            "corners": [],
+            "cards": [],
+        }
 
-            gname = q.get("group_name", "")
-            groups.setdefault(gname, []).append(q)
-
-        # Avaluador estricte de confirmació temporal per mercat
-        def _eval_market_freshness(market_quotes: List[Dict[str, Any]]) -> Tuple[bool, Optional[str], Optional[str], str]:
-            if not market_quotes:
-                return False, None, None, "absent"
-
-            # 1. Comprovar si algun group_id d'aquest mercat està suspès
-            for q in market_quotes:
+        # Associació via group_id present a les quotes
+        for m_key, qlist in raw_market_quotes.items():
+            for q in qlist:
                 gid = str(q.get("group_id") or "")
-                if group_status.get(gid, {}).get("suspended") is True or q.get("suspended") is True:
-                    return False, group_status.get(gid, {}).get("polled_at"), q.get("ts"), "suspended"
+                if gid and gid in group_status:
+                    gst = group_status[gid]
+                    if gst not in market_group_statuses[m_key]:
+                        market_group_statuses[m_key].append(gst)
 
-            # 2. Comprovar si algun group_id d'aquest mercat està marcat com a stale a group_status
-            for q in market_quotes:
-                gid = str(q.get("group_id") or "")
-                if group_status.get(gid, {}).get("stale") is True:
-                    return False, group_status.get(gid, {}).get("polled_at"), q.get("ts"), "stale"
+        # Associació via el camp 'name' de group_status si existeix
+        for gid, gst in group_status.items():
+            if not isinstance(gst, dict):
+                continue
+            gname = str(gst.get("name") or "")
+            if gname == "Full Time Result" and gst not in market_group_statuses["1X2"]:
+                market_group_statuses["1X2"].append(gst)
+            elif gname == "Double Chance" and gst not in market_group_statuses["double_chance"]:
+                market_group_statuses["double_chance"].append(gst)
+            elif gname in ("Match Goals", "Goals Over/Under", "Alternative Total Goals") and gst not in market_group_statuses["over_under_2_5"]:
+                market_group_statuses["over_under_2_5"].append(gst)
+            elif gname in ("Both Teams to Score", "Both Teams To Score") and gst not in market_group_statuses["btts"]:
+                market_group_statuses["btts"].append(gst)
+            elif "corner" in gname.lower() and gst not in market_group_statuses["corners"]:
+                market_group_statuses["corners"].append(gst)
+            elif "card" in gname.lower() and gst not in market_group_statuses["cards"]:
+                market_group_statuses["cards"].append(gst)
 
+        # 3. Avaluador de frescor i estat original del mercat abans de filtrar
+        def _eval_market(m_key: str) -> Tuple[bool, bool, bool, str, Optional[str], Optional[str]]:
+            m_raw = raw_market_quotes[m_key]
+            m_groups = market_group_statuses[m_key]
+
+            if not m_raw and not m_groups:
+                return False, False, False, "absent", None, None
+
+            # Timestamp i informació de confirmació
             m_polled = None
             m_ts = ""
-            for q in market_quotes:
+            for q in m_raw:
                 q_ts = q.get("ts") or ""
                 if q_ts > m_ts:
                     m_ts = q_ts
-                gid = str(q.get("group_id") or "")
-                p = group_status.get(gid, {}).get("polled_at")
+            for gst in m_groups:
+                p = gst.get("polled_at")
                 if p and (m_polled is None or p > m_polled):
                     m_polled = p
 
             src_time = m_polled or m_ts
             if not src_time:
-                # Si el feed no disposa de group_status ni ts a les quotes,
-                # però raw_match disposa d'un polled_at vàlid de la descàrrega en viu:
                 if not group_status and raw_polled_at:
                     src_time = raw_polled_at
                     m_polled = raw_polled_at
+
+            # Comprovar si està marcat com a stale a group_status
+            is_group_stale = any(gst.get("stale") is True for gst in m_groups)
+            for q in m_raw:
+                gid = str(q.get("group_id") or "")
+                if group_status.get(gid, {}).get("stale") is True:
+                    is_group_stale = True
+                    break
+
+            # Comprovar si està marcat com a suspès
+            is_group_suspended = any(gst.get("suspended") is True for gst in m_groups)
+            all_quotes_suspended = bool(m_raw and all(q.get("suspended") is True for q in m_raw))
+
+            # Comprovar frescor temporal de src_time
+            is_time_stale = False
+            is_unverified = False
+            if src_time:
+                s_dt = parse_datetime_utc(src_time)
+                if not s_dt:
+                    is_unverified = True
                 else:
-                    # No hi ha cap confirmació temporal pròpia de la font per a aquest mercat
-                    return False, None, m_ts, "unverified"
+                    age_s = (now_utc - s_dt).total_seconds()
+                    if age_s < 0 or age_s > MAX_ODDS_AGE_SECONDS:
+                        is_time_stale = True
+            else:
+                is_unverified = True
 
-            s_dt = parse_datetime_utc(src_time)
-            if not s_dt:
-                return False, src_time, m_ts, "unverified"
+            # Ordre de causa de rebuig
+            if is_group_stale or is_time_stale:
+                return False, True, False, "stale", src_time, m_ts
+            if is_group_suspended or all_quotes_suspended:
+                return False, False, True, "suspended", src_time, m_ts
+            if is_unverified:
+                return False, False, False, "unverified", src_time, m_ts
 
-            age_s = (now_utc - s_dt).total_seconds()
-            if 0 <= age_s <= MAX_ODDS_AGE_SECONDS:
-                return True, src_time, m_ts, "ok"
-            return False, src_time, m_ts, "stale"
+            # En aquest punt el mercat no és stale, no és suspès i està verificat temporalment.
+            return True, False, False, "ok", src_time, m_ts
 
-        # 2. Mercat 1X2 (Full Time Result)
-        ft_quotes = groups.get("Full Time Result", [])
+        # 4. Mercat 1X2 (Full Time Result)
         h_norm = self.normalize_name(home_name)
         a_norm = self.normalize_name(away_name)
+        fresh_1x2, is_st_1x2, is_su_1x2, reason_1x2, poll_1x2, ts_1x2 = _eval_market("1X2")
 
         parsed_1x2 = {}
-        for q in ft_quotes:
-            label = str(q.get("label", ""))
-            price = self._safe_float(q.get("odds_dec"))
-            if not price:
-                continue
-            l_norm = self.normalize_name(label)
-            if l_norm == h_norm or label in ("1", "Home"):
-                parsed_1x2["1"] = price
-            elif label.lower() in ("draw", "empat", "x", "tie") or l_norm in ("draw", "empat"):
-                parsed_1x2["X"] = price
-            elif l_norm == a_norm or label in ("2", "Away"):
-                parsed_1x2["2"] = price
+        if fresh_1x2:
+            for q in raw_market_quotes["1X2"]:
+                if q.get("suspended") is True:
+                    continue
+                price = self._safe_float(q.get("odds_dec"))
+                if not price:
+                    continue
+                label = str(q.get("label", ""))
+                l_norm = self.normalize_name(label)
+                if l_norm == h_norm or label in ("1", "Home"):
+                    parsed_1x2["1"] = price
+                elif label.lower() in ("draw", "empat", "x", "tie") or l_norm in ("draw", "empat"):
+                    parsed_1x2["X"] = price
+                elif l_norm == a_norm or label in ("2", "Away"):
+                    parsed_1x2["2"] = price
 
-        fresh_1x2, poll_1x2, ts_1x2, reason_1x2 = _eval_market_freshness(ft_quotes)
         if fresh_1x2 and len(parsed_1x2) == 3:
             result["1X2"] = parsed_1x2
             result["market_status"]["1X2"] = {
@@ -747,38 +821,36 @@ class MoviOddsClient:
             result["ts"] = ts_1x2
         else:
             result["1X2"] = {}
-            is_stale_1x2 = (reason_1x2 == "stale")
-            is_susp_1x2 = (reason_1x2 == "suspended")
-            final_reason_1x2 = reason_1x2 if ft_quotes else "absent"
-            if fresh_1x2 and len(parsed_1x2) < 3:
-                final_reason_1x2 = "absent"
+            final_reason_1x2 = reason_1x2 if reason_1x2 != "ok" else "absent"
             result["market_status"]["1X2"] = {
                 "valid": False,
-                "stale": is_stale_1x2,
-                "suspended": is_susp_1x2,
+                "stale": is_st_1x2,
+                "suspended": is_su_1x2,
                 "rejection_reason": final_reason_1x2,
                 "polled_at": poll_1x2,
                 "ts": ts_1x2
             }
             result["matched"] = False
-            result["is_stale"] = is_stale_1x2
+            result["is_stale"] = is_st_1x2
 
-        # 3. Doble Oportunitat
-        dc_quotes = groups.get("Double Chance", [])
+        # 5. Doble Oportunitat
+        fresh_dc, is_st_dc, is_su_dc, reason_dc, poll_dc, ts_dc = _eval_market("double_chance")
         parsed_dc = {}
-        for q in dc_quotes:
-            label = str(q.get("label", "")).lower()
-            price = self._safe_float(q.get("odds_dec"))
-            if not price:
-                continue
-            if "1x" in label or ("home" in label and "draw" in label):
-                parsed_dc["1X"] = price
-            elif "12" in label or ("home" in label and "away" in label):
-                parsed_dc["12"] = price
-            elif "x2" in label or "2x" in label or ("draw" in label and "away" in label):
-                parsed_dc["X2"] = price
+        if fresh_dc:
+            for q in raw_market_quotes["double_chance"]:
+                if q.get("suspended") is True:
+                    continue
+                price = self._safe_float(q.get("odds_dec"))
+                if not price:
+                    continue
+                label = str(q.get("label", "")).lower()
+                if "1x" in label or ("home" in label and "draw" in label):
+                    parsed_dc["1X"] = price
+                elif "12" in label or ("home" in label and "away" in label):
+                    parsed_dc["12"] = price
+                elif "x2" in label or "2x" in label or ("draw" in label and "away" in label):
+                    parsed_dc["X2"] = price
 
-        fresh_dc, poll_dc, ts_dc, reason_dc = _eval_market_freshness(dc_quotes)
         if fresh_dc and len(parsed_dc) == 3:
             result["double_chance"] = parsed_dc
             result["market_status"]["double_chance"] = {
@@ -791,27 +863,26 @@ class MoviOddsClient:
             }
         else:
             result["double_chance"] = {}
+            final_reason_dc = reason_dc if reason_dc != "ok" else "absent"
             result["market_status"]["double_chance"] = {
                 "valid": False,
-                "stale": (reason_dc == "stale"),
-                "suspended": (reason_dc == "suspended"),
-                "rejection_reason": reason_dc if dc_quotes else "absent",
+                "stale": is_st_dc,
+                "suspended": is_su_dc,
+                "rejection_reason": final_reason_dc,
                 "polled_at": poll_dc,
                 "ts": ts_dc
             }
 
-        # 4. Gols Over / Under 2.5 (línia estricta de 2.5)
-        ou_quotes = []
+        # 6. Gols Over / Under 2.5 (línia estricta de 2.5)
+        fresh_ou, is_st_ou, is_su_ou, reason_ou, poll_ou, ts_ou = _eval_market("over_under_2_5")
         parsed_ou = {}
-        for gname in ("Match Goals", "Goals Over/Under", "Alternative Total Goals"):
-            for q in groups.get(gname, []):
-                line = str(q.get("line") or q.get("handicap") or "")
-                if line != "2.5":
+        if fresh_ou:
+            for q in raw_market_quotes["over_under_2_5"]:
+                if q.get("suspended") is True:
                     continue
                 price = self._safe_float(q.get("odds_dec"))
                 if not price:
                     continue
-                ou_quotes.append(q)
                 label = str(q.get("label") or q.get("side") or "").lower()
                 if "over" in label or "mas" in label:
                     parsed_ou["Over 2.5"] = price
@@ -820,7 +891,6 @@ class MoviOddsClient:
                     parsed_ou["Under 2.5"] = price
                     parsed_ou["under"] = price
 
-        fresh_ou, poll_ou, ts_ou, reason_ou = _eval_market_freshness(ou_quotes)
         if fresh_ou and "over" in parsed_ou and "under" in parsed_ou:
             result["over_under_2_5"] = parsed_ou
             result["market_status"]["over_under_2_5"] = {
@@ -833,31 +903,34 @@ class MoviOddsClient:
             }
         else:
             result["over_under_2_5"] = {}
+            final_reason_ou = reason_ou if reason_ou != "ok" else "absent"
             result["market_status"]["over_under_2_5"] = {
                 "valid": False,
-                "stale": (reason_ou == "stale"),
-                "suspended": (reason_ou == "suspended"),
-                "rejection_reason": reason_ou if ou_quotes else "absent",
+                "stale": is_st_ou,
+                "suspended": is_su_ou,
+                "rejection_reason": final_reason_ou,
                 "polled_at": poll_ou,
                 "ts": ts_ou
             }
 
-        # 5. Ambdós Equips Marquen (BTTS)
-        btts_quotes = groups.get("Both Teams to Score", groups.get("Both Teams To Score", []))
+        # 7. Ambdós Equips Marquen (BTTS)
+        fresh_btts, is_st_btts, is_su_btts, reason_btts, poll_btts, ts_btts = _eval_market("btts")
         parsed_btts = {}
-        for q in btts_quotes:
-            price = self._safe_float(q.get("odds_dec"))
-            if not price:
-                continue
-            label = str(q.get("label", "")).lower()
-            if label in ("yes", "si", "sí", "1"):
-                parsed_btts["Sí"] = price
-                parsed_btts["yes"] = price
-            elif label in ("no", "2"):
-                parsed_btts["No"] = price
-                parsed_btts["no"] = price
+        if fresh_btts:
+            for q in raw_market_quotes["btts"]:
+                if q.get("suspended") is True:
+                    continue
+                price = self._safe_float(q.get("odds_dec"))
+                if not price:
+                    continue
+                label = str(q.get("label", "")).lower()
+                if label in ("yes", "si", "sí", "1"):
+                    parsed_btts["Sí"] = price
+                    parsed_btts["yes"] = price
+                elif label in ("no", "2"):
+                    parsed_btts["No"] = price
+                    parsed_btts["no"] = price
 
-        fresh_btts, poll_btts, ts_btts, reason_btts = _eval_market_freshness(btts_quotes)
         if fresh_btts and "yes" in parsed_btts and "no" in parsed_btts:
             result["btts"] = parsed_btts
             result["market_status"]["btts"] = {
@@ -870,31 +943,32 @@ class MoviOddsClient:
             }
         else:
             result["btts"] = {}
+            final_reason_btts = reason_btts if reason_btts != "ok" else "absent"
             result["market_status"]["btts"] = {
                 "valid": False,
-                "stale": (reason_btts == "stale"),
-                "suspended": (reason_btts == "suspended"),
-                "rejection_reason": reason_btts if btts_quotes else "absent",
+                "stale": is_st_btts,
+                "suspended": is_su_btts,
+                "rejection_reason": final_reason_btts,
                 "polled_at": poll_btts,
                 "ts": ts_btts
             }
 
-        # 6. Córners
-        corner_quotes = []
+        # 8. Córners
+        fresh_corn, is_st_corn, is_su_corn, reason_corn, poll_corn, ts_corn = _eval_market("corners")
         parsed_corners = {}
-        for gname, qlist in groups.items():
-            if "corner" in gname.lower():
-                for q in qlist:
-                    price = self._safe_float(q.get("odds_dec"))
-                    if not price:
-                        continue
-                    corner_quotes.append(q)
-                    lbl = str(q.get("label") or q.get("side") or "").strip()
-                    line = str(q.get("line") or q.get("handicap") or "").strip()
-                    item_key = f"{gname} {lbl} {line}".strip()
-                    parsed_corners[item_key] = price
+        if fresh_corn:
+            for q in raw_market_quotes["corners"]:
+                if q.get("suspended") is True:
+                    continue
+                price = self._safe_float(q.get("odds_dec"))
+                if not price:
+                    continue
+                gname = str(q.get("group_name") or "")
+                lbl = str(q.get("label") or q.get("side") or "").strip()
+                line = str(q.get("line") or q.get("handicap") or "").strip()
+                item_key = f"{gname} {lbl} {line}".strip()
+                parsed_corners[item_key] = price
 
-        fresh_corn, poll_corn, ts_corn, reason_corn = _eval_market_freshness(corner_quotes)
         if fresh_corn and parsed_corners:
             result["corners"] = parsed_corners
             result["market_status"]["corners"] = {
@@ -907,31 +981,32 @@ class MoviOddsClient:
             }
         else:
             result["corners"] = {}
+            final_reason_corn = reason_corn if reason_corn != "ok" else "absent"
             result["market_status"]["corners"] = {
                 "valid": False,
-                "stale": (reason_corn == "stale"),
-                "suspended": (reason_corn == "suspended"),
-                "rejection_reason": reason_corn if corner_quotes else "absent",
+                "stale": is_st_corn,
+                "suspended": is_su_corn,
+                "rejection_reason": final_reason_corn,
                 "polled_at": poll_corn,
                 "ts": ts_corn
             }
 
-        # 7. Targetes
-        card_quotes = []
+        # 9. Targetes
+        fresh_card, is_st_card, is_su_card, reason_card, poll_card, ts_card = _eval_market("cards")
         parsed_cards = {}
-        for gname, qlist in groups.items():
-            if "card" in gname.lower():
-                for q in qlist:
-                    price = self._safe_float(q.get("odds_dec"))
-                    if not price:
-                        continue
-                    card_quotes.append(q)
-                    lbl = str(q.get("label") or q.get("side") or "").strip()
-                    line = str(q.get("line") or q.get("handicap") or "").strip()
-                    item_key = f"{gname} {lbl} {line}".strip()
-                    parsed_cards[item_key] = price
+        if fresh_card:
+            for q in raw_market_quotes["cards"]:
+                if q.get("suspended") is True:
+                    continue
+                price = self._safe_float(q.get("odds_dec"))
+                if not price:
+                    continue
+                gname = str(q.get("group_name") or "")
+                lbl = str(q.get("label") or q.get("side") or "").strip()
+                line = str(q.get("line") or q.get("handicap") or "").strip()
+                item_key = f"{gname} {lbl} {line}".strip()
+                parsed_cards[item_key] = price
 
-        fresh_card, poll_card, ts_card, reason_card = _eval_market_freshness(card_quotes)
         if fresh_card and parsed_cards:
             result["cards"] = parsed_cards
             result["market_status"]["cards"] = {
@@ -944,11 +1019,12 @@ class MoviOddsClient:
             }
         else:
             result["cards"] = {}
+            final_reason_card = reason_card if reason_card != "ok" else "absent"
             result["market_status"]["cards"] = {
                 "valid": False,
-                "stale": (reason_card == "stale"),
-                "suspended": (reason_card == "suspended"),
-                "rejection_reason": reason_card if card_quotes else "absent",
+                "stale": is_st_card,
+                "suspended": is_su_card,
+                "rejection_reason": final_reason_card,
                 "polled_at": poll_card,
                 "ts": ts_card
             }

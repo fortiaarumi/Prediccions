@@ -574,12 +574,25 @@ class WebDataExporter:
                     if not b_has_1x2:
                         missing_bookies.append("Bet365")
 
-                    alert_type = "STALE_ODDS" if b_is_stale else ("UNASSOCIATED_MATCH" if b_unassociated else "MISSING_1X2")
-                    alert_msg = (
-                        f"Quotes obsoletes o desactualitzades a Bet365 per al partit {home_data['name']} vs {away_data['name']}."
-                        if b_is_stale
-                        else f"Quotes 1X2 no detectades a {', '.join(missing_bookies)} per al partit {home_data['name']} vs {away_data['name']}."
-                    )
+                    m_stat_1x2 = (odds_b365.get("market_status") or {}).get("1X2") or {}
+                    reason_1x2 = m_stat_1x2.get("rejection_reason")
+
+                    if b_unassociated:
+                        alert_type = "UNASSOCIATED_MATCH"
+                        alert_msg = f"Quotes 1X2 no detectades a {', '.join(missing_bookies)} (partit no associat) per a {home_data['name']} vs {away_data['name']}."
+                    elif b_is_stale or m_stat_1x2.get("stale") or reason_1x2 == "stale":
+                        alert_type = "STALE_ODDS"
+                        alert_msg = f"Quotes 1X2 obsoletes o desactualitzades a Bet365 per al partit {home_data['name']} vs {away_data['name']}."
+                    elif m_stat_1x2.get("suspended") or reason_1x2 == "suspended":
+                        alert_type = "SUSPENDED_ODDS"
+                        alert_msg = f"Quotes 1X2 suspeses temporalment a Bet365 per al partit {home_data['name']} vs {away_data['name']}."
+                    elif reason_1x2 == "unverified":
+                        alert_type = "UNVERIFIED_ODDS"
+                        alert_msg = f"Quotes 1X2 no verificables (manca de confirmació) a Bet365 per al partit {home_data['name']} vs {away_data['name']}."
+                    else:
+                        alert_type = "MISSING_1X2"
+                        alert_msg = f"Quotes 1X2 absents o no disponibles a {', '.join(missing_bookies)} per al partit {home_data['name']} vs {away_data['name']}."
+
                     alert_item = {
                         "id": f"{competition_id}_{h_norm}_{a_norm}",
                         "competition_id": competition_id,
@@ -604,10 +617,25 @@ class WebDataExporter:
                 b_btts = (odds_b365.get("btts") or {}).get("Sí") or (odds_b365.get("btts") or {}).get("yes")
                 if b_has_1x2 and (not b_ou25 or not b_btts):
                     missing_sec = []
+                    sec_reasons = []
+                    b_m_stat = odds_b365.get("market_status") or {}
                     if not b_ou25:
+                        ou_r = b_m_stat.get("over_under_2_5", {}).get("rejection_reason") or "absent"
                         missing_sec.append("Over/Under 2.5")
+                        sec_reasons.append(f"Over/Under 2.5 ({ou_r})")
                     if not b_btts:
+                        btts_r = b_m_stat.get("btts", {}).get("rejection_reason") or "absent"
                         missing_sec.append("BTTS (Ambdós Marquen)")
+                        sec_reasons.append(f"BTTS ({btts_r})")
+
+                    alert_type = "MISSING_SECONDARY_MARKET"
+                    if all("suspended" in r for r in sec_reasons):
+                        alert_type = "SUSPENDED_SECONDARY_MARKET"
+                    elif all("stale" in r for r in sec_reasons):
+                        alert_type = "STALE_SECONDARY_MARKET"
+                    elif all("unverified" in r for r in sec_reasons):
+                        alert_type = "UNVERIFIED_SECONDARY_MARKET"
+
                     sec_alert = {
                         "id": f"sec_{competition_id}_{h_norm}_{a_norm}",
                         "competition_id": competition_id,
@@ -617,11 +645,12 @@ class WebDataExporter:
                         "away_team": away_data["name"],
                         "date": match_date or "Pendent",
                         "jornada": active_jornada,
-                        "alert_type": "MISSING_SECONDARY_MARKET",
+                        "alert_type": alert_type,
                         "missing_markets": missing_sec,
-                        "missing_bookmakers": [f"Bet365 ({', '.join(missing_sec)})"],
+                        "market_reasons": sec_reasons,
+                        "missing_bookmakers": [f"Bet365 ({', '.join(sec_reasons)})"],
                         "severity": "info",
-                        "message": f"Bet365 no ofereix línia oberta de {', '.join(missing_sec)} per a {home_data['name']} vs {away_data['name']}."
+                        "message": f"Bet365 mercats secundaris no vàlids per a {home_data['name']} vs {away_data['name']}: {', '.join(sec_reasons)}."
                     }
                     self.odds_alerts.append(sec_alert)
 
@@ -2309,10 +2338,13 @@ class WebDataExporter:
         1. Una quota automàtica només es comptabilitza com a vàlida si hi ha una validació explícita i positiva
            del mercat corresponent (market_status[market]['valid'] is True). MAI utilitzar valid=True per defecte.
         2. Conserva la causa de rebuig específica per a cada mercat/partit:
-           - absent / no associat (discarded_unmatched)
-           - stale / obsolet (discarded_stale)
-           - suspès (discarded_suspended)
-           - no verificable / sense confirmació suficient (discarded_unverified)
+           - absent (discarded_absent / absent)
+           - stale / obsolet (discarded_stale / stale)
+           - suspès (discarded_suspended / suspended)
+           - no verificable / sense confirmació suficient (discarded_unverified / unverified)
+           - no associat (discarded_unmatched / unmatched)
+        3. Exposa comptadors globals i específics compatibles:
+           valid, absent, stale, suspended, unverified, unmatched.
         """
         audit_stats = {}
         for meta in COMPETITIONS_META:
@@ -2321,6 +2353,12 @@ class WebDataExporter:
                 "name": meta["name"],
                 "eligible": 0,
                 "associated": 0,
+                "valid": 0,
+                "absent": 0,
+                "stale": 0,
+                "suspended": 0,
+                "unverified": 0,
+                "unmatched": 0,
                 "valid_1x2": 0,
                 "valid_ou25": 0,
                 "valid_btts": 0,
@@ -2330,6 +2368,7 @@ class WebDataExporter:
                 "discarded_unmatched": 0,
                 "discarded_suspended": 0,
                 "discarded_unverified": 0,
+                "discarded_absent": 0,
             }
             c_matches = predictions.get(cid, {}).get("matches", [])
             for m in c_matches:
@@ -2338,11 +2377,13 @@ class WebDataExporter:
                     b_odds = m.get("odds_bet365") or {}
                     m_stat = b_odds.get("market_status") or {}
                     is_match_stale = bool(b_odds.get("is_stale"))
+                    is_matched = bool(b_odds.get("matched"))
 
-                    if b_odds.get("matched"):
+                    if is_matched:
                         stat["associated"] += 1
                     else:
                         stat["discarded_unmatched"] += 1
+                        stat["unmatched"] += 1
 
                     # Comprovació de cadascun dels mercats amb validació explícita i positiva (sense True per defecte)
                     for m_key, odds_val, stat_key in [
@@ -2360,23 +2401,40 @@ class WebDataExporter:
                             and st_m.get("valid") is True
                             and not st_m.get("stale")
                             and not st_m.get("suspended")
+                            and st_m.get("rejection_reason") in (None, "ok")
                         )
                         if is_valid:
                             stat[stat_key] += 1
+                            stat["valid"] += 1
                         else:
                             # Rebutjat: registrar causa de rebuig
-                            if not b_odds.get("matched"):
-                                pass  # Ja comptat a discarded_unmatched
+                            if not is_matched:
+                                pass  # Ja comptabilitzat a nivell de partit a unmatched / discarded_unmatched
                             elif not isinstance(st_m, dict) or not st_m:
+                                # Manca totalment market_status: no es pot verificar
                                 stat["discarded_unverified"] += 1
+                                stat["unverified"] += 1
                             else:
                                 reason = st_m.get("rejection_reason")
                                 if st_m.get("stale") or reason == "stale" or is_match_stale:
                                     stat["discarded_stale"] += 1
+                                    stat["stale"] += 1
                                 elif st_m.get("suspended") or reason == "suspended":
                                     stat["discarded_suspended"] += 1
-                                elif reason == "unverified" or not st_m.get("valid"):
+                                    stat["suspended"] += 1
+                                elif reason == "absent":
+                                    stat["discarded_absent"] += 1
+                                    stat["absent"] += 1
+                                elif reason == "unverified":
                                     stat["discarded_unverified"] += 1
+                                    stat["unverified"] += 1
+                                else:
+                                    if not odds_val:
+                                        stat["discarded_absent"] += 1
+                                        stat["absent"] += 1
+                                    else:
+                                        stat["discarded_unverified"] += 1
+                                        stat["unverified"] += 1
 
             audit_stats[cid] = stat
         return audit_stats
@@ -2626,12 +2684,12 @@ class WebDataExporter:
         # Auditoria de cobertura i frescor de quotes per competició
         audit_stats = self.compute_audit_stats(predictions)
 
-        print("\n" + "=" * 106)
+        print("\n" + "=" * 116)
         print("📊 AUDITORIA DE COBERTURA I FRESCOR DE QUOTES (BET365 / MOVIODDS)")
-        print("=" * 106)
-        print(f"{'COMPETICIÓ':<14} | {'ELEG.':<5} | {'ASSOC.':<6} | {'1X2':<5} | {'O/U2.5':<6} | {'BTTS':<5} | {'CÓRN':<5} | {'TARG':<5} | {'OBSOLET':<7} | {'SUSPÈS':<6} | {'NO VERIF':<8} | {'NO ASSOC':<8}")
-        print("-" * 106)
-        tot_e = tot_a = tot_1 = tot_ou = tot_bt = tot_co = tot_ca = tot_st = tot_su = tot_uv = tot_un = 0
+        print("=" * 116)
+        print(f"{'COMPETICIÓ':<14} | {'ELEG.':<5} | {'ASSOC.':<6} | {'1X2':<5} | {'O/U2.5':<6} | {'BTTS':<5} | {'CÓRN':<5} | {'TARG':<5} | {'ABSENT':<7} | {'OBSOLET':<7} | {'SUSPÈS':<6} | {'NO VERIF':<8} | {'NO ASSOC':<8}")
+        print("-" * 116)
+        tot_e = tot_a = tot_1 = tot_ou = tot_bt = tot_co = tot_ca = tot_ab = tot_st = tot_su = tot_uv = tot_un = 0
         for cid, st in audit_stats.items():
             tot_e += st["eligible"]
             tot_a += st["associated"]
@@ -2640,14 +2698,15 @@ class WebDataExporter:
             tot_bt += st["valid_btts"]
             tot_co += st["valid_corners"]
             tot_ca += st["valid_cards"]
+            tot_ab += st.get("discarded_absent", 0)
             tot_st += st["discarded_stale"]
             tot_su += st["discarded_suspended"]
             tot_uv += st["discarded_unverified"]
             tot_un += st["discarded_unmatched"]
-            print(f"{cid:<14} | {st['eligible']:<5} | {st['associated']:<6} | {st['valid_1x2']:<5} | {st['valid_ou25']:<6} | {st['valid_btts']:<5} | {st['valid_corners']:<5} | {st['valid_cards']:<5} | {st['discarded_stale']:<7} | {st['discarded_suspended']:<6} | {st['discarded_unverified']:<8} | {st['discarded_unmatched']:<8}")
-        print("-" * 106)
-        print(f"{'TOTAL':<14} | {tot_e:<5} | {tot_a:<6} | {tot_1:<5} | {tot_ou:<6} | {tot_bt:<5} | {tot_co:<5} | {tot_ca:<5} | {tot_st:<7} | {tot_su:<6} | {tot_uv:<8} | {tot_un:<8}")
-        print("=" * 106 + "\n")
+            print(f"{cid:<14} | {st['eligible']:<5} | {st['associated']:<6} | {st['valid_1x2']:<5} | {st['valid_ou25']:<6} | {st['valid_btts']:<5} | {st['valid_corners']:<5} | {st['valid_cards']:<5} | {st.get('discarded_absent', 0):<7} | {st['discarded_stale']:<7} | {st['discarded_suspended']:<6} | {st['discarded_unverified']:<8} | {st['discarded_unmatched']:<8}")
+        print("-" * 116)
+        print(f"{'TOTAL':<14} | {tot_e:<5} | {tot_a:<6} | {tot_1:<5} | {tot_ou:<6} | {tot_bt:<5} | {tot_co:<5} | {tot_ca:<5} | {tot_ab:<7} | {tot_st:<7} | {tot_su:<6} | {tot_uv:<8} | {tot_un:<8}")
+        print("=" * 116 + "\n")
 
         # Eliminat qualsevol fallback a previous_data["value_bets"]:
         # Si no hi ha oportunitats noves i verificades, all_value_bets ha de quedar buit [].
