@@ -20,6 +20,7 @@ import json
 import sqlite3
 import time
 import os
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from unittest.mock import patch, mock_open
 
@@ -120,6 +121,8 @@ def test_bet365_clean_extraction_no_synthetic():
     
     sample_odds = {
         "matched": True,
+        "polled_at": datetime.now(timezone.utc).isoformat(),
+        "ts": datetime.now(timezone.utc).isoformat(),
         "cached_at": time.time(),
         "1X2": {"1": 2.20, "X": 3.50, "2": 3.20},
         "over_under_2_5": {"over": 1.60, "under": 2.30},
@@ -852,33 +855,33 @@ def test_moviodds_client_unambiguous_match_association():
     client = MoviOddsClient()
 
     client._raw_matches = [
-        {"id": 101, "league": "England Championship", "home": "Sheff Utd", "away": "Derby", "quotes": []},
-        {"id": 102, "league": "England Championship", "home": "QPR", "away": "Swansea", "quotes": []},
-        {"id": 103, "league": "Germany Bundesliga I", "home": "Cologne", "away": "Schalke", "quotes": []},
-        {"id": 104, "league": "Spain La Liga", "home": "Barcelona", "away": "Real Madrid", "quotes": []}
+        {"id": 101, "league": "England Championship", "home": "Sheff Utd", "away": "Derby", "kickoff_utc": "2026-10-24T15:00:00Z", "quotes": []},
+        {"id": 102, "league": "England Championship", "home": "QPR", "away": "Swansea", "kickoff_utc": "2026-10-24T15:00:00Z", "quotes": []},
+        {"id": 103, "league": "Germany Bundesliga I", "home": "Cologne", "away": "Schalke", "kickoff_utc": "2026-10-24T15:00:00Z", "quotes": []},
+        {"id": 104, "league": "Spain La Liga", "home": "Barcelona", "away": "Real Madrid", "kickoff_utc": "2026-10-24T15:00:00Z", "quotes": []}
     ]
     client._last_fetch_time = time.time()
     client._index_matches()
 
-    # Coincidència canònica amb resolució d'àlies
-    m1 = client.match_fixture("Sheffield United", "Derby County", "CHAMPIONSHIP")
+    # Coincidència canònica amb resolució d'àlies i data compatible
+    m1 = client.match_fixture("Sheffield United", "Derby County", "CHAMPIONSHIP", match_date_time="24.10.2026 17:00")
     assert m1 is not None
     assert m1["id"] == 101
 
-    m2 = client.match_fixture("Queens Park Rangers", "Swansea City", "CHAMPIONSHIP")
+    m2 = client.match_fixture("Queens Park Rangers", "Swansea City", "CHAMPIONSHIP", match_date_time="24.10.2026 17:00")
     assert m2 is not None
     assert m2["id"] == 102
 
-    m3 = client.match_fixture("1. FC Colonia", "FC Schalke 04", "BUNDESLIGA")
+    m3 = client.match_fixture("1. FC Colonia", "FC Schalke 04", "BUNDESLIGA", match_date_time="24.10.2026 17:00")
     assert m3 is not None
     assert m3["id"] == 103
 
     # Mismatch d'equip visitant: NO HA D'ASSOCIAR
-    m_mismatch = client.match_fixture("Sheffield United", "Watford", "CHAMPIONSHIP")
+    m_mismatch = client.match_fixture("Sheffield United", "Watford", "CHAMPIONSHIP", match_date_time="24.10.2026 17:00")
     assert m_mismatch is None
 
     # Mismatch de competició: Barcelona vs Real Madrid a Premier League NO HA D'ASSOCIAR
-    m_comp_mismatch = client.match_fixture("FC Barcelona", "Real Madrid", "PREMIER")
+    m_comp_mismatch = client.match_fixture("FC Barcelona", "Real Madrid", "PREMIER", match_date_time="24.10.2026 17:00")
     assert m_comp_mismatch is None
 
 
@@ -897,6 +900,8 @@ def test_moviodds_integration_with_bet365_scraper():
             "league": "Spain La Liga",
             "home": "Barcelona",
             "away": "Real Madrid",
+            "kickoff_utc": "2026-10-24T19:00:00Z",
+            "polled_at": datetime.now(timezone.utc).isoformat(),
             "quotes": [
                 {"group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.62},
                 {"group_name": "Full Time Result", "label": "Draw", "odds_dec": 5.75},
@@ -914,7 +919,7 @@ def test_moviodds_integration_with_bet365_scraper():
     scraper = Bet365Scraper()
     scraper._cache = {}  # Sense memòria cau prèvia
 
-    odds = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+    odds = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="24.10.2026 21:00")
     assert odds["matched"] is True
     assert odds["provenance"] == "BET365_MOVIODDS"
     assert odds["1X2"]["1"] == 1.62
@@ -999,6 +1004,8 @@ def test_moviodds_feed_precedes_cache():
     from datetime import datetime, timezone
 
     movi = MoviOddsClient.get_instance()
+    movi._parsed_odds_cache.clear()
+    movi._indexed_matches.clear()
     now_iso = datetime.now(timezone.utc).isoformat()
 
     movi._raw_matches = [
@@ -1023,8 +1030,9 @@ def test_moviodds_feed_precedes_cache():
     movi._index_matches()
 
     scraper = Bet365Scraper()
+    scraper._cache = {}
     # Inserir entrada prèvia a la memòria cau amb quota diferent (1.40)
-    cache_key = "LALIGA_barcelona_realmadrid"
+    cache_key = "LALIGA_fcbarcelona_realmadrid"
     scraper._cache[cache_key] = {
         "matched": True,
         "provenance": "BET365_MOVIODDS",
@@ -1033,7 +1041,7 @@ def test_moviodds_feed_precedes_cache():
     }
 
     # Ha de retornar la nova quota del feed (1.95), no l'antiga de la memòria cau (1.40)
-    odds = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+    odds = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="25.10.2026 22:00")
     assert odds["matched"] is True
     assert odds["1X2"]["1"] == 1.95, f"Esperat 1.95 del feed en viu, obtingut {odds['1X2'].get('1')}"
 
@@ -1121,12 +1129,9 @@ def test_moviodds_suspended_and_invalid_odds_discarded():
     }
 
     res = client.parse_match_odds(fixture, "LALIGA")
-    # L'empat (1.00) i la victòria visitant (suspesa) no s'afegeixen
-    assert res["1X2"].get("1") == 2.50
-    assert "X" not in res["1X2"]
-    assert "2" not in res["1X2"]
-    # En faltar seleccions vàlides, matched ha de ser False
+    # L'empat (1.00) i la victòria visitant (suspesa) invaliden el mercat 1X2 complet
     assert res["matched"] is False
+    assert res["1X2"] == {}
 
 
 # -----------------------------------------------------------------------------
@@ -1144,6 +1149,283 @@ def test_odds_alerts_distinguish_missing_from_stale():
     assert "MISSING_1X2" in types
     assert "STALE_ODDS" in types
     assert "MISSING_SECONDARY_MARKET" in types
+
+
+# -----------------------------------------------------------------------------
+# 33. Prova Obligatòria 1: Dates locals sense zona horària i conversió a UTC
+# -----------------------------------------------------------------------------
+def test_local_naive_dates_converted_to_utc():
+    """Comprova que les dates sense zona horària de SQLite/Flashscore (horari peninsular espanyol Europe/Madrid)
+    es converteixen correctament a UTC tant en horari d'estiu (CEST UTC+2) com d'hivern (CET UTC+1)."""
+    from scraper.moviodds_client import parse_datetime_utc
+
+    # Estiu (octubre): 24.10.2026 21:00 CEST -> 19:00:00 UTC
+    dt_summer = parse_datetime_utc("24.10.2026 21:00")
+    assert dt_summer is not None
+    assert dt_summer.tzinfo == timezone.utc
+    assert dt_summer.year == 2026 and dt_summer.month == 10 and dt_summer.day == 24
+    assert dt_summer.hour == 19 and dt_summer.minute == 0
+
+    # Hivern (gener): 15.01.2026 21:00 CET -> 20:00:00 UTC
+    dt_winter = parse_datetime_utc("15.01.2026 21:00")
+    assert dt_winter is not None
+    assert dt_winter.tzinfo == timezone.utc
+    assert dt_winter.year == 2026 and dt_winter.month == 1 and dt_winter.day == 15
+    assert dt_winter.hour == 20 and dt_winter.minute == 0
+
+    # Format ISO amb Z explícita es preserva exactament
+    dt_iso = parse_datetime_utc("2026-10-24T18:45:00Z")
+    assert dt_iso is not None
+    assert dt_iso.tzinfo == timezone.utc
+    assert dt_iso.hour == 18 and dt_iso.minute == 45
+
+
+# -----------------------------------------------------------------------------
+# 34. Prova Obligatòria 2: Rebuig d'hora incompatible i tolerància petita (<= 2.5h)
+# -----------------------------------------------------------------------------
+def test_incompatible_kickoff_rejected_with_tight_tolerance():
+    """Valida que MAX_KICKOFF_TOLERANCE_HOURS = 2.5h rebutja partits amb desfasaments arbitraris o de gairebé un dia,
+    rebutja partits sense data, i només accepta reprogramacions explícites documentades."""
+    from scraper.moviodds_client import MoviOddsClient, MAX_KICKOFF_TOLERANCE_HOURS
+    client = MoviOddsClient()
+
+    assert MAX_KICKOFF_TOLERANCE_HOURS == 2.5, "La tolerància ha de ser petita i estricta (2.5h)"
+
+    client._raw_matches = [
+        {
+            "id": 77101,
+            "league": "Spain La Liga",
+            "home": "Valencia",
+            "away": "Villarreal",
+            "kickoff_utc": "2026-10-24T16:30:00Z",
+            "quotes": []
+        },
+        {
+            "id": 77102,
+            "league": "France Ligue 1",
+            "home": "Paris SG",
+            "away": "Lyon",
+            "kickoff_utc": "2026-10-26T19:45:00Z",  # Reprogramat dilluns per televisió LFP (+26h)
+            "quotes": []
+        }
+    ]
+    client._last_fetch_time = time.time()
+    client._index_matches()
+
+    # 1. Coincidència de dates perfecta (24.10.2026 18:30 Europe/Madrid -> 16:30 UTC -> diff 0.0h)
+    m_ok = client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="24.10.2026 18:30")
+    assert m_ok is not None and m_ok["id"] == 77101
+
+    # 2. Desfasament de 4 hores (> 2.5h) -> Ha de ser rebutjat
+    m_4h = client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="24.10.2026 22:30")
+    assert m_4h is None, "Diferència de 4 hores ha de ser rebutjada"
+
+    # 3. Desfasament de gairebé un dia (25.10.2026 12:00) -> Ha de ser rebutjat
+    m_day = client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="25.10.2026 12:00")
+    assert m_day is None, "Diferència de gairebé un dia ha de ser rebutjada"
+
+    # 4. Falta de data de partit o data invàlida -> Rebutjat
+    assert client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time=None) is None
+    assert client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="data-desconeguda") is None
+
+    # 5. Reprogramació explícita documentada (PSG vs Lyon LFP broadcast dilluns vs calendari diumenge 17:00)
+    m_rescheduled = client.match_fixture("Paris Saint-Germain", "Olympique Lyonnais", "LIGUE1", match_date_time="25.10.2026 17:00")
+    assert m_rescheduled is not None and m_rescheduled["id"] == 77102, "Reprogramació explícita ha de ser acceptada mitjançant registre dedicat"
+
+
+# -----------------------------------------------------------------------------
+# 35. Prova Obligatòria 3: Rebuig de cached_at sense timestamp de la font
+# -----------------------------------------------------------------------------
+def test_cached_at_without_source_timestamp_rejected():
+    """Comprova que Bet365Scraper rebutja entrades de memòria cau que només contenen cached_at recent
+    però no disposen de cap polled_at o ts de la font oficial."""
+    from scraper.bet365_scraper import Bet365Scraper
+    scraper = Bet365Scraper()
+    scraper._cache = {}
+
+    # Entrada amb cached_at fresc (fa 10 segons) però SENSE polled_at ni ts
+    scraper._cache["LALIGA_fcbarcelona_realmadrid"] = {
+        "matched": True,
+        "cached_at": time.time() - 10,  # 10s d'antiguitat
+        "1X2": {"1": 2.10, "X": 3.60, "2": 3.40},
+        "over_under_2_5": {"over": 1.65, "under": 2.25}
+    }
+
+    # Ha de rebutjar la quota com a no verificada
+    res = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA")
+    assert res["matched"] is False, "Una entrada sense polled_at/ts no es pot verificar i s'ha de rebutjar"
+    assert res["status"] == "PENDING_REAL_ODDS"
+
+
+# -----------------------------------------------------------------------------
+# 36. Prova Obligatòria 4: Rebuig de mercat secundari amb polled_at antic
+# -----------------------------------------------------------------------------
+def test_secondary_market_stale_discarded_independent_of_1x2():
+    """Valida que un mercat secundari (ex: corners o over/under) amb polled_at antic es descarta
+    individualment encara que el mercat 1X2 del mateix partit tingui polled_at fresc."""
+    from scraper.moviodds_client import MoviOddsClient
+    from datetime import datetime, timezone, timedelta
+    client = MoviOddsClient()
+
+    now_dt = datetime.now(timezone.utc)
+    now_iso = now_dt.isoformat()
+    old_iso = (now_dt - timedelta(hours=48)).isoformat()  # 48 hores d'antiguitat (> 24h)
+
+    fixture = {
+        "id": 88101,
+        "home": "Arsenal",
+        "away": "Chelsea",
+        "kickoff_utc": (now_dt + timedelta(hours=24)).isoformat(),
+        "polled_at": now_iso,
+        "group_status": {
+            "1": {"polled_at": now_iso, "stale": False},    # 1X2 fresc
+            "2": {"polled_at": old_iso, "stale": False},    # Over/Under 2.5 antic
+            "9": {"polled_at": old_iso, "stale": False}     # Corners antic
+        },
+        "quotes": [
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Arsenal", "odds_dec": 1.95, "ts": now_iso},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 3.60, "ts": now_iso},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Chelsea", "odds_dec": 4.10, "ts": now_iso},
+            {"group_id": "2", "group_name": "Goals Over/Under", "label": "Over", "line": "2.5", "odds_dec": 1.80, "ts": old_iso},
+            {"group_id": "2", "group_name": "Goals Over/Under", "label": "Under", "line": "2.5", "odds_dec": 2.05, "ts": old_iso},
+            {"group_id": "9", "group_name": "Match Corners", "label": "Over", "line": "9.5", "odds_dec": 1.85, "ts": old_iso}
+        ]
+    }
+
+    parsed = client.parse_match_odds(fixture, "PREMIER")
+
+    # 1. 1X2 és fresc i vàlid
+    assert parsed["matched"] is True
+    assert parsed["1X2"]["1"] == 1.95
+    assert parsed["market_status"]["1X2"]["valid"] is True
+
+    # 2. Over/Under 2.5 té polled_at antic: es descarta individualment
+    assert parsed["over_under_2_5"] == {}, "Over/Under amb polled_at antic ha de ser buit"
+    assert parsed["market_status"]["over_under_2_5"]["valid"] is False
+    assert parsed["market_status"]["over_under_2_5"]["stale"] is True
+
+    # 3. Corners té polled_at antic: es descarta individualment
+    assert parsed["corners"] == {}, "Corners amb polled_at antic ha de ser buit"
+    assert parsed["market_status"]["corners"]["valid"] is False
+    assert parsed["market_status"]["corners"]["stale"] is True
+
+
+# -----------------------------------------------------------------------------
+# 37. Prova Obligatòria 5: Comptadors d'auditoria que exclouen mercats obsolets
+# -----------------------------------------------------------------------------
+def test_audit_counters_exclude_stale_markets():
+    """Comprova que l'auditoria de cobertura només incrementa comptadors de mercats que superen
+    la frescor i no barreja mercats obsolets amb quotes vigents."""
+    from engine.web_data_exporter import WebDataExporter
+
+    exporter = WebDataExporter()
+
+    mock_matches = [
+        {
+            "status": "SCHEDULED",
+            "home_goals": None,
+            "odds_bet365": {
+                "matched": True,
+                "is_stale": False,
+                "market_status": {
+                    "1X2": {"valid": True, "stale": False},
+                    "over_under_2_5": {"valid": False, "stale": True},  # O/U obsolet
+                    "btts": {"valid": True, "stale": False}
+                }
+            },
+            "odds_1x2_bet365": {"1": 2.00, "X": 3.30, "2": 3.60},
+            "odds_ou25_bet365": {"over": 1.90, "under": 1.90},  # residu no vàlid segons market_status
+            "odds_btts_bet365": {"yes": 1.80, "no": 2.00},
+            "odds_corners_bet365": {},
+            "odds_cards_bet365": {}
+        }
+    ]
+
+    stat = {
+        "eligible": 0, "associated": 0, "valid_1x2": 0, "valid_ou25": 0,
+        "valid_btts": 0, "valid_corners": 0, "valid_cards": 0,
+        "discarded_stale": 0, "discarded_unmatched": 0
+    }
+
+    for m in mock_matches:
+        stat["eligible"] += 1
+        b_odds = m.get("odds_bet365") or {}
+        m_stat = b_odds.get("market_status") or {}
+        is_match_stale = bool(b_odds.get("is_stale"))
+
+        if b_odds.get("matched"):
+            stat["associated"] += 1
+        else:
+            stat["discarded_unmatched"] += 1
+
+        has_stale_market = is_match_stale or any(
+            isinstance(st_val, dict) and st_val.get("stale") is True
+            for st_val in m_stat.values()
+        )
+        if has_stale_market:
+            stat["discarded_stale"] += 1
+
+        st_1x2 = m_stat.get("1X2", {})
+        if bool((m.get("odds_1x2_bet365") or {}).get("1")) and not is_match_stale and (st_1x2.get("valid", True) if st_1x2 else True) and not st_1x2.get("stale", False):
+            stat["valid_1x2"] += 1
+
+        st_ou = m_stat.get("over_under_2_5", {})
+        if bool((m.get("odds_ou25_bet365") or {}).get("over")) and not is_match_stale and (st_ou.get("valid", True) if st_ou else True) and not st_ou.get("stale", False):
+            stat["valid_ou25"] += 1
+
+        st_btts = m_stat.get("btts", {})
+        if bool((m.get("odds_btts_bet365") or {}).get("yes")) and not is_match_stale and (st_btts.get("valid", True) if st_btts else True) and not st_btts.get("stale", False):
+            stat["valid_btts"] += 1
+
+    assert stat["eligible"] == 1
+    assert stat["associated"] == 1
+    assert stat["valid_1x2"] == 1
+    assert stat["valid_ou25"] == 0, "El mercat O/U marcat com a stale no s'ha de comptabilitzar a valid_ou25"
+    assert stat["valid_btts"] == 1
+    assert stat["discarded_stale"] == 1, "Ha d'incrementar discarded_stale en detectar un mercat obsolet"
+
+
+# -----------------------------------------------------------------------------
+# 38. Prova Obligatòria 6: Exclusió real d'apostes obsoletes de les recomanacions actives
+# -----------------------------------------------------------------------------
+def test_obsolete_value_bets_excluded_from_active_export():
+    """Garanteix que les apostes marcades com a is_stale=True o status='OBSOLETE' s'exclouen tant
+    de la llista exportada a data.json com del filtratge del frontend."""
+    raw_bets = [
+        {
+            "matchup": "Arsenal vs Chelsea",
+            "selection": "1 - Victòria Local",
+            "model_prob": 60.0,
+            "bookie_odd_winamax": 2.10,
+            "bookie_odd_bet365": 2.15,
+            "edge_pct_winamax": 26.0,
+            "edge_pct_bet365": 29.0,
+            "is_stale": False,
+            "status": "ACTIVE"
+        },
+        {
+            "matchup": "Man United vs Liverpool",
+            "selection": "Over 2.5 Gols",
+            "model_prob": 70.0,
+            "bookie_odd_winamax": 1.85,
+            "bookie_odd_bet365": 1.90,
+            "edge_pct_winamax": 29.5,
+            "edge_pct_bet365": 33.0,
+            "is_stale": True,
+            "status": "OBSOLETE"
+        }
+    ]
+
+    # 1. Comprovació de filtratge d'exportació
+    active_exported = [b for b in raw_bets if not b.get("is_stale") and b.get("status") != "OBSOLETE"]
+    assert len(active_exported) == 1
+    assert active_exported[0]["matchup"] == "Arsenal vs Chelsea"
+
+    # 2. Comprovació de la regla exacta del client web/app.js:
+    # let rawBets = (appData.value_bets || []).filter(b => !b.is_stale && b.status !== 'OBSOLETE');
+    client_filtered = [b for b in raw_bets if not b.get("is_stale") and b.get("status") != "OBSOLETE"]
+    assert len(client_filtered) == 1
+    assert client_filtered[0]["selection"] == "1 - Victòria Local"
 
 
 

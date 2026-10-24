@@ -180,13 +180,6 @@ class Bet365Scraper:
                                 is_fresh = True
                     except Exception:
                         is_fresh = False
-                elif cached_entry.get("cached_at") or cached_entry.get("timestamp"):
-                    try:
-                        c_ts = float(cached_entry.get("cached_at") or cached_entry.get("timestamp"))
-                        if (time.time() - c_ts <= 86400) and not cached_entry.get("is_stale"):
-                            is_fresh = True
-                    except Exception:
-                        is_fresh = False
 
                 # Detecció i rebuig de plantilles sintètiques conegudes (ex: Over/Under 1.98/1.87 estàtic)
                 is_synthetic_template = (

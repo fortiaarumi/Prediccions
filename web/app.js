@@ -1173,7 +1173,7 @@ function renderValueBets() {
   }
 
   const isB365 = (currentBookie === 'BET365');
-  let rawBets = appData.value_bets || [];
+  let rawBets = (appData.value_bets || []).filter(b => !b.is_stale && b.status !== 'OBSOLETE');
 
   // Mapejar i calcular exactament l'edge real per a la casa d'apostes activa
   let bets = rawBets.map(b => {

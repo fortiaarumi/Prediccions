@@ -32,17 +32,35 @@ import unicodedata
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 CACHE_FILE = ROOT_DIR / "data" / "bet365_odds_cache.json"
 
-# Tolerància temporal explícita documentada entre SQLite i MoviOdds (28.0 hores):
-# Permet cobrir fins a +/- 24h per reprogramacions dins de la mateixa jornada i fins a 2h de desfasament horari UTC vs CET/CEST.
-MAX_KICKOFF_TOLERANCE_HOURS = 28.0
+# Zona horària original de referència del calendari (Flashscore Península Ibèrica / Europa)
+CALENDAR_TIMEZONE = ZoneInfo("Europe/Madrid")
 
-# Antiguitat màxima permeses per considerar vigent una quota de la font (24 hores)
+# Tolerància temporal màxima justificada (2.5 hores):
+# Absorbeix desfasaments entre UTC i CET (UTC+1) / CEST (UTC+2) quan el feed informa en hora local
+# o quan hi ha retards menors de retransmissió televisiva (15-30 minuts).
+# Qualsevol diferència superior a 2.5 hores es rebutja com a incompatible,
+# tret que figuri de forma explícita al registre oficial de partits reprogramats.
+MAX_KICKOFF_TOLERANCE_HOURS = 2.5
+
+# Registre explícit i documentat de partits reprogramats amb canvi de dia
+# Clau: (competition_id, home_team_canonical, away_team_canonical)
+EXPLICIT_RESCHEDULED_MATCHES: Dict[Tuple[str, str, str], Dict[str, str]] = {
+    ("LIGUE1", "paris saint-germain", "olympique lyonnais"): {
+        "reason": "Partit de la Jornada 8 mogut per decisió de difusió LFP a dilluns 26.10 vespre."
+    },
+    ("LIGUE1", "toulouse fc", "es troyes ac"): {
+        "reason": "Partit de la Jornada 8 ajustat a diumenge 25.10 dins del calendari oficial."
+    }
+}
+
+# Antiguitat màxima permesa per considerar vigent una quota de la font (24 hores)
 MAX_ODDS_AGE_SECONDS = 86400.0
 
 COMPETITION_FEED_MAP = {
@@ -229,18 +247,22 @@ TEAM_ALIASES = {
 }
 
 
-def parse_datetime_utc(dt_val: Any) -> Optional[datetime]:
+def parse_datetime_utc(dt_val: Any, default_tz: ZoneInfo = CALENDAR_TIMEZONE) -> Optional[datetime]:
     """
     Normalitza de manera segura qualsevol format de data/hora a datetime amb zona horària UTC.
-    Suporta formats 'DD.MM.YYYY HH:MM', 'YYYY-MM-DDTHH:MM:SSZ', i variants amb o sense decalatge.
+    Les dates locals sense zona horària (formats DD.MM.YYYY HH:MM o YYYY-MM-DD HH:MM típics de Flashscore / SQLite)
+    es converteixen correctament a UTC a partir de la zona horària original del calendari (Europe/Madrid).
+    Si la data és buida, 'TBD', 'Pendent' o incompatible, retorna None.
     """
     if not dt_val:
         return None
     if isinstance(dt_val, datetime):
-        return dt_val if dt_val.tzinfo else dt_val.replace(tzinfo=timezone.utc)
+        if dt_val.tzinfo:
+            return dt_val.astimezone(timezone.utc)
+        return dt_val.replace(tzinfo=default_tz).astimezone(timezone.utc)
 
     s = str(dt_val).strip()
-    if not s:
+    if not s or s.lower() in ("tbd", "pendent", "none", "null", "postponed"):
         return None
 
     # 1. Format 'DD.MM.YYYY HH:MM' típic de Flashscore / SQLite
@@ -249,17 +271,26 @@ def parse_datetime_utc(dt_val: Any) -> Optional[datetime]:
         day, month, year = int(m.group(1)), int(m.group(2)), int(m.group(3))
         hour = int(m.group(4) or 0)
         minute = int(m.group(5) or 0)
-        return datetime(year, month, day, hour, minute, tzinfo=timezone.utc)
+        dt_local = datetime(year, month, day, hour, minute, tzinfo=default_tz)
+        return dt_local.astimezone(timezone.utc)
 
-    # 2. Format ISO 8601 estàndard (ex: 2026-10-24T12:00:00Z o 2026-10-24T12:00:00.123456Z)
+    # 2. Format 'YYYY-MM-DD HH:MM'
+    m_iso = re.match(r"^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{1,2}):(\d{2}))?$", s)
+    if m_iso:
+        year, month, day = int(m_iso.group(1)), int(m_iso.group(2)), int(m_iso.group(3))
+        hour = int(m_iso.group(4) or 0)
+        minute = int(m_iso.group(5) or 0)
+        dt_local = datetime(year, month, day, hour, minute, tzinfo=default_tz)
+        return dt_local.astimezone(timezone.utc)
+
+    # 3. Format ISO 8601 amb offset o 'Z'
     try:
-        # Eliminar fracció de segons si és massa llarga per a strptime
         clean_iso = re.sub(r"(\.\d{6})\d+Z$", r"\1Z", s)
         if clean_iso.endswith("Z"):
             clean_iso = clean_iso[:-1] + "+00:00"
         dt = datetime.fromisoformat(clean_iso)
         if not dt.tzinfo:
-            dt = dt.replace(tzinfo=timezone.utc)
+            dt = dt.replace(tzinfo=default_tz)
         return dt.astimezone(timezone.utc)
     except Exception:
         pass
@@ -447,7 +478,13 @@ class MoviOddsClient:
         h_norm = self.normalize_name(home_team)
         a_norm = self.normalize_name(away_team)
 
-        sqlite_dt = parse_datetime_utc(match_date_time) if match_date_time else None
+        # Validació estricta de la data d'inici de SQLite: si falta o no és computable, es rebutja l'associació
+        if not match_date_time:
+            return None
+
+        sqlite_dt = parse_datetime_utc(match_date_time)
+        if not sqlite_dt:
+            return None
 
         # Partits de la mateixa lliga al feed
         league_matches = [
@@ -469,13 +506,29 @@ class MoviOddsClient:
             if not (h_matches and a_matches):
                 continue
 
-            # 2. Comprovació de coherència temporal amb tolerància documentada
+            # 2. Comprovació de coherència temporal amb tolerància estricta (2.5h) i reprogramacions explícites
             ko_str = m.get("kickoff_utc")
+            if not ko_str:
+                # Si el feed no té data/hora d'inici, no es pot verificar la coherència
+                continue
             ko_dt = parse_datetime_utc(ko_str)
-            if sqlite_dt and ko_dt:
-                diff_hours = abs((sqlite_dt - ko_dt).total_seconds()) / 3600.0
-                if diff_hours > MAX_KICKOFF_TOLERANCE_HOURS:
-                    # Descartat per incompatibilitat de calendari / reprogramació llunyana
+            if not ko_dt:
+                continue
+
+            diff_hours = abs((sqlite_dt - ko_dt).total_seconds()) / 3600.0
+            if diff_hours > MAX_KICKOFF_TOLERANCE_HOURS:
+                # Comprovar si figura explícitament al registre documentat de reprogramacions
+                resched = None
+                for (r_comp, r_h, r_a), r_info in EXPLICIT_RESCHEDULED_MATCHES.items():
+                    if r_comp.upper() == comp_id:
+                        r_h_norm = self.normalize_name(r_h)
+                        r_a_norm = self.normalize_name(r_a)
+                        if (r_h_norm in (h_norm, m_h_norm) or self.resolve_team_key(r_h) in (h_key, m_h_key)) and \
+                           (r_a_norm in (a_norm, m_a_norm) or self.resolve_team_key(r_a) in (a_key, m_a_key)):
+                            resched = r_info
+                            break
+                if not resched:
+                    # Descartat per incompatibilitat horària
                     continue
 
             candidates.append(m)
@@ -570,20 +623,15 @@ class MoviOddsClient:
         if not quotes:
             return result
 
-        # 1. Agrupar quotes per nom de grup i avaluar frescor per mercat
+        # 1. Agrupar quotes per nom de grup (descartant seleccions suspeses o preus invàlids)
         groups: Dict[str, List[Dict[str, Any]]] = {}
-        market_freshness: Dict[str, Dict[str, Any]] = {}
-
         for q in quotes:
-            # Excloure seleccions marcades explícitament com a suspeses
             if q.get("suspended") is True:
                 continue
 
             gid = str(q.get("group_id") or "")
-            g_info = group_status.get(gid) or {}
-
-            # Descarta mercats marcats com a stale al feed
-            if g_info.get("stale") is True:
+            # Si el grup està marcat com a stale al feed, descartar la selecció
+            if group_status.get(gid, {}).get("stale") is True:
                 continue
 
             price = self._safe_float(q.get("odds_dec"))
@@ -593,60 +641,100 @@ class MoviOddsClient:
             gname = q.get("group_name", "")
             groups.setdefault(gname, []).append(q)
 
-            # Rastrejar frescor del grup
-            polled_t = g_info.get("polled_at") or raw_polled_at
-            q_ts = q.get("ts") or ""
-            if gname not in market_freshness:
-                market_freshness[gname] = {
-                    "polled_at": polled_t,
-                    "ts": q_ts,
-                    "stale": False,
-                }
-            else:
-                if q_ts and q_ts > (market_freshness[gname].get("ts") or ""):
-                    market_freshness[gname]["ts"] = q_ts
+        # Avaluador estricte de confirmació temporal per mercat
+        def _eval_market_freshness(market_quotes: List[Dict[str, Any]]) -> Tuple[bool, Optional[str], Optional[str]]:
+            if not market_quotes:
+                return False, None, None
+            # Si algun group_id d'aquest mercat està marcat com a stale a group_status -> DESCARTAR
+            for q in market_quotes:
+                gid = str(q.get("group_id") or "")
+                if group_status.get(gid, {}).get("stale") is True:
+                    return False, group_status.get(gid, {}).get("polled_at") or raw_polled_at, q.get("ts")
+
+            m_polled = None
+            m_ts = ""
+            for q in market_quotes:
+                q_ts = q.get("ts") or ""
+                if q_ts > m_ts:
+                    m_ts = q_ts
+                gid = str(q.get("group_id") or "")
+                p = group_status.get(gid, {}).get("polled_at")
+                if p and (m_polled is None or p > m_polled):
+                    m_polled = p
+
+            src_time = m_polled or m_ts or raw_polled_at
+            if not src_time:
+                return False, None, m_ts
+
+            s_dt = parse_datetime_utc(src_time)
+            if not s_dt:
+                return False, src_time, m_ts
+
+            age_s = (now_utc - s_dt).total_seconds()
+            if 0 <= age_s <= MAX_ODDS_AGE_SECONDS:
+                return True, src_time, m_ts
+            return False, src_time, m_ts
 
         # 2. Mercat 1X2 (Full Time Result)
         ft_quotes = groups.get("Full Time Result", [])
         h_norm = self.normalize_name(home_name)
         a_norm = self.normalize_name(away_name)
 
-        latest_1x2_ts = ""
+        parsed_1x2 = {}
         for q in ft_quotes:
             label = str(q.get("label", ""))
             price = self._safe_float(q.get("odds_dec"))
             if not price:
                 continue
-            q_ts = q.get("ts", "")
-            if q_ts > latest_1x2_ts:
-                latest_1x2_ts = q_ts
-
             l_norm = self.normalize_name(label)
             if l_norm == h_norm or label in ("1", "Home"):
-                result["1X2"]["1"] = price
+                parsed_1x2["1"] = price
             elif label.lower() in ("draw", "empat", "x", "tie") or l_norm in ("draw", "empat"):
-                result["1X2"]["X"] = price
+                parsed_1x2["X"] = price
             elif l_norm == a_norm or label in ("2", "Away"):
-                result["1X2"]["2"] = price
+                parsed_1x2["2"] = price
 
-        if latest_1x2_ts:
-            result["ts"] = latest_1x2_ts
+        fresh_1x2, poll_1x2, ts_1x2 = _eval_market_freshness(ft_quotes)
+        if fresh_1x2 and len(parsed_1x2) == 3:
+            result["1X2"] = parsed_1x2
+            result["market_status"]["1X2"] = {"valid": True, "stale": False, "polled_at": poll_1x2, "ts": ts_1x2}
+            result["matched"] = True
+            result["is_stale"] = False
+            result["polled_at"] = poll_1x2
+            result["ts"] = ts_1x2
+        else:
+            result["1X2"] = {}
+            is_stale_1x2 = bool(ft_quotes and not fresh_1x2)
+            result["market_status"]["1X2"] = {"valid": False, "stale": is_stale_1x2, "polled_at": poll_1x2, "ts": ts_1x2}
+            result["matched"] = False
+            result["is_stale"] = is_stale_1x2
 
         # 3. Doble Oportunitat
         dc_quotes = groups.get("Double Chance", [])
+        parsed_dc = {}
         for q in dc_quotes:
             label = str(q.get("label", "")).lower()
             price = self._safe_float(q.get("odds_dec"))
             if not price:
                 continue
             if "1x" in label or ("home" in label and "draw" in label):
-                result["double_chance"]["1X"] = price
+                parsed_dc["1X"] = price
             elif "12" in label or ("home" in label and "away" in label):
-                result["double_chance"]["12"] = price
+                parsed_dc["12"] = price
             elif "x2" in label or "2x" in label or ("draw" in label and "away" in label):
-                result["double_chance"]["X2"] = price
+                parsed_dc["X2"] = price
+
+        fresh_dc, poll_dc, ts_dc = _eval_market_freshness(dc_quotes)
+        if fresh_dc and len(parsed_dc) == 3:
+            result["double_chance"] = parsed_dc
+            result["market_status"]["double_chance"] = {"valid": True, "stale": False, "polled_at": poll_dc, "ts": ts_dc}
+        else:
+            result["double_chance"] = {}
+            result["market_status"]["double_chance"] = {"valid": False, "stale": bool(dc_quotes and not fresh_dc), "polled_at": poll_dc, "ts": ts_dc}
 
         # 4. Gols Over / Under 2.5 (línia estricta de 2.5)
+        ou_quotes = []
+        parsed_ou = {}
         for gname in ("Match Goals", "Goals Over/Under", "Alternative Total Goals"):
             for q in groups.get(gname, []):
                 line = str(q.get("line") or q.get("handicap") or "")
@@ -655,78 +743,91 @@ class MoviOddsClient:
                 price = self._safe_float(q.get("odds_dec"))
                 if not price:
                     continue
+                ou_quotes.append(q)
                 label = str(q.get("label") or q.get("side") or "").lower()
                 if "over" in label or "mas" in label:
-                    result["over_under_2_5"]["Over 2.5"] = price
-                    result["over_under_2_5"]["over"] = price
+                    parsed_ou["Over 2.5"] = price
+                    parsed_ou["over"] = price
                 elif "under" in label or "menos" in label:
-                    result["over_under_2_5"]["Under 2.5"] = price
-                    result["over_under_2_5"]["under"] = price
+                    parsed_ou["Under 2.5"] = price
+                    parsed_ou["under"] = price
+
+        fresh_ou, poll_ou, ts_ou = _eval_market_freshness(ou_quotes)
+        if fresh_ou and "over" in parsed_ou and "under" in parsed_ou:
+            result["over_under_2_5"] = parsed_ou
+            result["market_status"]["over_under_2_5"] = {"valid": True, "stale": False, "polled_at": poll_ou, "ts": ts_ou}
+        else:
+            result["over_under_2_5"] = {}
+            result["market_status"]["over_under_2_5"] = {"valid": False, "stale": bool(ou_quotes and not fresh_ou), "polled_at": poll_ou, "ts": ts_ou}
 
         # 5. Ambdós Equips Marquen (BTTS)
-        for q in groups.get("Both Teams to Score", groups.get("Both Teams To Score", [])):
+        btts_quotes = groups.get("Both Teams to Score", groups.get("Both Teams To Score", []))
+        parsed_btts = {}
+        for q in btts_quotes:
             price = self._safe_float(q.get("odds_dec"))
             if not price:
                 continue
             label = str(q.get("label", "")).lower()
             if label in ("yes", "si", "sí", "1"):
-                result["btts"]["Sí"] = price
-                result["btts"]["yes"] = price
+                parsed_btts["Sí"] = price
+                parsed_btts["yes"] = price
             elif label in ("no", "2"):
-                result["btts"]["No"] = price
-                result["btts"]["no"] = price
+                parsed_btts["No"] = price
+                parsed_btts["no"] = price
+
+        fresh_btts, poll_btts, ts_btts = _eval_market_freshness(btts_quotes)
+        if fresh_btts and "yes" in parsed_btts and "no" in parsed_btts:
+            result["btts"] = parsed_btts
+            result["market_status"]["btts"] = {"valid": True, "stale": False, "polled_at": poll_btts, "ts": ts_btts}
+        else:
+            result["btts"] = {}
+            result["market_status"]["btts"] = {"valid": False, "stale": bool(btts_quotes and not fresh_btts), "polled_at": poll_btts, "ts": ts_btts}
 
         # 6. Córners
+        corner_quotes = []
+        parsed_corners = {}
         for gname, qlist in groups.items():
             if "corner" in gname.lower():
                 for q in qlist:
                     price = self._safe_float(q.get("odds_dec"))
                     if not price:
                         continue
+                    corner_quotes.append(q)
                     lbl = str(q.get("label") or q.get("side") or "").strip()
                     line = str(q.get("line") or q.get("handicap") or "").strip()
                     item_key = f"{gname} {lbl} {line}".strip()
-                    result["corners"][item_key] = price
+                    parsed_corners[item_key] = price
+
+        fresh_corn, poll_corn, ts_corn = _eval_market_freshness(corner_quotes)
+        if fresh_corn and parsed_corners:
+            result["corners"] = parsed_corners
+            result["market_status"]["corners"] = {"valid": True, "stale": False, "polled_at": poll_corn, "ts": ts_corn}
+        else:
+            result["corners"] = {}
+            result["market_status"]["corners"] = {"valid": False, "stale": bool(corner_quotes and not fresh_corn), "polled_at": poll_corn, "ts": ts_corn}
 
         # 7. Targetes
+        card_quotes = []
+        parsed_cards = {}
         for gname, qlist in groups.items():
             if "card" in gname.lower():
                 for q in qlist:
                     price = self._safe_float(q.get("odds_dec"))
                     if not price:
                         continue
+                    card_quotes.append(q)
                     lbl = str(q.get("label") or q.get("side") or "").strip()
                     line = str(q.get("line") or q.get("handicap") or "").strip()
                     item_key = f"{gname} {lbl} {line}".strip()
-                    result["cards"][item_key] = price
+                    parsed_cards[item_key] = price
 
-        # Registrar la traçabilitat de frescor
-        result["market_status"] = market_freshness
-
-        # Verificar validesa del mercat 1X2 i confirmació temporal
-        if len(result["1X2"]) == 3:
-            source_time = result.get("polled_at") or result.get("ts") or raw_match.get("last_seen")
-            if source_time:
-                source_dt = parse_datetime_utc(source_time)
-                if source_dt:
-                    age_s = (now_utc - source_dt).total_seconds()
-                    if 0 <= age_s <= MAX_ODDS_AGE_SECONDS:
-                        result["matched"] = True
-                        result["is_stale"] = False
-                    else:
-                        result["matched"] = False
-                        result["is_stale"] = True
-                else:
-                    result["matched"] = False
-                    result["is_stale"] = True
-            elif self._last_fetch_time > 0 and (time.time() - self._last_fetch_time <= MAX_ODDS_AGE_SECONDS):
-                result["matched"] = True
-                result["is_stale"] = False
-            else:
-                result["matched"] = False
-                result["is_stale"] = True
+        fresh_card, poll_card, ts_card = _eval_market_freshness(card_quotes)
+        if fresh_card and parsed_cards:
+            result["cards"] = parsed_cards
+            result["market_status"]["cards"] = {"valid": True, "stale": False, "polled_at": poll_card, "ts": ts_card}
         else:
-            result["matched"] = False
+            result["cards"] = {}
+            result["market_status"]["cards"] = {"valid": False, "stale": bool(card_quotes and not fresh_card), "polled_at": poll_card, "ts": ts_card}
 
         return result
 

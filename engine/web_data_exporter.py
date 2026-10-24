@@ -924,7 +924,7 @@ class WebDataExporter:
                 "has_bet365_odds": b_has_1x2,
                 "missing_odds": not (w_has_1x2 and b_has_1x2) if (not is_finished and not match_is_past) else False,
                 "missing_bookmakers": [b for b, m in [("Winamax", not w_has_1x2), ("Bet365", not b_has_1x2)] if m] if (not is_finished and not match_is_past) else [],
-                "value_bets": bet_analysis.get("value_bets", []) if not is_finished else [],
+                "value_bets": [vb for vb in bet_analysis.get("value_bets", []) if not vb.get("is_stale") and vb.get("status") != "OBSOLETE"] if not is_finished else [],
                 "raw_pred": pred # per a càlculs posteriors
             })
 
@@ -2443,6 +2443,8 @@ class WebDataExporter:
             for m in pred_data["matches"]:
                 all_predicted_matches_flat.append(m)
                 for vb in m.get("value_bets", []):
+                    if vb.get("is_stale") is True or vb.get("status") == "OBSOLETE":
+                        continue
                     p_calc = float(vb.get("model_prob", 0.0)) / 100.0
                     edge_val = vb.get("ev_pct")
                     if edge_val is None:
@@ -2574,21 +2576,69 @@ class WebDataExporter:
                 if m.get("status") not in ("FINISHED", "LIVE") and m.get("home_goals") is None:
                     stat["eligible"] += 1
                     b_odds = m.get("odds_bet365") or {}
+                    m_stat = b_odds.get("market_status") or {}
+                    is_match_stale = bool(b_odds.get("is_stale"))
+
                     if b_odds.get("matched"):
                         stat["associated"] += 1
                     else:
                         stat["discarded_unmatched"] += 1
-                    if b_odds.get("is_stale"):
+
+                    has_stale_market = is_match_stale or any(
+                        isinstance(st_val, dict) and st_val.get("stale") is True
+                        for st_val in m_stat.values()
+                    )
+                    if has_stale_market:
                         stat["discarded_stale"] += 1
-                    if (m.get("odds_1x2_bet365") or {}).get("1") and not b_odds.get("is_stale"):
+
+                    st_1x2 = m_stat.get("1X2", {})
+                    is_valid_1x2 = (
+                        bool((m.get("odds_1x2_bet365") or {}).get("1"))
+                        and not is_match_stale
+                        and (st_1x2.get("valid", True) if st_1x2 else True)
+                        and not st_1x2.get("stale", False)
+                    )
+                    if is_valid_1x2:
                         stat["valid_1x2"] += 1
-                    if (m.get("odds_ou25_bet365") or {}).get("over"):
+
+                    st_ou = m_stat.get("over_under_2_5", {})
+                    is_valid_ou = (
+                        bool((m.get("odds_ou25_bet365") or {}).get("over"))
+                        and not is_match_stale
+                        and (st_ou.get("valid", True) if st_ou else True)
+                        and not st_ou.get("stale", False)
+                    )
+                    if is_valid_ou:
                         stat["valid_ou25"] += 1
-                    if (m.get("odds_btts_bet365") or {}).get("yes"):
+
+                    st_btts = m_stat.get("btts", {})
+                    is_valid_btts = (
+                        bool((m.get("odds_btts_bet365") or {}).get("yes"))
+                        and not is_match_stale
+                        and (st_btts.get("valid", True) if st_btts else True)
+                        and not st_btts.get("stale", False)
+                    )
+                    if is_valid_btts:
                         stat["valid_btts"] += 1
-                    if m.get("odds_corners_bet365"):
+
+                    st_corn = m_stat.get("corners", {})
+                    is_valid_corn = (
+                        bool(m.get("odds_corners_bet365"))
+                        and not is_match_stale
+                        and (st_corn.get("valid", True) if st_corn else True)
+                        and not st_corn.get("stale", False)
+                    )
+                    if is_valid_corn:
                         stat["valid_corners"] += 1
-                    if m.get("odds_cards_bet365"):
+
+                    st_card = m_stat.get("cards", {})
+                    is_valid_card = (
+                        bool(m.get("odds_cards_bet365"))
+                        and not is_match_stale
+                        and (st_card.get("valid", True) if st_card else True)
+                        and not st_card.get("stale", False)
+                    )
+                    if is_valid_card:
                         stat["valid_cards"] += 1
             audit_stats[cid] = stat
 
@@ -2614,16 +2664,12 @@ class WebDataExporter:
         print("=" * 88 + "\n")
 
         # Protecció de Value bets si el scraper de Winamax ha estat bloquejat al núvol
+        # Les recomanacions de valor actives MAI han d'incloure quotes obsoletes o caducades
         if len(all_value_bets) == 0 and previous_data.get("value_bets"):
-            print(f"   🛡️ PROTECCIÓ: Preservant {len(previous_data['value_bets'])} apostes de valor de la memòria cau prèvia (bloqueig IP cloud detectat).")
-            stale_contingency = []
-            for vb in previous_data["value_bets"]:
-                vb_copy = dict(vb)
-                vb_copy["is_stale"] = True
-                vb_copy["status"] = "OBSOLETE"
-                vb_copy["provenance"] = "STALE_CACHE_CONTINGENCY"
-                stale_contingency.append(vb_copy)
-            all_value_bets = stale_contingency
+            fresh_prev = [vb for vb in previous_data["value_bets"] if not vb.get("is_stale") and vb.get("status") != "OBSOLETE"]
+            if fresh_prev:
+                print(f"   🛡️ PROTECCIÓ: Preservant {len(fresh_prev)} apostes no obsoletes de la memòria cau.")
+                all_value_bets = fresh_prev
 
         # Ordenar Value bets pel millor edge %
         all_value_bets.sort(key=lambda x: (float(x.get("edge_pct")) if x.get("edge_pct") is not None else -999.0), reverse=True)
