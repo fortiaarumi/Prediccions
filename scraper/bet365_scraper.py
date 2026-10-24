@@ -17,6 +17,7 @@ import re
 import json
 import time
 import subprocess
+import copy
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, Optional
@@ -163,34 +164,12 @@ class Bet365Scraper:
         except Exception:
             pass
 
-        # 2. ALTERNATIVA / FALLBACK: Memòria cau pròpia de Bet365 (verificant rigorosament la marca temporal de la font)
+        # 2. ALTERNATIVA / FALLBACK: Memòria cau pròpia de Bet365 revalidant cadascun dels mercats individualment
         if cache_key in self._cache:
             cached_entry = self._cache[cache_key]
-            if isinstance(cached_entry, dict) and cached_entry.get("1X2") and cached_entry.get("matched"):
-                # Utilitzar marques de confirmació de la font (polled_at o ts). MAI utilitzar cached_at com a substitut.
-                is_fresh = False
-                source_time = cached_entry.get("polled_at") or cached_entry.get("ts")
-                if source_time:
-                    try:
-                        from scraper.moviodds_client import parse_datetime_utc, MAX_ODDS_AGE_SECONDS
-                        s_dt = parse_datetime_utc(source_time)
-                        if s_dt:
-                            age_s = (datetime.now(timezone.utc) - s_dt).total_seconds()
-                            if 0 <= age_s <= MAX_ODDS_AGE_SECONDS and not cached_entry.get("is_stale"):
-                                is_fresh = True
-                    except Exception:
-                        is_fresh = False
-
-                # Detecció i rebuig de plantilles sintètiques conegudes (ex: Over/Under 1.98/1.87 estàtic)
-                is_synthetic_template = (
-                    cached_entry.get("is_derived_from_winamax")
-                    or cached_entry.get("over_under_2_5") == {"over": 1.98, "under": 1.87}
-                    or cached_entry.get("btts") == {"yes": 1.93, "no": 1.92}
-                )
-
-                if is_fresh and not is_synthetic_template:
-                    cached_entry["provenance"] = cached_entry.get("provenance", "BET365_MOVIODDS")
-                    return cached_entry
+            revalidated = self.revalidate_cached_entry(cached_entry)
+            if revalidated and revalidated.get("matched"):
+                return revalidated
 
         # 3. Comprovar font especialitzada Bet365 autoritzada (Odds Data API) si hi ha token configurat
         token = os.environ.get("ODDS_DATA_API_TOKEN")
@@ -230,6 +209,136 @@ class Bet365Scraper:
         odds_data["access_status"] = "REQUIRES_ODDS_DATA_API_TOKEN"
         odds_data["access_diagnostics"] = "Bloqueig per Cloudflare Enterprise Challenge a nivell de xarxa per accés directe a bet365.es. Requereix ODDS_DATA_API_TOKEN per a dades prematch oficials (https://api.odds-data-api.com/)."
         return odds_data
+
+    def revalidate_cached_entry(self, cached_entry: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """
+        Revalida cadascun dels mercats individualment abans de retornar una entrada de memòria cau.
+        - Elimina qualsevol mercat sense confirmació positiva i suficient (marques polled_at / ts de la font).
+        - Elimina mercats marcats com a obsolets (stale), suspesos o invàlids.
+        - Conserva només els mercats estrictament vàlids.
+        - Si el mercat principal 1X2 no és vàlid o no té confirmació suficient, es descarta tota l'entrada.
+        """
+        if not isinstance(cached_entry, dict):
+            return None
+
+        # Rebuig si prové de Winamax
+        if cached_entry.get("is_derived_from_winamax"):
+            return None
+
+        from scraper.moviodds_client import parse_datetime_utc, MAX_ODDS_AGE_SECONDS
+        now_utc = datetime.now(timezone.utc)
+
+        entry = copy.deepcopy(cached_entry)
+        m_stat = entry.setdefault("market_status", {})
+
+        markets = ["1X2", "double_chance", "over_under_2_5", "btts", "corners", "cards"]
+
+        for m in markets:
+            # 1. Comprovació de plantilles sintètiques conegudes
+            if m == "over_under_2_5" and entry.get("over_under_2_5") == {"over": 1.98, "under": 1.87}:
+                entry["over_under_2_5"] = {}
+                m_stat[m] = {"valid": False, "stale": False, "suspended": False, "rejection_reason": "unverified"}
+                continue
+            if m == "btts" and entry.get("btts") == {"yes": 1.93, "no": 1.92}:
+                entry["btts"] = {}
+                m_stat[m] = {"valid": False, "stale": False, "suspended": False, "rejection_reason": "unverified"}
+                continue
+
+            # 2. Si el mercat és buit a l'entrada
+            m_val = entry.get(m)
+            if not m_val:
+                entry[m] = {}
+                m_stat.setdefault(m, {"valid": False, "stale": False, "suspended": False, "rejection_reason": "absent"})
+                continue
+
+            # 3. Comprovació d'estat a market_status
+            st = m_stat.get(m)
+            if not isinstance(st, dict):
+                # No hi ha confirmació positiva d'aquest mercat
+                entry[m] = {}
+                m_stat[m] = {"valid": False, "stale": False, "suspended": False, "rejection_reason": "unverified"}
+                continue
+
+            # Si està marcat com a invalid, stale o suspès
+            if st.get("valid") is not True or st.get("stale") is True or st.get("suspended") is True:
+                reason = "suspended" if st.get("suspended") else ("stale" if st.get("stale") else st.get("rejection_reason", "unverified"))
+                entry[m] = {}
+                m_stat[m] = {
+                    "valid": False,
+                    "stale": bool(st.get("stale")),
+                    "suspended": bool(st.get("suspended")),
+                    "rejection_reason": reason,
+                    "polled_at": st.get("polled_at"),
+                    "ts": st.get("ts"),
+                }
+                continue
+
+            # 4. Validació de frescor temporal individual del mercat
+            m_time = st.get("polled_at") or st.get("ts")
+            if not m_time:
+                entry[m] = {}
+                m_stat[m] = {
+                    "valid": False,
+                    "stale": False,
+                    "suspended": False,
+                    "rejection_reason": "unverified",
+                }
+                continue
+
+            s_dt = parse_datetime_utc(m_time)
+            if not s_dt:
+                entry[m] = {}
+                m_stat[m] = {
+                    "valid": False,
+                    "stale": False,
+                    "suspended": False,
+                    "rejection_reason": "unverified",
+                    "polled_at": st.get("polled_at"),
+                    "ts": st.get("ts"),
+                }
+                continue
+
+            age_s = (now_utc - s_dt).total_seconds()
+            if age_s < 0 or age_s > MAX_ODDS_AGE_SECONDS:
+                # Mercat caducat/obsolet individualment
+                entry[m] = {}
+                m_stat[m] = {
+                    "valid": False,
+                    "stale": True,
+                    "suspended": False,
+                    "rejection_reason": "stale",
+                    "polled_at": st.get("polled_at"),
+                    "ts": st.get("ts"),
+                }
+                continue
+
+            # Mercat vàlid i confirmat
+            m_stat[m] = {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "polled_at": st.get("polled_at"),
+                "ts": st.get("ts"),
+            }
+
+        # 5. El mercat principal 1X2 ha de ser vàlid i complet
+        is_1x2_valid = (
+            bool(entry.get("1X2"))
+            and len(entry["1X2"]) == 3
+            and m_stat.get("1X2", {}).get("valid") is True
+            and not m_stat.get("1X2", {}).get("stale")
+        )
+
+        if not is_1x2_valid:
+            entry["matched"] = False
+            entry["is_stale"] = bool(m_stat.get("1X2", {}).get("stale"))
+            return None
+
+        entry["matched"] = True
+        entry["is_stale"] = False
+        entry["provenance"] = entry.get("provenance", "BET365_MOVIODDS")
+        return entry
 
     def get_odds_data_api_info(self) -> Dict[str, Any]:
         """Retorna la informació del catàleg, plans i guia de configuració d'Odds Data API."""

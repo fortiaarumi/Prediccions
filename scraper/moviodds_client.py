@@ -16,7 +16,8 @@ Requisits de robustesa i frescor:
    - Conserva la traçabilitat completa per mercat a 'market_status'.
 3. Associació estricta i inequívoca de partits:
    - Exigeix coincidència canònica de TOTS DOS equips (local i visitant) i lliga compatible.
-   - Comprova la data/hora d'inici contra 'kickoff_utc' amb tolerància explícita documentada (28.0 hores).
+   - Comprova la data/hora d'inici contra 'kickoff_utc' amb tolerància ordinària de 30 minuts (0.5 hores).
+   - Reprogramacions excepcionals gestionades mitjançant registre explícit amb data/hora concreta autoritzada.
    - Elimina alternatives insegures (coincidències parcials de paraules o per un sol equip).
    - Descarta correspondències ambigües o múltiples.
 """
@@ -42,21 +43,26 @@ CACHE_FILE = ROOT_DIR / "data" / "bet365_odds_cache.json"
 # Zona horària original de referència del calendari (Flashscore Península Ibèrica / Europa)
 CALENDAR_TIMEZONE = ZoneInfo("Europe/Madrid")
 
-# Tolerància temporal màxima justificada (2.5 hores):
-# Absorbeix desfasaments entre UTC i CET (UTC+1) / CEST (UTC+2) quan el feed informa en hora local
-# o quan hi ha retards menors de retransmissió televisiva (15-30 minuts).
-# Qualsevol diferència superior a 2.5 hores es rebutja com a incompatible,
-# tret que figuri de forma explícita al registre oficial de partits reprogramats.
-MAX_KICKOFF_TOLERANCE_HOURS = 2.5
+# Tolerància temporal ordinària màxima justificada (30 minuts = 0.5 hores):
+# Després de la conversió correcta a UTC via CALENDAR_TIMEZONE (Europe/Madrid),
+# només s'accepten desfasaments ordinaris de fins a 30 minuts per retards puntuals de retransmissió.
+# Qualsevol diferència superior a 30 minuts es rebutja com a incompatible,
+# tret que figuri de forma explícita al registre oficial de partits reprogramats amb la seva hora concreta autoritzada.
+MAX_KICKOFF_TOLERANCE_HOURS = 0.5
 
-# Registre explícit i documentat de partits reprogramats amb canvi de dia
+# Registre explícit i documentat de partits reprogramats excepcionalment
 # Clau: (competition_id, home_team_canonical, away_team_canonical)
-EXPLICIT_RESCHEDULED_MATCHES: Dict[Tuple[str, str, str], Dict[str, str]] = {
+# Cada entrada ha d'especificar la data/hora concreta autoritzada tant de calendari com de kickoff_utc.
+EXPLICIT_RESCHEDULED_MATCHES: Dict[Tuple[str, str, str], Dict[str, Any]] = {
     ("LIGUE1", "paris saint-germain", "olympique lyonnais"): {
-        "reason": "Partit de la Jornada 8 mogut per decisió de difusió LFP a dilluns 26.10 vespre."
+        "authorized_kickoff_utc": "2026-10-26T19:30:00Z",
+        "authorized_calendar_datetime": "25.10.2026 20:45",
+        "reason": "Partit de la Jornada 8 mogut per decisió de difusió LFP a dilluns 26.10 19:30 UTC."
     },
     ("LIGUE1", "toulouse fc", "es troyes ac"): {
-        "reason": "Partit de la Jornada 8 ajustat a diumenge 25.10 dins del calendari oficial."
+        "authorized_kickoff_utc": "2026-10-25T16:15:00Z",
+        "authorized_calendar_datetime": "24.10.2026 17:15",
+        "reason": "Partit de la Jornada 8 ajustat a diumenge 25.10 16:15 UTC dins del calendari oficial."
     }
 }
 
@@ -461,7 +467,7 @@ class MoviOddsClient:
         Requisits estrictes:
         1. Ambdós equips (local i visitant) han de coincidir canònicament.
         2. La competició ha de ser compatible.
-        3. Si es proporciona match_date_time, la data/hora ha d'estar dins de la tolerància de 28.0 hores.
+        3. Si es proporciona match_date_time, la data/hora ha d'estar dins de la tolerància ordinària de 30 minuts (0.5 hores) o de l'hora autoritzada per a partits reprogramats.
         4. Rebutja coincidències parcials insegures (no admet intersecció de paraules aïllades).
         5. Exigeix una única correspondència vàlida (descarta ambigüitats).
         """
@@ -518,17 +524,33 @@ class MoviOddsClient:
             diff_hours = abs((sqlite_dt - ko_dt).total_seconds()) / 3600.0
             if diff_hours > MAX_KICKOFF_TOLERANCE_HOURS:
                 # Comprovar si figura explícitament al registre documentat de reprogramacions
-                resched = None
+                # i si coincideix estrictament amb la data/hora concreta autoritzada
+                resched_ok = False
                 for (r_comp, r_h, r_a), r_info in EXPLICIT_RESCHEDULED_MATCHES.items():
                     if r_comp.upper() == comp_id:
                         r_h_norm = self.normalize_name(r_h)
                         r_a_norm = self.normalize_name(r_a)
                         if (r_h_norm in (h_norm, m_h_norm) or self.resolve_team_key(r_h) in (h_key, m_h_key)) and \
                            (r_a_norm in (a_norm, m_a_norm) or self.resolve_team_key(r_a) in (a_key, m_a_key)):
-                            resched = r_info
-                            break
-                if not resched:
-                    # Descartat per incompatibilitat horària
+                            auth_ko = r_info.get("authorized_kickoff_utc")
+                            auth_cal = r_info.get("authorized_calendar_datetime")
+                            auth_ko_dt = parse_datetime_utc(auth_ko) if auth_ko else None
+                            auth_cal_dt = parse_datetime_utc(auth_cal) if auth_cal else None
+
+                            # Validació que el kickoff del feed coincideix amb l'hora autoritzada (tolerància 30 min)
+                            ko_match = True
+                            if auth_ko_dt:
+                                ko_match = (abs((ko_dt - auth_ko_dt).total_seconds()) / 3600.0) <= MAX_KICKOFF_TOLERANCE_HOURS
+                            # Validació que la data sol·licitada coincideix amb la data de calendari autoritzada (tolerància 30 min)
+                            cal_match = True
+                            if auth_cal_dt:
+                                cal_match = (abs((sqlite_dt - auth_cal_dt).total_seconds()) / 3600.0) <= MAX_KICKOFF_TOLERANCE_HOURS
+
+                            if ko_match and cal_match:
+                                resched_ok = True
+                                break
+                if not resched_ok:
+                    # Descartat per incompatibilitat horària (> 30 minuts i sense data/hora concreta autoritzada)
                     continue
 
             candidates.append(m)
@@ -642,14 +664,21 @@ class MoviOddsClient:
             groups.setdefault(gname, []).append(q)
 
         # Avaluador estricte de confirmació temporal per mercat
-        def _eval_market_freshness(market_quotes: List[Dict[str, Any]]) -> Tuple[bool, Optional[str], Optional[str]]:
+        def _eval_market_freshness(market_quotes: List[Dict[str, Any]]) -> Tuple[bool, Optional[str], Optional[str], str]:
             if not market_quotes:
-                return False, None, None
-            # Si algun group_id d'aquest mercat està marcat com a stale a group_status -> DESCARTAR
+                return False, None, None, "absent"
+
+            # 1. Comprovar si algun group_id d'aquest mercat està suspès
+            for q in market_quotes:
+                gid = str(q.get("group_id") or "")
+                if group_status.get(gid, {}).get("suspended") is True or q.get("suspended") is True:
+                    return False, group_status.get(gid, {}).get("polled_at"), q.get("ts"), "suspended"
+
+            # 2. Comprovar si algun group_id d'aquest mercat està marcat com a stale a group_status
             for q in market_quotes:
                 gid = str(q.get("group_id") or "")
                 if group_status.get(gid, {}).get("stale") is True:
-                    return False, group_status.get(gid, {}).get("polled_at") or raw_polled_at, q.get("ts")
+                    return False, group_status.get(gid, {}).get("polled_at"), q.get("ts"), "stale"
 
             m_polled = None
             m_ts = ""
@@ -662,18 +691,25 @@ class MoviOddsClient:
                 if p and (m_polled is None or p > m_polled):
                     m_polled = p
 
-            src_time = m_polled or m_ts or raw_polled_at
+            src_time = m_polled or m_ts
             if not src_time:
-                return False, None, m_ts
+                # Si el feed no disposa de group_status ni ts a les quotes,
+                # però raw_match disposa d'un polled_at vàlid de la descàrrega en viu:
+                if not group_status and raw_polled_at:
+                    src_time = raw_polled_at
+                    m_polled = raw_polled_at
+                else:
+                    # No hi ha cap confirmació temporal pròpia de la font per a aquest mercat
+                    return False, None, m_ts, "unverified"
 
             s_dt = parse_datetime_utc(src_time)
             if not s_dt:
-                return False, src_time, m_ts
+                return False, src_time, m_ts, "unverified"
 
             age_s = (now_utc - s_dt).total_seconds()
             if 0 <= age_s <= MAX_ODDS_AGE_SECONDS:
-                return True, src_time, m_ts
-            return False, src_time, m_ts
+                return True, src_time, m_ts, "ok"
+            return False, src_time, m_ts, "stale"
 
         # 2. Mercat 1X2 (Full Time Result)
         ft_quotes = groups.get("Full Time Result", [])
@@ -694,18 +730,36 @@ class MoviOddsClient:
             elif l_norm == a_norm or label in ("2", "Away"):
                 parsed_1x2["2"] = price
 
-        fresh_1x2, poll_1x2, ts_1x2 = _eval_market_freshness(ft_quotes)
+        fresh_1x2, poll_1x2, ts_1x2, reason_1x2 = _eval_market_freshness(ft_quotes)
         if fresh_1x2 and len(parsed_1x2) == 3:
             result["1X2"] = parsed_1x2
-            result["market_status"]["1X2"] = {"valid": True, "stale": False, "polled_at": poll_1x2, "ts": ts_1x2}
+            result["market_status"]["1X2"] = {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "polled_at": poll_1x2,
+                "ts": ts_1x2
+            }
             result["matched"] = True
             result["is_stale"] = False
             result["polled_at"] = poll_1x2
             result["ts"] = ts_1x2
         else:
             result["1X2"] = {}
-            is_stale_1x2 = bool(ft_quotes and not fresh_1x2)
-            result["market_status"]["1X2"] = {"valid": False, "stale": is_stale_1x2, "polled_at": poll_1x2, "ts": ts_1x2}
+            is_stale_1x2 = (reason_1x2 == "stale")
+            is_susp_1x2 = (reason_1x2 == "suspended")
+            final_reason_1x2 = reason_1x2 if ft_quotes else "absent"
+            if fresh_1x2 and len(parsed_1x2) < 3:
+                final_reason_1x2 = "absent"
+            result["market_status"]["1X2"] = {
+                "valid": False,
+                "stale": is_stale_1x2,
+                "suspended": is_susp_1x2,
+                "rejection_reason": final_reason_1x2,
+                "polled_at": poll_1x2,
+                "ts": ts_1x2
+            }
             result["matched"] = False
             result["is_stale"] = is_stale_1x2
 
@@ -724,13 +778,27 @@ class MoviOddsClient:
             elif "x2" in label or "2x" in label or ("draw" in label and "away" in label):
                 parsed_dc["X2"] = price
 
-        fresh_dc, poll_dc, ts_dc = _eval_market_freshness(dc_quotes)
+        fresh_dc, poll_dc, ts_dc, reason_dc = _eval_market_freshness(dc_quotes)
         if fresh_dc and len(parsed_dc) == 3:
             result["double_chance"] = parsed_dc
-            result["market_status"]["double_chance"] = {"valid": True, "stale": False, "polled_at": poll_dc, "ts": ts_dc}
+            result["market_status"]["double_chance"] = {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "polled_at": poll_dc,
+                "ts": ts_dc
+            }
         else:
             result["double_chance"] = {}
-            result["market_status"]["double_chance"] = {"valid": False, "stale": bool(dc_quotes and not fresh_dc), "polled_at": poll_dc, "ts": ts_dc}
+            result["market_status"]["double_chance"] = {
+                "valid": False,
+                "stale": (reason_dc == "stale"),
+                "suspended": (reason_dc == "suspended"),
+                "rejection_reason": reason_dc if dc_quotes else "absent",
+                "polled_at": poll_dc,
+                "ts": ts_dc
+            }
 
         # 4. Gols Over / Under 2.5 (línia estricta de 2.5)
         ou_quotes = []
@@ -752,13 +820,27 @@ class MoviOddsClient:
                     parsed_ou["Under 2.5"] = price
                     parsed_ou["under"] = price
 
-        fresh_ou, poll_ou, ts_ou = _eval_market_freshness(ou_quotes)
+        fresh_ou, poll_ou, ts_ou, reason_ou = _eval_market_freshness(ou_quotes)
         if fresh_ou and "over" in parsed_ou and "under" in parsed_ou:
             result["over_under_2_5"] = parsed_ou
-            result["market_status"]["over_under_2_5"] = {"valid": True, "stale": False, "polled_at": poll_ou, "ts": ts_ou}
+            result["market_status"]["over_under_2_5"] = {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "polled_at": poll_ou,
+                "ts": ts_ou
+            }
         else:
             result["over_under_2_5"] = {}
-            result["market_status"]["over_under_2_5"] = {"valid": False, "stale": bool(ou_quotes and not fresh_ou), "polled_at": poll_ou, "ts": ts_ou}
+            result["market_status"]["over_under_2_5"] = {
+                "valid": False,
+                "stale": (reason_ou == "stale"),
+                "suspended": (reason_ou == "suspended"),
+                "rejection_reason": reason_ou if ou_quotes else "absent",
+                "polled_at": poll_ou,
+                "ts": ts_ou
+            }
 
         # 5. Ambdós Equips Marquen (BTTS)
         btts_quotes = groups.get("Both Teams to Score", groups.get("Both Teams To Score", []))
@@ -775,13 +857,27 @@ class MoviOddsClient:
                 parsed_btts["No"] = price
                 parsed_btts["no"] = price
 
-        fresh_btts, poll_btts, ts_btts = _eval_market_freshness(btts_quotes)
+        fresh_btts, poll_btts, ts_btts, reason_btts = _eval_market_freshness(btts_quotes)
         if fresh_btts and "yes" in parsed_btts and "no" in parsed_btts:
             result["btts"] = parsed_btts
-            result["market_status"]["btts"] = {"valid": True, "stale": False, "polled_at": poll_btts, "ts": ts_btts}
+            result["market_status"]["btts"] = {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "polled_at": poll_btts,
+                "ts": ts_btts
+            }
         else:
             result["btts"] = {}
-            result["market_status"]["btts"] = {"valid": False, "stale": bool(btts_quotes and not fresh_btts), "polled_at": poll_btts, "ts": ts_btts}
+            result["market_status"]["btts"] = {
+                "valid": False,
+                "stale": (reason_btts == "stale"),
+                "suspended": (reason_btts == "suspended"),
+                "rejection_reason": reason_btts if btts_quotes else "absent",
+                "polled_at": poll_btts,
+                "ts": ts_btts
+            }
 
         # 6. Córners
         corner_quotes = []
@@ -798,13 +894,27 @@ class MoviOddsClient:
                     item_key = f"{gname} {lbl} {line}".strip()
                     parsed_corners[item_key] = price
 
-        fresh_corn, poll_corn, ts_corn = _eval_market_freshness(corner_quotes)
+        fresh_corn, poll_corn, ts_corn, reason_corn = _eval_market_freshness(corner_quotes)
         if fresh_corn and parsed_corners:
             result["corners"] = parsed_corners
-            result["market_status"]["corners"] = {"valid": True, "stale": False, "polled_at": poll_corn, "ts": ts_corn}
+            result["market_status"]["corners"] = {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "polled_at": poll_corn,
+                "ts": ts_corn
+            }
         else:
             result["corners"] = {}
-            result["market_status"]["corners"] = {"valid": False, "stale": bool(corner_quotes and not fresh_corn), "polled_at": poll_corn, "ts": ts_corn}
+            result["market_status"]["corners"] = {
+                "valid": False,
+                "stale": (reason_corn == "stale"),
+                "suspended": (reason_corn == "suspended"),
+                "rejection_reason": reason_corn if corner_quotes else "absent",
+                "polled_at": poll_corn,
+                "ts": ts_corn
+            }
 
         # 7. Targetes
         card_quotes = []
@@ -821,13 +931,27 @@ class MoviOddsClient:
                     item_key = f"{gname} {lbl} {line}".strip()
                     parsed_cards[item_key] = price
 
-        fresh_card, poll_card, ts_card = _eval_market_freshness(card_quotes)
+        fresh_card, poll_card, ts_card, reason_card = _eval_market_freshness(card_quotes)
         if fresh_card and parsed_cards:
             result["cards"] = parsed_cards
-            result["market_status"]["cards"] = {"valid": True, "stale": False, "polled_at": poll_card, "ts": ts_card}
+            result["market_status"]["cards"] = {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "polled_at": poll_card,
+                "ts": ts_card
+            }
         else:
             result["cards"] = {}
-            result["market_status"]["cards"] = {"valid": False, "stale": bool(card_quotes and not fresh_card), "polled_at": poll_card, "ts": ts_card}
+            result["market_status"]["cards"] = {
+                "valid": False,
+                "stale": (reason_card == "stale"),
+                "suspended": (reason_card == "suspended"),
+                "rejection_reason": reason_card if card_quotes else "absent",
+                "polled_at": poll_card,
+                "ts": ts_card
+            }
 
         return result
 

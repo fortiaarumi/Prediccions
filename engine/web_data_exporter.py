@@ -626,18 +626,7 @@ class WebDataExporter:
                     self.odds_alerts.append(sec_alert)
 
             bet_analysis = self.value_engine.analyze_match_betting(pred, odds, bet365_odds=odds_b365)
-            if (not bet_analysis.get("value_bets")) and existing_match_odds:
-                m_key = f"{h_id}_{a_id}"
-                if m_key in existing_match_odds and existing_match_odds[m_key].get("cached_value_bets"):
-                    # Si es reutilitzen dades de contingència, s'identifiquen clarament com a obsoletes
-                    contingency_list = []
-                    for cvb in existing_match_odds[m_key]["cached_value_bets"]:
-                        item_c = dict(cvb)
-                        item_c["is_stale"] = True
-                        item_c["status"] = "OBSOLETE"
-                        item_c["provenance"] = "STALE_CACHE_CONTINGENCY"
-                        contingency_list.append(item_c)
-                    bet_analysis["value_bets"] = contingency_list
+            # Cap fallback de contingència a les recomanacions actives: si no hi ha apostes +EV verificades, value_bets queda buit []
 
             pred["odds"] = odds
             pred["odds_winamax"] = odds
@@ -2313,6 +2302,85 @@ class WebDataExporter:
                 match_data["odds_bet365"]["1X2"] = {}
         return match_data
 
+    def compute_audit_stats(self, predictions: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+        """
+        Calcula l'auditoria de cobertura i frescor de quotes de Bet365/MoviOdds per competició.
+        Regles d'auditoria:
+        1. Una quota automàtica només es comptabilitza com a vàlida si hi ha una validació explícita i positiva
+           del mercat corresponent (market_status[market]['valid'] is True). MAI utilitzar valid=True per defecte.
+        2. Conserva la causa de rebuig específica per a cada mercat/partit:
+           - absent / no associat (discarded_unmatched)
+           - stale / obsolet (discarded_stale)
+           - suspès (discarded_suspended)
+           - no verificable / sense confirmació suficient (discarded_unverified)
+        """
+        audit_stats = {}
+        for meta in COMPETITIONS_META:
+            cid = meta["id"]
+            stat = {
+                "name": meta["name"],
+                "eligible": 0,
+                "associated": 0,
+                "valid_1x2": 0,
+                "valid_ou25": 0,
+                "valid_btts": 0,
+                "valid_corners": 0,
+                "valid_cards": 0,
+                "discarded_stale": 0,
+                "discarded_unmatched": 0,
+                "discarded_suspended": 0,
+                "discarded_unverified": 0,
+            }
+            c_matches = predictions.get(cid, {}).get("matches", [])
+            for m in c_matches:
+                if m.get("status") not in ("FINISHED", "LIVE") and m.get("home_goals") is None:
+                    stat["eligible"] += 1
+                    b_odds = m.get("odds_bet365") or {}
+                    m_stat = b_odds.get("market_status") or {}
+                    is_match_stale = bool(b_odds.get("is_stale"))
+
+                    if b_odds.get("matched"):
+                        stat["associated"] += 1
+                    else:
+                        stat["discarded_unmatched"] += 1
+
+                    # Comprovació de cadascun dels mercats amb validació explícita i positiva (sense True per defecte)
+                    for m_key, odds_val, stat_key in [
+                        ("1X2", (m.get("odds_1x2_bet365") or {}).get("1"), "valid_1x2"),
+                        ("over_under_2_5", (m.get("odds_ou25_bet365") or {}).get("over"), "valid_ou25"),
+                        ("btts", (m.get("odds_btts_bet365") or {}).get("yes"), "valid_btts"),
+                        ("corners", m.get("odds_corners_bet365"), "valid_corners"),
+                        ("cards", m.get("odds_cards_bet365"), "valid_cards"),
+                    ]:
+                        st_m = m_stat.get(m_key)
+                        is_valid = (
+                            bool(odds_val)
+                            and not is_match_stale
+                            and isinstance(st_m, dict)
+                            and st_m.get("valid") is True
+                            and not st_m.get("stale")
+                            and not st_m.get("suspended")
+                        )
+                        if is_valid:
+                            stat[stat_key] += 1
+                        else:
+                            # Rebutjat: registrar causa de rebuig
+                            if not b_odds.get("matched"):
+                                pass  # Ja comptat a discarded_unmatched
+                            elif not isinstance(st_m, dict) or not st_m:
+                                stat["discarded_unverified"] += 1
+                            else:
+                                reason = st_m.get("rejection_reason")
+                                if st_m.get("stale") or reason == "stale" or is_match_stale:
+                                    stat["discarded_stale"] += 1
+                                elif st_m.get("suspended") or reason == "suspended":
+                                    stat["discarded_suspended"] += 1
+                                elif reason == "unverified" or not st_m.get("valid"):
+                                    stat["discarded_unverified"] += 1
+
+            audit_stats[cid] = stat
+        return audit_stats
+
     def export_all(self, ingested_matches=None, evaluated_combos=None, new_combos=None, force_combos: bool = False) -> Path:
         """Executa la canalització completa i genera 'web/data/data.json'."""
         print("\n" + "=" * 75)
@@ -2556,98 +2624,14 @@ class WebDataExporter:
 
 
         # Auditoria de cobertura i frescor de quotes per competició
-        audit_stats = {}
-        for meta in COMPETITIONS_META:
-            cid = meta["id"]
-            stat = {
-                "name": meta["name"],
-                "eligible": 0,
-                "associated": 0,
-                "valid_1x2": 0,
-                "valid_ou25": 0,
-                "valid_btts": 0,
-                "valid_corners": 0,
-                "valid_cards": 0,
-                "discarded_stale": 0,
-                "discarded_unmatched": 0,
-            }
-            c_matches = predictions.get(cid, {}).get("matches", [])
-            for m in c_matches:
-                if m.get("status") not in ("FINISHED", "LIVE") and m.get("home_goals") is None:
-                    stat["eligible"] += 1
-                    b_odds = m.get("odds_bet365") or {}
-                    m_stat = b_odds.get("market_status") or {}
-                    is_match_stale = bool(b_odds.get("is_stale"))
+        audit_stats = self.compute_audit_stats(predictions)
 
-                    if b_odds.get("matched"):
-                        stat["associated"] += 1
-                    else:
-                        stat["discarded_unmatched"] += 1
-
-                    has_stale_market = is_match_stale or any(
-                        isinstance(st_val, dict) and st_val.get("stale") is True
-                        for st_val in m_stat.values()
-                    )
-                    if has_stale_market:
-                        stat["discarded_stale"] += 1
-
-                    st_1x2 = m_stat.get("1X2", {})
-                    is_valid_1x2 = (
-                        bool((m.get("odds_1x2_bet365") or {}).get("1"))
-                        and not is_match_stale
-                        and (st_1x2.get("valid", True) if st_1x2 else True)
-                        and not st_1x2.get("stale", False)
-                    )
-                    if is_valid_1x2:
-                        stat["valid_1x2"] += 1
-
-                    st_ou = m_stat.get("over_under_2_5", {})
-                    is_valid_ou = (
-                        bool((m.get("odds_ou25_bet365") or {}).get("over"))
-                        and not is_match_stale
-                        and (st_ou.get("valid", True) if st_ou else True)
-                        and not st_ou.get("stale", False)
-                    )
-                    if is_valid_ou:
-                        stat["valid_ou25"] += 1
-
-                    st_btts = m_stat.get("btts", {})
-                    is_valid_btts = (
-                        bool((m.get("odds_btts_bet365") or {}).get("yes"))
-                        and not is_match_stale
-                        and (st_btts.get("valid", True) if st_btts else True)
-                        and not st_btts.get("stale", False)
-                    )
-                    if is_valid_btts:
-                        stat["valid_btts"] += 1
-
-                    st_corn = m_stat.get("corners", {})
-                    is_valid_corn = (
-                        bool(m.get("odds_corners_bet365"))
-                        and not is_match_stale
-                        and (st_corn.get("valid", True) if st_corn else True)
-                        and not st_corn.get("stale", False)
-                    )
-                    if is_valid_corn:
-                        stat["valid_corners"] += 1
-
-                    st_card = m_stat.get("cards", {})
-                    is_valid_card = (
-                        bool(m.get("odds_cards_bet365"))
-                        and not is_match_stale
-                        and (st_card.get("valid", True) if st_card else True)
-                        and not st_card.get("stale", False)
-                    )
-                    if is_valid_card:
-                        stat["valid_cards"] += 1
-            audit_stats[cid] = stat
-
-        print("\n" + "=" * 88)
+        print("\n" + "=" * 106)
         print("📊 AUDITORIA DE COBERTURA I FRESCOR DE QUOTES (BET365 / MOVIODDS)")
-        print("=" * 88)
-        print(f"{'COMPETICIÓ':<14} | {'ELEG.':<5} | {'ASSOC.':<6} | {'1X2':<5} | {'O/U2.5':<6} | {'BTTS':<5} | {'CÓRN':<5} | {'TARG':<5} | {'OBSOLET':<7} | {'NO ASSOC':<8}")
-        print("-" * 88)
-        tot_e = tot_a = tot_1 = tot_ou = tot_bt = tot_co = tot_ca = tot_st = tot_un = 0
+        print("=" * 106)
+        print(f"{'COMPETICIÓ':<14} | {'ELEG.':<5} | {'ASSOC.':<6} | {'1X2':<5} | {'O/U2.5':<6} | {'BTTS':<5} | {'CÓRN':<5} | {'TARG':<5} | {'OBSOLET':<7} | {'SUSPÈS':<6} | {'NO VERIF':<8} | {'NO ASSOC':<8}")
+        print("-" * 106)
+        tot_e = tot_a = tot_1 = tot_ou = tot_bt = tot_co = tot_ca = tot_st = tot_su = tot_uv = tot_un = 0
         for cid, st in audit_stats.items():
             tot_e += st["eligible"]
             tot_a += st["associated"]
@@ -2657,19 +2641,17 @@ class WebDataExporter:
             tot_co += st["valid_corners"]
             tot_ca += st["valid_cards"]
             tot_st += st["discarded_stale"]
+            tot_su += st["discarded_suspended"]
+            tot_uv += st["discarded_unverified"]
             tot_un += st["discarded_unmatched"]
-            print(f"{cid:<14} | {st['eligible']:<5} | {st['associated']:<6} | {st['valid_1x2']:<5} | {st['valid_ou25']:<6} | {st['valid_btts']:<5} | {st['valid_corners']:<5} | {st['valid_cards']:<5} | {st['discarded_stale']:<7} | {st['discarded_unmatched']:<8}")
-        print("-" * 88)
-        print(f"{'TOTAL':<14} | {tot_e:<5} | {tot_a:<6} | {tot_1:<5} | {tot_ou:<6} | {tot_bt:<5} | {tot_co:<5} | {tot_ca:<5} | {tot_st:<7} | {tot_un:<8}")
-        print("=" * 88 + "\n")
+            print(f"{cid:<14} | {st['eligible']:<5} | {st['associated']:<6} | {st['valid_1x2']:<5} | {st['valid_ou25']:<6} | {st['valid_btts']:<5} | {st['valid_corners']:<5} | {st['valid_cards']:<5} | {st['discarded_stale']:<7} | {st['discarded_suspended']:<6} | {st['discarded_unverified']:<8} | {st['discarded_unmatched']:<8}")
+        print("-" * 106)
+        print(f"{'TOTAL':<14} | {tot_e:<5} | {tot_a:<6} | {tot_1:<5} | {tot_ou:<6} | {tot_bt:<5} | {tot_co:<5} | {tot_ca:<5} | {tot_st:<7} | {tot_su:<6} | {tot_uv:<8} | {tot_un:<8}")
+        print("=" * 106 + "\n")
 
-        # Protecció de Value bets si el scraper de Winamax ha estat bloquejat al núvol
-        # Les recomanacions de valor actives MAI han d'incloure quotes obsoletes o caducades
-        if len(all_value_bets) == 0 and previous_data.get("value_bets"):
-            fresh_prev = [vb for vb in previous_data["value_bets"] if not vb.get("is_stale") and vb.get("status") != "OBSOLETE"]
-            if fresh_prev:
-                print(f"   🛡️ PROTECCIÓ: Preservant {len(fresh_prev)} apostes no obsoletes de la memòria cau.")
-                all_value_bets = fresh_prev
+        # Eliminat qualsevol fallback a previous_data["value_bets"]:
+        # Si no hi ha oportunitats noves i verificades, all_value_bets ha de quedar buit [].
+        # Les recomanacions actives mai no poden mostrar quotes obsoletes o caducades com a +EV vigent.
 
         # Ordenar Value bets pel millor edge %
         all_value_bets.sort(key=lambda x: (float(x.get("edge_pct")) if x.get("edge_pct") is not None else -999.0), reverse=True)
@@ -2739,6 +2721,7 @@ class WebDataExporter:
             "power_rankings": power_rankings,
             "predictions": predictions,
             "value_bets": all_value_bets,
+            "archived_unverified_bets": previous_data.get("value_bets", []) if len(all_value_bets) == 0 and previous_data.get("value_bets") else [],
             "arbitrage": arbitrage_report,
             "combos": combos,
             "daily_combos": daily_combos,

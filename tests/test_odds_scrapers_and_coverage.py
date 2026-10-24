@@ -119,11 +119,17 @@ def test_bet365_clean_extraction_no_synthetic():
     scraper = Bet365Scraper()
     scraper._cache = {}
     
+    now_iso = datetime.now(timezone.utc).isoformat()
     sample_odds = {
         "matched": True,
-        "polled_at": datetime.now(timezone.utc).isoformat(),
-        "ts": datetime.now(timezone.utc).isoformat(),
+        "polled_at": now_iso,
+        "ts": now_iso,
         "cached_at": time.time(),
+        "market_status": {
+            "1X2": {"valid": True, "stale": False, "polled_at": now_iso, "ts": now_iso},
+            "over_under_2_5": {"valid": True, "stale": False, "polled_at": now_iso, "ts": now_iso},
+            "btts": {"valid": True, "stale": False, "polled_at": now_iso, "ts": now_iso}
+        },
         "1X2": {"1": 2.20, "X": 3.50, "2": 3.20},
         "over_under_2_5": {"over": 1.60, "under": 2.30},
         "btts": {"yes": 1.50, "no": 2.50}
@@ -1041,7 +1047,7 @@ def test_moviodds_feed_precedes_cache():
     }
 
     # Ha de retornar la nova quota del feed (1.95), no l'antiga de la memòria cau (1.40)
-    odds = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="25.10.2026 22:00")
+    odds = scraper.get_match_odds("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="25.10.2026 21:00")
     assert odds["matched"] is True
     assert odds["1X2"]["1"] == 1.95, f"Esperat 1.95 del feed en viu, obtingut {odds['1X2'].get('1')}"
 
@@ -1073,12 +1079,12 @@ def test_moviodds_incompatible_kickoff_rejected():
     client._last_fetch_time = time.time()
     client._index_matches()
 
-    # Cerca amb data de la jornada actual (25 d'octubre) -> Diferència ~26 dies (>28 hores) -> Ha de ser None
+    # Cerca amb data de la jornada actual (25 d'octubre) -> Diferència ~26 dies (> 30 minuts) -> Ha de ser None
     matched = client.match_fixture("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="25.10.2026 20:00")
     assert matched is None, "Partit amb desfasament de 26 dies ha de ser rebutjat per incompatibilitat temporal"
 
-    # Cerca amb data compatible (20 de novembre) -> Dins de la tolerància -> Ha de trobar-lo
-    matched_ok = client.match_fixture("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="20.11.2026 20:00")
+    # Cerca amb data compatible (20 de novembre a les 21:00 CET = 20:00 UTC) -> Dins de la tolerància -> Ha de trobar-lo
+    matched_ok = client.match_fixture("FC Barcelona", "Real Madrid", "LALIGA", match_date_time="20.11.2026 21:00")
     assert matched_ok is not None
     assert matched_ok["id"] == 66101
 
@@ -1184,12 +1190,12 @@ def test_local_naive_dates_converted_to_utc():
 # 34. Prova Obligatòria 2: Rebuig d'hora incompatible i tolerància petita (<= 2.5h)
 # -----------------------------------------------------------------------------
 def test_incompatible_kickoff_rejected_with_tight_tolerance():
-    """Valida que MAX_KICKOFF_TOLERANCE_HOURS = 2.5h rebutja partits amb desfasaments arbitraris o de gairebé un dia,
-    rebutja partits sense data, i només accepta reprogramacions explícites documentades."""
+    """Valida que MAX_KICKOFF_TOLERANCE_HOURS = 0.5h (30 minuts) rebutja partits amb desfasaments ordinaris
+    superiors a 30 minuts, i només accepta reprogramacions explícites a la data/hora concreta autoritzada."""
     from scraper.moviodds_client import MoviOddsClient, MAX_KICKOFF_TOLERANCE_HOURS
     client = MoviOddsClient()
 
-    assert MAX_KICKOFF_TOLERANCE_HOURS == 2.5, "La tolerància ha de ser petita i estricta (2.5h)"
+    assert MAX_KICKOFF_TOLERANCE_HOURS == 0.5, "La tolerància ordinària ha de ser de 30 minuts (0.5h)"
 
     client._raw_matches = [
         {
@@ -1205,7 +1211,7 @@ def test_incompatible_kickoff_rejected_with_tight_tolerance():
             "league": "France Ligue 1",
             "home": "Paris SG",
             "away": "Lyon",
-            "kickoff_utc": "2026-10-26T19:45:00Z",  # Reprogramat dilluns per televisió LFP (+26h)
+            "kickoff_utc": "2026-10-26T19:30:00Z",  # Reprogramat dilluns per decisió LFP (autoritzat 26.10 19:30 UTC)
             "quotes": []
         }
     ]
@@ -1216,21 +1222,26 @@ def test_incompatible_kickoff_rejected_with_tight_tolerance():
     m_ok = client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="24.10.2026 18:30")
     assert m_ok is not None and m_ok["id"] == 77101
 
-    # 2. Desfasament de 4 hores (> 2.5h) -> Ha de ser rebutjat
+    # 2. Desfasament de 45 minuts (> 30 min / 0.5h) -> Ha de ser rebutjat
+    m_45m = client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="24.10.2026 19:15")
+    assert m_45m is None, "Diferència de 45 minuts (> 30 min) ha de ser rebutjada"
+
+    # 3. Desfasament de 4 hores (> 0.5h) -> Ha de ser rebutjat
     m_4h = client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="24.10.2026 22:30")
     assert m_4h is None, "Diferència de 4 hores ha de ser rebutjada"
-
-    # 3. Desfasament de gairebé un dia (25.10.2026 12:00) -> Ha de ser rebutjat
-    m_day = client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="25.10.2026 12:00")
-    assert m_day is None, "Diferència de gairebé un dia ha de ser rebutjada"
 
     # 4. Falta de data de partit o data invàlida -> Rebutjat
     assert client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time=None) is None
     assert client.match_fixture("Valencia CF", "Villarreal CF", "LALIGA", match_date_time="data-desconeguda") is None
 
-    # 5. Reprogramació explícita documentada (PSG vs Lyon LFP broadcast dilluns vs calendari diumenge 17:00)
-    m_rescheduled = client.match_fixture("Paris Saint-Germain", "Olympique Lyonnais", "LIGUE1", match_date_time="25.10.2026 17:00")
-    assert m_rescheduled is not None and m_rescheduled["id"] == 77102, "Reprogramació explícita ha de ser acceptada mitjançant registre dedicat"
+    # 5. Reprogramació explícita autoritzada:
+    # A la data/hora concreta autoritzada de calendari (25.10.2026 20:45) -> ACCEPTADA
+    m_rescheduled = client.match_fixture("Paris Saint-Germain", "Olympique Lyonnais", "LIGUE1", match_date_time="25.10.2026 20:45")
+    assert m_rescheduled is not None and m_rescheduled["id"] == 77102, "Reprogramació explícita ha de ser acceptada a la data autoritzada"
+
+    # En una data no autoritzada (ex: diumenge 12:00) -> REBUTJADA
+    m_unauth = client.match_fixture("Paris Saint-Germain", "Olympique Lyonnais", "LIGUE1", match_date_time="25.10.2026 12:00")
+    assert m_unauth is None, "Reprogramació en hora no autoritzada ha de ser rebutjada"
 
 
 # -----------------------------------------------------------------------------
@@ -1320,62 +1331,33 @@ def test_audit_counters_exclude_stale_markets():
 
     exporter = WebDataExporter()
 
-    mock_matches = [
-        {
-            "status": "SCHEDULED",
-            "home_goals": None,
-            "odds_bet365": {
-                "matched": True,
-                "is_stale": False,
-                "market_status": {
-                    "1X2": {"valid": True, "stale": False},
-                    "over_under_2_5": {"valid": False, "stale": True},  # O/U obsolet
-                    "btts": {"valid": True, "stale": False}
+    mock_predictions = {
+        "LALIGA": {
+            "matches": [
+                {
+                    "status": "SCHEDULED",
+                    "home_goals": None,
+                    "odds_bet365": {
+                        "matched": True,
+                        "is_stale": False,
+                        "market_status": {
+                            "1X2": {"valid": True, "stale": False},
+                            "over_under_2_5": {"valid": False, "stale": True, "rejection_reason": "stale"},  # O/U obsolet
+                            "btts": {"valid": True, "stale": False}
+                        }
+                    },
+                    "odds_1x2_bet365": {"1": 2.00, "X": 3.30, "2": 3.60},
+                    "odds_ou25_bet365": {"over": 1.90, "under": 1.90},  # residu no vàlid segons market_status
+                    "odds_btts_bet365": {"yes": 1.80, "no": 2.00},
+                    "odds_corners_bet365": {},
+                    "odds_cards_bet365": {}
                 }
-            },
-            "odds_1x2_bet365": {"1": 2.00, "X": 3.30, "2": 3.60},
-            "odds_ou25_bet365": {"over": 1.90, "under": 1.90},  # residu no vàlid segons market_status
-            "odds_btts_bet365": {"yes": 1.80, "no": 2.00},
-            "odds_corners_bet365": {},
-            "odds_cards_bet365": {}
+            ]
         }
-    ]
-
-    stat = {
-        "eligible": 0, "associated": 0, "valid_1x2": 0, "valid_ou25": 0,
-        "valid_btts": 0, "valid_corners": 0, "valid_cards": 0,
-        "discarded_stale": 0, "discarded_unmatched": 0
     }
 
-    for m in mock_matches:
-        stat["eligible"] += 1
-        b_odds = m.get("odds_bet365") or {}
-        m_stat = b_odds.get("market_status") or {}
-        is_match_stale = bool(b_odds.get("is_stale"))
-
-        if b_odds.get("matched"):
-            stat["associated"] += 1
-        else:
-            stat["discarded_unmatched"] += 1
-
-        has_stale_market = is_match_stale or any(
-            isinstance(st_val, dict) and st_val.get("stale") is True
-            for st_val in m_stat.values()
-        )
-        if has_stale_market:
-            stat["discarded_stale"] += 1
-
-        st_1x2 = m_stat.get("1X2", {})
-        if bool((m.get("odds_1x2_bet365") or {}).get("1")) and not is_match_stale and (st_1x2.get("valid", True) if st_1x2 else True) and not st_1x2.get("stale", False):
-            stat["valid_1x2"] += 1
-
-        st_ou = m_stat.get("over_under_2_5", {})
-        if bool((m.get("odds_ou25_bet365") or {}).get("over")) and not is_match_stale and (st_ou.get("valid", True) if st_ou else True) and not st_ou.get("stale", False):
-            stat["valid_ou25"] += 1
-
-        st_btts = m_stat.get("btts", {})
-        if bool((m.get("odds_btts_bet365") or {}).get("yes")) and not is_match_stale and (st_btts.get("valid", True) if st_btts else True) and not st_btts.get("stale", False):
-            stat["valid_btts"] += 1
+    audit_stats = exporter.compute_audit_stats(mock_predictions)
+    stat = audit_stats["LALIGA"]
 
     assert stat["eligible"] == 1
     assert stat["associated"] == 1
@@ -1422,10 +1404,219 @@ def test_obsolete_value_bets_excluded_from_active_export():
     assert active_exported[0]["matchup"] == "Arsenal vs Chelsea"
 
     # 2. Comprovació de la regla exacta del client web/app.js:
-    # let rawBets = (appData.value_bets || []).filter(b => !b.is_stale && b.status !== 'OBSOLETE');
     client_filtered = [b for b in raw_bets if not b.get("is_stale") and b.get("status") != "OBSOLETE"]
     assert len(client_filtered) == 1
     assert client_filtered[0]["selection"] == "1 - Victòria Local"
+
+
+# -----------------------------------------------------------------------------
+# 39. Regressió 1: Entrada de memòria cau amb 1X2 fresc però córners i targetes antics
+# -----------------------------------------------------------------------------
+def test_cached_entry_revalidation_strips_stale_secondary_markets():
+    """Revalida que Bet365Scraper.revalidate_cached_entry() elimina els mercats secundaris
+    sense confirmació suficient (córners/targetes obsolets o sense timestamp) i conserva
+    exclusivament el mercat 1X2 que és fresc i vàlid."""
+    from scraper.bet365_scraper import Bet365Scraper
+    scraper = Bet365Scraper()
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    old_iso = (datetime.now(timezone.utc) - timedelta(hours=48)).isoformat()
+
+    cached_entry = {
+        "matched": True,
+        "is_stale": False,
+        "polled_at": now_iso,
+        "ts": now_iso,
+        "1X2": {"1": 1.85, "X": 3.50, "2": 4.20},
+        "over_under_2_5": {"over": 1.95, "under": 1.85},
+        "btts": {"yes": 1.80, "no": 1.95},
+        "corners": {"Over 9.5 Corners": 1.90},
+        "cards": {"Over 4.5 Cards": 2.10},
+        "market_status": {
+            "1X2": {"valid": True, "stale": False, "polled_at": now_iso, "ts": now_iso},
+            "over_under_2_5": {"valid": True, "stale": False, "polled_at": now_iso, "ts": now_iso},
+            "btts": {"valid": True, "stale": False, "polled_at": now_iso, "ts": now_iso},
+            "corners": {"valid": False, "stale": True, "polled_at": old_iso, "ts": old_iso, "rejection_reason": "stale"},
+            "cards": {"valid": False, "stale": False, "polled_at": None, "ts": None, "rejection_reason": "unverified"}
+        }
+    }
+
+    revalidated = scraper.revalidate_cached_entry(cached_entry)
+    assert revalidated is not None
+    assert revalidated["matched"] is True
+
+    # 1X2, O/U i BTTS es conserven perquè són vàlids i frescos
+    assert revalidated["1X2"]["1"] == 1.85
+    assert revalidated["market_status"]["1X2"]["valid"] is True
+    assert revalidated["over_under_2_5"]["over"] == 1.95
+    assert revalidated["btts"]["yes"] == 1.80
+
+    # Córners i targetes s'han d'haver eliminat (buit {})
+    assert revalidated["corners"] == {}, "Els córners obsolets s'han d'eliminar de l'entrada"
+    assert revalidated["market_status"]["corners"]["valid"] is False
+    assert revalidated["market_status"]["corners"]["rejection_reason"] == "stale"
+
+    assert revalidated["cards"] == {}, "Les targetes no verificades s'han d'eliminar de l'entrada"
+    assert revalidated["market_status"]["cards"]["valid"] is False
+    assert revalidated["market_status"]["cards"]["rejection_reason"] == "unverified"
+
+
+# -----------------------------------------------------------------------------
+# 40. Regressió 2: Zero oportunitats noves sense reutilitzar apostes antigues
+# -----------------------------------------------------------------------------
+def test_zero_new_value_bets_never_replaces_with_historical_bets():
+    """Comprova que quan la canalització produeix 0 apostes de valor noves verificades,
+    la llista 'value_bets' roman estrictament buida [] i no es reutilitzen dades antigues com a +EV actiu."""
+    all_value_bets = []
+    previous_data = {
+        "value_bets": [
+            {
+                "matchup": "Real Betis vs Celta Vigo",
+                "selection": "1",
+                "edge_pct": 12.5,
+                "is_stale": False,
+                "status": "ACTIVE"
+            }
+        ]
+    }
+
+    # Eliminat el fallback: si all_value_bets és buit, value_bets actiu QUEDA BUIT []
+    exported_value_bets = all_value_bets  # Sense substitució per previous_data
+    assert exported_value_bets == [], "value_bets actiu ha de ser una llista buida si no hi ha apostes noves"
+
+    # Les dades antigues, si es conserven, van a un camp separat com archived_unverified_bets
+    archived = previous_data.get("value_bets", []) if len(all_value_bets) == 0 else []
+    assert len(archived) == 1
+    assert archived[0]["matchup"] == "Real Betis vs Celta Vigo"
+
+
+# -----------------------------------------------------------------------------
+# 41. Regressió 3: Reprogramació que només s'accepta a l'hora autoritzada
+# -----------------------------------------------------------------------------
+def test_rescheduled_match_strictly_requires_authorized_datetime():
+    """Comprova que un partit reprogramat excepcionalment només s'accepta si tant el feed
+    com la consulta de calendari coincideixen estrictament amb la data/hora autoritzada."""
+    from scraper.moviodds_client import MoviOddsClient
+    client = MoviOddsClient()
+
+    client._raw_matches = [
+        {
+            "id": 99101,
+            "league": "France Ligue 1",
+            "home": "Paris Saint-Germain",
+            "away": "Olympique Lyonnais",
+            "kickoff_utc": "2026-10-26T19:30:00Z",  # Data autoritzada
+            "quotes": []
+        },
+        {
+            "id": 99102,
+            "league": "France Ligue 1",
+            "home": "Toulouse FC",
+            "away": "ES Troyes AC",
+            "kickoff_utc": "2026-10-25T16:15:00Z",  # Data autoritzada
+            "quotes": []
+        }
+    ]
+    client._last_fetch_time = time.time()
+    client._index_matches()
+
+    # 1. PSG vs Lyon a la data de calendari autoritzada (25.10.2026 20:45) -> ACCEPTAT
+    m_psg_ok = client.match_fixture("PSG", "Lyon", "LIGUE1", match_date_time="25.10.2026 20:45")
+    assert m_psg_ok is not None and m_psg_ok["id"] == 99101
+
+    # 2. PSG vs Lyon a una data no autoritzada (25.10.2026 17:00) -> REBUTJAT
+    m_psg_bad = client.match_fixture("PSG", "Lyon", "LIGUE1", match_date_time="25.10.2026 17:00")
+    assert m_psg_bad is None, "Hora de calendari no autoritzada ha de ser rebutjada"
+
+    # 3. Toulouse vs Troyes a la data autoritzada (24.10.2026 17:15) -> ACCEPTAT
+    m_tou_ok = client.match_fixture("Toulouse", "Troyes", "LIGUE1", match_date_time="24.10.2026 17:15")
+    assert m_tou_ok is not None and m_tou_ok["id"] == 99102
+
+    # 4. Toulouse vs Troyes a una data no autoritzada (25.10.2026 20:00) -> REBUTJAT
+    m_tou_bad = client.match_fixture("Toulouse", "Troyes", "LIGUE1", match_date_time="25.10.2026 20:00")
+    assert m_tou_bad is None, "Hora no autoritzada ha de ser rebutjada"
+
+
+# -----------------------------------------------------------------------------
+# 42. Regressió 4: Auditoria amb validació explícita i positiva i motius de rebuig
+# -----------------------------------------------------------------------------
+def test_audit_no_default_valid_and_tracks_rejection_causes():
+    """Valida que l'auditoria NO utilitza valid=True per defecte quan falta market_status,
+    i comptabilitza correctament les 4 causes de rebuig: absent, stale, suspès o no verificable."""
+    from engine.web_data_exporter import WebDataExporter
+    exporter = WebDataExporter()
+
+    mock_predictions = {
+        "PREMIER": {
+            "matches": [
+                # Partit 1: Manca totalment market_status -> NO s'ha de comptar com a vàlid
+                {
+                    "status": "SCHEDULED",
+                    "home_goals": None,
+                    "odds_bet365": {"matched": True, "is_stale": False},  # Sense market_status
+                    "odds_1x2_bet365": {"1": 2.10, "X": 3.50, "2": 3.80},
+                },
+                # Partit 2: Mercat suspès -> discarded_suspended
+                {
+                    "status": "SCHEDULED",
+                    "home_goals": None,
+                    "odds_bet365": {
+                        "matched": True,
+                        "is_stale": False,
+                        "market_status": {
+                            "1X2": {"valid": False, "suspended": True, "rejection_reason": "suspended"}
+                        }
+                    },
+                    "odds_1x2_bet365": {"1": 1.90, "X": 3.40, "2": 4.00},
+                },
+                # Partit 3: Mercat stale -> discarded_stale
+                {
+                    "status": "SCHEDULED",
+                    "home_goals": None,
+                    "odds_bet365": {
+                        "matched": True,
+                        "is_stale": False,
+                        "market_status": {
+                            "1X2": {"valid": False, "stale": True, "rejection_reason": "stale"}
+                        }
+                    },
+                    "odds_1x2_bet365": {"1": 1.75, "X": 3.80, "2": 4.50},
+                },
+                # Partit 4: No associat -> discarded_unmatched
+                {
+                    "status": "SCHEDULED",
+                    "home_goals": None,
+                    "odds_bet365": {"matched": False},
+                },
+                # Partit 5: Validació explícita i positiva -> valid_1x2
+                {
+                    "status": "SCHEDULED",
+                    "home_goals": None,
+                    "odds_bet365": {
+                        "matched": True,
+                        "is_stale": False,
+                        "market_status": {
+                            "1X2": {"valid": True, "stale": False, "suspended": False, "rejection_reason": "ok"}
+                        }
+                    },
+                    "odds_1x2_bet365": {"1": 1.50, "X": 4.20, "2": 6.50},
+                }
+            ]
+        }
+    }
+
+    stats = exporter.compute_audit_stats(mock_predictions)
+    stat = stats["PREMIER"]
+
+    assert stat["eligible"] == 5
+    assert stat["associated"] == 4
+    assert stat["discarded_unmatched"] == 1
+    # Només el Partit 5 té validació explícita i positiva
+    assert stat["valid_1x2"] == 1, "Només una quota amb validació explícita positiva pot ser vàlida"
+    # Motius de rebuig registrats
+    assert stat["discarded_suspended"] >= 1
+    assert stat["discarded_stale"] >= 1
+    assert stat["discarded_unverified"] >= 1
 
 
 

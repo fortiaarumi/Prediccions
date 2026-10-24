@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-10-24",
-    "timestamp": "2026-10-24T12:07:21.844997",
+    "timestamp": "2026-10-24T12:59:19.375175",
     "title": "Actualització Diària del Model · 24/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
@@ -9,13 +9,136 @@
       "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
       "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
-      "ℹ️ Sincronització de les darreres dades i mètriques del model."
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 3 partit(s):",
+      "   • [LaLiga EA Sports J10] Athletic Club vs Getafe CF: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Francisco José Hernández Maeso'",
+      "     └ Impacte model: Targetes >4.5: 48.7% ➔ 62.9% (+14.2%) | Vermella: 22.1% ➔ 24.4% (+2.3%) | Victòria Local: 55.1% ➔ 55.1% (+0.0%)",
+      "   • [LaLiga Hypermotion J11] CE Sabadell vs CD Tenerife: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Saúl Ais Reig'",
+      "     └ Impacte model: Targetes >4.5: 52.7% ➔ 64.8% (+12.1%) | Vermella: 22.1% ➔ 24.4% (+2.3%) | Victòria Local: 43.4% ➔ 43.4% (+0.0%)",
+      "   • [LaLiga Hypermotion J11] Albacete Balompié vs CD Eldense: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Palencia D.'",
+      "     └ Impacte model: Targetes >4.5: 52.7% ➔ 66.2% (+13.5%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 40.4% ➔ 40.4% (+0.0%)"
     ],
     "matches": [],
     "combos_evaluated": [],
     "combos_generated": [],
-    "referee_updates": []
+    "referee_updates": [
+      {
+        "match_id": "LALIGA_J10_ATH_GET",
+        "matchup": "Athletic Club vs Getafe CF",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 10,
+        "date": "25.10.2026 13:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Francisco José Hernández Maeso",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.28,
+          "fouls_avg": 26.8,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 48.7,
+            "after": 62.9,
+            "delta": 14.2
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 24.4,
+            "delta": 2.3
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.8,
+            "delta": 2.3
+          },
+          "home_win_prob": {
+            "before": 55.1,
+            "after": 55.1,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Francisco José Hernández Maeso (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.28 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J11_SAB_TEN",
+        "matchup": "CE Sabadell vs CD Tenerife",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 11,
+        "date": "25.10.2026 13:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Saúl Ais Reig",
+        "ref_stats": {
+          "yellow_avg": 5.1,
+          "red_avg": 0.28,
+          "fouls_avg": 26.0,
+          "strictness_index": 1.14
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 52.7,
+            "after": 64.8,
+            "delta": 12.1
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 24.4,
+            "delta": 2.3
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.0,
+            "delta": 1.5
+          },
+          "home_win_prob": {
+            "before": 43.4,
+            "after": 43.4,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Saúl Ais Reig (índex severitat 1.14). Mitjana històrica de 5.1 grogues i 0.28 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J11_ALB_ELD",
+        "matchup": "Albacete Balompié vs CD Eldense",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 11,
+        "date": "25.10.2026 15:15",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Palencia D.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 52.7,
+            "after": 66.2,
+            "delta": 13.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 40.4,
+            "after": 40.4,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Palencia D. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      }
+    ]
   },
   {
     "date": "2026-10-23",
