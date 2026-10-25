@@ -15,19 +15,123 @@ Lògica financera:
 from typing import Dict, List, Any, Optional, Tuple
 from database.db_manager import DatabaseManager
 
+
+def parse_bool_flag(val: Any) -> Optional[bool]:
+    """
+    Normalitza de manera segura valors booleans que poden arribar com a:
+    bool (True, False), int (1, 0), o string ("true", "false", "1", "0", etc.).
+    Evita que bool("false") o bool("0") s'avaluïn erròniament com a True.
+    """
+    if val is None:
+        return None
+    if isinstance(val, bool):
+        return val
+    if isinstance(val, (int, float)):
+        return val != 0
+    if isinstance(val, str):
+        s = val.strip().lower()
+        if s in ("true", "1", "yes", "si", "sí", "y"):
+            return True
+        if s in ("false", "0", "no", "n", ""):
+            return False
+    return None
+
+
+def is_unambiguous_void_note(note: str) -> bool:
+    """
+    Verifica si una nota textual indica de manera inequívoca i confirmada que el partit és VOID.
+    Rebutja immediatament negacions, incerteses o resolucions pendents
+    (ex: 'void not confirmed', 'not void', 'no anul·lat', 'anul·lació pendent', etc.).
+    """
+    if not note:
+        return False
+    n = note.strip().lower()
+    # Paraules de negació o incertesa que invaliden automàticament la declaració de void:
+    negations = [
+        "not void", "no void", "void not", "not confirmed", "no confirmat", "no confirmada",
+        "no anul·lat", "no cancel·lat", "sense anul·lar", "pendent", "pending", "unconfirmed",
+        "possible", "provisional", "reclamació", "descartat", "descartada", "espera"
+    ]
+    if any(neg in n for neg in negations):
+        return False
+
+    confirmed_void_patterns = [
+        "anul·lat definitivament", "anul·lació confirmada", "anul·lat oficialment",
+        "partit anul·lat", "partit cancel·lat", "cancel·lat definitivament",
+        "declarat void", "declarat nul", "void confirmat", "officially cancelled",
+        "confirmed void", "partit suspès definitivament"
+    ]
+    return any(p in n for p in confirmed_void_patterns)
+
+
 class ComboTracker:
     def __init__(self, db: Optional[DatabaseManager] = None):
         self.db = db if db else DatabaseManager()
 
-    def evaluate_leg(self, leg: Dict[str, Any], match: Dict[str, Any]) -> Tuple[str, str]:
+    def evaluate_leg(self, leg: Dict[str, Any], match: Optional[Dict[str, Any]]) -> Tuple[str, str]:
         """
-        Avalua una selecció concreta a partir de les estadístiques del partit.
-        Retorna (status: 'WON'|'LOST'|'PENDING', actual_result: str)
+        Avalua una selecció concreta a partir de les dades del partit.
+        Distingeix rigorosament els estats estructurats i normalitzats:
+        - Definitivament anul·lat / declarat void (CANCELLED, VOID o flags explícits): ('VOID', motiu)
+        - Abandonat (ABANDONED): només void si hi ha resolució confirmada; altrament PENDING.
+        - Temporalment suspès (SUSPENDED): ('PENDING', motiu)
+        - Ajornat o reprogramat (POSTPONED, RESCHEDULED): ('PENDING', motiu)
+        - Pendent de disputar o en joc (SCHEDULED, LIVE): ('PENDING', motiu)
+        - Finalitzat amb resultat oficial (FINISHED amb marcadors): ('WON'|'LOST', motiu)
+        - Estats desconeguts o ambigus: sempre PENDING.
         """
-        if not match or match.get("status") != "FINISHED" or match.get("home_goals") is None:
-            if match and match.get("status") == "SUSPENDED":
-                return "PENDING", "Partit suspès (a l'espera del resultat)"
+        if not match:
             return "PENDING", "Partit pendent de disputar"
+
+        m_status = str(match.get("status", "")).strip().upper()
+        status_note = str(match.get("status_note", "")).strip()
+
+        is_void_flag = parse_bool_flag(match.get("is_void"))
+        is_cancelled_flag = parse_bool_flag(match.get("cancelled"))
+        has_void_note = is_unambiguous_void_note(status_note)
+
+        # 1. Partit finalitzat amb marcadors oficials (FINISHED)
+        if m_status == "FINISHED":
+            if match.get("home_goals") is None or match.get("away_goals") is None:
+                return "PENDING", "Partit finalitzat a l'espera de marcador oficial"
+            # Si hi ha discrepància flag void/cancelled vs FINISHED, no liquidar automàticament; deixar pendent
+            if is_void_flag is True or is_cancelled_flag is True:
+                return "PENDING", "Discrepància detectada: partit FINISHED amb flag de void/cancel·lació (pendent de resolució)"
+            # Les notes textuals no verificades no prevalen sobre el resultat oficial estructurat.
+
+        # 2. Partit definitivament anul·lat o declarat void per estat oficial
+        elif m_status in ("CANCELLED", "CANCELED", "VOID"):
+            return "VOID", "Partit cancel·lat / declarat void (quota 1.00)"
+
+        # 3. Partit abandonat (ABANDONED): només void si hi ha resolució confirmada; altrament PENDING
+        elif m_status == "ABANDONED":
+            if is_void_flag is True or has_void_note:
+                return "VOID", "Partit abandonat i declarat void oficialment (quota 1.00)"
+            return "PENDING", "Partit abandonat (a l'espera de resolució oficial)"
+
+        # 4. Declaració explícita de void mitjançant flag sobre partit no finalitzat
+        elif is_void_flag is True or is_cancelled_flag is True:
+            return "VOID", "Partit declarat void explícitament (quota 1.00)"
+
+        # 5. Partit ajornat o reprogramat (no liquidar prematurament)
+        elif m_status in ("POSTPONED", "RESCHEDULED", "AJORNAT", "REPROGRAMAT"):
+            return "PENDING", "Partit ajornat / reprogramat (a l'espera de nova data)"
+
+        # 6. Partit temporalment suspès (no void automàtic, continua pendent de resolució)
+        elif m_status == "SUSPENDED":
+            return "PENDING", "Partit suspès (a l'espera de resolució oficial)"
+
+        # 7. Partit pendent o en joc
+        elif m_status in ("SCHEDULED", "LIVE", "IN_PLAY", "FIRST_HALF", "SECOND_HALF", "HALFTIME"):
+            if m_status == "LIVE":
+                lh = match.get("home_goals", 0)
+                la = match.get("away_goals", 0)
+                return "PENDING", f"En joc ({lh}-{la})"
+            return "PENDING", "Partit pendent de disputar"
+
+        # 8. Estat desconegut o no reconegut
+        else:
+            return "PENDING", f"Partit pendent (estat desconegut: {m_status or 'sense_estat'})"
 
         h_goals = int(match["home_goals"])
         a_goals = int(match["away_goals"])
@@ -153,11 +257,87 @@ class ComboTracker:
         # Per defecte si no es reconeix
         return "PENDING", f"{h_goals}-{a_goals}"
 
+    def evaluate_combo_settlement(self, combo: Dict[str, Any], matches_by_matchup: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Avalua de forma pura en memòria (sense dependències de DB) l'estat i liquidació d'una combinada:
+        - Si alguna selecció és 'LOST': combinada 'LOST' (payout = 0.0, profit = -stake).
+        - Si hi ha seleccions 'PENDING' (i cap 'LOST'): combinada 'PENDING'.
+        - Si totes les seleccions són 'VOID': combinada 'VOID' (retorn d'stake, profit = 0.0).
+        - Si hi ha seleccions 'WON' i 'VOID': combinada 'WON', tractant les void com a quota 1.00.
+        """
+        legs = combo.get("legs", [])
+        evaluated_legs = []
+        stake = float(combo.get("stake", 10.0))
+
+        for leg in legs:
+            m_key = leg.get("matchup", "")
+            match = matches_by_matchup.get(m_key)
+            if not match and leg.get("home_team_id") and leg.get("away_team_id"):
+                match = matches_by_matchup.get(f"{leg['home_team_id']}::{leg['away_team_id']}")
+
+            leg_status, actual_res = self.evaluate_leg(leg, match)
+            leg_eval = dict(leg)
+            leg_eval["status"] = leg_status
+            leg_eval["actual_result"] = actual_res
+            evaluated_legs.append(leg_eval)
+
+        has_lost = any(l["status"] == "LOST" for l in evaluated_legs)
+        has_pending = any(l["status"] == "PENDING" for l in evaluated_legs)
+        all_void = len(evaluated_legs) > 0 and all(l["status"] == "VOID" for l in evaluated_legs)
+        all_won_or_void = len(evaluated_legs) > 0 and all(l["status"] in ("WON", "VOID") for l in evaluated_legs) and any(l["status"] == "WON" for l in evaluated_legs)
+
+        if has_lost:
+            final_status = "LOST"
+            effective_odd = 0.0
+            payout = 0.0
+            profit = -round(stake, 2)
+        elif has_pending:
+            final_status = "PENDING"
+            effective_odd = float(combo.get("combined_odd", 1.0))
+            payout = 0.0
+            profit = 0.0
+        elif all_void:
+            final_status = "VOID"
+            effective_odd = 1.0
+            payout = round(stake, 2)
+            profit = 0.0
+        elif all_won_or_void:
+            final_status = "WON"
+            raw_effective_odd = 1.0
+            for l in evaluated_legs:
+                if l["status"] == "WON":
+                    raw_effective_odd *= float(l.get("bookie_odd", 1.0))
+                elif l["status"] == "VOID":
+                    raw_effective_odd *= 1.0
+            payout = round(stake * raw_effective_odd, 2)
+            profit = round(payout - stake, 2)
+            effective_odd = round(raw_effective_odd, 4)
+        else:
+            # Estats desconeguts o incongruents mai es tracten implícitament com a WON
+            final_status = "PENDING"
+            effective_odd = float(combo.get("combined_odd", 1.0))
+            payout = 0.0
+            profit = 0.0
+
+        return {
+            "id": combo.get("id"),
+            "status": final_status,
+            "stake": stake,
+            "effective_odd": effective_odd,
+            "payout": payout,
+            "profit": profit,
+            "legs": evaluated_legs
+        }
+
     def evaluate_all_pending_combos(self) -> List[Dict[str, Any]]:
         """
         Revisa totes les combinades en estat 'PENDING' a la base de dades.
-        Si tots els partits implicats han acabat, determina si ha guanyat o perdut
-        i actualitza el seu balanç i estat.
+        Avalua de manera segura i idempotent:
+        - Si alguna selecció és 'LOST': la combinada és 'LOST' (payout = 0.0, profit = -stake).
+        - Si no hi ha cap selecció 'LOST' i hi ha seleccions 'PENDING': continua 'PENDING'.
+        - Si totes les seleccions han finalitzat sense cap 'LOST':
+          • Si totes són 'VOID': estat 'VOID', retorn de l'stake (payout = stake, profit = 0.0).
+          • Si hi ha seleccions 'WON' (i potser 'VOID' com a 1.00): estat 'WON', payout = stake * odd_efectiva.
         """
         pending = self.db.get_pending_combos()
         evaluated = []
@@ -170,8 +350,6 @@ class ComboTracker:
                 if not legs:
                     continue
 
-                all_legs_finished = True
-                any_leg_lost = False
                 evaluated_legs = []
 
                 for leg in legs:
@@ -185,7 +363,6 @@ class ComboTracker:
                             a_id = a_id or self.db.find_team_id(p_parts[1].strip())
 
                     match_row = None
-
                     if h_id and a_id:
                         cursor.execute("""
                             SELECT * FROM matches
@@ -196,23 +373,9 @@ class ComboTracker:
                         if row:
                             match_row = dict(row)
 
+                    leg_status, actual_res = self.evaluate_leg(leg, match_row)
 
-                    if not match_row or match_row.get("status") != "FINISHED":
-                        all_legs_finished = False
-                        leg_status = "PENDING"
-                        if match_row and match_row.get("status") == "SUSPENDED":
-                            actual_res = "Partit suspès (a l'espera del resultat)"
-                        else:
-                            actual_res = "Pendent de disputar"
-                    else:
-                        leg_status, actual_res = self.evaluate_leg(leg, match_row)
-
-                    if leg_status == "LOST":
-                        any_leg_lost = True
-                    elif leg_status == "PENDING":
-                        all_legs_finished = False
-
-                    # Actualitzar la selecció a SQLite immediatament si el partit ja ha finalitzat
+                    # Actualitzar la selecció a SQLite immediatament si no és PENDING i ha canviat
                     if leg.get("id") and leg_status != "PENDING" and (leg_status != leg.get("status") or actual_res != leg.get("actual_result")):
                         cursor.execute("""
                             UPDATE combo_legs
@@ -226,21 +389,43 @@ class ComboTracker:
                     leg_eval["actual_result"] = actual_res
                     evaluated_legs.append(leg_eval)
 
-                # Si qualsevol selecció ha fallat (la combinada ja és matemàticament perduda) o tots han acabat:
-                if any_leg_lost:
+                has_lost = any(l["status"] == "LOST" for l in evaluated_legs)
+                has_pending = any(l["status"] == "PENDING" for l in evaluated_legs)
+                all_void = len(evaluated_legs) > 0 and all(l["status"] == "VOID" for l in evaluated_legs)
+                all_won_or_void = len(evaluated_legs) > 0 and all(l["status"] in ("WON", "VOID") for l in evaluated_legs) and any(l["status"] == "WON" for l in evaluated_legs)
+
+                stake = float(combo.get("stake", 10.0))
+
+                if has_lost:
                     final_status = "LOST"
                     payout = 0.0
-                    profit = -float(combo["stake"])
-                elif all_legs_finished:
+                    profit = -round(stake, 2)
+                elif has_pending:
+                    final_status = "PENDING"
+                    payout = 0.0
+                    profit = 0.0
+                elif all_void:
+                    # Totes les seleccions void: devolució íntegra de l'stake, PnL net 0.0
+                    final_status = "VOID"
+                    payout = round(stake, 2)
+                    profit = 0.0
+                elif all_won_or_void:
+                    # Guanyadora amb quotes efectives (seleccions void tractades com a 1.00)
                     final_status = "WON"
-                    odd = float(combo["combined_odd"])
-                    stake = float(combo["stake"])
-                    payout = round(stake * odd, 2)
+                    raw_effective_odd = 1.0
+                    for l in evaluated_legs:
+                        if l["status"] == "WON":
+                            raw_effective_odd *= float(l.get("bookie_odd", 1.0))
+                        elif l["status"] == "VOID":
+                            raw_effective_odd *= 1.0
+                    payout = round(stake * raw_effective_odd, 2)
                     profit = round(payout - stake, 2)
                 else:
                     final_status = "PENDING"
+                    payout = 0.0
+                    profit = 0.0
 
-                if final_status in ["WON", "LOST"]:
+                if final_status in ["WON", "LOST", "VOID"]:
                     self.db.update_combo_evaluation(
                         combo_id=combo["id"],
                         status=final_status,

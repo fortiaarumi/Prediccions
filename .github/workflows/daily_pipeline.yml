@@ -13,6 +13,11 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: daily-pipeline
+  cancel-in-progress: false
+  queue: max
+
 permissions:
   contents: write
 
@@ -25,6 +30,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
+
+      - name: 1.5. Verificar branca main i registrar SHA base
+        run: |
+          CURRENT_BRANCH=$(git branch --show-current)
+          if [ "$CURRENT_BRANCH" != "main" ]; then
+            echo "[ERROR CRÍTIC] El runner no està sobre la branca 'main' (branca detectada: '$CURRENT_BRANCH')."
+            exit 1
+          fi
+          BASE_SHA=$(git rev-parse HEAD)
+          echo "BASE_SHA=$BASE_SHA" >> $GITHUB_ENV
+          echo "[OK] Runner verificat a 'main'. SHA base inicial: $BASE_SHA"
 
       - name: 2. Configurar entorn Python 3.12
         uses: actions/setup-python@v5
@@ -83,7 +100,114 @@ jobs:
 
       - name: 5. Desar i fer push de la Base de Dades, Estat i Web a GitHub
         run: |
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          CURRENT_BRANCH=$(git branch --show-current)
+          if [ "$CURRENT_BRANCH" != "main" ]; then
+            echo "[ERROR CRÍTIC] El runner no està sobre la branca 'main' (branca detectada: '$CURRENT_BRANCH')."
+            exit 1
+          fi
+
+          INIT_SHA="${BASE_SHA:-$(git rev-parse HEAD)}"
+
           git add data/laliga.db data/pipeline_state.json data/changelog.json web/data/data.json
-          git diff --staged --quiet || (git commit -m "chore: actualització automàtica de dades i web [skip ci]" && git push)
+
+          set +e
+          git diff --staged --quiet
+          DIFF_EXIT=$?
+          set -e
+
+          if [ "$DIFF_EXIT" -eq 0 ]; then
+            echo "[INFO] Cap canvi staged a persistir. Pipeline finalitzat correctament."
+            exit 0
+          elif [ "$DIFF_EXIT" -ne 1 ]; then
+            echo "[ERROR CRÍTIC] git diff --staged ha fallat amb codi $DIFF_EXIT."
+            exit 1
+          fi
+
+          git commit -m "chore: actualització automàtica de dades i web [skip ci]"
+
+          MAX_RETRIES=3
+          SUCCESS=0
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "[INFO] Intent de push $i de $MAX_RETRIES..."
+            if git push origin main; then
+              echo "[OK] Push completat amb èxit."
+              SUCCESS=1
+              break
+            fi
+
+            echo "[WARN] El push ha fallat. Fent fetch d'origin/main..."
+            if ! git fetch origin main; then
+              echo "[ERROR CRÍTIC] git fetch origin main ha fallat. No es pot continuar amb un estat remot desconegut."
+              exit 1
+            fi
+
+            LOCAL_BASE=$(git merge-base HEAD origin/main)
+            REMOTE_HEAD=$(git rev-parse origin/main)
+
+            if [ "$LOCAL_BASE" = "$REMOTE_HEAD" ]; then
+              echo "[FAIL] origin/main no ha avançat. La fallada del push no és per divergència (permisos, xarxa o protecció de branca)."
+              exit 1
+            fi
+
+            echo "[INFO] origin/main ha avançat (de $INIT_SHA a $REMOTE_HEAD). Obtenint llista de canvis remots..."
+
+            set +e
+            REMOTE_DIFF_FILES=$(git diff --name-only "$INIT_SHA" origin/main)
+            DIFF_EXIT=$?
+            set -e
+
+            if [ "$DIFF_EXIT" -ne 0 ]; then
+              echo "[ERROR CRÍTIC] git diff --name-only entre $INIT_SHA i origin/main ha fallat amb codi $DIFF_EXIT."
+              exit 1
+            fi
+
+            if [ -z "$REMOTE_DIFF_FILES" ]; then
+              echo "[WARN] git diff no mostra fitxers modificats entre $INIT_SHA i origin/main (possible merge buit)."
+            else
+              # Política d'autorització positiva: només es permet el rebase si TOTS els fitxers
+              # modificats a origin/main pertanyen a l'allowlist de fitxers segurs no operatius
+              # (fitxer README.md, directori docs/ o fitxer LICENSE).
+              # Qualsevol altre fitxer (dades generades com laliga.db, data.json, pipeline_state,
+              # changelog, codi, configuracions, caches, etc.) es considera no segur i bloqueja el rebase.
+              set +e
+              UNSAFE_FILES=$(echo "$REMOTE_DIFF_FILES" | grep -v -E '^(README\.md|docs/.*|LICENSE)$')
+              GREP_EXIT=$?
+              set -e
+
+              if [ "$GREP_EXIT" -gt 1 ]; then
+                echo "[ERROR CRÍTIC] grep ha fallat amb codi d'error $GREP_EXIT en avaluar els fitxers remots."
+                exit 1
+              fi
+
+              if [ -n "$UNSAFE_FILES" ]; then
+                echo "[FAIL CRÍTIC] La branca origin/main ha avançat amb fitxers fora de l'allowlist segura no operativa:"
+                echo "$UNSAFE_FILES"
+                echo "Els fitxers anteriors inclouen dades generades, codi o configuracions que invaliden el rebase automàtic."
+                echo "Les dades d'aquest runner es van calcular sobre el commit base $INIT_SHA."
+                echo "Per integritat metodològica i semàntica, NO es rebasegen ni es publiquen les dades generades."
+                exit 1
+              fi
+            fi
+
+            echo "[INFO] Tots els canvis remots pertanyen a l'allowlist no operativa (documentació). Intentant rebase net..."
+            if git rebase origin/main; then
+              echo "[OK] Rebase completat sense conflictes."
+            else
+              echo "[FAIL CRÍTIC] S'ha detectat un conflicte durant el rebase sobre origin/main."
+              echo "[FAIL CRÍTIC] Fitxers en conflicte:"
+              git status --short
+              echo "[FAIL CRÍTIC] Avortant rebase per protegir les dades generades i evitar corrupció..."
+              git rebase --abort
+              exit 1
+            fi
+          done
+
+          if [ "$SUCCESS" -ne 1 ]; then
+            echo "[FAIL] No s'ha pogut completar el push després dels intents permesos."
+            exit 1
+          fi

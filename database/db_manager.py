@@ -1587,7 +1587,7 @@ class DatabaseManager:
         risky_won = 0
 
         for c in combos:
-            if c["status"] in ["WON", "LOST"]:
+            if c["status"] in ["WON", "LOST", "VOID"]:
                 total_stake += c["stake"]
                 total_payout += c["payout"]
                 prof = c["profile"].upper()
@@ -1645,7 +1645,7 @@ class DatabaseManager:
                 q += " ORDER BY profile ASC"
                 cursor.execute(q, p)
             else:
-                q = "SELECT * FROM combo_recommendations WHERE status IN ('WON', 'LOST')"
+                q = "SELECT * FROM combo_recommendations WHERE status IN ('WON', 'LOST', 'VOID')"
                 p = []
                 if competition_id:
                     q += " AND competition_id = ?"

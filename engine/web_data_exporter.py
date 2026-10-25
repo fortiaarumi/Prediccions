@@ -1279,17 +1279,10 @@ class WebDataExporter:
                             if row:
                                 match_row = dict(row)
 
-                    if not match_row or match_row.get("status") != "FINISHED":
+                    if not match_row:
                         all_finished = False
                         leg_status = "PENDING"
-                        if (match_row and match_row.get("status") == "SUSPENDED") or ("Rayo" in leg.get("matchup", "") and "Athletic" in leg.get("matchup", "")):
-                            actual_res = "Partit suspès (a l'espera del resultat)"
-                        elif match_row and match_row.get("status") == "LIVE":
-                            lh = match_row.get("home_goals") if match_row.get("home_goals") is not None else 0
-                            la = match_row.get("away_goals") if match_row.get("away_goals") is not None else 0
-                            actual_res = f"En joc ({lh}-{la})"
-                        else:
-                            actual_res = "Pendent de disputar"
+                        actual_res = "Pendent de disputar"
                     else:
                         leg_status, actual_res = self.tracker.evaluate_leg(leg, match_row)
 
@@ -1349,20 +1342,39 @@ class WebDataExporter:
                     c.get("profile", ""), b365_comb_final, legs_evaluated, b365_combo_url
                 )
 
-                if any_lost:
+                has_lost = any(l["status"] == "LOST" for l in legs_evaluated)
+                has_pending = any(l["status"] == "PENDING" for l in legs_evaluated)
+                all_void = len(legs_evaluated) > 0 and all(l["status"] == "VOID" for l in legs_evaluated)
+                all_won_or_void = len(legs_evaluated) > 0 and all(l["status"] in ("WON", "VOID") for l in legs_evaluated) and any(l["status"] == "WON" for l in legs_evaluated)
+
+                if has_lost:
                     final_status = "LOST"
                     payout = 0.0
-                    profit = -stake
-                elif all_finished:
+                    profit = -round(stake, 2)
+                elif has_pending:
+                    final_status = "PENDING"
+                    payout = 0.0
+                    profit = 0.0
+                elif all_void:
+                    final_status = "VOID"
+                    payout = round(stake, 2)
+                    profit = 0.0
+                elif all_won_or_void:
                     final_status = "WON"
-                    payout = round(stake * boosted_odd, 2)
+                    raw_effective_odd = 1.0
+                    for l in legs_evaluated:
+                        if l["status"] == "WON":
+                            raw_effective_odd *= float(l.get("bookie_odd", 1.0))
+                        elif l["status"] == "VOID":
+                            raw_effective_odd *= 1.0
+                    payout = round(stake * raw_effective_odd, 2)
                     profit = round(payout - stake, 2)
                 else:
                     final_status = "PENDING"
-                    payout = round(stake * boosted_odd, 2)
-                    profit = round(payout - stake, 2)
+                    payout = 0.0
+                    profit = 0.0
 
-                if final_status != c.get("status") and final_status in ["WON", "LOST"]:
+                if final_status != c.get("status") and final_status in ["WON", "LOST", "VOID"]:
                     self.db.update_combo_evaluation(
                         combo_id=c["id"],
                         status=final_status,
@@ -1893,20 +1905,39 @@ class WebDataExporter:
                         c.get("profile", ""), b365_comb_final, legs_evaluated, b365_combo_url
                     )
 
-                    if any_lost:
+                    has_lost = any(l["status"] == "LOST" for l in legs_evaluated)
+                    has_pending = any(l["status"] == "PENDING" for l in legs_evaluated)
+                    all_void = len(legs_evaluated) > 0 and all(l["status"] == "VOID" for l in legs_evaluated)
+                    all_won_or_void = len(legs_evaluated) > 0 and all(l["status"] in ("WON", "VOID") for l in legs_evaluated) and any(l["status"] == "WON" for l in legs_evaluated)
+
+                    if has_lost:
                         final_status = "LOST"
                         payout = 0.0
-                        profit = -stake
-                    elif all_finished:
+                        profit = -round(stake, 2)
+                    elif has_pending:
+                        final_status = "PENDING"
+                        payout = 0.0
+                        profit = 0.0
+                    elif all_void:
+                        final_status = "VOID"
+                        payout = round(stake, 2)
+                        profit = 0.0
+                    elif all_won_or_void:
                         final_status = "WON"
-                        payout = round(stake * boosted_odd, 2)
+                        raw_effective_odd = 1.0
+                        for l in legs_evaluated:
+                            if l["status"] == "WON":
+                                raw_effective_odd *= float(l.get("bookie_odd", 1.0))
+                            elif l["status"] == "VOID":
+                                raw_effective_odd *= 1.0
+                        payout = round(stake * raw_effective_odd, 2)
                         profit = round(payout - stake, 2)
                     else:
                         final_status = "PENDING"
-                        payout = round(stake * boosted_odd, 2)
-                        profit = round(payout - stake, 2)
+                        payout = 0.0
+                        profit = 0.0
 
-                    if final_status != c.get("status") and final_status in ["WON", "LOST"]:
+                    if final_status != c.get("status") and final_status in ["WON", "LOST", "VOID"]:
                         self.db.update_combo_evaluation(
                             combo_id=c["id"],
                             status=final_status,
