@@ -7,7 +7,7 @@
   "PREMIER": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-17",
-    "last_scraped_jornada": 7
+    "last_scraped_jornada": 8
   },
   "HYPERMOTION": {
     "last_predicted_jornada": 10,
@@ -22,7 +22,7 @@
   "BUNDESLIGA": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-19",
-    "last_scraped_jornada": 6
+    "last_scraped_jornada": 7
   },
   "LIGUE1": {
     "last_predicted_jornada": 7,
@@ -34,5 +34,5 @@
     "last_predicted_date": "2026-10-19",
     "last_scraped_jornada": 7
   },
-  "updated_at": "2026-10-25T12:05:07.729707"
+  "updated_at": "2026-10-25T17:10:10.691078"
 }
