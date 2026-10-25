@@ -1,377 +1,63 @@
 {
-  "count": 47,
+  "count": 6,
   "alerts": [
     {
-      "id": "LALIGA_rayovallecano_elchecf",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Rayo Vallecano vs Elche CF",
-      "home_team": "Rayo Vallecano",
-      "away_team": "Elche CF",
-      "date": "24.10.2026 12:00",
-      "jornada": 10,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Rayo Vallecano vs Elche CF."
-    },
-    {
-      "id": "LALIGA_racingdesantander_rcdespanyol",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Racing de Santander vs RCD Espanyol",
-      "home_team": "Racing de Santander",
-      "away_team": "RCD Espanyol",
-      "date": "24.10.2026 14:15",
-      "jornada": 10,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Racing de Santander vs RCD Espanyol."
-    },
-    {
-      "id": "LALIGA_valenciacf_villarrealcf",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Valencia CF vs Villarreal CF",
-      "home_team": "Valencia CF",
-      "away_team": "Villarreal CF",
-      "date": "24.10.2026 16:30",
-      "jornada": 10,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Valencia CF vs Villarreal CF."
-    },
-    {
-      "id": "LALIGA_atleticodemadrid_rcdeportivodelacoruna",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Atlético de Madrid vs RC Deportivo de La Coruña",
-      "home_team": "Atlético de Madrid",
-      "away_team": "RC Deportivo de La Coruña",
-      "date": "24.10.2026 19:00",
-      "jornada": 10,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Atlético de Madrid vs RC Deportivo de La Coruña."
-    },
-    {
-      "id": "LALIGA_athleticclub_getafecf",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Athletic Club vs Getafe CF",
-      "home_team": "Athletic Club",
-      "away_team": "Getafe CF",
-      "date": "25.10.2026 13:00",
-      "jornada": 10,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Athletic Club vs Getafe CF."
-    },
-    {
-      "id": "LALIGA_rcceltadevigo_realbetis",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "RC Celta de Vigo vs Real Betis",
-      "home_team": "RC Celta de Vigo",
-      "away_team": "Real Betis",
-      "date": "25.10.2026 15:15",
-      "jornada": 10,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit RC Celta de Vigo vs Real Betis."
-    },
-    {
-      "id": "LALIGA_realsociedad_levanteud",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Real Sociedad vs Levante UD",
-      "home_team": "Real Sociedad",
-      "away_team": "Levante UD",
-      "date": "25.10.2026 17:30",
-      "jornada": 10,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Real Sociedad vs Levante UD."
-    },
-    {
-      "id": "sec_LALIGA_fcbarcelona_realmadrid",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "FC Barcelona vs Real Madrid",
-      "home_team": "FC Barcelona",
-      "away_team": "Real Madrid",
-      "date": "25.10.2026 20:00",
-      "jornada": 10,
+      "id": "sec_CHAMPIONSHIP_boltonwanderers_bristolcity",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Bolton Wanderers vs Bristol City",
+      "home_team": "Bolton Wanderers",
+      "away_team": "Bristol City",
+      "date": "31.10.2026 16:00",
+      "jornada": 13,
       "alert_type": "MISSING_SECONDARY_MARKET",
       "missing_markets": [
         "Over/Under 2.5",
         "BTTS (Ambdós Marquen)"
       ],
+      "market_reasons": [
+        "Over/Under 2.5 (absent)",
+        "BTTS (absent)"
+      ],
       "missing_bookmakers": [
-        "Bet365 (Over/Under 2.5, BTTS (Ambdós Marquen))"
+        "Bet365 (Over/Under 2.5 (absent), BTTS (absent))"
       ],
       "severity": "info",
-      "message": "Bet365 no ofereix línia oberta de Over/Under 2.5, BTTS (Ambdós Marquen) per a FC Barcelona vs Real Madrid."
+      "message": "Bet365 mercats secundaris no vàlids per a Bolton Wanderers vs Bristol City: Over/Under 2.5 (absent), BTTS (absent)."
     },
     {
-      "id": "LALIGA_sevillafc_caosasuna",
-      "competition_id": "LALIGA",
-      "competition_name": "LaLiga EA Sports",
-      "matchup": "Sevilla FC vs CA Osasuna",
-      "home_team": "Sevilla FC",
-      "away_team": "CA Osasuna",
-      "date": "26.10.2026 20:00",
-      "jornada": 10,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Sevilla FC vs CA Osasuna."
-    },
-    {
-      "id": "HYPERMOTION_cordobacf_sdeibar",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Córdoba CF vs SD Eibar",
-      "home_team": "Córdoba CF",
-      "away_team": "SD Eibar",
-      "date": "24.10.2026 12:00",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Córdoba CF vs SD Eibar."
-    },
-    {
-      "id": "HYPERMOTION_cdleganes_rcdmallorca",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "CD Leganés vs RCD Mallorca",
-      "home_team": "CD Leganés",
-      "away_team": "RCD Mallorca",
-      "date": "24.10.2026 14:15",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit CD Leganés vs RCD Mallorca."
-    },
-    {
-      "id": "HYPERMOTION_gironafc_celtadevigob",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Girona FC vs Celta de Vigo B",
-      "home_team": "Girona FC",
-      "away_team": "Celta de Vigo B",
-      "date": "24.10.2026 16:30",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Girona FC vs Celta de Vigo B."
-    },
-    {
-      "id": "HYPERMOTION_udlaspalmas_realsociedadb",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "UD Las Palmas vs Real Sociedad B",
-      "home_team": "UD Las Palmas",
-      "away_team": "Real Sociedad B",
-      "date": "24.10.2026 16:30",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit UD Las Palmas vs Real Sociedad B."
-    },
-    {
-      "id": "HYPERMOTION_udalmeria_realoviedo",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "UD Almería vs Real Oviedo",
-      "home_team": "UD Almería",
-      "away_team": "Real Oviedo",
-      "date": "24.10.2026 19:00",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit UD Almería vs Real Oviedo."
-    },
-    {
-      "id": "HYPERMOTION_cesabadell_cdtenerife",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "CE Sabadell vs CD Tenerife",
-      "home_team": "CE Sabadell",
-      "away_team": "CD Tenerife",
-      "date": "25.10.2026 13:00",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit CE Sabadell vs CD Tenerife."
-    },
-    {
-      "id": "HYPERMOTION_albacetebalompie_cdeldense",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Albacete Balompié vs CD Eldense",
-      "home_team": "Albacete Balompié",
-      "away_team": "CD Eldense",
-      "date": "25.10.2026 15:15",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Albacete Balompié vs CD Eldense."
-    },
-    {
-      "id": "HYPERMOTION_cadizcf_adceuta",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "Cádiz CF vs AD Ceuta",
-      "home_team": "Cádiz CF",
-      "away_team": "AD Ceuta",
-      "date": "25.10.2026 15:15",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Cádiz CF vs AD Ceuta."
-    },
-    {
-      "id": "HYPERMOTION_cdcastellon_realsporting",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "CD Castellón vs Real Sporting",
-      "home_team": "CD Castellón",
-      "away_team": "Real Sporting",
-      "date": "25.10.2026 17:30",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit CD Castellón vs Real Sporting."
-    },
-    {
-      "id": "HYPERMOTION_fcandorra_burgoscf",
-      "competition_id": "HYPERMOTION",
-      "competition_name": "LaLiga Hypermotion",
-      "matchup": "FC Andorra vs Burgos CF",
-      "home_team": "FC Andorra",
-      "away_team": "Burgos CF",
-      "date": "26.10.2026 19:30",
-      "jornada": 11,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit FC Andorra vs Burgos CF."
-    },
-    {
-      "id": "CHAMPIONSHIP_charltonathletic_norwichcity",
+      "id": "sec_CHAMPIONSHIP_burnley_portsmouth",
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
-      "matchup": "Charlton Athletic vs Norwich City",
-      "home_team": "Charlton Athletic",
-      "away_team": "Norwich City",
-      "date": "24.10.2026 11:30",
-      "jornada": 12,
+      "matchup": "Burnley vs Portsmouth",
+      "home_team": "Burnley",
+      "away_team": "Portsmouth",
+      "date": "31.10.2026 16:00",
+      "jornada": 13,
+      "alert_type": "MISSING_SECONDARY_MARKET",
+      "missing_markets": [
+        "Over/Under 2.5",
+        "BTTS (Ambdós Marquen)"
+      ],
+      "market_reasons": [
+        "Over/Under 2.5 (absent)",
+        "BTTS (absent)"
+      ],
+      "missing_bookmakers": [
+        "Bet365 (Over/Under 2.5 (absent), BTTS (absent))"
+      ],
+      "severity": "info",
+      "message": "Bet365 mercats secundaris no vàlids per a Burnley vs Portsmouth: Over/Under 2.5 (absent), BTTS (absent)."
+    },
+    {
+      "id": "CHAMPIONSHIP_middlesbrough_charltonathletic",
+      "competition_id": "CHAMPIONSHIP",
+      "competition_name": "EFL Championship",
+      "matchup": "Middlesbrough vs Charlton Athletic",
+      "home_team": "Middlesbrough",
+      "away_team": "Charlton Athletic",
+      "date": "31.10.2026 16:00",
+      "jornada": 13,
       "alert_type": "UNASSOCIATED_MATCH",
       "missing_winamax": false,
       "missing_bet365": true,
@@ -380,520 +66,79 @@
       "missing_bookmakers": [
         "Bet365"
       ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Charlton Athletic vs Norwich City."
+      "message": "Quotes 1X2 no detectades a Bet365 (partit no associat) per a Middlesbrough vs Charlton Athletic."
     },
     {
-      "id": "CHAMPIONSHIP_portsmouth_millwall",
+      "id": "sec_CHAMPIONSHIP_millwall_derbycounty",
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
-      "matchup": "Portsmouth vs Millwall",
-      "home_team": "Portsmouth",
-      "away_team": "Millwall",
-      "date": "24.10.2026 11:30",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Portsmouth vs Millwall."
-    },
-    {
-      "id": "CHAMPIONSHIP_sheffieldunited_derbycounty",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Sheffield United vs Derby County",
-      "home_team": "Sheffield United",
+      "matchup": "Millwall vs Derby County",
+      "home_team": "Millwall",
       "away_team": "Derby County",
-      "date": "24.10.2026 11:30",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
+      "date": "31.10.2026 16:00",
+      "jornada": 13,
+      "alert_type": "STALE_SECONDARY_MARKET",
+      "missing_markets": [
+        "Over/Under 2.5",
+        "BTTS (Ambdós Marquen)"
       ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Sheffield United vs Derby County."
+      "market_reasons": [
+        "Over/Under 2.5 (stale)",
+        "BTTS (stale)"
+      ],
+      "missing_bookmakers": [
+        "Bet365 (Over/Under 2.5 (stale), BTTS (stale))"
+      ],
+      "severity": "info",
+      "message": "Bet365 mercats secundaris no vàlids per a Millwall vs Derby County: Over/Under 2.5 (stale), BTTS (stale)."
     },
     {
-      "id": "CHAMPIONSHIP_blackburnrovers_wrexham",
+      "id": "sec_CHAMPIONSHIP_swanseacity_blackburnrovers",
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
-      "matchup": "Blackburn Rovers vs Wrexham",
-      "home_team": "Blackburn Rovers",
-      "away_team": "Wrexham",
-      "date": "24.10.2026 14:00",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
+      "matchup": "Swansea City vs Blackburn Rovers",
+      "home_team": "Swansea City",
+      "away_team": "Blackburn Rovers",
+      "date": "31.10.2026 16:00",
+      "jornada": 13,
+      "alert_type": "STALE_SECONDARY_MARKET",
+      "missing_markets": [
+        "Over/Under 2.5",
+        "BTTS (Ambdós Marquen)"
       ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Blackburn Rovers vs Wrexham."
+      "market_reasons": [
+        "Over/Under 2.5 (stale)",
+        "BTTS (stale)"
+      ],
+      "missing_bookmakers": [
+        "Bet365 (Over/Under 2.5 (stale), BTTS (stale))"
+      ],
+      "severity": "info",
+      "message": "Bet365 mercats secundaris no vàlids per a Swansea City vs Blackburn Rovers: Over/Under 2.5 (stale), BTTS (stale)."
     },
     {
-      "id": "CHAMPIONSHIP_cardiffcity_birminghamcity",
+      "id": "sec_CHAMPIONSHIP_westhamunited_westbromwichalbion",
       "competition_id": "CHAMPIONSHIP",
       "competition_name": "EFL Championship",
-      "matchup": "Cardiff City vs Birmingham City",
-      "home_team": "Cardiff City",
-      "away_team": "Birmingham City",
-      "date": "24.10.2026 14:00",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Cardiff City vs Birmingham City."
-    },
-    {
-      "id": "CHAMPIONSHIP_lincolncity_burnley",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Lincoln City vs Burnley",
-      "home_team": "Lincoln City",
-      "away_team": "Burnley",
-      "date": "24.10.2026 14:00",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Lincoln City vs Burnley."
-    },
-    {
-      "id": "CHAMPIONSHIP_prestonnorthend_westbromwichalbion",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Preston North End vs West Bromwich Albion",
-      "home_team": "Preston North End",
-      "away_team": "West Bromwich Albion",
-      "date": "24.10.2026 14:00",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Preston North End vs West Bromwich Albion."
-    },
-    {
-      "id": "CHAMPIONSHIP_queensparkrangers_swanseacity",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Queens Park Rangers vs Swansea City",
-      "home_team": "Queens Park Rangers",
-      "away_team": "Swansea City",
-      "date": "24.10.2026 14:00",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Queens Park Rangers vs Swansea City."
-    },
-    {
-      "id": "CHAMPIONSHIP_stokecity_bristolcity",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Stoke City vs Bristol City",
-      "home_team": "Stoke City",
-      "away_team": "Bristol City",
-      "date": "24.10.2026 14:00",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Stoke City vs Bristol City."
-    },
-    {
-      "id": "CHAMPIONSHIP_westhamunited_southampton",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "West Ham United vs Southampton",
+      "matchup": "West Ham United vs West Bromwich Albion",
       "home_team": "West Ham United",
-      "away_team": "Southampton",
-      "date": "24.10.2026 14:00",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
+      "away_team": "West Bromwich Albion",
+      "date": "31.10.2026 16:00",
+      "jornada": 13,
+      "alert_type": "STALE_SECONDARY_MARKET",
+      "missing_markets": [
+        "Over/Under 2.5",
+        "BTTS (Ambdós Marquen)"
       ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit West Ham United vs Southampton."
-    },
-    {
-      "id": "CHAMPIONSHIP_wolverhamptonwanderers_watford",
-      "competition_id": "CHAMPIONSHIP",
-      "competition_name": "EFL Championship",
-      "matchup": "Wolverhampton Wanderers vs Watford",
-      "home_team": "Wolverhampton Wanderers",
-      "away_team": "Watford",
-      "date": "24.10.2026 14:00",
-      "jornada": 12,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
+      "market_reasons": [
+        "Over/Under 2.5 (stale)",
+        "BTTS (stale)"
       ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Wolverhampton Wanderers vs Watford."
-    },
-    {
-      "id": "BUNDESLIGA_fcaugsburgo_1fcunionberlin",
-      "competition_id": "BUNDESLIGA",
-      "competition_name": "Bundesliga",
-      "matchup": "FC Augsburgo vs 1. FC Union Berlin",
-      "home_team": "FC Augsburgo",
-      "away_team": "1. FC Union Berlin",
-      "date": "24.10.2026 13:30",
-      "jornada": 7,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
       "missing_bookmakers": [
-        "Bet365"
+        "Bet365 (Over/Under 2.5 (stale), BTTS (stale))"
       ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit FC Augsburgo vs 1. FC Union Berlin."
-    },
-    {
-      "id": "BUNDESLIGA_1fccolonia_fcschalke04",
-      "competition_id": "BUNDESLIGA",
-      "competition_name": "Bundesliga",
-      "matchup": "1. FC Colonia vs FC Schalke 04",
-      "home_team": "1. FC Colonia",
-      "away_team": "FC Schalke 04",
-      "date": "24.10.2026 13:30",
-      "jornada": 7,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit 1. FC Colonia vs FC Schalke 04."
-    },
-    {
-      "id": "BUNDESLIGA_1fsvmainz05_werderbremen",
-      "competition_id": "BUNDESLIGA",
-      "competition_name": "Bundesliga",
-      "matchup": "1. FSV Mainz 05 vs Werder Bremen",
-      "home_team": "1. FSV Mainz 05",
-      "away_team": "Werder Bremen",
-      "date": "24.10.2026 13:30",
-      "jornada": 7,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit 1. FSV Mainz 05 vs Werder Bremen."
-    },
-    {
-      "id": "BUNDESLIGA_scpaderborn07_hamburgersv",
-      "competition_id": "BUNDESLIGA",
-      "competition_name": "Bundesliga",
-      "matchup": "SC Paderborn 07 vs Hamburger SV",
-      "home_team": "SC Paderborn 07",
-      "away_team": "Hamburger SV",
-      "date": "24.10.2026 13:30",
-      "jornada": 7,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit SC Paderborn 07 vs Hamburger SV."
-    },
-    {
-      "id": "BUNDESLIGA_rbleipzig_svelversberg",
-      "competition_id": "BUNDESLIGA",
-      "competition_name": "Bundesliga",
-      "matchup": "RB Leipzig vs SV Elversberg",
-      "home_team": "RB Leipzig",
-      "away_team": "SV Elversberg",
-      "date": "24.10.2026 13:30",
-      "jornada": 7,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit RB Leipzig vs SV Elversberg."
-    },
-    {
-      "id": "BUNDESLIGA_borussiadortmund_eintrachtfrancfort",
-      "competition_id": "BUNDESLIGA",
-      "competition_name": "Bundesliga",
-      "matchup": "Borussia Dortmund vs Eintracht Fráncfort",
-      "home_team": "Borussia Dortmund",
-      "away_team": "Eintracht Fráncfort",
-      "date": "24.10.2026 16:30",
-      "jornada": 7,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Borussia Dortmund vs Eintracht Fráncfort."
-    },
-    {
-      "id": "BUNDESLIGA_tsghoffenheim_bayerleverkusen",
-      "competition_id": "BUNDESLIGA",
-      "competition_name": "Bundesliga",
-      "matchup": "TSG Hoffenheim vs Bayer Leverkusen",
-      "home_team": "TSG Hoffenheim",
-      "away_team": "Bayer Leverkusen",
-      "date": "25.10.2026 14:30",
-      "jornada": 7,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit TSG Hoffenheim vs Bayer Leverkusen."
-    },
-    {
-      "id": "BUNDESLIGA_scfriburgo_bayernmunich",
-      "competition_id": "BUNDESLIGA",
-      "competition_name": "Bundesliga",
-      "matchup": "SC Friburgo vs Bayern Múnich",
-      "home_team": "SC Friburgo",
-      "away_team": "Bayern Múnich",
-      "date": "25.10.2026 16:30",
-      "jornada": 7,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit SC Friburgo vs Bayern Múnich."
-    },
-    {
-      "id": "SERIEA_cagliaricalcio_bolognafc",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "Cagliari Calcio vs Bologna FC",
-      "home_team": "Cagliari Calcio",
-      "away_team": "Bologna FC",
-      "date": "24.10.2026 13:00",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Cagliari Calcio vs Bologna FC."
-    },
-    {
-      "id": "SERIEA_como1907_ussassuolo",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "Como 1907 vs US Sassuolo",
-      "home_team": "Como 1907",
-      "away_team": "US Sassuolo",
-      "date": "24.10.2026 13:00",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Como 1907 vs US Sassuolo."
-    },
-    {
-      "id": "SERIEA_sscnapoli_asroma",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "SSC Napoli vs AS Roma",
-      "home_team": "SSC Napoli",
-      "away_team": "AS Roma",
-      "date": "24.10.2026 16:00",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit SSC Napoli vs AS Roma."
-    },
-    {
-      "id": "SERIEA_sslazio_parmacalcio",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "SS Lazio vs Parma Calcio",
-      "home_team": "SS Lazio",
-      "away_team": "Parma Calcio",
-      "date": "24.10.2026 18:45",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit SS Lazio vs Parma Calcio."
-    },
-    {
-      "id": "SERIEA_interdemilan_acffiorentina",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "Inter de Milán vs ACF Fiorentina",
-      "home_team": "Inter de Milán",
-      "away_team": "ACF Fiorentina",
-      "date": "25.10.2026 11:30",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Inter de Milán vs ACF Fiorentina."
-    },
-    {
-      "id": "SERIEA_atalantabc_frosinonecalcio",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "Atalanta BC vs Frosinone Calcio",
-      "home_team": "Atalanta BC",
-      "away_team": "Frosinone Calcio",
-      "date": "25.10.2026 14:00",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Atalanta BC vs Frosinone Calcio."
-    },
-    {
-      "id": "SERIEA_genoacfc_veneziafc",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "Genoa CFC vs Venezia FC",
-      "home_team": "Genoa CFC",
-      "away_team": "Venezia FC",
-      "date": "25.10.2026 14:00",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Genoa CFC vs Venezia FC."
-    },
-    {
-      "id": "SERIEA_uslecce_juventusfc",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "US Lecce vs Juventus FC",
-      "home_team": "US Lecce",
-      "away_team": "Juventus FC",
-      "date": "25.10.2026 17:00",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit US Lecce vs Juventus FC."
-    },
-    {
-      "id": "SERIEA_udinesecalcio_acmilan",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "Udinese Calcio vs AC Milan",
-      "home_team": "Udinese Calcio",
-      "away_team": "AC Milan",
-      "date": "25.10.2026 19:45",
-      "jornada": 8,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 per al partit Udinese Calcio vs AC Milan."
+      "severity": "info",
+      "message": "Bet365 mercats secundaris no vàlids per a West Ham United vs West Bromwich Albion: Over/Under 2.5 (stale), BTTS (stale)."
     }
   ]
 }

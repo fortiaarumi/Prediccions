@@ -814,16 +814,19 @@ def test_moviodds_client_parsing_and_market_extraction():
     from scraper.moviodds_client import MoviOddsClient
     client = MoviOddsClient()
 
+    from datetime import datetime, timezone
+    now_utc_str = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
     fixture = {
         "id": 201587974,
         "home": "Barcelona",
         "away": "Real Madrid",
         "kickoff_utc": "2026-10-25T20:00:00Z",
-        "polled_at": "2026-10-23T22:00:00Z",
+        "polled_at": now_utc_str,
         "quotes": [
-            {"group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.62, "ts": "2026-10-23T20:21:17Z"},
-            {"group_name": "Full Time Result", "label": "Draw", "odds_dec": 5.75, "ts": "2026-10-23T20:21:17Z"},
-            {"group_name": "Full Time Result", "label": "Real Madrid", "odds_dec": 4.00, "ts": "2026-10-23T20:21:17Z"},
+            {"group_name": "Full Time Result", "label": "Barcelona", "odds_dec": 1.62, "ts": now_utc_str},
+            {"group_name": "Full Time Result", "label": "Draw", "odds_dec": 5.75, "ts": now_utc_str},
+            {"group_name": "Full Time Result", "label": "Real Madrid", "odds_dec": 4.00, "ts": now_utc_str},
             {"group_name": "Double Chance", "label": "Barcelona or Draw", "odds_dec": 1.18},
             {"group_name": "Goals Over/Under", "label": "Over", "line": "2.5", "odds_dec": 1.50},
             {"group_name": "Goals Over/Under", "label": "Under", "line": "2.5", "odds_dec": 2.60},
@@ -849,7 +852,7 @@ def test_moviodds_client_parsing_and_market_extraction():
     assert res["btts"]["No"] == 2.38
     assert "Asian Total Corners Over 10.5" in res["corners"]
     assert "Cards Lamine Yamal" in res["cards"]
-    assert res["ts"] == "2026-10-23T20:21:17Z"
+    assert res["ts"] == now_utc_str
 
 
 # -----------------------------------------------------------------------------

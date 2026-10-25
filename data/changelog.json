@@ -1,5 +1,187 @@
 [
   {
+    "date": "2026-10-25",
+    "timestamp": "2026-10-25T12:05:06.940208",
+    "title": "Actualització Diària del Model · 25/10/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ CTA & PGMOL: Confirmades designacions oficials amb impacte directe en 4 partit(s):",
+      "   • [LaLiga EA Sports J10] RC Celta de Vigo vs Real Betis: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Isidro Díaz de Mera Escuderos'",
+      "     └ Impacte model: Targetes >4.5: 49.1% ➔ 65.6% (+16.5%) | Vermella: 22.1% ➔ 27.4% (+5.3%) | Victòria Local: 32.1% ➔ 32.1% (+0.0%)",
+      "   • [LaLiga EA Sports J10] Real Sociedad vs Levante UD: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Javier Alberola Rojas'",
+      "     └ Impacte model: Targetes >4.5: 53.0% ➔ 36.5% (-16.5%) | Vermella: 22.1% ➔ 11.3% (-10.8%) | Victòria Local: 43.2% ➔ 43.2% (+0.0%)",
+      "   • [LaLiga EA Sports J10] FC Barcelona vs Real Madrid: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Juan Martínez Munuera'",
+      "     └ Impacte model: Targetes >4.5: 68.0% ➔ 66.9% (-1.1%) | Vermella: 27.7% ➔ 22.9% (-4.8%) | Victòria Local: 41.0% ➔ 41.0% (+0.0%)",
+      "   • [LaLiga Hypermotion J11] CD Castellón vs Real Sporting: De 'Pendent CTA / PGMOL (Àrbitre Mitjà Standard)' ➔ 'Etayo G.'",
+      "     └ Impacte model: Targetes >4.5: 47.8% ➔ 62.1% (+14.3%) | Vermella: 22.1% ➔ 25.9% (+3.8%) | Victòria Local: 29.1% ➔ 29.1% (+0.0%)"
+    ],
+    "matches": [],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": [
+      {
+        "match_id": "LALIGA_J10_CEL_BET",
+        "matchup": "RC Celta de Vigo vs Real Betis",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 10,
+        "date": "25.10.2026 16:15",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Isidro Díaz de Mera Escuderos",
+        "ref_stats": {
+          "yellow_avg": 5.3,
+          "red_avg": 0.32,
+          "fouls_avg": 27.2,
+          "strictness_index": 1.18
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 49.1,
+            "after": 65.6,
+            "delta": 16.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 27.4,
+            "delta": 5.3
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 27.2,
+            "delta": 2.7
+          },
+          "home_win_prob": {
+            "before": 32.1,
+            "after": 32.1,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Isidro Díaz de Mera Escuderos (índex severitat 1.18). Mitjana històrica de 5.3 grogues i 0.32 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "LALIGA_J10_RSO_LEV",
+        "matchup": "Real Sociedad vs Levante UD",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 10,
+        "date": "25.10.2026 18:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Javier Alberola Rojas",
+        "ref_stats": {
+          "yellow_avg": 3.6,
+          "red_avg": 0.12,
+          "fouls_avg": 21.0,
+          "strictness_index": 0.8
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 53.0,
+            "after": 36.5,
+            "delta": -16.5
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 11.3,
+            "delta": -10.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 21.0,
+            "delta": -3.5
+          },
+          "home_win_prob": {
+            "before": 43.2,
+            "after": 43.2,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Javier Alberola Rojas (índex severitat 0.8). Mitjana històrica de 3.6 grogues i 0.12 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "LALIGA_J10_FCB_RMA",
+        "matchup": "FC Barcelona vs Real Madrid",
+        "competition_id": "LALIGA",
+        "competition_name": "LaLiga EA Sports",
+        "jornada": 10,
+        "date": "25.10.2026 21:00",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Juan Martínez Munuera",
+        "ref_stats": {
+          "yellow_avg": 4.5,
+          "red_avg": 0.2,
+          "fouls_avg": 24.2,
+          "strictness_index": 0.98
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 68.0,
+            "after": 66.9,
+            "delta": -1.1
+          },
+          "red_card_prob": {
+            "before": 27.7,
+            "after": 22.9,
+            "delta": -4.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 24.2,
+            "delta": -0.3
+          },
+          "home_win_prob": {
+            "before": 41.0,
+            "after": 41.0,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Juan Martínez Munuera (índex severitat 0.98). Mitjana històrica de 4.5 grogues i 0.2 vermelles per partit."
+        }
+      },
+      {
+        "match_id": "HYPERMOTION_J11_CAS_SPG",
+        "matchup": "CD Castellón vs Real Sporting",
+        "competition_id": "HYPERMOTION",
+        "competition_name": "LaLiga Hypermotion",
+        "jornada": 11,
+        "date": "25.10.2026 18:30",
+        "prev_referee": "Pendent CTA / PGMOL (Àrbitre Mitjà Standard)",
+        "new_referee": "Etayo G.",
+        "ref_stats": {
+          "yellow_avg": 5.2,
+          "red_avg": 0.3,
+          "fouls_avg": 26.5,
+          "strictness_index": 1.15
+        },
+        "changes": {
+          "cards_over_45": {
+            "before": 47.8,
+            "after": 62.1,
+            "delta": 14.3
+          },
+          "red_card_prob": {
+            "before": 22.1,
+            "after": 25.9,
+            "delta": 3.8
+          },
+          "fouls_exp": {
+            "before": 24.5,
+            "after": 26.5,
+            "delta": 2.0
+          },
+          "home_win_prob": {
+            "before": 29.1,
+            "after": 29.1,
+            "delta": 0.0
+          },
+          "summary": "Designació oficial de Etayo G. (índex severitat 1.15). Mitjana històrica de 5.2 grogues i 0.3 vermelles per partit."
+        }
+      }
+    ]
+  },
+  {
     "date": "2026-10-24",
     "timestamp": "2026-10-24T12:59:19.375175",
     "title": "Actualització Diària del Model · 24/10/2026",
