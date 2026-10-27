@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-27T12:29:25.113902",
-    "formatted_date": "27/10/2026 a les 12:29",
+    "generated_at": "2026-10-27T18:48:44.867165",
+    "formatted_date": "27/10/2026 a les 18:48",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -67,7 +67,7 @@
   "changelog": [
     {
       "date": "2026-10-27",
-      "timestamp": "2026-10-27T12:29:52.537514",
+      "timestamp": "2026-10-27T18:49:12.984237",
       "title": "Actualització Diària del Model · 27/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -98,19 +98,19 @@
           "competition_id": "DAILY",
           "jornada": 0,
           "profile": "SEMI_1",
-          "odd": 12.81
+          "odd": 9.45
         },
         {
           "competition_id": "DAILY",
           "jornada": 0,
           "profile": "SEMI_2",
-          "odd": 11.26
+          "odd": 10.25
         },
         {
           "competition_id": "DAILY",
           "jornada": 0,
           "profile": "RISKY_1",
-          "odd": 71.6
+          "odd": 31.23
         }
       ],
       "referee_updates": []
@@ -45598,7 +45598,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-30T20:00:00Z",
-              "polled_at": "2026-10-27T12:28:49.93948524Z",
+              "polled_at": "2026-10-27T18:48:41.079247741Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -45606,7 +45606,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.93948524Z",
+                  "polled_at": "2026-10-27T18:48:41.079247741Z",
                   "ts": "2026-10-26T18:35:00.467302631Z"
                 },
                 "double_chance": {
@@ -45622,7 +45622,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:54.124646347Z",
+                  "polled_at": "2026-10-27T18:26:17.241620285Z",
                   "ts": "2026-10-24T19:10:46.196399805Z"
                 },
                 "btts": {
@@ -45630,7 +45630,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:54.124646347Z",
+                  "polled_at": "2026-10-27T18:26:17.241620285Z",
                   "ts": "2026-10-24T19:10:46.196399805Z"
                 },
                 "corners": {
@@ -45638,7 +45638,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:54.124646347Z",
+                  "polled_at": "2026-10-27T18:26:17.241620285Z",
                   "ts": "2026-10-24T19:10:46.196399805Z"
                 },
                 "cards": {
@@ -45987,7 +45987,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T12:30:00Z",
-              "polled_at": "2026-10-27T12:28:49.930260328Z",
+              "polled_at": "2026-10-27T18:48:41.077731238Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -45995,7 +45995,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.930260328Z",
+                  "polled_at": "2026-10-27T18:48:41.077731238Z",
                   "ts": "2026-10-26T18:35:00.673304772Z"
                 },
                 "double_chance": {
@@ -46011,7 +46011,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:55.871653048Z",
+                  "polled_at": "2026-10-27T18:26:19.016912467Z",
                   "ts": "2026-10-25T04:58:38.342941288Z"
                 },
                 "btts": {
@@ -46019,7 +46019,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:55.871653048Z",
+                  "polled_at": "2026-10-27T18:26:19.016912467Z",
                   "ts": "2026-10-26T00:13:37.462338171Z"
                 },
                 "corners": {
@@ -46027,7 +46027,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:55.871653048Z",
+                  "polled_at": "2026-10-27T18:26:19.016912467Z",
                   "ts": "2026-10-25T04:58:38.342941288Z"
                 },
                 "cards": {
@@ -46390,7 +46390,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T12:30:00Z",
-              "polled_at": "2026-10-27T12:28:53.250608051Z",
+              "polled_at": "2026-10-27T18:48:38.512532188Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -46398,14 +46398,14 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:53.250608051Z",
+                  "polled_at": "2026-10-27T18:48:38.512532188Z",
                   "ts": "2026-10-26T18:35:29.819946166Z"
                 },
                 "double_chance": {
                   "valid": false,
-                  "stale": false,
+                  "stale": true,
                   "suspended": false,
-                  "rejection_reason": "absent",
+                  "rejection_reason": "stale",
                   "polled_at": "2026-10-27T12:02:22.651310668Z",
                   "ts": "2026-10-26T23:02:44.034724514Z"
                 },
@@ -46414,7 +46414,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:02:22.651310668Z",
+                  "polled_at": "2026-10-27T18:33:10.949160733Z",
                   "ts": "2026-10-25T00:33:25.899840718Z"
                 },
                 "btts": {
@@ -46422,7 +46422,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:02:22.651310668Z",
+                  "polled_at": "2026-10-27T18:33:10.949160733Z",
                   "ts": "2026-10-26T13:07:36.260087783Z"
                 },
                 "corners": {
@@ -46430,7 +46430,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:02:22.651310668Z",
+                  "polled_at": "2026-10-27T18:33:10.949160733Z",
                   "ts": "2026-10-25T00:33:25.899840718Z"
                 },
                 "cards": {
@@ -46821,7 +46821,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T12:30:00Z",
-              "polled_at": "2026-10-27T12:28:49.938016291Z",
+              "polled_at": "2026-10-27T18:48:41.081704613Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -46829,15 +46829,15 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.938016291Z",
+                  "polled_at": "2026-10-27T18:48:41.081704613Z",
                   "ts": "2026-10-26T20:26:07.138513075Z"
                 },
                 "double_chance": {
                   "valid": false,
-                  "stale": true,
+                  "stale": false,
                   "suspended": false,
-                  "rejection_reason": "stale",
-                  "polled_at": "2026-10-27T07:56:07.149754951Z",
+                  "rejection_reason": "absent",
+                  "polled_at": "2026-10-27T17:56:29.788335084Z",
                   "ts": "2026-10-26T08:03:52.679893654Z"
                 },
                 "over_under_2_5": {
@@ -46845,7 +46845,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:57.905191162Z",
+                  "polled_at": "2026-10-27T18:26:20.776572526Z",
                   "ts": "2026-10-26T00:13:40.562674906Z"
                 },
                 "btts": {
@@ -46853,7 +46853,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:57.905191162Z",
+                  "polled_at": "2026-10-27T18:26:20.776572526Z",
                   "ts": "2026-10-25T00:28:06.672480385Z"
                 },
                 "corners": {
@@ -46861,7 +46861,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:57.905191162Z",
+                  "polled_at": "2026-10-27T18:26:20.776572526Z",
                   "ts": "2026-10-25T00:28:06.672480385Z"
                 },
                 "cards": {
@@ -47108,9 +47108,9 @@
               "2": 2.2
             },
             "odds_1x2_bet365": {
-              "1": 2.7,
+              "1": 2.8,
               "X": 3.3,
-              "2": 2.38
+              "2": 2.3
             },
             "odds_dc_winamax": {
               "1X": null,
@@ -47224,7 +47224,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T15:00:00Z",
-              "polled_at": "2026-10-27T12:28:49.940196781Z",
+              "polled_at": "2026-10-27T18:48:41.082218192Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -47232,8 +47232,8 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.940196781Z",
-                  "ts": "2026-10-26T18:35:00.872917576Z"
+                  "polled_at": "2026-10-27T18:48:41.082218192Z",
+                  "ts": "2026-10-27T17:50:49.271058305Z"
                 },
                 "double_chance": {
                   "valid": false,
@@ -47248,7 +47248,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:59.387297273Z",
+                  "polled_at": "2026-10-27T18:26:22.55830799Z",
                   "ts": "2026-10-26T00:13:43.603595872Z"
                 },
                 "btts": {
@@ -47256,7 +47256,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:59.387297273Z",
+                  "polled_at": "2026-10-27T18:26:22.55830799Z",
                   "ts": "2026-10-26T00:13:43.603595872Z"
                 },
                 "corners": {
@@ -47264,7 +47264,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:25:59.387297273Z",
+                  "polled_at": "2026-10-27T18:26:22.55830799Z",
                   "ts": "2026-10-25T18:28:06.589980839Z"
                 },
                 "cards": {
@@ -47277,9 +47277,9 @@
                 }
               },
               "1X2": {
-                "1": 2.7,
+                "1": 2.8,
                 "X": 3.3,
-                "2": 2.38
+                "2": 2.3
               },
               "double_chance": {},
               "over_under_2_5": {
@@ -47318,7 +47318,7 @@
                 "Corners Under 10": 2.25
               },
               "cards": {},
-              "ts": "2026-10-26T18:35:00.872917576Z"
+              "ts": "2026-10-27T17:50:49.271058305Z"
             },
             "has_winamax_odds": true,
             "has_bet365_odds": true,
@@ -47641,7 +47641,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T15:00:00Z",
-              "polled_at": "2026-10-27T12:28:49.940591768Z",
+              "polled_at": "2026-10-27T18:48:41.059288861Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -47649,7 +47649,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.940591768Z",
+                  "polled_at": "2026-10-27T18:48:41.059288861Z",
                   "ts": "2026-10-26T18:35:01.398372894Z"
                 },
                 "double_chance": {
@@ -47665,7 +47665,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:01.107645419Z",
+                  "polled_at": "2026-10-27T18:26:24.337269643Z",
                   "ts": "2026-10-26T06:33:54.528497302Z"
                 },
                 "btts": {
@@ -47673,7 +47673,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:01.107645419Z",
+                  "polled_at": "2026-10-27T18:26:24.337269643Z",
                   "ts": "2026-10-26T06:33:54.528497302Z"
                 },
                 "corners": {
@@ -47681,7 +47681,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:01.107645419Z",
+                  "polled_at": "2026-10-27T18:26:24.337269643Z",
                   "ts": "2026-10-25T18:28:09.61933492Z"
                 },
                 "cards": {
@@ -48058,7 +48058,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T15:00:00Z",
-              "polled_at": "2026-10-27T12:28:50.653802377Z",
+              "polled_at": "2026-10-27T18:48:22.86157575Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -48066,15 +48066,15 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:50.653802377Z",
+                  "polled_at": "2026-10-27T18:48:22.86157575Z",
                   "ts": "2026-10-26T20:08:57.601982823Z"
                 },
                 "double_chance": {
                   "valid": false,
-                  "stale": false,
+                  "stale": true,
                   "suspended": false,
-                  "rejection_reason": "absent",
-                  "polled_at": "2026-10-27T12:08:17.840813326Z",
+                  "rejection_reason": "stale",
+                  "polled_at": "2026-10-27T13:08:19.368416911Z",
                   "ts": "2026-10-26T02:24:51.478711435Z"
                 },
                 "over_under_2_5": {
@@ -48082,7 +48082,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:08:17.840813326Z",
+                  "polled_at": "2026-10-27T18:08:36.935863407Z",
                   "ts": "2026-10-26T00:24:45.151075134Z"
                 },
                 "btts": {
@@ -48090,7 +48090,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:08:17.840813326Z",
+                  "polled_at": "2026-10-27T18:08:36.935863407Z",
                   "ts": "2026-10-26T00:24:45.151075134Z"
                 },
                 "corners": {
@@ -48098,7 +48098,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:08:17.840813326Z",
+                  "polled_at": "2026-10-27T18:08:36.935863407Z",
                   "ts": "2026-10-25T17:40:47.535317678Z"
                 },
                 "cards": {
@@ -48461,7 +48461,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T15:00:00Z",
-              "polled_at": "2026-10-27T12:28:49.938386021Z",
+              "polled_at": "2026-10-27T18:48:41.081258523Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -48469,7 +48469,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.938386021Z",
+                  "polled_at": "2026-10-27T18:48:41.081258523Z",
                   "ts": "2026-10-26T20:26:13.804328714Z"
                 },
                 "double_chance": {
@@ -48477,7 +48477,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "absent",
-                  "polled_at": "2026-10-27T12:26:03.299723707Z",
+                  "polled_at": "2026-10-27T17:56:35.074123866Z",
                   "ts": "2026-10-26T06:33:57.278373623Z"
                 },
                 "over_under_2_5": {
@@ -48485,7 +48485,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:03.299723707Z",
+                  "polled_at": "2026-10-27T18:26:26.123952398Z",
                   "ts": "2026-10-24T19:39:49.719846043Z"
                 },
                 "btts": {
@@ -48493,7 +48493,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:03.299723707Z",
+                  "polled_at": "2026-10-27T18:26:26.123952398Z",
                   "ts": "2026-10-26T00:43:56.462398576Z"
                 },
                 "corners": {
@@ -48501,7 +48501,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:03.299723707Z",
+                  "polled_at": "2026-10-27T18:26:26.123952398Z",
                   "ts": "2026-10-24T19:39:49.719846043Z"
                 },
                 "cards": {
@@ -48864,7 +48864,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T15:00:00Z",
-              "polled_at": "2026-10-27T12:28:49.93269478Z",
+              "polled_at": "2026-10-27T18:48:41.072673626Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -48872,15 +48872,15 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.93269478Z",
+                  "polled_at": "2026-10-27T18:48:41.072673626Z",
                   "ts": "2026-10-26T18:35:01.714412582Z"
                 },
                 "double_chance": {
                   "valid": false,
-                  "stale": false,
+                  "stale": true,
                   "suspended": false,
-                  "rejection_reason": "absent",
-                  "polled_at": "2026-10-27T12:26:04.782034611Z",
+                  "rejection_reason": "stale",
+                  "polled_at": "2026-10-27T12:56:07.540194837Z",
                   "ts": "2026-10-26T07:04:01.604485849Z"
                 },
                 "over_under_2_5": {
@@ -48888,7 +48888,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:04.782034611Z",
+                  "polled_at": "2026-10-27T18:26:27.861494909Z",
                   "ts": "2026-10-26T03:34:11.566071091Z"
                 },
                 "btts": {
@@ -48896,7 +48896,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:04.782034611Z",
+                  "polled_at": "2026-10-27T18:26:27.861494909Z",
                   "ts": "2026-10-26T03:34:11.566071091Z"
                 },
                 "corners": {
@@ -48904,7 +48904,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:04.782034611Z",
+                  "polled_at": "2026-10-27T18:26:27.861494909Z",
                   "ts": "2026-10-24T19:39:53.413000089Z"
                 },
                 "cards": {
@@ -49295,7 +49295,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T15:00:00Z",
-              "polled_at": "2026-10-27T12:28:49.935132804Z",
+              "polled_at": "2026-10-27T18:48:41.079857039Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -49303,15 +49303,15 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.935132804Z",
+                  "polled_at": "2026-10-27T18:48:41.079857039Z",
                   "ts": "2026-10-26T22:25:39.324484941Z"
                 },
                 "double_chance": {
                   "valid": false,
-                  "stale": false,
+                  "stale": true,
                   "suspended": false,
-                  "rejection_reason": "absent",
-                  "polled_at": "2026-10-27T12:26:07.00640982Z",
+                  "rejection_reason": "stale",
+                  "polled_at": "2026-10-27T12:56:09.039935155Z",
                   "ts": "2026-10-26T22:25:39.126115068Z"
                 },
                 "over_under_2_5": {
@@ -49319,7 +49319,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:07.00640982Z",
+                  "polled_at": "2026-10-27T18:26:29.684102141Z",
                   "ts": "2026-10-26T06:34:03.27883322Z"
                 },
                 "btts": {
@@ -49327,7 +49327,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:07.00640982Z",
+                  "polled_at": "2026-10-27T18:26:29.684102141Z",
                   "ts": "2026-10-26T06:34:03.27883322Z"
                 },
                 "corners": {
@@ -49335,7 +49335,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:07.00640982Z",
+                  "polled_at": "2026-10-27T18:26:29.684102141Z",
                   "ts": "2026-10-24T19:39:57.11091918Z"
                 },
                 "cards": {
@@ -49617,8 +49617,8 @@
               "no": null
             },
             "odds_btts_bet365": {
-              "yes": 1.73,
-              "no": 2.0
+              "yes": 1.67,
+              "no": 2.1
             },
             "odds_corners_winamax": {},
             "odds_corners_bet365": {
@@ -49698,7 +49698,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T15:00:00Z",
-              "polled_at": "2026-10-27T12:28:53.251436057Z",
+              "polled_at": "2026-10-27T18:48:38.511927639Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -49706,7 +49706,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:53.251436057Z",
+                  "polled_at": "2026-10-27T18:48:38.511927639Z",
                   "ts": "2026-10-27T09:25:45.469789496Z"
                 },
                 "double_chance": {
@@ -49722,7 +49722,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:02:23.601733967Z",
+                  "polled_at": "2026-10-27T18:33:12.873129579Z",
                   "ts": "2026-10-24T19:45:40.469915181Z"
                 },
                 "btts": {
@@ -49730,15 +49730,15 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:02:23.601733967Z",
-                  "ts": "2026-10-24T19:45:40.469915181Z"
+                  "polled_at": "2026-10-27T18:33:12.873129579Z",
+                  "ts": "2026-10-27T12:32:30.019173507Z"
                 },
                 "corners": {
                   "valid": true,
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:02:23.601733967Z",
+                  "polled_at": "2026-10-27T18:33:12.873129579Z",
                   "ts": "2026-10-24T19:45:40.469915181Z"
                 },
                 "cards": {
@@ -49763,10 +49763,10 @@
                 "under": 2.3
               },
               "btts": {
-                "Sí": 1.73,
-                "yes": 1.73,
-                "No": 2.0,
-                "no": 2.0
+                "Sí": 1.67,
+                "yes": 1.67,
+                "No": 2.1,
+                "no": 2.1
               },
               "corners": {
                 "Alternative Corners Over 2": 1.0,
@@ -50115,7 +50115,7 @@
               "is_manual_override": false,
               "provenance": "BET365_MOVIODDS",
               "kickoff_utc": "2026-10-31T15:00:00Z",
-              "polled_at": "2026-10-27T12:28:49.933802892Z",
+              "polled_at": "2026-10-27T18:48:41.078555215Z",
               "is_stale": false,
               "market_status": {
                 "1X2": {
@@ -50123,7 +50123,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:28:49.933802892Z",
+                  "polled_at": "2026-10-27T18:48:41.078555215Z",
                   "ts": "2026-10-26T20:26:19.145177631Z"
                 },
                 "double_chance": {
@@ -50139,7 +50139,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:09.127034138Z",
+                  "polled_at": "2026-10-27T18:26:31.431412799Z",
                   "ts": "2026-10-26T20:26:19.145177631Z"
                 },
                 "btts": {
@@ -50147,7 +50147,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:09.127034138Z",
+                  "polled_at": "2026-10-27T18:26:31.431412799Z",
                   "ts": "2026-10-25T22:29:34.424477621Z"
                 },
                 "corners": {
@@ -50155,7 +50155,7 @@
                   "stale": false,
                   "suspended": false,
                   "rejection_reason": "ok",
-                  "polled_at": "2026-10-27T12:26:09.127034138Z",
+                  "polled_at": "2026-10-27T18:26:31.431412799Z",
                   "ts": "2026-10-24T22:37:41.303482229Z"
                 },
                 "cards": {
@@ -50549,7 +50549,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-30T20:00:00Z",
-            "polled_at": "2026-10-27T12:28:49.93948524Z",
+            "polled_at": "2026-10-27T18:48:41.079247741Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -50557,7 +50557,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.93948524Z",
+                "polled_at": "2026-10-27T18:48:41.079247741Z",
                 "ts": "2026-10-26T18:35:00.467302631Z"
               },
               "double_chance": {
@@ -50573,7 +50573,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:54.124646347Z",
+                "polled_at": "2026-10-27T18:26:17.241620285Z",
                 "ts": "2026-10-24T19:10:46.196399805Z"
               },
               "btts": {
@@ -50581,7 +50581,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:54.124646347Z",
+                "polled_at": "2026-10-27T18:26:17.241620285Z",
                 "ts": "2026-10-24T19:10:46.196399805Z"
               },
               "corners": {
@@ -50589,7 +50589,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:54.124646347Z",
+                "polled_at": "2026-10-27T18:26:17.241620285Z",
                 "ts": "2026-10-24T19:10:46.196399805Z"
               },
               "cards": {
@@ -50938,7 +50938,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T12:30:00Z",
-            "polled_at": "2026-10-27T12:28:49.930260328Z",
+            "polled_at": "2026-10-27T18:48:41.077731238Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -50946,7 +50946,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.930260328Z",
+                "polled_at": "2026-10-27T18:48:41.077731238Z",
                 "ts": "2026-10-26T18:35:00.673304772Z"
               },
               "double_chance": {
@@ -50962,7 +50962,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:55.871653048Z",
+                "polled_at": "2026-10-27T18:26:19.016912467Z",
                 "ts": "2026-10-25T04:58:38.342941288Z"
               },
               "btts": {
@@ -50970,7 +50970,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:55.871653048Z",
+                "polled_at": "2026-10-27T18:26:19.016912467Z",
                 "ts": "2026-10-26T00:13:37.462338171Z"
               },
               "corners": {
@@ -50978,7 +50978,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:55.871653048Z",
+                "polled_at": "2026-10-27T18:26:19.016912467Z",
                 "ts": "2026-10-25T04:58:38.342941288Z"
               },
               "cards": {
@@ -51341,7 +51341,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T12:30:00Z",
-            "polled_at": "2026-10-27T12:28:53.250608051Z",
+            "polled_at": "2026-10-27T18:48:38.512532188Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -51349,14 +51349,14 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:53.250608051Z",
+                "polled_at": "2026-10-27T18:48:38.512532188Z",
                 "ts": "2026-10-26T18:35:29.819946166Z"
               },
               "double_chance": {
                 "valid": false,
-                "stale": false,
+                "stale": true,
                 "suspended": false,
-                "rejection_reason": "absent",
+                "rejection_reason": "stale",
                 "polled_at": "2026-10-27T12:02:22.651310668Z",
                 "ts": "2026-10-26T23:02:44.034724514Z"
               },
@@ -51365,7 +51365,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:02:22.651310668Z",
+                "polled_at": "2026-10-27T18:33:10.949160733Z",
                 "ts": "2026-10-25T00:33:25.899840718Z"
               },
               "btts": {
@@ -51373,7 +51373,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:02:22.651310668Z",
+                "polled_at": "2026-10-27T18:33:10.949160733Z",
                 "ts": "2026-10-26T13:07:36.260087783Z"
               },
               "corners": {
@@ -51381,7 +51381,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:02:22.651310668Z",
+                "polled_at": "2026-10-27T18:33:10.949160733Z",
                 "ts": "2026-10-25T00:33:25.899840718Z"
               },
               "cards": {
@@ -51772,7 +51772,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T12:30:00Z",
-            "polled_at": "2026-10-27T12:28:49.938016291Z",
+            "polled_at": "2026-10-27T18:48:41.081704613Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -51780,15 +51780,15 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.938016291Z",
+                "polled_at": "2026-10-27T18:48:41.081704613Z",
                 "ts": "2026-10-26T20:26:07.138513075Z"
               },
               "double_chance": {
                 "valid": false,
-                "stale": true,
+                "stale": false,
                 "suspended": false,
-                "rejection_reason": "stale",
-                "polled_at": "2026-10-27T07:56:07.149754951Z",
+                "rejection_reason": "absent",
+                "polled_at": "2026-10-27T17:56:29.788335084Z",
                 "ts": "2026-10-26T08:03:52.679893654Z"
               },
               "over_under_2_5": {
@@ -51796,7 +51796,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:57.905191162Z",
+                "polled_at": "2026-10-27T18:26:20.776572526Z",
                 "ts": "2026-10-26T00:13:40.562674906Z"
               },
               "btts": {
@@ -51804,7 +51804,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:57.905191162Z",
+                "polled_at": "2026-10-27T18:26:20.776572526Z",
                 "ts": "2026-10-25T00:28:06.672480385Z"
               },
               "corners": {
@@ -51812,7 +51812,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:57.905191162Z",
+                "polled_at": "2026-10-27T18:26:20.776572526Z",
                 "ts": "2026-10-25T00:28:06.672480385Z"
               },
               "cards": {
@@ -52059,9 +52059,9 @@
             "2": 2.2
           },
           "odds_1x2_bet365": {
-            "1": 2.7,
+            "1": 2.8,
             "X": 3.3,
-            "2": 2.38
+            "2": 2.3
           },
           "odds_dc_winamax": {
             "1X": null,
@@ -52175,7 +52175,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T15:00:00Z",
-            "polled_at": "2026-10-27T12:28:49.940196781Z",
+            "polled_at": "2026-10-27T18:48:41.082218192Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -52183,8 +52183,8 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.940196781Z",
-                "ts": "2026-10-26T18:35:00.872917576Z"
+                "polled_at": "2026-10-27T18:48:41.082218192Z",
+                "ts": "2026-10-27T17:50:49.271058305Z"
               },
               "double_chance": {
                 "valid": false,
@@ -52199,7 +52199,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:59.387297273Z",
+                "polled_at": "2026-10-27T18:26:22.55830799Z",
                 "ts": "2026-10-26T00:13:43.603595872Z"
               },
               "btts": {
@@ -52207,7 +52207,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:59.387297273Z",
+                "polled_at": "2026-10-27T18:26:22.55830799Z",
                 "ts": "2026-10-26T00:13:43.603595872Z"
               },
               "corners": {
@@ -52215,7 +52215,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:25:59.387297273Z",
+                "polled_at": "2026-10-27T18:26:22.55830799Z",
                 "ts": "2026-10-25T18:28:06.589980839Z"
               },
               "cards": {
@@ -52228,9 +52228,9 @@
               }
             },
             "1X2": {
-              "1": 2.7,
+              "1": 2.8,
               "X": 3.3,
-              "2": 2.38
+              "2": 2.3
             },
             "double_chance": {},
             "over_under_2_5": {
@@ -52269,7 +52269,7 @@
               "Corners Under 10": 2.25
             },
             "cards": {},
-            "ts": "2026-10-26T18:35:00.872917576Z"
+            "ts": "2026-10-27T17:50:49.271058305Z"
           },
           "has_winamax_odds": true,
           "has_bet365_odds": true,
@@ -52592,7 +52592,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T15:00:00Z",
-            "polled_at": "2026-10-27T12:28:49.940591768Z",
+            "polled_at": "2026-10-27T18:48:41.059288861Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -52600,7 +52600,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.940591768Z",
+                "polled_at": "2026-10-27T18:48:41.059288861Z",
                 "ts": "2026-10-26T18:35:01.398372894Z"
               },
               "double_chance": {
@@ -52616,7 +52616,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:01.107645419Z",
+                "polled_at": "2026-10-27T18:26:24.337269643Z",
                 "ts": "2026-10-26T06:33:54.528497302Z"
               },
               "btts": {
@@ -52624,7 +52624,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:01.107645419Z",
+                "polled_at": "2026-10-27T18:26:24.337269643Z",
                 "ts": "2026-10-26T06:33:54.528497302Z"
               },
               "corners": {
@@ -52632,7 +52632,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:01.107645419Z",
+                "polled_at": "2026-10-27T18:26:24.337269643Z",
                 "ts": "2026-10-25T18:28:09.61933492Z"
               },
               "cards": {
@@ -53009,7 +53009,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T15:00:00Z",
-            "polled_at": "2026-10-27T12:28:50.653802377Z",
+            "polled_at": "2026-10-27T18:48:22.86157575Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -53017,15 +53017,15 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:50.653802377Z",
+                "polled_at": "2026-10-27T18:48:22.86157575Z",
                 "ts": "2026-10-26T20:08:57.601982823Z"
               },
               "double_chance": {
                 "valid": false,
-                "stale": false,
+                "stale": true,
                 "suspended": false,
-                "rejection_reason": "absent",
-                "polled_at": "2026-10-27T12:08:17.840813326Z",
+                "rejection_reason": "stale",
+                "polled_at": "2026-10-27T13:08:19.368416911Z",
                 "ts": "2026-10-26T02:24:51.478711435Z"
               },
               "over_under_2_5": {
@@ -53033,7 +53033,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:08:17.840813326Z",
+                "polled_at": "2026-10-27T18:08:36.935863407Z",
                 "ts": "2026-10-26T00:24:45.151075134Z"
               },
               "btts": {
@@ -53041,7 +53041,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:08:17.840813326Z",
+                "polled_at": "2026-10-27T18:08:36.935863407Z",
                 "ts": "2026-10-26T00:24:45.151075134Z"
               },
               "corners": {
@@ -53049,7 +53049,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:08:17.840813326Z",
+                "polled_at": "2026-10-27T18:08:36.935863407Z",
                 "ts": "2026-10-25T17:40:47.535317678Z"
               },
               "cards": {
@@ -53412,7 +53412,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T15:00:00Z",
-            "polled_at": "2026-10-27T12:28:49.938386021Z",
+            "polled_at": "2026-10-27T18:48:41.081258523Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -53420,7 +53420,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.938386021Z",
+                "polled_at": "2026-10-27T18:48:41.081258523Z",
                 "ts": "2026-10-26T20:26:13.804328714Z"
               },
               "double_chance": {
@@ -53428,7 +53428,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "absent",
-                "polled_at": "2026-10-27T12:26:03.299723707Z",
+                "polled_at": "2026-10-27T17:56:35.074123866Z",
                 "ts": "2026-10-26T06:33:57.278373623Z"
               },
               "over_under_2_5": {
@@ -53436,7 +53436,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:03.299723707Z",
+                "polled_at": "2026-10-27T18:26:26.123952398Z",
                 "ts": "2026-10-24T19:39:49.719846043Z"
               },
               "btts": {
@@ -53444,7 +53444,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:03.299723707Z",
+                "polled_at": "2026-10-27T18:26:26.123952398Z",
                 "ts": "2026-10-26T00:43:56.462398576Z"
               },
               "corners": {
@@ -53452,7 +53452,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:03.299723707Z",
+                "polled_at": "2026-10-27T18:26:26.123952398Z",
                 "ts": "2026-10-24T19:39:49.719846043Z"
               },
               "cards": {
@@ -53815,7 +53815,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T15:00:00Z",
-            "polled_at": "2026-10-27T12:28:49.93269478Z",
+            "polled_at": "2026-10-27T18:48:41.072673626Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -53823,15 +53823,15 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.93269478Z",
+                "polled_at": "2026-10-27T18:48:41.072673626Z",
                 "ts": "2026-10-26T18:35:01.714412582Z"
               },
               "double_chance": {
                 "valid": false,
-                "stale": false,
+                "stale": true,
                 "suspended": false,
-                "rejection_reason": "absent",
-                "polled_at": "2026-10-27T12:26:04.782034611Z",
+                "rejection_reason": "stale",
+                "polled_at": "2026-10-27T12:56:07.540194837Z",
                 "ts": "2026-10-26T07:04:01.604485849Z"
               },
               "over_under_2_5": {
@@ -53839,7 +53839,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:04.782034611Z",
+                "polled_at": "2026-10-27T18:26:27.861494909Z",
                 "ts": "2026-10-26T03:34:11.566071091Z"
               },
               "btts": {
@@ -53847,7 +53847,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:04.782034611Z",
+                "polled_at": "2026-10-27T18:26:27.861494909Z",
                 "ts": "2026-10-26T03:34:11.566071091Z"
               },
               "corners": {
@@ -53855,7 +53855,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:04.782034611Z",
+                "polled_at": "2026-10-27T18:26:27.861494909Z",
                 "ts": "2026-10-24T19:39:53.413000089Z"
               },
               "cards": {
@@ -54246,7 +54246,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T15:00:00Z",
-            "polled_at": "2026-10-27T12:28:49.935132804Z",
+            "polled_at": "2026-10-27T18:48:41.079857039Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -54254,15 +54254,15 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.935132804Z",
+                "polled_at": "2026-10-27T18:48:41.079857039Z",
                 "ts": "2026-10-26T22:25:39.324484941Z"
               },
               "double_chance": {
                 "valid": false,
-                "stale": false,
+                "stale": true,
                 "suspended": false,
-                "rejection_reason": "absent",
-                "polled_at": "2026-10-27T12:26:07.00640982Z",
+                "rejection_reason": "stale",
+                "polled_at": "2026-10-27T12:56:09.039935155Z",
                 "ts": "2026-10-26T22:25:39.126115068Z"
               },
               "over_under_2_5": {
@@ -54270,7 +54270,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:07.00640982Z",
+                "polled_at": "2026-10-27T18:26:29.684102141Z",
                 "ts": "2026-10-26T06:34:03.27883322Z"
               },
               "btts": {
@@ -54278,7 +54278,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:07.00640982Z",
+                "polled_at": "2026-10-27T18:26:29.684102141Z",
                 "ts": "2026-10-26T06:34:03.27883322Z"
               },
               "corners": {
@@ -54286,7 +54286,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:07.00640982Z",
+                "polled_at": "2026-10-27T18:26:29.684102141Z",
                 "ts": "2026-10-24T19:39:57.11091918Z"
               },
               "cards": {
@@ -54568,8 +54568,8 @@
             "no": null
           },
           "odds_btts_bet365": {
-            "yes": 1.73,
-            "no": 2.0
+            "yes": 1.67,
+            "no": 2.1
           },
           "odds_corners_winamax": {},
           "odds_corners_bet365": {
@@ -54649,7 +54649,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T15:00:00Z",
-            "polled_at": "2026-10-27T12:28:53.251436057Z",
+            "polled_at": "2026-10-27T18:48:38.511927639Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -54657,7 +54657,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:53.251436057Z",
+                "polled_at": "2026-10-27T18:48:38.511927639Z",
                 "ts": "2026-10-27T09:25:45.469789496Z"
               },
               "double_chance": {
@@ -54673,7 +54673,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:02:23.601733967Z",
+                "polled_at": "2026-10-27T18:33:12.873129579Z",
                 "ts": "2026-10-24T19:45:40.469915181Z"
               },
               "btts": {
@@ -54681,15 +54681,15 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:02:23.601733967Z",
-                "ts": "2026-10-24T19:45:40.469915181Z"
+                "polled_at": "2026-10-27T18:33:12.873129579Z",
+                "ts": "2026-10-27T12:32:30.019173507Z"
               },
               "corners": {
                 "valid": true,
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:02:23.601733967Z",
+                "polled_at": "2026-10-27T18:33:12.873129579Z",
                 "ts": "2026-10-24T19:45:40.469915181Z"
               },
               "cards": {
@@ -54714,10 +54714,10 @@
               "under": 2.3
             },
             "btts": {
-              "Sí": 1.73,
-              "yes": 1.73,
-              "No": 2.0,
-              "no": 2.0
+              "Sí": 1.67,
+              "yes": 1.67,
+              "No": 2.1,
+              "no": 2.1
             },
             "corners": {
               "Alternative Corners Over 2": 1.0,
@@ -55066,7 +55066,7 @@
             "is_manual_override": false,
             "provenance": "BET365_MOVIODDS",
             "kickoff_utc": "2026-10-31T15:00:00Z",
-            "polled_at": "2026-10-27T12:28:49.933802892Z",
+            "polled_at": "2026-10-27T18:48:41.078555215Z",
             "is_stale": false,
             "market_status": {
               "1X2": {
@@ -55074,7 +55074,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:28:49.933802892Z",
+                "polled_at": "2026-10-27T18:48:41.078555215Z",
                 "ts": "2026-10-26T20:26:19.145177631Z"
               },
               "double_chance": {
@@ -55090,7 +55090,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:09.127034138Z",
+                "polled_at": "2026-10-27T18:26:31.431412799Z",
                 "ts": "2026-10-26T20:26:19.145177631Z"
               },
               "btts": {
@@ -55098,7 +55098,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:09.127034138Z",
+                "polled_at": "2026-10-27T18:26:31.431412799Z",
                 "ts": "2026-10-25T22:29:34.424477621Z"
               },
               "corners": {
@@ -55106,7 +55106,7 @@
                 "stale": false,
                 "suspended": false,
                 "rejection_reason": "ok",
-                "polled_at": "2026-10-27T12:26:09.127034138Z",
+                "polled_at": "2026-10-27T18:26:31.431412799Z",
                 "ts": "2026-10-24T22:37:41.303482229Z"
               },
               "cards": {
@@ -74404,7 +74404,7 @@
             "match_id": "SERIEA_J9_SAS_LAZ",
             "competition_id": "SERIEA",
             "jornada": 9,
-            "status": "SCHEDULED",
+            "status": "LIVE",
             "is_suspended": false,
             "suspension_reason": "",
             "home_team": {
@@ -74420,9 +74420,9 @@
               "elo": 1558.6
             },
             "date": "27.10.2026 17:30",
-            "home_goals": null,
-            "away_goals": null,
-            "final_score": null,
+            "home_goals": 2,
+            "away_goals": 4,
+            "final_score": "2 - 4 (En joc)",
             "actual_1x2": null,
             "predicted_1x2": "1",
             "is_hit_1x2": null,
@@ -74515,69 +74515,116 @@
             "odds_cards_winamax": {},
             "odds_cards_bet365": {},
             "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/71945360",
-            "url_bet365": "https://www.bet365.es/#/AS/B1/",
+            "url_bet365": "https://www.bet365.es",
             "odds": {
-              "source": "Winamax Espanya (SERIEA)",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/71945360",
-              "match_id": "71945360",
-              "matched_title": "Sassuolo - Lazio",
               "matched": true,
               "1X2": {
                 "1": 3.05,
                 "X": 3.6,
                 "2": 2.15
               },
-              "double_chance": {},
-              "goals": {},
-              "over_under_2_5": {},
-              "team_goals": {},
-              "btts": {},
-              "cards": {},
+              "over_under_2_5": {
+                "over": null,
+                "under": null
+              },
+              "btts": {
+                "yes": null,
+                "no": null
+              },
               "corners": {},
-              "combos": {}
+              "cards": {},
+              "double_chance": {
+                "1X": null,
+                "12": null,
+                "X2": null
+              },
+              "url": "https://www.winamax.es/apuestas-deportivas/match/71945360",
+              "cached_value_bets": [
+                {
+                  "model_prob": 40.8,
+                  "bookie_odd": 3.05,
+                  "fair_odd": 2.45,
+                  "implied_prob": 32.8,
+                  "ev_pct": 24.4,
+                  "kelly_pct": 3.0,
+                  "is_value": true,
+                  "rating": "🔥 EXCEL·LENT (+15% EV)",
+                  "name": "1 - Victòria Local (US Sassuolo)",
+                  "category": "1X2",
+                  "bookie_odd_winamax": 3.05,
+                  "bookie_odd_bet365": null
+                },
+                {
+                  "model_prob": 28.4,
+                  "bookie_odd": 3.6,
+                  "fair_odd": 3.52,
+                  "implied_prob": 27.8,
+                  "ev_pct": 2.2,
+                  "kelly_pct": 0.2,
+                  "is_value": true,
+                  "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
+                  "name": "X - Empat",
+                  "category": "1X2",
+                  "bookie_odd_winamax": 3.6,
+                  "bookie_odd_bet365": null
+                }
+              ]
             },
             "odds_winamax": {
-              "source": "Winamax Espanya (SERIEA)",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/71945360",
-              "match_id": "71945360",
-              "matched_title": "Sassuolo - Lazio",
               "matched": true,
               "1X2": {
                 "1": 3.05,
                 "X": 3.6,
                 "2": 2.15
               },
-              "double_chance": {},
-              "goals": {},
-              "over_under_2_5": {},
-              "team_goals": {},
-              "btts": {},
-              "cards": {},
+              "over_under_2_5": {
+                "over": null,
+                "under": null
+              },
+              "btts": {
+                "yes": null,
+                "no": null
+              },
               "corners": {},
-              "combos": {}
-            },
-            "odds_bet365": {
-              "source": "Bet365 Espanya (SERIEA)",
-              "bookmaker": "BET365",
-              "url": "https://www.bet365.es/#/AS/B1/",
-              "tournament_url": "https://www.bet365.es/#/AS/B1/",
-              "match_id": null,
-              "matched_title": "US Sassuolo vs SS Lazio",
-              "matched": false,
-              "1X2": {},
-              "double_chance": {},
-              "goals": {},
-              "over_under_2_5": {},
-              "team_goals": {},
-              "btts": {},
               "cards": {},
-              "corners": {},
-              "combos": {},
-              "status": "PENDING_REAL_ODDS",
-              "error": "NO_ODDS_DETECTED",
-              "access_status": "REQUIRES_ODDS_DATA_API_TOKEN",
-              "access_diagnostics": "Bloqueig per Cloudflare Enterprise Challenge a nivell de xarxa per accés directe a bet365.es. Requereix ODDS_DATA_API_TOKEN per a dades prematch oficials (https://api.odds-data-api.com/)."
+              "double_chance": {
+                "1X": null,
+                "12": null,
+                "X2": null
+              },
+              "url": "https://www.winamax.es/apuestas-deportivas/match/71945360",
+              "cached_value_bets": [
+                {
+                  "model_prob": 40.8,
+                  "bookie_odd": 3.05,
+                  "fair_odd": 2.45,
+                  "implied_prob": 32.8,
+                  "ev_pct": 24.4,
+                  "kelly_pct": 3.0,
+                  "is_value": true,
+                  "rating": "🔥 EXCEL·LENT (+15% EV)",
+                  "name": "1 - Victòria Local (US Sassuolo)",
+                  "category": "1X2",
+                  "bookie_odd_winamax": 3.05,
+                  "bookie_odd_bet365": null
+                },
+                {
+                  "model_prob": 28.4,
+                  "bookie_odd": 3.6,
+                  "fair_odd": 3.52,
+                  "implied_prob": 27.8,
+                  "ev_pct": 2.2,
+                  "kelly_pct": 0.2,
+                  "is_value": true,
+                  "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
+                  "name": "X - Empat",
+                  "category": "1X2",
+                  "bookie_odd_winamax": 3.6,
+                  "bookie_odd_bet365": null
+                }
+              ]
             },
+            "odds_bet365": {},
             "has_winamax_odds": true,
             "has_bet365_odds": false,
             "missing_odds": true,
@@ -76514,7 +76561,7 @@
           "match_id": "SERIEA_J9_SAS_LAZ",
           "competition_id": "SERIEA",
           "jornada": 9,
-          "status": "SCHEDULED",
+          "status": "LIVE",
           "is_suspended": false,
           "suspension_reason": "",
           "home_team": {
@@ -76530,9 +76577,9 @@
             "elo": 1558.6
           },
           "date": "27.10.2026 17:30",
-          "home_goals": null,
-          "away_goals": null,
-          "final_score": null,
+          "home_goals": 2,
+          "away_goals": 4,
+          "final_score": "2 - 4 (En joc)",
           "actual_1x2": null,
           "predicted_1x2": "1",
           "is_hit_1x2": null,
@@ -76625,69 +76672,116 @@
           "odds_cards_winamax": {},
           "odds_cards_bet365": {},
           "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/71945360",
-          "url_bet365": "https://www.bet365.es/#/AS/B1/",
+          "url_bet365": "https://www.bet365.es",
           "odds": {
-            "source": "Winamax Espanya (SERIEA)",
-            "url": "https://www.winamax.es/apuestas-deportivas/match/71945360",
-            "match_id": "71945360",
-            "matched_title": "Sassuolo - Lazio",
             "matched": true,
             "1X2": {
               "1": 3.05,
               "X": 3.6,
               "2": 2.15
             },
-            "double_chance": {},
-            "goals": {},
-            "over_under_2_5": {},
-            "team_goals": {},
-            "btts": {},
-            "cards": {},
+            "over_under_2_5": {
+              "over": null,
+              "under": null
+            },
+            "btts": {
+              "yes": null,
+              "no": null
+            },
             "corners": {},
-            "combos": {}
+            "cards": {},
+            "double_chance": {
+              "1X": null,
+              "12": null,
+              "X2": null
+            },
+            "url": "https://www.winamax.es/apuestas-deportivas/match/71945360",
+            "cached_value_bets": [
+              {
+                "model_prob": 40.8,
+                "bookie_odd": 3.05,
+                "fair_odd": 2.45,
+                "implied_prob": 32.8,
+                "ev_pct": 24.4,
+                "kelly_pct": 3.0,
+                "is_value": true,
+                "rating": "🔥 EXCEL·LENT (+15% EV)",
+                "name": "1 - Victòria Local (US Sassuolo)",
+                "category": "1X2",
+                "bookie_odd_winamax": 3.05,
+                "bookie_odd_bet365": null
+              },
+              {
+                "model_prob": 28.4,
+                "bookie_odd": 3.6,
+                "fair_odd": 3.52,
+                "implied_prob": 27.8,
+                "ev_pct": 2.2,
+                "kelly_pct": 0.2,
+                "is_value": true,
+                "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
+                "name": "X - Empat",
+                "category": "1X2",
+                "bookie_odd_winamax": 3.6,
+                "bookie_odd_bet365": null
+              }
+            ]
           },
           "odds_winamax": {
-            "source": "Winamax Espanya (SERIEA)",
-            "url": "https://www.winamax.es/apuestas-deportivas/match/71945360",
-            "match_id": "71945360",
-            "matched_title": "Sassuolo - Lazio",
             "matched": true,
             "1X2": {
               "1": 3.05,
               "X": 3.6,
               "2": 2.15
             },
-            "double_chance": {},
-            "goals": {},
-            "over_under_2_5": {},
-            "team_goals": {},
-            "btts": {},
-            "cards": {},
+            "over_under_2_5": {
+              "over": null,
+              "under": null
+            },
+            "btts": {
+              "yes": null,
+              "no": null
+            },
             "corners": {},
-            "combos": {}
-          },
-          "odds_bet365": {
-            "source": "Bet365 Espanya (SERIEA)",
-            "bookmaker": "BET365",
-            "url": "https://www.bet365.es/#/AS/B1/",
-            "tournament_url": "https://www.bet365.es/#/AS/B1/",
-            "match_id": null,
-            "matched_title": "US Sassuolo vs SS Lazio",
-            "matched": false,
-            "1X2": {},
-            "double_chance": {},
-            "goals": {},
-            "over_under_2_5": {},
-            "team_goals": {},
-            "btts": {},
             "cards": {},
-            "corners": {},
-            "combos": {},
-            "status": "PENDING_REAL_ODDS",
-            "error": "NO_ODDS_DETECTED",
-            "access_status": "REQUIRES_ODDS_DATA_API_TOKEN",
-            "access_diagnostics": "Bloqueig per Cloudflare Enterprise Challenge a nivell de xarxa per accés directe a bet365.es. Requereix ODDS_DATA_API_TOKEN per a dades prematch oficials (https://api.odds-data-api.com/)."
+            "double_chance": {
+              "1X": null,
+              "12": null,
+              "X2": null
+            },
+            "url": "https://www.winamax.es/apuestas-deportivas/match/71945360",
+            "cached_value_bets": [
+              {
+                "model_prob": 40.8,
+                "bookie_odd": 3.05,
+                "fair_odd": 2.45,
+                "implied_prob": 32.8,
+                "ev_pct": 24.4,
+                "kelly_pct": 3.0,
+                "is_value": true,
+                "rating": "🔥 EXCEL·LENT (+15% EV)",
+                "name": "1 - Victòria Local (US Sassuolo)",
+                "category": "1X2",
+                "bookie_odd_winamax": 3.05,
+                "bookie_odd_bet365": null
+              },
+              {
+                "model_prob": 28.4,
+                "bookie_odd": 3.6,
+                "fair_odd": 3.52,
+                "implied_prob": 27.8,
+                "ev_pct": 2.2,
+                "kelly_pct": 0.2,
+                "is_value": true,
+                "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
+                "name": "X - Empat",
+                "category": "1X2",
+                "bookie_odd_winamax": 3.6,
+                "bookie_odd_bet365": null
+              }
+            ]
           },
+          "odds_bet365": {},
           "has_winamax_odds": true,
           "has_bet365_odds": false,
           "missing_odds": true,
@@ -91622,7 +91716,7 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/71945360",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Partit pendent de disputar"
+              "actual_result": "En joc (2-4)"
             },
             {
               "id": 2924,
@@ -93042,7 +93136,7 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/71945360",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Partit pendent de disputar"
+                  "actual_result": "En joc (2-4)"
                 },
                 {
                   "id": 2924,
@@ -94244,7 +94338,7 @@
           "formatted_date": "Divendres, 23 d'octubre",
           "has_matches": true,
           "matches_count": 7,
-          "league_note": "Partits del dia de múltiples lligues (Bundesliga, EFL Championship, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Serie A, Premier League) · 7 partits",
+          "league_note": "Partits del dia de múltiples lligues (EFL Championship, LaLiga EA Sports, Ligue 1, Premier League, Serie A, LaLiga Hypermotion, Bundesliga) · 7 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-23_SAFE_1",
@@ -94965,7 +95059,7 @@
           "formatted_date": "Dissabte, 24 d'octubre",
           "has_matches": true,
           "matches_count": 35,
-          "league_note": "Partits del dia de múltiples lligues (Bundesliga, EFL Championship, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Serie A, Premier League) · 35 partits",
+          "league_note": "Partits del dia de múltiples lligues (EFL Championship, LaLiga EA Sports, Ligue 1, Premier League, Serie A, LaLiga Hypermotion, Bundesliga) · 35 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-24_SAFE_1",
@@ -95686,7 +95780,7 @@
           "formatted_date": "Diumenge, 25 d'octubre",
           "has_matches": true,
           "matches_count": 26,
-          "league_note": "Partits del dia de múltiples lligues (Bundesliga, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Serie A, Premier League) · 26 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Ligue 1, Premier League, Serie A, LaLiga Hypermotion, Bundesliga) · 26 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-25_SAFE_1",
@@ -96391,7 +96485,7 @@
           "formatted_date": "Dilluns, 26 d'octubre",
           "has_matches": true,
           "matches_count": 3,
-          "league_note": "Partits del dia de múltiples lligues (Ligue 1, LaLiga EA Sports, LaLiga Hypermotion) · 3 partits",
+          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Ligue 1) · 3 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-26_SAFE_1",
@@ -97139,7 +97233,7 @@
           "formatted_date": "Divendres, 30 d'octubre",
           "has_matches": true,
           "matches_count": 5,
-          "league_note": "Partits programats: 5 (Bundesliga, LaLiga EA Sports, Ligue 1, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 5 (EFL Championship, LaLiga EA Sports, Bundesliga, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -97149,7 +97243,7 @@
           "formatted_date": "Dissabte, 31 d'octubre",
           "has_matches": true,
           "matches_count": 37,
-          "league_note": "Partits programats: 37 (Bundesliga, EFL Championship, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 37 (EFL Championship, LaLiga EA Sports, Ligue 1, Premier League, LaLiga Hypermotion, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -97159,7 +97253,7 @@
           "formatted_date": "Diumenge, 1 de novembre",
           "has_matches": true,
           "matches_count": 14,
-          "league_note": "Partits programats: 14 (Bundesliga, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 14 (LaLiga EA Sports, Ligue 1, Premier League, LaLiga Hypermotion, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -97169,7 +97263,7 @@
           "formatted_date": "Dilluns, 2 de novembre",
           "has_matches": true,
           "matches_count": 5,
-          "league_note": "Partits programats: 5 (LaLiga EA Sports, LaLiga Hypermotion, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 5 (LaLiga Hypermotion, LaLiga EA Sports, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -98594,7 +98688,7 @@
         "formatted_date": "Divendres, 23 d'octubre",
         "has_matches": true,
         "matches_count": 7,
-        "league_note": "Partits del dia de múltiples lligues (Bundesliga, EFL Championship, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Serie A, Premier League) · 7 partits",
+        "league_note": "Partits del dia de múltiples lligues (EFL Championship, LaLiga EA Sports, Ligue 1, Premier League, Serie A, LaLiga Hypermotion, Bundesliga) · 7 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-23_SAFE_1",
@@ -99315,7 +99409,7 @@
         "formatted_date": "Dissabte, 24 d'octubre",
         "has_matches": true,
         "matches_count": 35,
-        "league_note": "Partits del dia de múltiples lligues (Bundesliga, EFL Championship, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Serie A, Premier League) · 35 partits",
+        "league_note": "Partits del dia de múltiples lligues (EFL Championship, LaLiga EA Sports, Ligue 1, Premier League, Serie A, LaLiga Hypermotion, Bundesliga) · 35 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-24_SAFE_1",
@@ -100036,7 +100130,7 @@
         "formatted_date": "Diumenge, 25 d'octubre",
         "has_matches": true,
         "matches_count": 26,
-        "league_note": "Partits del dia de múltiples lligues (Bundesliga, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Serie A, Premier League) · 26 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Ligue 1, Premier League, Serie A, LaLiga Hypermotion, Bundesliga) · 26 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-25_SAFE_1",
@@ -100741,7 +100835,7 @@
         "formatted_date": "Dilluns, 26 d'octubre",
         "has_matches": true,
         "matches_count": 3,
-        "league_note": "Partits del dia de múltiples lligues (Ligue 1, LaLiga EA Sports, LaLiga Hypermotion) · 3 partits",
+        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, LaLiga EA Sports, Ligue 1) · 3 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-26_SAFE_1",
@@ -101489,7 +101583,7 @@
         "formatted_date": "Divendres, 30 d'octubre",
         "has_matches": true,
         "matches_count": 5,
-        "league_note": "Partits programats: 5 (Bundesliga, LaLiga EA Sports, Ligue 1, EFL Championship). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 5 (EFL Championship, LaLiga EA Sports, Bundesliga, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -101499,7 +101593,7 @@
         "formatted_date": "Dissabte, 31 d'octubre",
         "has_matches": true,
         "matches_count": 37,
-        "league_note": "Partits programats: 37 (Bundesliga, EFL Championship, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 37 (EFL Championship, LaLiga EA Sports, Ligue 1, Premier League, LaLiga Hypermotion, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -101509,7 +101603,7 @@
         "formatted_date": "Diumenge, 1 de novembre",
         "has_matches": true,
         "matches_count": 14,
-        "league_note": "Partits programats: 14 (Bundesliga, Ligue 1, LaLiga EA Sports, LaLiga Hypermotion, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 14 (LaLiga EA Sports, Ligue 1, Premier League, LaLiga Hypermotion, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -101519,7 +101613,7 @@
         "formatted_date": "Dilluns, 2 de novembre",
         "has_matches": true,
         "matches_count": 5,
-        "league_note": "Partits programats: 5 (LaLiga EA Sports, LaLiga Hypermotion, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 5 (LaLiga Hypermotion, LaLiga EA Sports, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -111103,11 +111197,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-27 12:29:52",
+            "created_at": "2026-10-27 18:49:12",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 2962,
+                "id": 2986,
                 "combo_id": "COMBO_DAILY_2026-10-27_RISKY_1",
                 "matchup": "US Sassuolo vs SS Lazio",
                 "selection_name": "X - Empat",
@@ -111123,7 +111217,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 2963,
+                "id": 2987,
                 "combo_id": "COMBO_DAILY_2026-10-27_RISKY_1",
                 "matchup": "AS Roma vs Cagliari Calcio",
                 "selection_name": "X - Empat",
@@ -111139,7 +111233,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 2964,
+                "id": 2988,
                 "combo_id": "COMBO_DAILY_2026-10-27_RISKY_1",
                 "matchup": "Torino FC vs Como 1907",
                 "selection_name": "X - Empat",
@@ -113111,11 +113205,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-27 12:29:52",
+            "created_at": "2026-10-27 18:49:12",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 2953,
+                "id": 2977,
                 "combo_id": "COMBO_DAILY_2026-10-27_SAFE_1",
                 "matchup": "US Sassuolo vs SS Lazio",
                 "selection_name": "Més d'1.5 Gols (Over 1.5)",
@@ -113131,7 +113225,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 2954,
+                "id": 2978,
                 "combo_id": "COMBO_DAILY_2026-10-27_SAFE_1",
                 "matchup": "Torino FC vs Como 1907",
                 "selection_name": "X2 - Empat o Como 1907",
@@ -113855,11 +113949,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-27 12:29:52",
+            "created_at": "2026-10-27 18:49:12",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 2955,
+                "id": 2979,
                 "combo_id": "COMBO_DAILY_2026-10-27_SAFE_2",
                 "matchup": "US Sassuolo vs SS Lazio",
                 "selection_name": "X2 - Empat o SS Lazio",
@@ -113875,7 +113969,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 2956,
+                "id": 2980,
                 "combo_id": "COMBO_DAILY_2026-10-27_SAFE_2",
                 "matchup": "Torino FC vs Como 1907",
                 "selection_name": "Més d'1.5 Gols (Over 1.5)",
@@ -115015,11 +115109,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-27 12:29:52",
+            "created_at": "2026-10-27 18:49:12",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 2957,
+                "id": 2981,
                 "combo_id": "COMBO_DAILY_2026-10-27_SEMI_1",
                 "matchup": "US Sassuolo vs SS Lazio",
                 "selection_name": "1 - Victòria Local (US Sassuolo)",
@@ -115035,7 +115129,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 2958,
+                "id": 2982,
                 "combo_id": "COMBO_DAILY_2026-10-27_SEMI_1",
                 "matchup": "Torino FC vs Como 1907",
                 "selection_name": "1 - Victòria Local (Torino FC)",
@@ -116223,11 +116317,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-27 12:29:52",
+            "created_at": "2026-10-27 18:49:12",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 2959,
+                "id": 2983,
                 "combo_id": "COMBO_DAILY_2026-10-27_SEMI_2",
                 "matchup": "US Sassuolo vs SS Lazio",
                 "selection_name": "1X - US Sassuolo o Empat",
@@ -116243,7 +116337,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 2960,
+                "id": 2984,
                 "combo_id": "COMBO_DAILY_2026-10-27_SEMI_2",
                 "matchup": "AS Roma vs Cagliari Calcio",
                 "selection_name": "1 - Victòria AS Roma",
@@ -116259,7 +116353,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 2961,
+                "id": 2985,
                 "combo_id": "COMBO_DAILY_2026-10-27_SEMI_2",
                 "matchup": "Torino FC vs Como 1907",
                 "selection_name": "1 - Victòria Local (Torino FC)",
@@ -119809,11 +119903,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-27 12:29:52",
+        "created_at": "2026-10-27 18:49:12",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 2962,
+            "id": 2986,
             "combo_id": "COMBO_DAILY_2026-10-27_RISKY_1",
             "matchup": "US Sassuolo vs SS Lazio",
             "selection_name": "X - Empat",
@@ -119829,7 +119923,7 @@
             "evaluated_at": null
           },
           {
-            "id": 2963,
+            "id": 2987,
             "combo_id": "COMBO_DAILY_2026-10-27_RISKY_1",
             "matchup": "AS Roma vs Cagliari Calcio",
             "selection_name": "X - Empat",
@@ -119845,7 +119939,7 @@
             "evaluated_at": null
           },
           {
-            "id": 2964,
+            "id": 2988,
             "combo_id": "COMBO_DAILY_2026-10-27_RISKY_1",
             "matchup": "Torino FC vs Como 1907",
             "selection_name": "X - Empat",
@@ -121817,11 +121911,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-27 12:29:52",
+        "created_at": "2026-10-27 18:49:12",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 2953,
+            "id": 2977,
             "combo_id": "COMBO_DAILY_2026-10-27_SAFE_1",
             "matchup": "US Sassuolo vs SS Lazio",
             "selection_name": "Més d'1.5 Gols (Over 1.5)",
@@ -121837,7 +121931,7 @@
             "evaluated_at": null
           },
           {
-            "id": 2954,
+            "id": 2978,
             "combo_id": "COMBO_DAILY_2026-10-27_SAFE_1",
             "matchup": "Torino FC vs Como 1907",
             "selection_name": "X2 - Empat o Como 1907",
@@ -122561,11 +122655,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-27 12:29:52",
+        "created_at": "2026-10-27 18:49:12",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 2955,
+            "id": 2979,
             "combo_id": "COMBO_DAILY_2026-10-27_SAFE_2",
             "matchup": "US Sassuolo vs SS Lazio",
             "selection_name": "X2 - Empat o SS Lazio",
@@ -122581,7 +122675,7 @@
             "evaluated_at": null
           },
           {
-            "id": 2956,
+            "id": 2980,
             "combo_id": "COMBO_DAILY_2026-10-27_SAFE_2",
             "matchup": "Torino FC vs Como 1907",
             "selection_name": "Més d'1.5 Gols (Over 1.5)",
@@ -123721,11 +123815,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-27 12:29:52",
+        "created_at": "2026-10-27 18:49:12",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 2957,
+            "id": 2981,
             "combo_id": "COMBO_DAILY_2026-10-27_SEMI_1",
             "matchup": "US Sassuolo vs SS Lazio",
             "selection_name": "1 - Victòria Local (US Sassuolo)",
@@ -123741,7 +123835,7 @@
             "evaluated_at": null
           },
           {
-            "id": 2958,
+            "id": 2982,
             "combo_id": "COMBO_DAILY_2026-10-27_SEMI_1",
             "matchup": "Torino FC vs Como 1907",
             "selection_name": "1 - Victòria Local (Torino FC)",
@@ -124929,11 +125023,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-27 12:29:52",
+        "created_at": "2026-10-27 18:49:12",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 2959,
+            "id": 2983,
             "combo_id": "COMBO_DAILY_2026-10-27_SEMI_2",
             "matchup": "US Sassuolo vs SS Lazio",
             "selection_name": "1X - US Sassuolo o Empat",
@@ -124949,7 +125043,7 @@
             "evaluated_at": null
           },
           {
-            "id": 2960,
+            "id": 2984,
             "combo_id": "COMBO_DAILY_2026-10-27_SEMI_2",
             "matchup": "AS Roma vs Cagliari Calcio",
             "selection_name": "1 - Victòria AS Roma",
@@ -124965,7 +125059,7 @@
             "evaluated_at": null
           },
           {
-            "id": 2961,
+            "id": 2985,
             "combo_id": "COMBO_DAILY_2026-10-27_SEMI_2",
             "matchup": "Torino FC vs Como 1907",
             "selection_name": "1 - Victòria Local (Torino FC)",
@@ -135898,25 +135992,6 @@
         "Bet365"
       ],
       "message": "Quotes 1X2 no detectades a Bet365 (partit no associat) per a ES Troyes AC vs Le Mans FC."
-    },
-    {
-      "id": "SERIEA_ussassuolo_sslazio",
-      "competition_id": "SERIEA",
-      "competition_name": "Serie A",
-      "matchup": "US Sassuolo vs SS Lazio",
-      "home_team": "US Sassuolo",
-      "away_team": "SS Lazio",
-      "date": "27.10.2026 17:30",
-      "jornada": 9,
-      "alert_type": "UNASSOCIATED_MATCH",
-      "missing_winamax": false,
-      "missing_bet365": true,
-      "is_stale": false,
-      "is_unassociated": true,
-      "missing_bookmakers": [
-        "Bet365"
-      ],
-      "message": "Quotes 1X2 no detectades a Bet365 (partit no associat) per a US Sassuolo vs SS Lazio."
     },
     {
       "id": "SERIEA_asroma_cagliaricalcio",
