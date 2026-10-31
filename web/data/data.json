@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-10-31T01:54:52.053944",
-    "formatted_date": "31/10/2026 a les 01:54",
+    "generated_at": "2026-10-31T12:51:55.892095",
+    "formatted_date": "31/10/2026 a les 12:51",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -67,837 +67,20 @@
   "changelog": [
     {
       "date": "2026-10-31",
-      "timestamp": "2026-10-31T01:55:45.531453",
+      "timestamp": "2026-10-31T12:52:45.037606",
       "title": "Actualització Diària del Model · 31/10/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
       "items": [
-        "⚽ S'han ingesta resultats oficials i mètriques de 6 partit(s) disputat(s):",
-        "   • [LALIGA J11] Villarreal 0 - 1 Espanyol | xG: 0.84-0.20 | Targetes: 6 🟨 | Córners: 10 🚩 | Àrbitre: Sanchez J.",
-        "   • [CHAMPIONSHIP J13] Sheffield Utd 1 - 0 Wrexham | xG: 1.06-0.60 | Targetes: 3 🟨 | Córners: 7 🚩 | Àrbitre: Webb D.",
-        "   • [BUNDESLIGA J8] Elversberg 4 - 1 Mainz | xG: 0.94-1.15 | Targetes: 6 🟨 | Córners: 16 🚩 | Àrbitre: Stegemann S.",
-        "   • [LIGUE1 J9] Lille 1 - 0 Lens | xG: 1.63-0.20 | Targetes: 1 🟨 | Córners: 12 🚩 | Àrbitre: Brisard J.",
-        "   • [LIGUE1 J9] Le Havre 1 - 5 PSG | xG: 2.00-3.97 | Targetes: 0 🟨 | Córners: 8 🚩 | Àrbitre: Letexier F.",
-        "   • [LIGUE1 J9] Niza 5 - 2 Stade Rennais | xG: 3.44-2.61 | Targetes: 7 🟨 | Córners: 11 🚩 | Àrbitre: Wattellier E.",
-        "📊 Actualització de Power Rànquings Elo:",
-        "   • Villarreal (-16.4 ➔ 1686.3) | Espanyol (+16.4 ➔ 1588.3)",
-        "   • Sheffield Utd (+8.5 ➔ 1544.9) | Wrexham (-8.5 ➔ 1494.7)",
-        "   • Elversberg (+19.6 ➔ 1528.2) | Mainz (-19.6 ➔ 1498.6)",
-        "   • Lille (+8.9 ➔ 1545.9) | Lens (-8.9 ➔ 1507.7)",
-        "   • Le Havre (-19.7 ➔ 1411.8) | PSG (+19.7 ➔ 1584.2)",
-        "   • Niza (+21.6 ➔ 1511.8) | Stade Rennais (-21.6 ➔ 1509.8)",
-        "📈 S'han resolt 10 combinades pendents (0 encertades, 10 fallades):",
-        "   • [DAILY J0] SAFE_1: ❌ NO ENCERTADA (Cuota @3.53 · Balanç: -25.00 €)",
-        "   • [DAILY J0] SAFE_2: ❌ NO ENCERTADA (Cuota @2.54 · Balanç: -25.00 €)",
-        "   • [DAILY J0] SEMI_1: ❌ NO ENCERTADA (Cuota @15.28 · Balanç: -10.00 €)",
-        "   • [DAILY J0] SEMI_2: ❌ NO ENCERTADA (Cuota @10.85 · Balanç: -10.00 €)",
-        "   • [DAILY J0] RISKY_1: ❌ NO ENCERTADA (Cuota @35.20 · Balanç: -5.00 €)",
-        "   • [DAILY J0] RISKY_2: ❌ NO ENCERTADA (Cuota @45.60 · Balanç: -5.00 €)",
-        "   • [LIGUE1 J9] SEMI_1: ❌ NO ENCERTADA (Cuota @11.04 · Balanç: -10.00 €)",
-        "   • [LIGUE1 J9] RISKY_1: ❌ NO ENCERTADA (Cuota @36.08 · Balanç: -5.00 €)",
-        "   • [LALIGA J11] SAFE_1: ❌ NO ENCERTADA (Cuota @2.04 · Balanç: -25.00 €)",
-        "   • [CHAMPIONSHIP J13] RISKY_1: ❌ NO ENCERTADA (Cuota @41.87 · Balanç: -5.00 €)",
-        "🎯 Generades 6 noves combinades recomanades (Segures, Semi i Arriscades) per a: DAILY.",
-        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+        "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+        "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+        "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+        "ℹ️ Sincronització de les darreres dades i mètriques del model."
       ],
-      "matches": [
-        {
-          "match_id": "LALIGA_2026-2027_xdLoJd4b",
-          "competition_id": "LALIGA",
-          "jornada": 11,
-          "home_team": "Villarreal",
-          "away_team": "Espanyol",
-          "home_team_id": "VIL",
-          "away_team_id": "ESP",
-          "home_goals": 0,
-          "away_goals": 1,
-          "score": "0 - 1",
-          "home_xg": 0.84,
-          "away_xg": 0.2,
-          "home_yellow_cards": 3,
-          "away_yellow_cards": 3,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 7,
-          "away_corners": 3,
-          "referee": "Sanchez J.",
-          "elo_change_home": -16.4,
-          "elo_change_away": 16.4,
-          "new_elo_home": 1686.3,
-          "new_elo_away": 1588.3,
-          "date": "30.10.2026 20:00"
-        },
-        {
-          "match_id": "CHAMPIONSHIP_2026-2027_hKm6hlV6",
-          "competition_id": "CHAMPIONSHIP",
-          "jornada": 13,
-          "home_team": "Sheffield Utd",
-          "away_team": "Wrexham",
-          "home_team_id": "SHU",
-          "away_team_id": "WRE",
-          "home_goals": 1,
-          "away_goals": 0,
-          "score": "1 - 0",
-          "home_xg": 1.06,
-          "away_xg": 0.6,
-          "home_yellow_cards": 2,
-          "away_yellow_cards": 1,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 7,
-          "away_corners": 0,
-          "referee": "Webb D.",
-          "elo_change_home": 8.5,
-          "elo_change_away": -8.5,
-          "new_elo_home": 1544.9,
-          "new_elo_away": 1494.7,
-          "date": "30.10.2026 20:00"
-        },
-        {
-          "match_id": "BUNDESLIGA_2026-2027_j9drDZFO",
-          "competition_id": "BUNDESLIGA",
-          "jornada": 8,
-          "home_team": "Elversberg",
-          "away_team": "Mainz",
-          "home_team_id": "SVE",
-          "away_team_id": "M05",
-          "home_goals": 4,
-          "away_goals": 1,
-          "score": "4 - 1",
-          "home_xg": 0.94,
-          "away_xg": 1.15,
-          "home_yellow_cards": 0,
-          "away_yellow_cards": 5,
-          "home_red_cards": 0,
-          "away_red_cards": 1,
-          "home_corners": 5,
-          "away_corners": 11,
-          "referee": "Stegemann S.",
-          "elo_change_home": 19.6,
-          "elo_change_away": -19.6,
-          "new_elo_home": 1528.2,
-          "new_elo_away": 1498.6,
-          "date": "30.10.2026 19:30"
-        },
-        {
-          "match_id": "LIGUE1_2026-2027_hfEHGyCE",
-          "competition_id": "LIGUE1",
-          "jornada": 9,
-          "home_team": "Lille",
-          "away_team": "Lens",
-          "home_team_id": "LIL",
-          "away_team_id": "RCL",
-          "home_goals": 1,
-          "away_goals": 0,
-          "score": "1 - 0",
-          "home_xg": 1.63,
-          "away_xg": 0.2,
-          "home_yellow_cards": 0,
-          "away_yellow_cards": 1,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 10,
-          "away_corners": 2,
-          "referee": "Brisard J.",
-          "elo_change_home": 8.9,
-          "elo_change_away": -8.9,
-          "new_elo_home": 1545.9,
-          "new_elo_away": 1507.7,
-          "date": "30.10.2026 20:05"
-        },
-        {
-          "match_id": "LIGUE1_2026-2027_ncRVhYJ7",
-          "competition_id": "LIGUE1",
-          "jornada": 9,
-          "home_team": "Le Havre",
-          "away_team": "PSG",
-          "home_team_id": "HAC",
-          "away_team_id": "PSG",
-          "home_goals": 1,
-          "away_goals": 5,
-          "score": "1 - 5",
-          "home_xg": 2.0,
-          "away_xg": 3.97,
-          "home_yellow_cards": null,
-          "away_yellow_cards": null,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 5,
-          "away_corners": 3,
-          "referee": "Letexier F.",
-          "elo_change_home": -19.7,
-          "elo_change_away": 19.7,
-          "new_elo_home": 1411.8,
-          "new_elo_away": 1584.2,
-          "date": "30.10.2026 18:00"
-        },
-        {
-          "match_id": "LIGUE1_2026-2027_dOOA5B3D",
-          "competition_id": "LIGUE1",
-          "jornada": 9,
-          "home_team": "Niza",
-          "away_team": "Stade Rennais",
-          "home_team_id": "OGC",
-          "away_team_id": "SRFC",
-          "home_goals": 5,
-          "away_goals": 2,
-          "score": "5 - 2",
-          "home_xg": 3.44,
-          "away_xg": 2.61,
-          "home_yellow_cards": 4,
-          "away_yellow_cards": 3,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 4,
-          "away_corners": 7,
-          "referee": "Wattellier E.",
-          "elo_change_home": 21.6,
-          "elo_change_away": -21.6,
-          "new_elo_home": 1511.8,
-          "new_elo_away": 1509.8,
-          "date": "30.10.2026 18:00"
-        }
-      ],
-      "combos_evaluated": [
-        {
-          "id": "COMBO_DAILY_2026-10-30_SAFE_1",
-          "competition_id": "DAILY",
-          "season": "2026-2027",
-          "jornada": 0,
-          "profile": "SAFE_1",
-          "stake": 25.0,
-          "combined_odd": 3.53,
-          "combined_prob_pct": 30.6,
-          "fair_odd": 3.26,
-          "ev_pct": 8.1,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -25.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 02:04:45",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3142,
-              "combo_id": "COMBO_DAILY_2026-10-30_SAFE_1",
-              "matchup": "Villarreal CF vs RCD Espanyol",
-              "selection_name": "1 - Victòria Local (Villarreal CF)",
-              "category": "1X2",
-              "bookie_odd": 1.47,
-              "model_prob": 54.8,
-              "match_date": "30.10.2026 20:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478684",
-              "home_team_id": "VIL",
-              "away_team_id": "ESP",
-              "status": "LOST",
-              "actual_result": "0-1 (no victòria local)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3143,
-              "combo_id": "COMBO_DAILY_2026-10-30_SAFE_1",
-              "matchup": "Sheffield United vs Wrexham",
-              "selection_name": "1 - Victòria Local (Sheffield United)",
-              "category": "1X2",
-              "bookie_odd": 2.4,
-              "model_prob": 55.9,
-              "match_date": "30.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "home_team_id": "SHU",
-              "away_team_id": "WRE",
-              "status": "WON",
-              "actual_result": "1-0 (1 encertat)",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_DAILY_2026-10-30_SAFE_2",
-          "competition_id": "DAILY",
-          "season": "2026-2027",
-          "jornada": 0,
-          "profile": "SAFE_2",
-          "stake": 25.0,
-          "combined_odd": 2.54,
-          "combined_prob_pct": 27.7,
-          "fair_odd": 3.61,
-          "ev_pct": -29.6,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -25.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 02:04:45",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3144,
-              "combo_id": "COMBO_DAILY_2026-10-30_SAFE_2",
-              "matchup": "Villarreal CF vs RCD Espanyol",
-              "selection_name": "1 - Victòria Local (Villarreal CF)",
-              "category": "1X2",
-              "bookie_odd": 1.47,
-              "model_prob": 54.8,
-              "match_date": "30.10.2026 20:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478684",
-              "home_team_id": "VIL",
-              "away_team_id": "ESP",
-              "status": "LOST",
-              "actual_result": "0-1 (no victòria local)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3145,
-              "combo_id": "COMBO_DAILY_2026-10-30_SAFE_2",
-              "matchup": "Sheffield United vs Wrexham",
-              "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
-              "category": "BTTS",
-              "bookie_odd": 1.73,
-              "model_prob": 50.6,
-              "match_date": "30.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "home_team_id": "SHU",
-              "away_team_id": "WRE",
-              "status": "LOST",
-              "actual_result": "1-0 (no han marcat ambdós)",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_DAILY_2026-10-30_SEMI_1",
-          "competition_id": "DAILY",
-          "season": "2026-2027",
-          "jornada": 0,
-          "profile": "SEMI_1",
-          "stake": 10.0,
-          "combined_odd": 15.28,
-          "combined_prob_pct": 18.9,
-          "fair_odd": 5.3,
-          "ev_pct": 188.2,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -10.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 02:04:45",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3146,
-              "combo_id": "COMBO_DAILY_2026-10-30_SEMI_1",
-              "matchup": "Sheffield United vs Wrexham",
-              "selection_name": "Menys de 2.5 Gols (Under 2.5)",
-              "category": "Gols",
-              "bookie_odd": 1.91,
-              "model_prob": 50.3,
-              "match_date": "30.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "home_team_id": "SHU",
-              "away_team_id": "WRE",
-              "status": "WON",
-              "actual_result": "1 gols (Under 2.5 encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3147,
-              "combo_id": "COMBO_DAILY_2026-10-30_SEMI_1",
-              "matchup": "Le Havre AC vs Paris Saint-Germain",
-              "selection_name": "1 - Victòria Local (Le Havre AC)",
-              "category": "1X2",
-              "bookie_odd": 8.0,
-              "model_prob": 37.5,
-              "match_date": "30.10.2026 18:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-              "home_team_id": "HAC",
-              "away_team_id": "PSG",
-              "status": "LOST",
-              "actual_result": "1-5 (no victòria local)",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_DAILY_2026-10-30_SEMI_2",
-          "competition_id": "DAILY",
-          "season": "2026-2027",
-          "jornada": 0,
-          "profile": "SEMI_2",
-          "stake": 10.0,
-          "combined_odd": 10.85,
-          "combined_prob_pct": 8.2,
-          "fair_odd": 12.17,
-          "ev_pct": -10.8,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -10.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 02:04:45",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3148,
-              "combo_id": "COMBO_DAILY_2026-10-30_SEMI_2",
-              "matchup": "Sheffield United vs Wrexham",
-              "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
-              "category": "BTTS",
-              "bookie_odd": 1.73,
-              "model_prob": 50.6,
-              "match_date": "30.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "home_team_id": "SHU",
-              "away_team_id": "WRE",
-              "status": "LOST",
-              "actual_result": "1-0 (no han marcat ambdós)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3149,
-              "combo_id": "COMBO_DAILY_2026-10-30_SEMI_2",
-              "matchup": "SV Elversberg vs 1. FSV Mainz 05",
-              "selection_name": "1 - Victòria Local (SV Elversberg)",
-              "category": "1X2",
-              "bookie_odd": 2.85,
-              "model_prob": 39.9,
-              "match_date": "30.10.2026 19:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72513290",
-              "home_team_id": "SVE",
-              "away_team_id": "M05",
-              "status": "WON",
-              "actual_result": "4-1 (1 encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3150,
-              "combo_id": "COMBO_DAILY_2026-10-30_SEMI_2",
-              "matchup": "Lille OSC vs RC Lens",
-              "selection_name": "1 - Victòria Local (Lille OSC)",
-              "category": "1X2",
-              "bookie_odd": 2.2,
-              "model_prob": 40.7,
-              "match_date": "30.10.2026 20:05",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036258",
-              "home_team_id": "LIL",
-              "away_team_id": "RCL",
-              "status": "WON",
-              "actual_result": "1-0 (1 encertat)",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_DAILY_2026-10-30_RISKY_1",
-          "competition_id": "DAILY",
-          "season": "2026-2027",
-          "jornada": 0,
-          "profile": "RISKY_1",
-          "stake": 5.0,
-          "combined_odd": 35.2,
-          "combined_prob_pct": 7.5,
-          "fair_odd": 13.26,
-          "ev_pct": 165.4,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -5.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 02:04:45",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3151,
-              "combo_id": "COMBO_DAILY_2026-10-30_RISKY_1",
-              "matchup": "Sheffield United vs Wrexham",
-              "selection_name": "Ambdós Equips Marquen (BTTS No)",
-              "category": "BTTS",
-              "bookie_odd": 2.0,
-              "model_prob": 49.4,
-              "match_date": "30.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "home_team_id": "SHU",
-              "away_team_id": "WRE",
-              "status": "WON",
-              "actual_result": "1-0 (BTTS No encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3152,
-              "combo_id": "COMBO_DAILY_2026-10-30_RISKY_1",
-              "matchup": "Le Havre AC vs Paris Saint-Germain",
-              "selection_name": "1 - Victòria Local (Le Havre AC)",
-              "category": "1X2",
-              "bookie_odd": 8.0,
-              "model_prob": 37.5,
-              "match_date": "30.10.2026 18:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-              "home_team_id": "HAC",
-              "away_team_id": "PSG",
-              "status": "LOST",
-              "actual_result": "1-5 (no victòria local)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3153,
-              "combo_id": "COMBO_DAILY_2026-10-30_RISKY_1",
-              "matchup": "Lille OSC vs RC Lens",
-              "selection_name": "1 - Victòria Local (Lille OSC)",
-              "category": "1X2",
-              "bookie_odd": 2.2,
-              "model_prob": 40.7,
-              "match_date": "30.10.2026 20:05",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036258",
-              "home_team_id": "LIL",
-              "away_team_id": "RCL",
-              "status": "WON",
-              "actual_result": "1-0 (1 encertat)",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_DAILY_2026-10-30_RISKY_2",
-          "competition_id": "DAILY",
-          "season": "2026-2027",
-          "jornada": 0,
-          "profile": "RISKY_2",
-          "stake": 5.0,
-          "combined_odd": 45.6,
-          "combined_prob_pct": 7.4,
-          "fair_odd": 13.53,
-          "ev_pct": 237.1,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -5.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 02:04:45",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3154,
-              "combo_id": "COMBO_DAILY_2026-10-30_RISKY_2",
-              "matchup": "Sheffield United vs Wrexham",
-              "selection_name": "Ambdós Equips Marquen (BTTS No)",
-              "category": "BTTS",
-              "bookie_odd": 2.0,
-              "model_prob": 49.4,
-              "match_date": "30.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "home_team_id": "SHU",
-              "away_team_id": "WRE",
-              "status": "WON",
-              "actual_result": "1-0 (BTTS No encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3155,
-              "combo_id": "COMBO_DAILY_2026-10-30_RISKY_2",
-              "matchup": "SV Elversberg vs 1. FSV Mainz 05",
-              "selection_name": "1 - Victòria Local (SV Elversberg)",
-              "category": "1X2",
-              "bookie_odd": 2.85,
-              "model_prob": 39.9,
-              "match_date": "30.10.2026 19:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72513290",
-              "home_team_id": "SVE",
-              "away_team_id": "M05",
-              "status": "WON",
-              "actual_result": "4-1 (1 encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3156,
-              "combo_id": "COMBO_DAILY_2026-10-30_RISKY_2",
-              "matchup": "Le Havre AC vs Paris Saint-Germain",
-              "selection_name": "1 - Victòria Local (Le Havre AC)",
-              "category": "1X2",
-              "bookie_odd": 8.0,
-              "model_prob": 37.5,
-              "match_date": "30.10.2026 18:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-              "home_team_id": "HAC",
-              "away_team_id": "PSG",
-              "status": "LOST",
-              "actual_result": "1-5 (no victòria local)",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_2026-2027_LIGUE1_J9_SEMI_1",
-          "competition_id": "LIGUE1",
-          "season": "2026-2027",
-          "jornada": 9,
-          "profile": "SEMI_1",
-          "stake": 10.0,
-          "combined_odd": 11.04,
-          "combined_prob_pct": 16.4,
-          "fair_odd": 6.12,
-          "ev_pct": 80.5,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -10.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 18:44:00",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3202,
-              "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_1",
-              "matchup": "Olympique Lyonnais vs Angers SCO",
-              "selection_name": "1 - Victòria Local (Olympique Lyonnais)",
-              "category": "1X2",
-              "bookie_odd": 1.38,
-              "model_prob": 43.6,
-              "match_date": "01.11.2026 16:15",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036262",
-              "home_team_id": "OL",
-              "away_team_id": "SCO",
-              "status": "PENDING",
-              "actual_result": "Partit pendent de disputar",
-              "evaluated_at": null
-            },
-            {
-              "id": 3203,
-              "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_1",
-              "matchup": "Le Havre AC vs Paris Saint-Germain",
-              "selection_name": "1 - Victòria Local (Le Havre AC)",
-              "category": "1X2",
-              "bookie_odd": 8.0,
-              "model_prob": 37.5,
-              "match_date": "30.10.2026 18:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-              "home_team_id": "HAC",
-              "away_team_id": "PSG",
-              "status": "LOST",
-              "actual_result": "1-5 (no victòria local)",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
-          "competition_id": "LIGUE1",
-          "season": "2026-2027",
-          "jornada": 9,
-          "profile": "RISKY_1",
-          "stake": 5.0,
-          "combined_odd": 36.08,
-          "combined_prob_pct": 6.2,
-          "fair_odd": 16.06,
-          "ev_pct": 124.7,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -5.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 18:44:00",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3207,
-              "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
-              "matchup": "Le Havre AC vs Paris Saint-Germain",
-              "selection_name": "1 - Victòria Local (Le Havre AC)",
-              "category": "1X2",
-              "bookie_odd": 8.0,
-              "model_prob": 37.5,
-              "match_date": "30.10.2026 18:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-              "home_team_id": "HAC",
-              "away_team_id": "PSG",
-              "status": "LOST",
-              "actual_result": "1-5 (no victòria local)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3208,
-              "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
-              "matchup": "Lille OSC vs RC Lens",
-              "selection_name": "1 - Victòria Local (Lille OSC)",
-              "category": "1X2",
-              "bookie_odd": 2.2,
-              "model_prob": 40.7,
-              "match_date": "30.10.2026 20:05",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036258",
-              "home_team_id": "LIL",
-              "away_team_id": "RCL",
-              "status": "WON",
-              "actual_result": "1-0 (1 encertat)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3209,
-              "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
-              "matchup": "ES Troyes AC vs Le Mans FC",
-              "selection_name": "1 - Victòria Local (ES Troyes AC)",
-              "category": "1X2",
-              "bookie_odd": 2.05,
-              "model_prob": 40.8,
-              "match_date": "31.10.2026 19:45",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72036272",
-              "home_team_id": "EST",
-              "away_team_id": "LMA",
-              "status": "PENDING",
-              "actual_result": "Partit pendent de disputar",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_2026-2027_LALIGA_J11_SAFE_1",
-          "competition_id": "LALIGA",
-          "season": "2026-2027",
-          "jornada": 11,
-          "profile": "SAFE_1",
-          "stake": 25.0,
-          "combined_odd": 2.04,
-          "combined_prob_pct": 34.1,
-          "fair_odd": 2.93,
-          "ev_pct": -30.4,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -25.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 18:43:40",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3186,
-              "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_1",
-              "matchup": "Villarreal CF vs RCD Espanyol",
-              "selection_name": "1 - Victòria Local (Villarreal CF)",
-              "category": "1X2",
-              "bookie_odd": 1.47,
-              "model_prob": 54.8,
-              "match_date": "30.10.2026 20:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478684",
-              "home_team_id": "VIL",
-              "away_team_id": "ESP",
-              "status": "LOST",
-              "actual_result": "0-1 (no victòria local)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3187,
-              "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_1",
-              "matchup": "Real Betis vs Málaga CF",
-              "selection_name": "1 - Victòria Local (Real Betis)",
-              "category": "1X2",
-              "bookie_odd": 1.39,
-              "model_prob": 62.3,
-              "match_date": "31.10.2026 17:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72478668",
-              "home_team_id": "BET",
-              "away_team_id": "MAL",
-              "status": "PENDING",
-              "actual_result": "Partit pendent de disputar",
-              "evaluated_at": null
-            }
-          ]
-        },
-        {
-          "id": "COMBO_2026-2027_CHAMPIONSHIP_J13_RISKY_1",
-          "competition_id": "CHAMPIONSHIP",
-          "season": "2026-2027",
-          "jornada": 13,
-          "profile": "RISKY_1",
-          "stake": 5.0,
-          "combined_odd": 41.87,
-          "combined_prob_pct": 38.5,
-          "fair_odd": 2.6,
-          "ev_pct": 1511.6,
-          "status": "LOST",
-          "payout": 0.0,
-          "profit": -5.0,
-          "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-          "created_at": "2026-10-30 02:04:32",
-          "evaluated_at": null,
-          "legs": [
-            {
-              "id": 3104,
-              "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J13_RISKY_1",
-              "matchup": "Sheffield United vs Wrexham",
-              "selection_name": "Ambdós Equips Marquen (BTTS Sí)",
-              "category": "BTTS",
-              "bookie_odd": 1.73,
-              "model_prob": 50.6,
-              "match_date": "30.10.2026 21:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "home_team_id": "SHU",
-              "away_team_id": "WRE",
-              "status": "LOST",
-              "actual_result": "1-0 (no han marcat ambdós)",
-              "evaluated_at": null
-            },
-            {
-              "id": 3105,
-              "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J13_RISKY_1",
-              "matchup": "Lincoln City vs Birmingham City",
-              "selection_name": "Més de 6.0 Córners",
-              "category": "Córners",
-              "bookie_odd": 11.0,
-              "model_prob": 83.5,
-              "match_date": "31.10.2026 13:30",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339964",
-              "home_team_id": "LIN",
-              "away_team_id": "BIR",
-              "status": "PENDING",
-              "actual_result": "Partit pendent de disputar",
-              "evaluated_at": null
-            },
-            {
-              "id": 3106,
-              "combo_id": "COMBO_2026-2027_CHAMPIONSHIP_J13_RISKY_1",
-              "matchup": "Bolton Wanderers vs Bristol City",
-              "selection_name": "Més de 5.5 Córners",
-              "category": "Córners",
-              "bookie_odd": 2.2,
-              "model_prob": 91.1,
-              "match_date": "31.10.2026 16:00",
-              "url": "https://www.winamax.es/apuestas-deportivas/match/72339960",
-              "home_team_id": "BOL",
-              "away_team_id": "BRC",
-              "status": "PENDING",
-              "actual_result": "Partit pendent de disputar",
-              "evaluated_at": null
-            }
-          ]
-        }
-      ],
-      "combos_generated": [
-        {
-          "competition_id": "DAILY",
-          "jornada": 0,
-          "profile": "SAFE_1",
-          "odd": 2.7
-        },
-        {
-          "competition_id": "DAILY",
-          "jornada": 0,
-          "profile": "SAFE_2",
-          "odd": 2.37
-        },
-        {
-          "competition_id": "DAILY",
-          "jornada": 0,
-          "profile": "SEMI_1",
-          "odd": 8.51
-        },
-        {
-          "competition_id": "DAILY",
-          "jornada": 0,
-          "profile": "SEMI_2",
-          "odd": 9.57
-        },
-        {
-          "competition_id": "DAILY",
-          "jornada": 0,
-          "profile": "RISKY_1",
-          "odd": 35.51
-        },
-        {
-          "competition_id": "DAILY",
-          "jornada": 0,
-          "profile": "RISKY_2",
-          "odd": 37.96
-        }
-      ],
+      "matches": [],
+      "combos_evaluated": [],
+      "combos_generated": [],
       "referee_updates": []
     },
     {
@@ -16659,22 +15842,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72478684",
-              "cached_value_bets": [
-                {
-                  "model_prob": 26.2,
-                  "bookie_odd": 4.6,
-                  "fair_odd": 3.82,
-                  "implied_prob": 21.7,
-                  "ev_pct": 20.5,
-                  "kelly_pct": 1.4,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 4.6,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_winamax": {
               "matched": true,
@@ -16699,22 +15867,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72478684",
-              "cached_value_bets": [
-                {
-                  "model_prob": 26.2,
-                  "bookie_odd": 4.6,
-                  "fair_odd": 3.82,
-                  "implied_prob": 21.7,
-                  "ev_pct": 20.5,
-                  "kelly_pct": 1.4,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 4.6,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_bet365": {},
             "has_winamax_odds": true,
@@ -18686,22 +17839,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72478684",
-            "cached_value_bets": [
-              {
-                "model_prob": 26.2,
-                "bookie_odd": 4.6,
-                "fair_odd": 3.82,
-                "implied_prob": 21.7,
-                "ev_pct": 20.5,
-                "kelly_pct": 1.4,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 4.6,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_winamax": {
             "matched": true,
@@ -18726,22 +17864,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72478684",
-            "cached_value_bets": [
-              {
-                "model_prob": 26.2,
-                "bookie_odd": 4.6,
-                "fair_odd": 3.82,
-                "implied_prob": 21.7,
-                "ev_pct": 20.5,
-                "kelly_pct": 1.4,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 4.6,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_bet365": {},
           "has_winamax_odds": true,
@@ -44700,22 +43823,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "cached_value_bets": [
-                {
-                  "model_prob": 55.9,
-                  "bookie_odd": 2.4,
-                  "fair_odd": 1.79,
-                  "implied_prob": 41.7,
-                  "ev_pct": 34.2,
-                  "kelly_pct": 6.1,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "1 - Victòria Local (Sheffield United)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 2.4,
-                  "bookie_odd_bet365": 2.25
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_winamax": {
               "matched": true,
@@ -44740,22 +43848,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-              "cached_value_bets": [
-                {
-                  "model_prob": 55.9,
-                  "bookie_odd": 2.4,
-                  "fair_odd": 1.79,
-                  "implied_prob": 41.7,
-                  "ev_pct": 34.2,
-                  "kelly_pct": 6.1,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "1 - Victòria Local (Sheffield United)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 2.4,
-                  "bookie_odd_bet365": 2.25
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_bet365": {
               "matched": true,
@@ -47225,22 +46318,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-            "cached_value_bets": [
-              {
-                "model_prob": 55.9,
-                "bookie_odd": 2.4,
-                "fair_odd": 1.79,
-                "implied_prob": 41.7,
-                "ev_pct": 34.2,
-                "kelly_pct": 6.1,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1 - Victòria Local (Sheffield United)",
-                "category": "1X2",
-                "bookie_odd_winamax": 2.4,
-                "bookie_odd_bet365": 2.25
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_winamax": {
             "matched": true,
@@ -47265,22 +46343,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72339972",
-            "cached_value_bets": [
-              {
-                "model_prob": 55.9,
-                "bookie_odd": 2.4,
-                "fair_odd": 1.79,
-                "implied_prob": 41.7,
-                "ev_pct": 34.2,
-                "kelly_pct": 6.1,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1 - Victòria Local (Sheffield United)",
-                "category": "1X2",
-                "bookie_odd_winamax": 2.4,
-                "bookie_odd_bet365": 2.25
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_bet365": {
             "matched": true,
@@ -53583,22 +52646,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72513290",
-              "cached_value_bets": [
-                {
-                  "model_prob": 39.9,
-                  "bookie_odd": 2.85,
-                  "fair_odd": 2.51,
-                  "implied_prob": 35.1,
-                  "ev_pct": 13.7,
-                  "kelly_pct": 1.9,
-                  "is_value": true,
-                  "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                  "name": "1 - Victòria Local (SV Elversberg)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 2.85,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_winamax": {
               "matched": true,
@@ -53623,22 +52671,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72513290",
-              "cached_value_bets": [
-                {
-                  "model_prob": 39.9,
-                  "bookie_odd": 2.85,
-                  "fair_odd": 2.51,
-                  "implied_prob": 35.1,
-                  "ev_pct": 13.7,
-                  "kelly_pct": 1.9,
-                  "is_value": true,
-                  "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                  "name": "1 - Victòria Local (SV Elversberg)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 2.85,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_bet365": {},
             "has_winamax_odds": true,
@@ -55424,22 +54457,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72513290",
-            "cached_value_bets": [
-              {
-                "model_prob": 39.9,
-                "bookie_odd": 2.85,
-                "fair_odd": 2.51,
-                "implied_prob": 35.1,
-                "ev_pct": 13.7,
-                "kelly_pct": 1.9,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "1 - Victòria Local (SV Elversberg)",
-                "category": "1X2",
-                "bookie_odd_winamax": 2.85,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_winamax": {
             "matched": true,
@@ -55464,22 +54482,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72513290",
-            "cached_value_bets": [
-              {
-                "model_prob": 39.9,
-                "bookie_odd": 2.85,
-                "fair_odd": 2.51,
-                "implied_prob": 35.1,
-                "ev_pct": 13.7,
-                "kelly_pct": 1.9,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "1 - Victòria Local (SV Elversberg)",
-                "category": "1X2",
-                "bookie_odd_winamax": 2.85,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_bet365": {},
           "has_winamax_odds": true,
@@ -61817,36 +60820,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-              "cached_value_bets": [
-                {
-                  "model_prob": 37.5,
-                  "bookie_odd": 8.0,
-                  "fair_odd": 2.67,
-                  "implied_prob": 12.5,
-                  "ev_pct": 200.0,
-                  "kelly_pct": 7.1,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "1 - Victòria Local (Le Havre AC)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 8.0,
-                  "bookie_odd_bet365": null
-                },
-                {
-                  "model_prob": 28.3,
-                  "bookie_odd": 6.5,
-                  "fair_odd": 3.53,
-                  "implied_prob": 15.4,
-                  "ev_pct": 84.0,
-                  "kelly_pct": 3.8,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 6.5,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_winamax": {
               "matched": true,
@@ -61871,36 +60845,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-              "cached_value_bets": [
-                {
-                  "model_prob": 37.5,
-                  "bookie_odd": 8.0,
-                  "fair_odd": 2.67,
-                  "implied_prob": 12.5,
-                  "ev_pct": 200.0,
-                  "kelly_pct": 7.1,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "1 - Victòria Local (Le Havre AC)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 8.0,
-                  "bookie_odd_bet365": null
-                },
-                {
-                  "model_prob": 28.3,
-                  "bookie_odd": 6.5,
-                  "fair_odd": 3.53,
-                  "implied_prob": 15.4,
-                  "ev_pct": 84.0,
-                  "kelly_pct": 3.8,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 6.5,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_bet365": {},
             "has_winamax_odds": true,
@@ -62048,36 +60993,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72036266",
-              "cached_value_bets": [
-                {
-                  "model_prob": 41.3,
-                  "bookie_odd": 2.6,
-                  "fair_odd": 2.42,
-                  "implied_prob": 38.5,
-                  "ev_pct": 7.4,
-                  "kelly_pct": 1.2,
-                  "is_value": true,
-                  "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                  "name": "1 - Victòria Local (OGC Nice)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 2.6,
-                  "bookie_odd_bet365": null
-                },
-                {
-                  "model_prob": 27.9,
-                  "bookie_odd": 3.7,
-                  "fair_odd": 3.58,
-                  "implied_prob": 27.0,
-                  "ev_pct": 3.2,
-                  "kelly_pct": 0.3,
-                  "is_value": true,
-                  "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 3.7,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_winamax": {
               "matched": true,
@@ -62102,36 +61018,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72036266",
-              "cached_value_bets": [
-                {
-                  "model_prob": 41.3,
-                  "bookie_odd": 2.6,
-                  "fair_odd": 2.42,
-                  "implied_prob": 38.5,
-                  "ev_pct": 7.4,
-                  "kelly_pct": 1.2,
-                  "is_value": true,
-                  "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                  "name": "1 - Victòria Local (OGC Nice)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 2.6,
-                  "bookie_odd_bet365": null
-                },
-                {
-                  "model_prob": 27.9,
-                  "bookie_odd": 3.7,
-                  "fair_odd": 3.58,
-                  "implied_prob": 27.0,
-                  "ev_pct": 3.2,
-                  "kelly_pct": 0.3,
-                  "is_value": true,
-                  "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 3.7,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_bet365": {},
             "has_winamax_odds": true,
@@ -62279,22 +61166,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72036258",
-              "cached_value_bets": [
-                {
-                  "model_prob": 28.4,
-                  "bookie_odd": 3.55,
-                  "fair_odd": 3.52,
-                  "implied_prob": 28.2,
-                  "ev_pct": 0.8,
-                  "kelly_pct": 0.1,
-                  "is_value": true,
-                  "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 3.55,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_winamax": {
               "matched": true,
@@ -62319,22 +61191,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72036258",
-              "cached_value_bets": [
-                {
-                  "model_prob": 28.4,
-                  "bookie_odd": 3.55,
-                  "fair_odd": 3.52,
-                  "implied_prob": 28.2,
-                  "ev_pct": 0.8,
-                  "kelly_pct": 0.1,
-                  "is_value": true,
-                  "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 3.55,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_bet365": {},
             "has_winamax_odds": true,
@@ -63703,36 +62560,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-            "cached_value_bets": [
-              {
-                "model_prob": 37.5,
-                "bookie_odd": 8.0,
-                "fair_odd": 2.67,
-                "implied_prob": 12.5,
-                "ev_pct": 200.0,
-                "kelly_pct": 7.1,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1 - Victòria Local (Le Havre AC)",
-                "category": "1X2",
-                "bookie_odd_winamax": 8.0,
-                "bookie_odd_bet365": null
-              },
-              {
-                "model_prob": 28.3,
-                "bookie_odd": 6.5,
-                "fair_odd": 3.53,
-                "implied_prob": 15.4,
-                "ev_pct": 84.0,
-                "kelly_pct": 3.8,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 6.5,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_winamax": {
             "matched": true,
@@ -63757,36 +62585,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72036256",
-            "cached_value_bets": [
-              {
-                "model_prob": 37.5,
-                "bookie_odd": 8.0,
-                "fair_odd": 2.67,
-                "implied_prob": 12.5,
-                "ev_pct": 200.0,
-                "kelly_pct": 7.1,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "1 - Victòria Local (Le Havre AC)",
-                "category": "1X2",
-                "bookie_odd_winamax": 8.0,
-                "bookie_odd_bet365": null
-              },
-              {
-                "model_prob": 28.3,
-                "bookie_odd": 6.5,
-                "fair_odd": 3.53,
-                "implied_prob": 15.4,
-                "ev_pct": 84.0,
-                "kelly_pct": 3.8,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 6.5,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_bet365": {},
           "has_winamax_odds": true,
@@ -63934,36 +62733,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72036266",
-            "cached_value_bets": [
-              {
-                "model_prob": 41.3,
-                "bookie_odd": 2.6,
-                "fair_odd": 2.42,
-                "implied_prob": 38.5,
-                "ev_pct": 7.4,
-                "kelly_pct": 1.2,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "1 - Victòria Local (OGC Nice)",
-                "category": "1X2",
-                "bookie_odd_winamax": 2.6,
-                "bookie_odd_bet365": null
-              },
-              {
-                "model_prob": 27.9,
-                "bookie_odd": 3.7,
-                "fair_odd": 3.58,
-                "implied_prob": 27.0,
-                "ev_pct": 3.2,
-                "kelly_pct": 0.3,
-                "is_value": true,
-                "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 3.7,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_winamax": {
             "matched": true,
@@ -63988,36 +62758,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72036266",
-            "cached_value_bets": [
-              {
-                "model_prob": 41.3,
-                "bookie_odd": 2.6,
-                "fair_odd": 2.42,
-                "implied_prob": 38.5,
-                "ev_pct": 7.4,
-                "kelly_pct": 1.2,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "1 - Victòria Local (OGC Nice)",
-                "category": "1X2",
-                "bookie_odd_winamax": 2.6,
-                "bookie_odd_bet365": null
-              },
-              {
-                "model_prob": 27.9,
-                "bookie_odd": 3.7,
-                "fair_odd": 3.58,
-                "implied_prob": 27.0,
-                "ev_pct": 3.2,
-                "kelly_pct": 0.3,
-                "is_value": true,
-                "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 3.7,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_bet365": {},
           "has_winamax_odds": true,
@@ -64165,22 +62906,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72036258",
-            "cached_value_bets": [
-              {
-                "model_prob": 28.4,
-                "bookie_odd": 3.55,
-                "fair_odd": 3.52,
-                "implied_prob": 28.2,
-                "ev_pct": 0.8,
-                "kelly_pct": 0.1,
-                "is_value": true,
-                "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 3.55,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_winamax": {
             "matched": true,
@@ -64205,22 +62931,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72036258",
-            "cached_value_bets": [
-              {
-                "model_prob": 28.4,
-                "bookie_odd": 3.55,
-                "fair_odd": 3.52,
-                "implied_prob": 28.2,
-                "ev_pct": 0.8,
-                "kelly_pct": 0.1,
-                "is_value": true,
-                "rating": "✓ LLEUGER VALOR (0% a +5% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 3.55,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_bet365": {},
           "has_winamax_odds": true,
@@ -76873,7 +75584,8 @@
       "has_started": true,
       "safe": [
         {
-          "profile": "Combinada Segura #1 (Cuota 2-3)",
+          "id": "COMBO_2026-2027_PREMIER_J9_SAFE_1",
+          "profile": "SAFE_1",
           "category_code": "SAFE",
           "stake": 25.0,
           "combined_odd": 3.07,
@@ -76889,7 +75601,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Segura #1 (Cuota 2-3)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Chelsea vs Manchester Utd] 👉 1 - Victòria Local (Chelsea) (Sense quota Bet365)\n2. [Tottenham Hotspur vs Crystal Palace] 👉 1 - Victòria Local (Tottenham Hotspur) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Chelsea vs Manchester Utd] 👉 1 - Victòria Local (Chelsea) (Sense quota Bet365)\n2. [Tottenham Hotspur vs Crystal Palace] 👉 1 - Victòria Local (Tottenham Hotspur) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -76900,6 +75612,7 @@
           },
           "legs": [
             {
+              "id": 3247,
               "matchup": "Chelsea vs Manchester Utd",
               "selection_name": "1 - Victòria Local (Chelsea)",
               "category": "1X2",
@@ -76912,9 +75625,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221358",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3248,
               "matchup": "Tottenham Hotspur vs Crystal Palace",
               "selection_name": "1 - Victòria Local (Tottenham Hotspur)",
               "category": "1X2",
@@ -76927,12 +75641,13 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221370",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         },
         {
-          "profile": "Combinada Segura #2 (Cuota 2-3 Alternativa)",
+          "id": "COMBO_2026-2027_PREMIER_J9_SAFE_2",
+          "profile": "SAFE_2",
           "category_code": "SAFE",
           "stake": 25.0,
           "combined_odd": 3.53,
@@ -76948,7 +75663,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 1 - Victòria Local (Newcastle United) (Sense quota Bet365)\n2. [Manchester City vs Brighton & Hove Albion] 👉 1 - Victòria Local (Manchester City) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 1 - Victòria Local (Newcastle United) (Sense quota Bet365)\n2. [Manchester City vs Brighton & Hove Albion] 👉 1 - Victòria Local (Manchester City) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -76959,6 +75674,7 @@
           },
           "legs": [
             {
+              "id": 3249,
               "matchup": "Newcastle United vs Everton",
               "selection_name": "1 - Victòria Local (Newcastle United)",
               "category": "1X2",
@@ -76971,9 +75687,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221368",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3250,
               "matchup": "Manchester City vs Brighton & Hove Albion",
               "selection_name": "1 - Victòria Local (Manchester City)",
               "category": "1X2",
@@ -76986,14 +75703,15 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221366",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         }
       ],
       "semi": [
         {
-          "profile": "Combinada Semi-Arriscada #1 (Cuota ~10.0)",
+          "id": "COMBO_2026-2027_PREMIER_J9_SEMI_1",
+          "profile": "SEMI_1",
           "category_code": "SEMI",
           "stake": 10.0,
           "combined_odd": 8.76,
@@ -77009,7 +75727,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 1 - Victòria Local (Newcastle United) (Sense quota Bet365)\n2. [Chelsea vs Manchester Utd] 👉 1 - Victòria Local (Chelsea) (Sense quota Bet365)\n3. [AFC Bournemouth vs Leeds Utd] 👉 1 - Victòria Local (AFC Bournemouth) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 1 - Victòria Local (Newcastle United) (Sense quota Bet365)\n2. [Chelsea vs Manchester Utd] 👉 1 - Victòria Local (Chelsea) (Sense quota Bet365)\n3. [AFC Bournemouth vs Leeds Utd] 👉 1 - Victòria Local (AFC Bournemouth) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -77020,6 +75738,7 @@
           },
           "legs": [
             {
+              "id": 3251,
               "matchup": "Newcastle United vs Everton",
               "selection_name": "1 - Victòria Local (Newcastle United)",
               "category": "1X2",
@@ -77032,9 +75751,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221368",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3252,
               "matchup": "Chelsea vs Manchester Utd",
               "selection_name": "1 - Victòria Local (Chelsea)",
               "category": "1X2",
@@ -77047,9 +75767,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221358",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3253,
               "matchup": "AFC Bournemouth vs Leeds Utd",
               "selection_name": "1 - Victòria Local (AFC Bournemouth)",
               "category": "1X2",
@@ -77062,12 +75783,13 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221354",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         },
         {
-          "profile": "Combinada Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+          "id": "COMBO_2026-2027_PREMIER_J9_SEMI_2",
+          "profile": "SEMI_2",
           "category_code": "SEMI",
           "stake": 10.0,
           "combined_odd": 8.91,
@@ -77083,7 +75805,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Liverpool vs Arsenal] 👉 1 - Victòria Local (Liverpool) (Sense quota Bet365)\n2. [Tottenham Hotspur vs Crystal Palace] 👉 1 - Victòria Local (Tottenham Hotspur) (Sense quota Bet365)\n3. [Aston Villa vs Fulham] 👉 1 - Victòria Local (Aston Villa) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Liverpool vs Arsenal] 👉 1 - Victòria Local (Liverpool) (Sense quota Bet365)\n2. [Tottenham Hotspur vs Crystal Palace] 👉 1 - Victòria Local (Tottenham Hotspur) (Sense quota Bet365)\n3. [Aston Villa vs Fulham] 👉 1 - Victòria Local (Aston Villa) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -77094,6 +75816,7 @@
           },
           "legs": [
             {
+              "id": 3254,
               "matchup": "Liverpool vs Arsenal",
               "selection_name": "1 - Victòria Local (Liverpool)",
               "category": "1X2",
@@ -77106,9 +75829,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221364",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3255,
               "matchup": "Tottenham Hotspur vs Crystal Palace",
               "selection_name": "1 - Victòria Local (Tottenham Hotspur)",
               "category": "1X2",
@@ -77121,9 +75845,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221370",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3256,
               "matchup": "Aston Villa vs Fulham",
               "selection_name": "1 - Victòria Local (Aston Villa)",
               "category": "1X2",
@@ -77136,14 +75861,15 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221352",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         }
       ],
       "risky": [
         {
-          "profile": "Combinada Arriscada #1 (Cuota >= 30.0)",
+          "id": "COMBO_2026-2027_PREMIER_J9_RISKY_1",
+          "profile": "RISKY_1",
           "category_code": "RISKY",
           "stake": 5.0,
           "combined_odd": 29.61,
@@ -77159,7 +75885,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Liverpool vs Arsenal] 👉 1 - Victòria Local (Liverpool) (Sense quota Bet365)\n2. [AFC Bournemouth vs Leeds Utd] 👉 1 - Victòria Local (AFC Bournemouth) (Sense quota Bet365)\n3. [Hull vs Ipswich Town] 👉 1 - Victòria Local (Hull) (Sense quota Bet365)\n4. [Aston Villa vs Fulham] 👉 1 - Victòria Local (Aston Villa) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Liverpool vs Arsenal] 👉 1 - Victòria Local (Liverpool) (Sense quota Bet365)\n2. [AFC Bournemouth vs Leeds Utd] 👉 1 - Victòria Local (AFC Bournemouth) (Sense quota Bet365)\n3. [Hull vs Ipswich Town] 👉 1 - Victòria Local (Hull) (Sense quota Bet365)\n4. [Aston Villa vs Fulham] 👉 1 - Victòria Local (Aston Villa) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -77170,6 +75896,7 @@
           },
           "legs": [
             {
+              "id": 3257,
               "matchup": "Liverpool vs Arsenal",
               "selection_name": "1 - Victòria Local (Liverpool)",
               "category": "1X2",
@@ -77182,9 +75909,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221364",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3258,
               "matchup": "AFC Bournemouth vs Leeds Utd",
               "selection_name": "1 - Victòria Local (AFC Bournemouth)",
               "category": "1X2",
@@ -77197,9 +75925,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221354",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3259,
               "matchup": "Hull vs Ipswich Town",
               "selection_name": "1 - Victòria Local (Hull)",
               "category": "1X2",
@@ -77212,9 +75941,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221362",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3260,
               "matchup": "Aston Villa vs Fulham",
               "selection_name": "1 - Victòria Local (Aston Villa)",
               "category": "1X2",
@@ -77227,12 +75957,13 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221352",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         },
         {
-          "profile": "Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)",
+          "id": "COMBO_2026-2027_PREMIER_J9_RISKY_2",
+          "profile": "RISKY_2",
           "category_code": "RISKY",
           "stake": 5.0,
           "combined_odd": 56.7,
@@ -77248,7 +75979,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 X - Empat (Sense quota Bet365)\n2. [Chelsea vs Manchester Utd] 👉 X - Empat (Sense quota Bet365)\n3. [Manchester City vs Brighton & Hove Albion] 👉 X - Empat (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 X - Empat (Sense quota Bet365)\n2. [Chelsea vs Manchester Utd] 👉 X - Empat (Sense quota Bet365)\n3. [Manchester City vs Brighton & Hove Albion] 👉 X - Empat (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -77259,6 +75990,7 @@
           },
           "legs": [
             {
+              "id": 3261,
               "matchup": "Newcastle United vs Everton",
               "selection_name": "X - Empat",
               "category": "1X2",
@@ -77271,9 +76003,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221368",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3262,
               "matchup": "Chelsea vs Manchester Utd",
               "selection_name": "X - Empat",
               "category": "1X2",
@@ -77286,9 +76019,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221358",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3263,
               "matchup": "Manchester City vs Brighton & Hove Albion",
               "selection_name": "X - Empat",
               "category": "1X2",
@@ -77301,7 +76035,7 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221366",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         }
@@ -79101,7 +77835,8 @@
           "jornada": 9,
           "safe": [
             {
-              "profile": "Combinada Segura #1 (Cuota 2-3)",
+              "id": "COMBO_2026-2027_PREMIER_J9_SAFE_1",
+              "profile": "SAFE_1",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 3.07,
@@ -79117,7 +77852,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Segura #1 (Cuota 2-3)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Chelsea vs Manchester Utd] 👉 1 - Victòria Local (Chelsea) (Sense quota Bet365)\n2. [Tottenham Hotspur vs Crystal Palace] 👉 1 - Victòria Local (Tottenham Hotspur) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Chelsea vs Manchester Utd] 👉 1 - Victòria Local (Chelsea) (Sense quota Bet365)\n2. [Tottenham Hotspur vs Crystal Palace] 👉 1 - Victòria Local (Tottenham Hotspur) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79128,6 +77863,7 @@
               },
               "legs": [
                 {
+                  "id": 3247,
                   "matchup": "Chelsea vs Manchester Utd",
                   "selection_name": "1 - Victòria Local (Chelsea)",
                   "category": "1X2",
@@ -79140,9 +77876,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221358",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3248,
                   "matchup": "Tottenham Hotspur vs Crystal Palace",
                   "selection_name": "1 - Victòria Local (Tottenham Hotspur)",
                   "category": "1X2",
@@ -79155,12 +77892,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221370",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             },
             {
-              "profile": "Combinada Segura #2 (Cuota 2-3 Alternativa)",
+              "id": "COMBO_2026-2027_PREMIER_J9_SAFE_2",
+              "profile": "SAFE_2",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 3.53,
@@ -79176,7 +77914,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 1 - Victòria Local (Newcastle United) (Sense quota Bet365)\n2. [Manchester City vs Brighton & Hove Albion] 👉 1 - Victòria Local (Manchester City) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 1 - Victòria Local (Newcastle United) (Sense quota Bet365)\n2. [Manchester City vs Brighton & Hove Albion] 👉 1 - Victòria Local (Manchester City) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79187,6 +77925,7 @@
               },
               "legs": [
                 {
+                  "id": 3249,
                   "matchup": "Newcastle United vs Everton",
                   "selection_name": "1 - Victòria Local (Newcastle United)",
                   "category": "1X2",
@@ -79199,9 +77938,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221368",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3250,
                   "matchup": "Manchester City vs Brighton & Hove Albion",
                   "selection_name": "1 - Victòria Local (Manchester City)",
                   "category": "1X2",
@@ -79214,14 +77954,15 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221366",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             }
           ],
           "semi": [
             {
-              "profile": "Combinada Semi-Arriscada #1 (Cuota ~10.0)",
+              "id": "COMBO_2026-2027_PREMIER_J9_SEMI_1",
+              "profile": "SEMI_1",
               "category_code": "SEMI",
               "stake": 10.0,
               "combined_odd": 8.76,
@@ -79237,7 +77978,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 1 - Victòria Local (Newcastle United) (Sense quota Bet365)\n2. [Chelsea vs Manchester Utd] 👉 1 - Victòria Local (Chelsea) (Sense quota Bet365)\n3. [AFC Bournemouth vs Leeds Utd] 👉 1 - Victòria Local (AFC Bournemouth) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 1 - Victòria Local (Newcastle United) (Sense quota Bet365)\n2. [Chelsea vs Manchester Utd] 👉 1 - Victòria Local (Chelsea) (Sense quota Bet365)\n3. [AFC Bournemouth vs Leeds Utd] 👉 1 - Victòria Local (AFC Bournemouth) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79248,6 +77989,7 @@
               },
               "legs": [
                 {
+                  "id": 3251,
                   "matchup": "Newcastle United vs Everton",
                   "selection_name": "1 - Victòria Local (Newcastle United)",
                   "category": "1X2",
@@ -79260,9 +78002,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221368",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3252,
                   "matchup": "Chelsea vs Manchester Utd",
                   "selection_name": "1 - Victòria Local (Chelsea)",
                   "category": "1X2",
@@ -79275,9 +78018,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221358",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3253,
                   "matchup": "AFC Bournemouth vs Leeds Utd",
                   "selection_name": "1 - Victòria Local (AFC Bournemouth)",
                   "category": "1X2",
@@ -79290,12 +78034,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221354",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             },
             {
-              "profile": "Combinada Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+              "id": "COMBO_2026-2027_PREMIER_J9_SEMI_2",
+              "profile": "SEMI_2",
               "category_code": "SEMI",
               "stake": 10.0,
               "combined_odd": 8.91,
@@ -79311,7 +78056,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Liverpool vs Arsenal] 👉 1 - Victòria Local (Liverpool) (Sense quota Bet365)\n2. [Tottenham Hotspur vs Crystal Palace] 👉 1 - Victòria Local (Tottenham Hotspur) (Sense quota Bet365)\n3. [Aston Villa vs Fulham] 👉 1 - Victòria Local (Aston Villa) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Liverpool vs Arsenal] 👉 1 - Victòria Local (Liverpool) (Sense quota Bet365)\n2. [Tottenham Hotspur vs Crystal Palace] 👉 1 - Victòria Local (Tottenham Hotspur) (Sense quota Bet365)\n3. [Aston Villa vs Fulham] 👉 1 - Victòria Local (Aston Villa) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79322,6 +78067,7 @@
               },
               "legs": [
                 {
+                  "id": 3254,
                   "matchup": "Liverpool vs Arsenal",
                   "selection_name": "1 - Victòria Local (Liverpool)",
                   "category": "1X2",
@@ -79334,9 +78080,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221364",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3255,
                   "matchup": "Tottenham Hotspur vs Crystal Palace",
                   "selection_name": "1 - Victòria Local (Tottenham Hotspur)",
                   "category": "1X2",
@@ -79349,9 +78096,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221370",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3256,
                   "matchup": "Aston Villa vs Fulham",
                   "selection_name": "1 - Victòria Local (Aston Villa)",
                   "category": "1X2",
@@ -79364,14 +78112,15 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221352",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             }
           ],
           "risky": [
             {
-              "profile": "Combinada Arriscada #1 (Cuota >= 30.0)",
+              "id": "COMBO_2026-2027_PREMIER_J9_RISKY_1",
+              "profile": "RISKY_1",
               "category_code": "RISKY",
               "stake": 5.0,
               "combined_odd": 29.61,
@@ -79387,7 +78136,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Liverpool vs Arsenal] 👉 1 - Victòria Local (Liverpool) (Sense quota Bet365)\n2. [AFC Bournemouth vs Leeds Utd] 👉 1 - Victòria Local (AFC Bournemouth) (Sense quota Bet365)\n3. [Hull vs Ipswich Town] 👉 1 - Victòria Local (Hull) (Sense quota Bet365)\n4. [Aston Villa vs Fulham] 👉 1 - Victòria Local (Aston Villa) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Liverpool vs Arsenal] 👉 1 - Victòria Local (Liverpool) (Sense quota Bet365)\n2. [AFC Bournemouth vs Leeds Utd] 👉 1 - Victòria Local (AFC Bournemouth) (Sense quota Bet365)\n3. [Hull vs Ipswich Town] 👉 1 - Victòria Local (Hull) (Sense quota Bet365)\n4. [Aston Villa vs Fulham] 👉 1 - Victòria Local (Aston Villa) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79398,6 +78147,7 @@
               },
               "legs": [
                 {
+                  "id": 3257,
                   "matchup": "Liverpool vs Arsenal",
                   "selection_name": "1 - Victòria Local (Liverpool)",
                   "category": "1X2",
@@ -79410,9 +78160,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221364",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3258,
                   "matchup": "AFC Bournemouth vs Leeds Utd",
                   "selection_name": "1 - Victòria Local (AFC Bournemouth)",
                   "category": "1X2",
@@ -79425,9 +78176,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221354",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3259,
                   "matchup": "Hull vs Ipswich Town",
                   "selection_name": "1 - Victòria Local (Hull)",
                   "category": "1X2",
@@ -79440,9 +78192,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221362",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3260,
                   "matchup": "Aston Villa vs Fulham",
                   "selection_name": "1 - Victòria Local (Aston Villa)",
                   "category": "1X2",
@@ -79455,12 +78208,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221352",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             },
             {
-              "profile": "Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)",
+              "id": "COMBO_2026-2027_PREMIER_J9_RISKY_2",
+              "profile": "RISKY_2",
               "category_code": "RISKY",
               "stake": 5.0,
               "combined_odd": 56.7,
@@ -79476,7 +78230,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 X - Empat (Sense quota Bet365)\n2. [Chelsea vs Manchester Utd] 👉 X - Empat (Sense quota Bet365)\n3. [Manchester City vs Brighton & Hove Albion] 👉 X - Empat (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Newcastle United vs Everton] 👉 X - Empat (Sense quota Bet365)\n2. [Chelsea vs Manchester Utd] 👉 X - Empat (Sense quota Bet365)\n3. [Manchester City vs Brighton & Hove Albion] 👉 X - Empat (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79487,6 +78241,7 @@
               },
               "legs": [
                 {
+                  "id": 3261,
                   "matchup": "Newcastle United vs Everton",
                   "selection_name": "X - Empat",
                   "category": "1X2",
@@ -79499,9 +78254,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221368",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3262,
                   "matchup": "Chelsea vs Manchester Utd",
                   "selection_name": "X - Empat",
                   "category": "1X2",
@@ -79514,9 +78270,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221358",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3263,
                   "matchup": "Manchester City vs Brighton & Hove Albion",
                   "selection_name": "X - Empat",
                   "category": "1X2",
@@ -79529,7 +78286,7 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221366",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             }
@@ -89525,7 +88282,7 @@
           "formatted_date": "Dissabte, 24 d'octubre",
           "has_matches": true,
           "matches_count": 35,
-          "league_note": "Partits del dia de múltiples lligues (Bundesliga, Premier League, Ligue 1, Serie A, LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 35 partits",
+          "league_note": "Partits del dia de múltiples lligues (Premier League, Ligue 1, LaLiga Hypermotion, Serie A, LaLiga EA Sports, Bundesliga, EFL Championship) · 35 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-24_SAFE_1",
@@ -90246,7 +89003,7 @@
           "formatted_date": "Diumenge, 25 d'octubre",
           "has_matches": true,
           "matches_count": 26,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, Bundesliga, Serie A, LaLiga EA Sports, LaLiga Hypermotion, Ligue 1) · 26 partits",
+          "league_note": "Partits del dia de múltiples lligues (Bundesliga, Ligue 1, LaLiga Hypermotion, Serie A, LaLiga EA Sports, Premier League) · 26 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-25_SAFE_1",
@@ -92055,7 +90812,7 @@
           "formatted_date": "Divendres, 30 d'octubre",
           "has_matches": true,
           "matches_count": 6,
-          "league_note": "Partits del dia de múltiples lligues (EFL Championship, Bundesliga, Ligue 1, LaLiga EA Sports) · 6 partits",
+          "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, LaLiga EA Sports, EFL Championship) · 6 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-30_SAFE_1",
@@ -92488,7 +91245,7 @@
           "formatted_date": "Dissabte, 31 d'octubre",
           "has_matches": true,
           "matches_count": 37,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, Bundesliga, Ligue 1, Serie A, LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 37 partits",
+          "league_note": "Partits del dia de múltiples lligues (Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga, EFL Championship) · 37 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-31_SAFE_1",
@@ -92969,7 +91726,7 @@
           "formatted_date": "Diumenge, 1 de novembre",
           "has_matches": true,
           "matches_count": 20,
-          "league_note": "Partits programats: 20 (Premier League, Bundesliga, Serie A, LaLiga EA Sports, LaLiga Hypermotion, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 20 (Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -92979,7 +91736,7 @@
           "formatted_date": "Dilluns, 2 de novembre",
           "has_matches": true,
           "matches_count": 8,
-          "league_note": "Partits programats: 8 (Premier League, Serie A, LaLiga EA Sports, LaLiga Hypermotion, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 8 (Ligue 1, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -92987,7 +91744,7 @@
       },
       "has_matches": true,
       "matches_count": 37,
-      "league_note": "Partits del dia de múltiples lligues (Premier League, Bundesliga, Ligue 1, Serie A, LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 37 partits",
+      "league_note": "Partits del dia de múltiples lligues (Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga, EFL Championship) · 37 partits",
       "safe": [
         {
           "id": "COMBO_DAILY_2026-10-31_SAFE_1",
@@ -93556,7 +92313,7 @@
         "formatted_date": "Dissabte, 24 d'octubre",
         "has_matches": true,
         "matches_count": 35,
-        "league_note": "Partits del dia de múltiples lligues (Bundesliga, Premier League, Ligue 1, Serie A, LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 35 partits",
+        "league_note": "Partits del dia de múltiples lligues (Premier League, Ligue 1, LaLiga Hypermotion, Serie A, LaLiga EA Sports, Bundesliga, EFL Championship) · 35 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-24_SAFE_1",
@@ -94277,7 +93034,7 @@
         "formatted_date": "Diumenge, 25 d'octubre",
         "has_matches": true,
         "matches_count": 26,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, Bundesliga, Serie A, LaLiga EA Sports, LaLiga Hypermotion, Ligue 1) · 26 partits",
+        "league_note": "Partits del dia de múltiples lligues (Bundesliga, Ligue 1, LaLiga Hypermotion, Serie A, LaLiga EA Sports, Premier League) · 26 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-25_SAFE_1",
@@ -96086,7 +94843,7 @@
         "formatted_date": "Divendres, 30 d'octubre",
         "has_matches": true,
         "matches_count": 6,
-        "league_note": "Partits del dia de múltiples lligues (EFL Championship, Bundesliga, Ligue 1, LaLiga EA Sports) · 6 partits",
+        "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, LaLiga EA Sports, EFL Championship) · 6 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-30_SAFE_1",
@@ -96519,7 +95276,7 @@
         "formatted_date": "Dissabte, 31 d'octubre",
         "has_matches": true,
         "matches_count": 37,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, Bundesliga, Ligue 1, Serie A, LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 37 partits",
+        "league_note": "Partits del dia de múltiples lligues (Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga, EFL Championship) · 37 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-31_SAFE_1",
@@ -97000,7 +95757,7 @@
         "formatted_date": "Diumenge, 1 de novembre",
         "has_matches": true,
         "matches_count": 20,
-        "league_note": "Partits programats: 20 (Premier League, Bundesliga, Serie A, LaLiga EA Sports, LaLiga Hypermotion, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 20 (Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -97010,7 +95767,7 @@
         "formatted_date": "Dilluns, 2 de novembre",
         "has_matches": true,
         "matches_count": 8,
-        "league_note": "Partits programats: 8 (Premier League, Serie A, LaLiga EA Sports, LaLiga Hypermotion, Ligue 1). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 8 (Ligue 1, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -97018,7 +95775,7 @@
     },
     "has_matches": true,
     "matches_count": 37,
-    "league_note": "Partits del dia de múltiples lligues (Premier League, Bundesliga, Ligue 1, Serie A, LaLiga EA Sports, LaLiga Hypermotion, EFL Championship) · 37 partits",
+    "league_note": "Partits del dia de múltiples lligues (Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Bundesliga, EFL Championship) · 37 partits",
     "safe": [
       {
         "id": "COMBO_DAILY_2026-10-31_SAFE_1",
@@ -101471,7 +100228,7 @@
         "competition_id": "LIGUE1",
         "jornada": 9,
         "season": "2026-2027",
-        "created_at": "2026-10-31 01:55:39",
+        "created_at": "2026-10-31 12:52:39",
         "total_stake": 15.0,
         "total_payout": 0.0,
         "net_profit": -15.0,
@@ -101492,11 +100249,11 @@
             "payout": 0.0,
             "profit": -5.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:39",
-            "evaluated_at": "2026-10-31 01:55:45",
+            "created_at": "2026-10-31 12:52:39",
+            "evaluated_at": "2026-10-31 12:52:45",
             "legs": [
               {
-                "id": 3279,
+                "id": 3316,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
                 "matchup": "Le Havre AC vs Paris Saint-Germain",
                 "selection_name": "1 - Victòria Local (Le Havre AC)",
@@ -101509,10 +100266,10 @@
                 "away_team_id": "PSG",
                 "status": "LOST",
                 "actual_result": "1-5 (no victòria local)",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               },
               {
-                "id": 3280,
+                "id": 3317,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
                 "matchup": "Lille OSC vs RC Lens",
                 "selection_name": "1 - Victòria Local (Lille OSC)",
@@ -101525,10 +100282,10 @@
                 "away_team_id": "RCL",
                 "status": "WON",
                 "actual_result": "1-0 (1 encertat)",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               },
               {
-                "id": 3281,
+                "id": 3318,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
                 "matchup": "ES Troyes AC vs Le Mans FC",
                 "selection_name": "1 - Victòria Local (ES Troyes AC)",
@@ -101541,7 +100298,7 @@
                 "away_team_id": "LMA",
                 "status": "PENDING",
                 "actual_result": "Partit pendent de disputar",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               }
             ]
           },
@@ -101560,11 +100317,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:39",
+            "created_at": "2026-10-31 12:52:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3282,
+                "id": 3319,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
                 "matchup": "RC Strasbourg vs AJ Auxerre",
                 "selection_name": "1 - Victòria Local (RC Strasbourg)",
@@ -101580,7 +100337,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3283,
+                "id": 3320,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
                 "matchup": "Olympique de Marseille vs Toulouse FC",
                 "selection_name": "1 - Victòria Local (Olympique de Marseille)",
@@ -101596,7 +100353,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3284,
+                "id": 3321,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
                 "matchup": "FC Lorient vs Stade Brestois 29",
                 "selection_name": "1 - Victòria Local (FC Lorient)",
@@ -101612,7 +100369,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3285,
+                "id": 3322,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
                 "matchup": "OGC Nice vs Stade Rennais",
                 "selection_name": "1 - Victòria Local (OGC Nice)",
@@ -101625,10 +100382,10 @@
                 "away_team_id": "SRFC",
                 "status": "WON",
                 "actual_result": "5-2 (1 encertat)",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               },
               {
-                "id": 3286,
+                "id": 3323,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
                 "matchup": "ES Troyes AC vs Le Mans FC",
                 "selection_name": "1 - Victòria Local (ES Troyes AC)",
@@ -101660,11 +100417,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:39",
+            "created_at": "2026-10-31 12:52:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3272,
+                "id": 3309,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_SAFE_1",
                 "matchup": "Olympique Lyonnais vs Angers SCO",
                 "selection_name": "1 - Victòria Local (Olympique Lyonnais)",
@@ -101680,7 +100437,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3273,
+                "id": 3310,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_SAFE_1",
                 "matchup": "Paris FC vs AS Monaco",
                 "selection_name": "1 - Victòria Local (Paris FC)",
@@ -101712,11 +100469,11 @@
             "payout": 0.0,
             "profit": -10.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:39",
-            "evaluated_at": "2026-10-31 01:55:45",
+            "created_at": "2026-10-31 12:52:39",
+            "evaluated_at": "2026-10-31 12:52:45",
             "legs": [
               {
-                "id": 3274,
+                "id": 3311,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_1",
                 "matchup": "Olympique Lyonnais vs Angers SCO",
                 "selection_name": "1 - Victòria Local (Olympique Lyonnais)",
@@ -101729,10 +100486,10 @@
                 "away_team_id": "SCO",
                 "status": "PENDING",
                 "actual_result": "Partit pendent de disputar",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               },
               {
-                "id": 3275,
+                "id": 3312,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_1",
                 "matchup": "Le Havre AC vs Paris Saint-Germain",
                 "selection_name": "1 - Victòria Local (Le Havre AC)",
@@ -101745,7 +100502,7 @@
                 "away_team_id": "PSG",
                 "status": "LOST",
                 "actual_result": "1-5 (no victòria local)",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               }
             ]
           },
@@ -101764,11 +100521,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:39",
+            "created_at": "2026-10-31 12:52:39",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3276,
+                "id": 3313,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_2",
                 "matchup": "RC Strasbourg vs AJ Auxerre",
                 "selection_name": "1 - Victòria Local (RC Strasbourg)",
@@ -101784,7 +100541,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3277,
+                "id": 3314,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_2",
                 "matchup": "OGC Nice vs Stade Rennais",
                 "selection_name": "1 - Victòria Local (OGC Nice)",
@@ -101797,10 +100554,10 @@
                 "away_team_id": "SRFC",
                 "status": "WON",
                 "actual_result": "5-2 (1 encertat)",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               },
               {
-                "id": 3278,
+                "id": 3315,
                 "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_2",
                 "matchup": "Lille OSC vs RC Lens",
                 "selection_name": "1 - Victòria Local (Lille OSC)",
@@ -101813,7 +100570,7 @@
                 "away_team_id": "RCL",
                 "status": "WON",
                 "actual_result": "1-0 (1 encertat)",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               }
             ]
           }
@@ -104073,7 +102830,7 @@
         "competition_id": "LALIGA",
         "jornada": 11,
         "season": "2026-2027",
-        "created_at": "2026-10-31 01:55:05",
+        "created_at": "2026-10-31 12:52:09",
         "total_stake": 25.0,
         "total_payout": 0.0,
         "net_profit": -25.0,
@@ -104094,11 +102851,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:05",
+            "created_at": "2026-10-31 12:52:09",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3243,
+                "id": 3297,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_RISKY_1",
                 "matchup": "Getafe CF vs Sevilla FC",
                 "selection_name": "1 - Victòria Local (Getafe CF)",
@@ -104114,7 +102871,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3244,
+                "id": 3298,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_RISKY_1",
                 "matchup": "Elche CF vs Valencia CF",
                 "selection_name": "1 - Victòria Local (Elche CF)",
@@ -104130,7 +102887,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3245,
+                "id": 3299,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_RISKY_1",
                 "matchup": "RC Deportivo de La Coruña vs CA Osasuna",
                 "selection_name": "1 - Victòria Local (RC Deportivo de La Coruña)",
@@ -104146,7 +102903,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3246,
+                "id": 3300,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_RISKY_1",
                 "matchup": "Rayo Vallecano vs RC Celta de Vigo",
                 "selection_name": "1 - Victòria Local (Rayo Vallecano)",
@@ -104178,11 +102935,11 @@
             "payout": 0.0,
             "profit": -25.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:05",
-            "evaluated_at": "2026-10-31 01:55:45",
+            "created_at": "2026-10-31 12:52:09",
+            "evaluated_at": "2026-10-31 12:52:45",
             "legs": [
               {
-                "id": 3233,
+                "id": 3287,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_1",
                 "matchup": "Villarreal CF vs RCD Espanyol",
                 "selection_name": "1 - Victòria Local (Villarreal CF)",
@@ -104195,10 +102952,10 @@
                 "away_team_id": "ESP",
                 "status": "LOST",
                 "actual_result": "0-1 (no victòria local)",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               },
               {
-                "id": 3234,
+                "id": 3288,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_1",
                 "matchup": "Real Betis vs Málaga CF",
                 "selection_name": "1 - Victòria Local (Real Betis)",
@@ -104211,7 +102968,7 @@
                 "away_team_id": "MAL",
                 "status": "PENDING",
                 "actual_result": "Partit pendent de disputar",
-                "evaluated_at": "2026-10-31 01:55:45"
+                "evaluated_at": "2026-10-31 12:52:45"
               }
             ]
           },
@@ -104230,11 +102987,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:05",
+            "created_at": "2026-10-31 12:52:09",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3235,
+                "id": 3289,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_2",
                 "matchup": "Athletic Club vs Real Sociedad",
                 "selection_name": "1 - Victòria Local (Athletic Club)",
@@ -104250,7 +103007,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3236,
+                "id": 3290,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_2",
                 "matchup": "FC Barcelona vs Deportivo Alavés",
                 "selection_name": "1 - Victòria Local (FC Barcelona)",
@@ -104282,11 +103039,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:05",
+            "created_at": "2026-10-31 12:52:09",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3237,
+                "id": 3291,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_1",
                 "matchup": "Getafe CF vs Sevilla FC",
                 "selection_name": "1 - Victòria Local (Getafe CF)",
@@ -104302,7 +103059,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3238,
+                "id": 3292,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_1",
                 "matchup": "Elche CF vs Valencia CF",
                 "selection_name": "1 - Victòria Local (Elche CF)",
@@ -104318,7 +103075,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3239,
+                "id": 3293,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_1",
                 "matchup": "Real Betis vs Málaga CF",
                 "selection_name": "1 - Victòria Local (Real Betis)",
@@ -104350,11 +103107,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:05",
+            "created_at": "2026-10-31 12:52:09",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3240,
+                "id": 3294,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_2",
                 "matchup": "Athletic Club vs Real Sociedad",
                 "selection_name": "1 - Victòria Local (Athletic Club)",
@@ -104370,7 +103127,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3241,
+                "id": 3295,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_2",
                 "matchup": "RC Deportivo de La Coruña vs CA Osasuna",
                 "selection_name": "1 - Victòria Local (RC Deportivo de La Coruña)",
@@ -104386,7 +103143,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3242,
+                "id": 3296,
                 "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_2",
                 "matchup": "Rayo Vallecano vs RC Celta de Vigo",
                 "selection_name": "1 - Victòria Local (Rayo Vallecano)",
@@ -105700,7 +104457,7 @@
         "competition_id": "HYPERMOTION",
         "jornada": 12,
         "season": "2026-2027",
-        "created_at": "2026-10-31 01:55:19",
+        "created_at": "2026-10-31 12:52:21",
         "total_stake": 0.0,
         "total_payout": 0.0,
         "net_profit": 0.0,
@@ -105721,11 +104478,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:19",
+            "created_at": "2026-10-31 12:52:21",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3268,
+                "id": 3305,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_RISKY_1",
                 "matchup": "Real Sociedad B vs Girona FC",
                 "selection_name": "1 - Victòria Local (Real Sociedad B)",
@@ -105741,7 +104498,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3269,
+                "id": 3306,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_RISKY_1",
                 "matchup": "SD Eibar vs UD Almería",
                 "selection_name": "1 - Victòria Local (SD Eibar)",
@@ -105757,7 +104514,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3270,
+                "id": 3307,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_RISKY_1",
                 "matchup": "Celta de Vigo B vs Córdoba CF",
                 "selection_name": "1 - Victòria Local (Celta de Vigo B)",
@@ -105773,7 +104530,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3271,
+                "id": 3308,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_RISKY_1",
                 "matchup": "Albacete Balompié vs CE Sabadell",
                 "selection_name": "1 - Victòria Local (Albacete Balompié)",
@@ -105805,11 +104562,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:19",
+            "created_at": "2026-10-31 12:52:21",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3264,
+                "id": 3301,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_SEMI_1",
                 "matchup": "Real Sociedad B vs Girona FC",
                 "selection_name": "1 - Victòria Local (Real Sociedad B)",
@@ -105825,7 +104582,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3265,
+                "id": 3302,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_SEMI_1",
                 "matchup": "Celta de Vigo B vs Córdoba CF",
                 "selection_name": "1 - Victòria Local (Celta de Vigo B)",
@@ -105857,11 +104614,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-10-31 01:55:19",
+            "created_at": "2026-10-31 12:52:21",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3266,
+                "id": 3303,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_SEMI_2",
                 "matchup": "SD Eibar vs UD Almería",
                 "selection_name": "1 - Victòria Local (SD Eibar)",
@@ -105877,7 +104634,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3267,
+                "id": 3304,
                 "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_SEMI_2",
                 "matchup": "Albacete Balompié vs CE Sabadell",
                 "selection_name": "1 - Victòria Local (Albacete Balompié)",
@@ -132364,11 +131121,11 @@
         "payout": 0.0,
         "profit": -5.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:39",
-        "evaluated_at": "2026-10-31 01:55:45",
+        "created_at": "2026-10-31 12:52:39",
+        "evaluated_at": "2026-10-31 12:52:45",
         "legs": [
           {
-            "id": 3279,
+            "id": 3316,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
             "matchup": "Le Havre AC vs Paris Saint-Germain",
             "selection_name": "1 - Victòria Local (Le Havre AC)",
@@ -132381,10 +131138,10 @@
             "away_team_id": "PSG",
             "status": "LOST",
             "actual_result": "1-5 (no victòria local)",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           },
           {
-            "id": 3280,
+            "id": 3317,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
             "matchup": "Lille OSC vs RC Lens",
             "selection_name": "1 - Victòria Local (Lille OSC)",
@@ -132397,10 +131154,10 @@
             "away_team_id": "RCL",
             "status": "WON",
             "actual_result": "1-0 (1 encertat)",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           },
           {
-            "id": 3281,
+            "id": 3318,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_1",
             "matchup": "ES Troyes AC vs Le Mans FC",
             "selection_name": "1 - Victòria Local (ES Troyes AC)",
@@ -132413,7 +131170,7 @@
             "away_team_id": "LMA",
             "status": "PENDING",
             "actual_result": "Partit pendent de disputar",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           }
         ]
       },
@@ -132800,11 +131557,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:39",
+        "created_at": "2026-10-31 12:52:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3282,
+            "id": 3319,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
             "matchup": "RC Strasbourg vs AJ Auxerre",
             "selection_name": "1 - Victòria Local (RC Strasbourg)",
@@ -132820,7 +131577,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3283,
+            "id": 3320,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
             "matchup": "Olympique de Marseille vs Toulouse FC",
             "selection_name": "1 - Victòria Local (Olympique de Marseille)",
@@ -132836,7 +131593,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3284,
+            "id": 3321,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
             "matchup": "FC Lorient vs Stade Brestois 29",
             "selection_name": "1 - Victòria Local (FC Lorient)",
@@ -132852,7 +131609,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3285,
+            "id": 3322,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
             "matchup": "OGC Nice vs Stade Rennais",
             "selection_name": "1 - Victòria Local (OGC Nice)",
@@ -132865,10 +131622,10 @@
             "away_team_id": "SRFC",
             "status": "WON",
             "actual_result": "5-2 (1 encertat)",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           },
           {
-            "id": 3286,
+            "id": 3323,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_RISKY_2",
             "matchup": "ES Troyes AC vs Le Mans FC",
             "selection_name": "1 - Victòria Local (ES Troyes AC)",
@@ -133124,11 +131881,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:39",
+        "created_at": "2026-10-31 12:52:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3272,
+            "id": 3309,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_SAFE_1",
             "matchup": "Olympique Lyonnais vs Angers SCO",
             "selection_name": "1 - Victòria Local (Olympique Lyonnais)",
@@ -133144,7 +131901,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3273,
+            "id": 3310,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_SAFE_1",
             "matchup": "Paris FC vs AS Monaco",
             "selection_name": "1 - Victòria Local (Paris FC)",
@@ -133688,11 +132445,11 @@
         "payout": 0.0,
         "profit": -10.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:39",
-        "evaluated_at": "2026-10-31 01:55:45",
+        "created_at": "2026-10-31 12:52:39",
+        "evaluated_at": "2026-10-31 12:52:45",
         "legs": [
           {
-            "id": 3274,
+            "id": 3311,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_1",
             "matchup": "Olympique Lyonnais vs Angers SCO",
             "selection_name": "1 - Victòria Local (Olympique Lyonnais)",
@@ -133705,10 +132462,10 @@
             "away_team_id": "SCO",
             "status": "PENDING",
             "actual_result": "Partit pendent de disputar",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           },
           {
-            "id": 3275,
+            "id": 3312,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_1",
             "matchup": "Le Havre AC vs Paris Saint-Germain",
             "selection_name": "1 - Victòria Local (Le Havre AC)",
@@ -133721,7 +132478,7 @@
             "away_team_id": "PSG",
             "status": "LOST",
             "actual_result": "1-5 (no victòria local)",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           }
         ]
       },
@@ -134044,11 +132801,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:39",
+        "created_at": "2026-10-31 12:52:39",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3276,
+            "id": 3313,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_2",
             "matchup": "RC Strasbourg vs AJ Auxerre",
             "selection_name": "1 - Victòria Local (RC Strasbourg)",
@@ -134064,7 +132821,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3277,
+            "id": 3314,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_2",
             "matchup": "OGC Nice vs Stade Rennais",
             "selection_name": "1 - Victòria Local (OGC Nice)",
@@ -134077,10 +132834,10 @@
             "away_team_id": "SRFC",
             "status": "WON",
             "actual_result": "5-2 (1 encertat)",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           },
           {
-            "id": 3278,
+            "id": 3315,
             "combo_id": "COMBO_2026-2027_LIGUE1_J9_SEMI_2",
             "matchup": "Lille OSC vs RC Lens",
             "selection_name": "1 - Victòria Local (Lille OSC)",
@@ -134093,7 +132850,7 @@
             "away_team_id": "RCL",
             "status": "WON",
             "actual_result": "1-0 (1 encertat)",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           }
         ]
       },
@@ -135304,11 +134061,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:05",
+        "created_at": "2026-10-31 12:52:09",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3243,
+            "id": 3297,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_RISKY_1",
             "matchup": "Getafe CF vs Sevilla FC",
             "selection_name": "1 - Victòria Local (Getafe CF)",
@@ -135324,7 +134081,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3244,
+            "id": 3298,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_RISKY_1",
             "matchup": "Elche CF vs Valencia CF",
             "selection_name": "1 - Victòria Local (Elche CF)",
@@ -135340,7 +134097,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3245,
+            "id": 3299,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_RISKY_1",
             "matchup": "RC Deportivo de La Coruña vs CA Osasuna",
             "selection_name": "1 - Victòria Local (RC Deportivo de La Coruña)",
@@ -135356,7 +134113,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3246,
+            "id": 3300,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_RISKY_1",
             "matchup": "Rayo Vallecano vs RC Celta de Vigo",
             "selection_name": "1 - Victòria Local (Rayo Vallecano)",
@@ -135692,11 +134449,11 @@
         "payout": 0.0,
         "profit": -25.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:05",
-        "evaluated_at": "2026-10-31 01:55:45",
+        "created_at": "2026-10-31 12:52:09",
+        "evaluated_at": "2026-10-31 12:52:45",
         "legs": [
           {
-            "id": 3233,
+            "id": 3287,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_1",
             "matchup": "Villarreal CF vs RCD Espanyol",
             "selection_name": "1 - Victòria Local (Villarreal CF)",
@@ -135709,10 +134466,10 @@
             "away_team_id": "ESP",
             "status": "LOST",
             "actual_result": "0-1 (no victòria local)",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           },
           {
-            "id": 3234,
+            "id": 3288,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_1",
             "matchup": "Real Betis vs Málaga CF",
             "selection_name": "1 - Victòria Local (Real Betis)",
@@ -135725,7 +134482,7 @@
             "away_team_id": "MAL",
             "status": "PENDING",
             "actual_result": "Partit pendent de disputar",
-            "evaluated_at": "2026-10-31 01:55:45"
+            "evaluated_at": "2026-10-31 12:52:45"
           }
         ]
       },
@@ -135848,11 +134605,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:05",
+        "created_at": "2026-10-31 12:52:09",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3235,
+            "id": 3289,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_2",
             "matchup": "Athletic Club vs Real Sociedad",
             "selection_name": "1 - Victòria Local (Athletic Club)",
@@ -135868,7 +134625,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3236,
+            "id": 3290,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SAFE_2",
             "matchup": "FC Barcelona vs Deportivo Alavés",
             "selection_name": "1 - Victòria Local (FC Barcelona)",
@@ -136036,11 +134793,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:05",
+        "created_at": "2026-10-31 12:52:09",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3237,
+            "id": 3291,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_1",
             "matchup": "Getafe CF vs Sevilla FC",
             "selection_name": "1 - Victòria Local (Getafe CF)",
@@ -136056,7 +134813,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3238,
+            "id": 3292,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_1",
             "matchup": "Elche CF vs Valencia CF",
             "selection_name": "1 - Victòria Local (Elche CF)",
@@ -136072,7 +134829,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3239,
+            "id": 3293,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_1",
             "matchup": "Real Betis vs Málaga CF",
             "selection_name": "1 - Victòria Local (Real Betis)",
@@ -136240,11 +134997,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:05",
+        "created_at": "2026-10-31 12:52:09",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3240,
+            "id": 3294,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_2",
             "matchup": "Athletic Club vs Real Sociedad",
             "selection_name": "1 - Victòria Local (Athletic Club)",
@@ -136260,7 +135017,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3241,
+            "id": 3295,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_2",
             "matchup": "RC Deportivo de La Coruña vs CA Osasuna",
             "selection_name": "1 - Victòria Local (RC Deportivo de La Coruña)",
@@ -136276,7 +135033,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3242,
+            "id": 3296,
             "combo_id": "COMBO_2026-2027_LALIGA_J11_SEMI_2",
             "matchup": "Rayo Vallecano vs RC Celta de Vigo",
             "selection_name": "1 - Victòria Local (Rayo Vallecano)",
@@ -136408,11 +135165,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:19",
+        "created_at": "2026-10-31 12:52:21",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3268,
+            "id": 3305,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_RISKY_1",
             "matchup": "Real Sociedad B vs Girona FC",
             "selection_name": "1 - Victòria Local (Real Sociedad B)",
@@ -136428,7 +135185,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3269,
+            "id": 3306,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_RISKY_1",
             "matchup": "SD Eibar vs UD Almería",
             "selection_name": "1 - Victòria Local (SD Eibar)",
@@ -136444,7 +135201,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3270,
+            "id": 3307,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_RISKY_1",
             "matchup": "Celta de Vigo B vs Córdoba CF",
             "selection_name": "1 - Victòria Local (Celta de Vigo B)",
@@ -136460,7 +135217,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3271,
+            "id": 3308,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_RISKY_1",
             "matchup": "Albacete Balompié vs CE Sabadell",
             "selection_name": "1 - Victòria Local (Albacete Balompié)",
@@ -136812,11 +135569,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:19",
+        "created_at": "2026-10-31 12:52:21",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3264,
+            "id": 3301,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_SEMI_1",
             "matchup": "Real Sociedad B vs Girona FC",
             "selection_name": "1 - Victòria Local (Real Sociedad B)",
@@ -136832,7 +135589,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3265,
+            "id": 3302,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_SEMI_1",
             "matchup": "Celta de Vigo B vs Córdoba CF",
             "selection_name": "1 - Victòria Local (Celta de Vigo B)",
@@ -136964,11 +135721,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-10-31 01:55:19",
+        "created_at": "2026-10-31 12:52:21",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3266,
+            "id": 3303,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_SEMI_2",
             "matchup": "SD Eibar vs UD Almería",
             "selection_name": "1 - Victòria Local (SD Eibar)",
@@ -136984,7 +135741,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3267,
+            "id": 3304,
             "combo_id": "COMBO_2026-2027_HYPERMOTION_J12_SEMI_2",
             "matchup": "Albacete Balompié vs CE Sabadell",
             "selection_name": "1 - Victòria Local (Albacete Balompié)",
