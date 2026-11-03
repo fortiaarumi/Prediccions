@@ -2,12 +2,12 @@
   "LALIGA": {
     "last_predicted_jornada": 9,
     "last_predicted_date": "2026-10-16",
-    "last_scraped_jornada": 10
+    "last_scraped_jornada": 11
   },
   "PREMIER": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-17",
-    "last_scraped_jornada": 8
+    "last_scraped_jornada": 9
   },
   "HYPERMOTION": {
     "last_predicted_jornada": 10,
@@ -27,12 +27,12 @@
   "LIGUE1": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-18",
-    "last_scraped_jornada": 8
+    "last_scraped_jornada": 9
   },
   "SERIEA": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-19",
-    "last_scraped_jornada": 9
+    "last_scraped_jornada": 10
   },
-  "updated_at": "2026-11-02T16:20:18.600428"
+  "updated_at": "2026-11-03T03:33:38.256118"
 }
