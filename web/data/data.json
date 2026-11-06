@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-11-06T02:37:19.608262",
-    "formatted_date": "06/11/2026 a les 02:37",
+    "generated_at": "2026-11-06T14:28:39.288657",
+    "formatted_date": "06/11/2026 a les 14:28",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -67,7 +67,7 @@
   "changelog": [
     {
       "date": "2026-11-06",
-      "timestamp": "2026-11-06T02:37:42.774625",
+      "timestamp": "2026-11-06T14:29:13.753274",
       "title": "Actualització Diària del Model · 06/11/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
@@ -76533,7 +76533,8 @@
       "has_started": true,
       "safe": [
         {
-          "profile": "Combinada Segura #1 (Cuota 2-3)",
+          "id": "COMBO_2026-2027_PREMIER_J10_SAFE_1",
+          "profile": "SAFE_1",
           "category_code": "SAFE",
           "stake": 25.0,
           "combined_odd": 2.08,
@@ -76549,7 +76550,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Segura #1 (Cuota 2-3)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Arsenal vs Hull] 👉 1 - Victòria Local (Arsenal) (Sense quota Bet365)\n2. [Brighton & Hove Albion vs Brentford] 👉 1 - Victòria Local (Brighton & Hove Albion) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Arsenal vs Hull] 👉 1 - Victòria Local (Arsenal) (Sense quota Bet365)\n2. [Brighton & Hove Albion vs Brentford] 👉 1 - Victòria Local (Brighton & Hove Albion) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -76560,6 +76561,7 @@
           },
           "legs": [
             {
+              "id": 3554,
               "matchup": "Arsenal vs Hull",
               "selection_name": "1 - Victòria Local (Arsenal)",
               "category": "1X2",
@@ -76572,9 +76574,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221372",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3555,
               "matchup": "Brighton & Hove Albion vs Brentford",
               "selection_name": "1 - Victòria Local (Brighton & Hove Albion)",
               "category": "1X2",
@@ -76587,12 +76590,13 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221374",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         },
         {
-          "profile": "Combinada Segura #2 (Cuota 2-3 Alternativa)",
+          "id": "COMBO_2026-2027_PREMIER_J10_SAFE_2",
+          "profile": "SAFE_2",
           "category_code": "SAFE",
           "stake": 25.0,
           "combined_odd": 2.66,
@@ -76608,7 +76612,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Nottingham Forest vs Manchester City] 👉 2 - Victòria Visitant (Manchester City) (Sense quota Bet365)\n2. [Crystal Palace vs Liverpool] 👉 2 - Victòria Visitant (Liverpool) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Nottingham Forest vs Manchester City] 👉 2 - Victòria Visitant (Manchester City) (Sense quota Bet365)\n2. [Crystal Palace vs Liverpool] 👉 2 - Victòria Visitant (Liverpool) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -76619,6 +76623,7 @@
           },
           "legs": [
             {
+              "id": 3556,
               "matchup": "Nottingham Forest vs Manchester City",
               "selection_name": "2 - Victòria Visitant (Manchester City)",
               "category": "1X2",
@@ -76631,9 +76636,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221388",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3557,
               "matchup": "Crystal Palace vs Liverpool",
               "selection_name": "2 - Victòria Visitant (Liverpool)",
               "category": "1X2",
@@ -76646,14 +76652,15 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221376",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         }
       ],
       "semi": [
         {
-          "profile": "Combinada Semi-Arriscada #1 (Cuota ~10.0)",
+          "id": "COMBO_2026-2027_PREMIER_J10_SEMI_1",
+          "profile": "SEMI_1",
           "category_code": "SEMI",
           "stake": 10.0,
           "combined_odd": 8.69,
@@ -76669,7 +76676,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Leeds Utd vs Tottenham Hotspur] 👉 2 - Victòria Visitant (Tottenham Hotspur) (Sense quota Bet365)\n2. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Leeds Utd vs Tottenham Hotspur] 👉 2 - Victòria Visitant (Tottenham Hotspur) (Sense quota Bet365)\n2. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -76680,6 +76687,7 @@
           },
           "legs": [
             {
+              "id": 3558,
               "matchup": "Leeds Utd vs Tottenham Hotspur",
               "selection_name": "2 - Victòria Visitant (Tottenham Hotspur)",
               "category": "1X2",
@@ -76692,9 +76700,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221384",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3559,
               "matchup": "Manchester Utd vs Aston Villa",
               "selection_name": "2 - Victòria Visitant (Aston Villa)",
               "category": "1X2",
@@ -76707,12 +76716,13 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221386",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         },
         {
-          "profile": "Combinada Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+          "id": "COMBO_2026-2027_PREMIER_J10_SEMI_2",
+          "profile": "SEMI_2",
           "category_code": "SEMI",
           "stake": 10.0,
           "combined_odd": 10.15,
@@ -76728,7 +76738,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Fulham vs Newcastle United] 👉 2 - Victòria Visitant (Newcastle United) (Sense quota Bet365)\n2. [Crystal Palace vs Liverpool] 👉 2 - Victòria Visitant (Liverpool) (Sense quota Bet365)\n3. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Fulham vs Newcastle United] 👉 2 - Victòria Visitant (Newcastle United) (Sense quota Bet365)\n2. [Crystal Palace vs Liverpool] 👉 2 - Victòria Visitant (Liverpool) (Sense quota Bet365)\n3. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -76739,6 +76749,7 @@
           },
           "legs": [
             {
+              "id": 3560,
               "matchup": "Fulham vs Newcastle United",
               "selection_name": "2 - Victòria Visitant (Newcastle United)",
               "category": "1X2",
@@ -76751,9 +76762,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221380",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3561,
               "matchup": "Crystal Palace vs Liverpool",
               "selection_name": "2 - Victòria Visitant (Liverpool)",
               "category": "1X2",
@@ -76766,9 +76778,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221376",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3562,
               "matchup": "Ipswich Town vs AFC Bournemouth",
               "selection_name": "2 - Victòria Visitant (AFC Bournemouth)",
               "category": "1X2",
@@ -76781,14 +76794,15 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221382",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         }
       ],
       "risky": [
         {
-          "profile": "Combinada Arriscada #1 (Cuota >= 30.0)",
+          "id": "COMBO_2026-2027_PREMIER_J10_RISKY_1",
+          "profile": "RISKY_1",
           "category_code": "RISKY",
           "stake": 5.0,
           "combined_odd": 33.64,
@@ -76804,7 +76818,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Leeds Utd vs Tottenham Hotspur] 👉 2 - Victòria Visitant (Tottenham Hotspur) (Sense quota Bet365)\n2. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n3. [Sunderland vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (Sense quota Bet365)\n4. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Leeds Utd vs Tottenham Hotspur] 👉 2 - Victòria Visitant (Tottenham Hotspur) (Sense quota Bet365)\n2. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n3. [Sunderland vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (Sense quota Bet365)\n4. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -76815,6 +76829,7 @@
           },
           "legs": [
             {
+              "id": 3563,
               "matchup": "Leeds Utd vs Tottenham Hotspur",
               "selection_name": "2 - Victòria Visitant (Tottenham Hotspur)",
               "category": "1X2",
@@ -76827,9 +76842,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221384",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3564,
               "matchup": "Ipswich Town vs AFC Bournemouth",
               "selection_name": "2 - Victòria Visitant (AFC Bournemouth)",
               "category": "1X2",
@@ -76842,9 +76858,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221382",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3565,
               "matchup": "Sunderland vs Chelsea",
               "selection_name": "2 - Victòria Visitant (Chelsea)",
               "category": "1X2",
@@ -76857,9 +76874,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221390",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3566,
               "matchup": "Manchester Utd vs Aston Villa",
               "selection_name": "2 - Victòria Visitant (Aston Villa)",
               "category": "1X2",
@@ -76872,12 +76890,13 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221386",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         },
         {
-          "profile": "Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)",
+          "id": "COMBO_2026-2027_PREMIER_J10_RISKY_2",
+          "profile": "RISKY_2",
           "category_code": "RISKY",
           "stake": 5.0,
           "combined_odd": 34.82,
@@ -76893,7 +76912,7 @@
           "status": "PENDING",
           "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
           "bet365_url": "https://www.bet365.es/#/AS/B1/",
-          "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Fulham vs Newcastle United] 👉 2 - Victòria Visitant (Newcastle United) (Sense quota Bet365)\n2. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n3. [Sunderland vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (Sense quota Bet365)\n4. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
+          "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Fulham vs Newcastle United] 👉 2 - Victòria Visitant (Newcastle United) (Sense quota Bet365)\n2. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n3. [Sunderland vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (Sense quota Bet365)\n4. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
           "progress": {
             "won_count": 0,
             "lost_count": 0,
@@ -76904,6 +76923,7 @@
           },
           "legs": [
             {
+              "id": 3567,
               "matchup": "Fulham vs Newcastle United",
               "selection_name": "2 - Victòria Visitant (Newcastle United)",
               "category": "1X2",
@@ -76916,9 +76936,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221380",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3568,
               "matchup": "Ipswich Town vs AFC Bournemouth",
               "selection_name": "2 - Victòria Visitant (AFC Bournemouth)",
               "category": "1X2",
@@ -76931,9 +76952,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221382",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3569,
               "matchup": "Sunderland vs Chelsea",
               "selection_name": "2 - Victòria Visitant (Chelsea)",
               "category": "1X2",
@@ -76946,9 +76968,10 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221390",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             },
             {
+              "id": 3570,
               "matchup": "Manchester Utd vs Aston Villa",
               "selection_name": "2 - Victòria Visitant (Aston Villa)",
               "category": "1X2",
@@ -76961,7 +76984,7 @@
               "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221386",
               "url_bet365": "https://www.bet365.es/#/AS/B1/",
               "status": "PENDING",
-              "actual_result": "Pendent de disputar"
+              "actual_result": "Partit pendent de disputar"
             }
           ]
         }
@@ -79224,7 +79247,8 @@
           "jornada": 10,
           "safe": [
             {
-              "profile": "Combinada Segura #1 (Cuota 2-3)",
+              "id": "COMBO_2026-2027_PREMIER_J10_SAFE_1",
+              "profile": "SAFE_1",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 2.08,
@@ -79240,7 +79264,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Segura #1 (Cuota 2-3)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Arsenal vs Hull] 👉 1 - Victòria Local (Arsenal) (Sense quota Bet365)\n2. [Brighton & Hove Albion vs Brentford] 👉 1 - Victòria Local (Brighton & Hove Albion) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Arsenal vs Hull] 👉 1 - Victòria Local (Arsenal) (Sense quota Bet365)\n2. [Brighton & Hove Albion vs Brentford] 👉 1 - Victòria Local (Brighton & Hove Albion) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79251,6 +79275,7 @@
               },
               "legs": [
                 {
+                  "id": 3554,
                   "matchup": "Arsenal vs Hull",
                   "selection_name": "1 - Victòria Local (Arsenal)",
                   "category": "1X2",
@@ -79263,9 +79288,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221372",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3555,
                   "matchup": "Brighton & Hove Albion vs Brentford",
                   "selection_name": "1 - Victòria Local (Brighton & Hove Albion)",
                   "category": "1X2",
@@ -79278,12 +79304,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221374",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             },
             {
-              "profile": "Combinada Segura #2 (Cuota 2-3 Alternativa)",
+              "id": "COMBO_2026-2027_PREMIER_J10_SAFE_2",
+              "profile": "SAFE_2",
               "category_code": "SAFE",
               "stake": 25.0,
               "combined_odd": 2.66,
@@ -79299,7 +79326,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Segura #2 (Cuota 2-3 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Nottingham Forest vs Manchester City] 👉 2 - Victòria Visitant (Manchester City) (Sense quota Bet365)\n2. [Crystal Palace vs Liverpool] 👉 2 - Victòria Visitant (Liverpool) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · SAFE_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Nottingham Forest vs Manchester City] 👉 2 - Victòria Visitant (Manchester City) (Sense quota Bet365)\n2. [Crystal Palace vs Liverpool] 👉 2 - Victòria Visitant (Liverpool) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79310,6 +79337,7 @@
               },
               "legs": [
                 {
+                  "id": 3556,
                   "matchup": "Nottingham Forest vs Manchester City",
                   "selection_name": "2 - Victòria Visitant (Manchester City)",
                   "category": "1X2",
@@ -79322,9 +79350,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221388",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3557,
                   "matchup": "Crystal Palace vs Liverpool",
                   "selection_name": "2 - Victòria Visitant (Liverpool)",
                   "category": "1X2",
@@ -79337,14 +79366,15 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221376",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             }
           ],
           "semi": [
             {
-              "profile": "Combinada Semi-Arriscada #1 (Cuota ~10.0)",
+              "id": "COMBO_2026-2027_PREMIER_J10_SEMI_1",
+              "profile": "SEMI_1",
               "category_code": "SEMI",
               "stake": 10.0,
               "combined_odd": 8.69,
@@ -79360,7 +79390,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Semi-Arriscada #1 (Cuota ~10.0)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Leeds Utd vs Tottenham Hotspur] 👉 2 - Victòria Visitant (Tottenham Hotspur) (Sense quota Bet365)\n2. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · SEMI_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Leeds Utd vs Tottenham Hotspur] 👉 2 - Victòria Visitant (Tottenham Hotspur) (Sense quota Bet365)\n2. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79371,6 +79401,7 @@
               },
               "legs": [
                 {
+                  "id": 3558,
                   "matchup": "Leeds Utd vs Tottenham Hotspur",
                   "selection_name": "2 - Victòria Visitant (Tottenham Hotspur)",
                   "category": "1X2",
@@ -79383,9 +79414,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221384",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3559,
                   "matchup": "Manchester Utd vs Aston Villa",
                   "selection_name": "2 - Victòria Visitant (Aston Villa)",
                   "category": "1X2",
@@ -79398,12 +79430,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221386",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             },
             {
-              "profile": "Combinada Semi-Arriscada #2 (Cuota ~10.0 Alternativa)",
+              "id": "COMBO_2026-2027_PREMIER_J10_SEMI_2",
+              "profile": "SEMI_2",
               "category_code": "SEMI",
               "stake": 10.0,
               "combined_odd": 10.15,
@@ -79419,7 +79452,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Semi-Arriscada #2 (Cuota ~10.0 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Fulham vs Newcastle United] 👉 2 - Victòria Visitant (Newcastle United) (Sense quota Bet365)\n2. [Crystal Palace vs Liverpool] 👉 2 - Victòria Visitant (Liverpool) (Sense quota Bet365)\n3. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · SEMI_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Fulham vs Newcastle United] 👉 2 - Victòria Visitant (Newcastle United) (Sense quota Bet365)\n2. [Crystal Palace vs Liverpool] 👉 2 - Victòria Visitant (Liverpool) (Sense quota Bet365)\n3. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79430,6 +79463,7 @@
               },
               "legs": [
                 {
+                  "id": 3560,
                   "matchup": "Fulham vs Newcastle United",
                   "selection_name": "2 - Victòria Visitant (Newcastle United)",
                   "category": "1X2",
@@ -79442,9 +79476,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221380",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3561,
                   "matchup": "Crystal Palace vs Liverpool",
                   "selection_name": "2 - Victòria Visitant (Liverpool)",
                   "category": "1X2",
@@ -79457,9 +79492,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221376",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3562,
                   "matchup": "Ipswich Town vs AFC Bournemouth",
                   "selection_name": "2 - Victòria Visitant (AFC Bournemouth)",
                   "category": "1X2",
@@ -79472,14 +79508,15 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221382",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             }
           ],
           "risky": [
             {
-              "profile": "Combinada Arriscada #1 (Cuota >= 30.0)",
+              "id": "COMBO_2026-2027_PREMIER_J10_RISKY_1",
+              "profile": "RISKY_1",
               "category_code": "RISKY",
               "stake": 5.0,
               "combined_odd": 33.64,
@@ -79495,7 +79532,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #1 (Cuota >= 30.0)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Leeds Utd vs Tottenham Hotspur] 👉 2 - Victòria Visitant (Tottenham Hotspur) (Sense quota Bet365)\n2. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n3. [Sunderland vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (Sense quota Bet365)\n4. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · RISKY_1\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Leeds Utd vs Tottenham Hotspur] 👉 2 - Victòria Visitant (Tottenham Hotspur) (Sense quota Bet365)\n2. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n3. [Sunderland vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (Sense quota Bet365)\n4. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79506,6 +79543,7 @@
               },
               "legs": [
                 {
+                  "id": 3563,
                   "matchup": "Leeds Utd vs Tottenham Hotspur",
                   "selection_name": "2 - Victòria Visitant (Tottenham Hotspur)",
                   "category": "1X2",
@@ -79518,9 +79556,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221384",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3564,
                   "matchup": "Ipswich Town vs AFC Bournemouth",
                   "selection_name": "2 - Victòria Visitant (AFC Bournemouth)",
                   "category": "1X2",
@@ -79533,9 +79572,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221382",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3565,
                   "matchup": "Sunderland vs Chelsea",
                   "selection_name": "2 - Victòria Visitant (Chelsea)",
                   "category": "1X2",
@@ -79548,9 +79588,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221390",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3566,
                   "matchup": "Manchester Utd vs Aston Villa",
                   "selection_name": "2 - Victòria Visitant (Aston Villa)",
                   "category": "1X2",
@@ -79563,12 +79604,13 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221386",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             },
             {
-              "profile": "Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)",
+              "id": "COMBO_2026-2027_PREMIER_J10_RISKY_2",
+              "profile": "RISKY_2",
               "category_code": "RISKY",
               "stake": 5.0,
               "combined_odd": 34.82,
@@ -79584,7 +79626,7 @@
               "status": "PENDING",
               "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
               "bet365_url": "https://www.bet365.es/#/AS/B1/",
-              "bet365_slip_text": "🟢 BET365 · Combinada Arriscada #2 (Cuota >= 30.0 Alternativa)\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Fulham vs Newcastle United] 👉 2 - Victòria Visitant (Newcastle United) (Sense quota Bet365)\n2. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n3. [Sunderland vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (Sense quota Bet365)\n4. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
+              "bet365_slip_text": "🟢 BET365 · RISKY_2\nCuota Total Bet365: No disponible\nEnllaç directe: https://www.bet365.es/#/AS/B1/\n\nSELECCIONS DEL CUPÓ:\n1. [Fulham vs Newcastle United] 👉 2 - Victòria Visitant (Newcastle United) (Sense quota Bet365)\n2. [Ipswich Town vs AFC Bournemouth] 👉 2 - Victòria Visitant (AFC Bournemouth) (Sense quota Bet365)\n3. [Sunderland vs Chelsea] 👉 2 - Victòria Visitant (Chelsea) (Sense quota Bet365)\n4. [Manchester Utd vs Aston Villa] 👉 2 - Victòria Visitant (Aston Villa) (Sense quota Bet365)\n",
               "progress": {
                 "won_count": 0,
                 "lost_count": 0,
@@ -79595,6 +79637,7 @@
               },
               "legs": [
                 {
+                  "id": 3567,
                   "matchup": "Fulham vs Newcastle United",
                   "selection_name": "2 - Victòria Visitant (Newcastle United)",
                   "category": "1X2",
@@ -79607,9 +79650,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221380",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3568,
                   "matchup": "Ipswich Town vs AFC Bournemouth",
                   "selection_name": "2 - Victòria Visitant (AFC Bournemouth)",
                   "category": "1X2",
@@ -79622,9 +79666,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221382",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3569,
                   "matchup": "Sunderland vs Chelsea",
                   "selection_name": "2 - Victòria Visitant (Chelsea)",
                   "category": "1X2",
@@ -79637,9 +79682,10 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221390",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 },
                 {
+                  "id": 3570,
                   "matchup": "Manchester Utd vs Aston Villa",
                   "selection_name": "2 - Victòria Visitant (Aston Villa)",
                   "category": "1X2",
@@ -79652,7 +79698,7 @@
                   "url_winamax": "https://www.winamax.es/apuestas-deportivas/match/72221386",
                   "url_bet365": "https://www.bet365.es/#/AS/B1/",
                   "status": "PENDING",
-                  "actual_result": "Pendent de disputar"
+                  "actual_result": "Partit pendent de disputar"
                 }
               ]
             }
@@ -88066,7 +88112,7 @@
           "formatted_date": "Divendres, 30 d'octubre",
           "has_matches": true,
           "matches_count": 6,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Ligue 1, EFL Championship, Bundesliga) · 6 partits",
+          "league_note": "Partits del dia de múltiples lligues (EFL Championship, LaLiga EA Sports, Bundesliga, Ligue 1) · 6 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-30_SAFE_1",
@@ -88499,7 +88545,7 @@
           "formatted_date": "Dissabte, 31 d'octubre",
           "has_matches": true,
           "matches_count": 37,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League) · 37 partits",
+          "league_note": "Partits del dia de múltiples lligues (Serie A, Premier League, Bundesliga, Ligue 1, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports) · 37 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-31_SAFE_1",
@@ -88980,7 +89026,7 @@
           "formatted_date": "Diumenge, 1 de novembre",
           "has_matches": true,
           "matches_count": 19,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League) · 19 partits",
+          "league_note": "Partits del dia de múltiples lligues (Serie A, Bundesliga, Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports) · 19 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-11-01_SAFE_1",
@@ -89477,7 +89523,7 @@
           "formatted_date": "Dilluns, 2 de novembre",
           "has_matches": true,
           "matches_count": 9,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, Serie A, Ligue 1, LaLiga EA Sports, Premier League) · 9 partits",
+          "league_note": "Partits del dia de múltiples lligues (Serie A, Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports) · 9 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-11-02_SAFE_1",
@@ -89994,7 +90040,7 @@
           "formatted_date": "Divendres, 6 de novembre",
           "has_matches": true,
           "matches_count": 7,
-          "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League) · 7 partits",
+          "league_note": "Partits del dia de múltiples lligues (Serie A, Premier League, Bundesliga, Ligue 1, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports) · 7 partits",
           "safe": [],
           "semi": [],
           "risky": []
@@ -90004,7 +90050,7 @@
           "formatted_date": "Dissabte, 7 de novembre",
           "has_matches": true,
           "matches_count": 34,
-          "league_note": "Partits programats: 34 (LaLiga Hypermotion, EFL Championship, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 34 (Serie A, Premier League, Bundesliga, Ligue 1, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -90014,7 +90060,7 @@
           "formatted_date": "Diumenge, 8 de novembre",
           "has_matches": true,
           "matches_count": 27,
-          "league_note": "Partits programats: 27 (LaLiga Hypermotion, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 27 (Serie A, Premier League, Bundesliga, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -90032,7 +90078,7 @@
       },
       "has_matches": true,
       "matches_count": 7,
-      "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League) · 7 partits",
+      "league_note": "Partits del dia de múltiples lligues (Serie A, Premier League, Bundesliga, Ligue 1, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports) · 7 partits",
       "safe": [],
       "semi": [],
       "risky": []
@@ -90130,7 +90176,7 @@
         "formatted_date": "Divendres, 30 d'octubre",
         "has_matches": true,
         "matches_count": 6,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga EA Sports, Ligue 1, EFL Championship, Bundesliga) · 6 partits",
+        "league_note": "Partits del dia de múltiples lligues (EFL Championship, LaLiga EA Sports, Bundesliga, Ligue 1) · 6 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-30_SAFE_1",
@@ -90563,7 +90609,7 @@
         "formatted_date": "Dissabte, 31 d'octubre",
         "has_matches": true,
         "matches_count": 37,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League) · 37 partits",
+        "league_note": "Partits del dia de múltiples lligues (Serie A, Premier League, Bundesliga, Ligue 1, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports) · 37 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-31_SAFE_1",
@@ -91044,7 +91090,7 @@
         "formatted_date": "Diumenge, 1 de novembre",
         "has_matches": true,
         "matches_count": 19,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League) · 19 partits",
+        "league_note": "Partits del dia de múltiples lligues (Serie A, Bundesliga, Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports) · 19 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-11-01_SAFE_1",
@@ -91541,7 +91587,7 @@
         "formatted_date": "Dilluns, 2 de novembre",
         "has_matches": true,
         "matches_count": 9,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, Serie A, Ligue 1, LaLiga EA Sports, Premier League) · 9 partits",
+        "league_note": "Partits del dia de múltiples lligues (Serie A, Premier League, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports) · 9 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-11-02_SAFE_1",
@@ -92058,7 +92104,7 @@
         "formatted_date": "Divendres, 6 de novembre",
         "has_matches": true,
         "matches_count": 7,
-        "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League) · 7 partits",
+        "league_note": "Partits del dia de múltiples lligues (Serie A, Premier League, Bundesliga, Ligue 1, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports) · 7 partits",
         "safe": [],
         "semi": [],
         "risky": []
@@ -92068,7 +92114,7 @@
         "formatted_date": "Dissabte, 7 de novembre",
         "has_matches": true,
         "matches_count": 34,
-        "league_note": "Partits programats: 34 (LaLiga Hypermotion, EFL Championship, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 34 (Serie A, Premier League, Bundesliga, Ligue 1, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -92078,7 +92124,7 @@
         "formatted_date": "Diumenge, 8 de novembre",
         "has_matches": true,
         "matches_count": 27,
-        "league_note": "Partits programats: 27 (LaLiga Hypermotion, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 27 (Serie A, Premier League, Bundesliga, Ligue 1, LaLiga Hypermotion, LaLiga EA Sports). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -92096,7 +92142,7 @@
     },
     "has_matches": true,
     "matches_count": 7,
-    "league_note": "Partits del dia de múltiples lligues (LaLiga Hypermotion, EFL Championship, Serie A, Bundesliga, Ligue 1, LaLiga EA Sports, Premier League) · 7 partits",
+    "league_note": "Partits del dia de múltiples lligues (Serie A, Premier League, Bundesliga, Ligue 1, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports) · 7 partits",
     "safe": [],
     "semi": [],
     "risky": []
