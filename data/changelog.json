@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-11-06",
+    "timestamp": "2026-11-06T02:37:42.774625",
+    "title": "Actualització Diària del Model · 06/11/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+      "ℹ️ Sincronització de les darreres dades i mètriques del model."
+    ],
+    "matches": [],
+    "combos_evaluated": [],
+    "combos_generated": [],
+    "referee_updates": []
+  },
+  {
     "date": "2026-11-05",
     "timestamp": "2026-11-05T14:50:01.223957",
     "title": "Actualització Diària del Model · 05/11/2026",
@@ -10700,22 +10718,5 @@
         }
       }
     ]
-  },
-  {
-    "date": "2026-09-24",
-    "timestamp": "2026-09-24T16:14:33.786453",
-    "title": "Actualització Diària del Model · 24/09/2026",
-    "badge": "Diari (08:00 UTC)",
-    "badge_type": "primary",
-    "items": [
-      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
-      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
-      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
-      "ℹ️ Sincronització de les darreres dades i mètriques del model."
-    ],
-    "matches": [],
-    "combos_evaluated": [],
-    "combos_generated": []
   }
 ]
