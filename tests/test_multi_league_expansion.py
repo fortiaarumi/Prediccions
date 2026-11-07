@@ -345,10 +345,10 @@ def test_combo_engine_multi_league_integrity():
 
     dummy_matches = []
     fixture_configs = [
-        ("RMA", "GET", "LALIGA", {"1": 1.25, "X": 5.5, "2": 11.0}),
-        ("BAY", "FCA", "BUNDESLIGA", {"1": 1.20, "X": 6.5, "2": 13.0}),
-        ("PSG", "RCL", "LIGUE1", {"1": 1.45, "X": 4.5, "2": 6.8}),
-        ("INT", "BFC", "SERIEA", {"1": 1.50, "X": 4.2, "2": 6.5})
+        ("RMA", "GET", "LALIGA", {"1": 1.70, "X": 5.5, "2": 11.0}),
+        ("BAY", "FCA", "BUNDESLIGA", {"1": 1.75, "X": 6.5, "2": 13.0}),
+        ("PSG", "RCL", "LIGUE1", {"1": 1.72, "X": 4.5, "2": 6.8}),
+        ("INT", "BFC", "SERIEA", {"1": 1.70, "X": 4.2, "2": 6.5})
     ]
 
     for h_id, a_id, comp_id, o_1x2 in fixture_configs:

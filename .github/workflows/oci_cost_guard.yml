@@ -1,0 +1,133 @@
+name: OCI Cost Guard & Watchdog
+
+on:
+  # Desactivació temporal de l'execució automàtica per cron durant la fase de preparació i verificació Dry-Run
+  # schedule:
+  #   # 1. Mode FAST: minuts 15, 30 i 45 de cada hora
+  #   - cron: '15,30,45 * * * *'
+  #   # 2. Mode HOURLY: minut 0 de totes les hores excepte les 03:00 UTC
+  #   - cron: '0 0-2,4-23 * * *'
+  #   # 3. Mode DAILY: minut 0 de les 03:00 UTC
+  #   - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Acció a realitzar (watchdog, recover)"
+        required: true
+        default: 'watchdog'
+        type: choice
+        options:
+          - watchdog
+          - recover
+      mode:
+        description: "Mode d'auditoria (fast, hourly, daily) - només si action=watchdog"
+        required: false
+        default: 'fast'
+        type: choice
+        options:
+          - fast
+          - hourly
+          - daily
+      unlock_reason:
+        description: "Motiu de la recuperació administrativa (obligatori si action=recover)"
+        required: false
+        default: ''
+        type: string
+      dry_run:
+        description: 'Mode Dry-Run (sense accions reals)'
+        required: false
+        default: 'true'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: oci-cost-guard
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  cost-watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout del repositori
+        uses: actions/checkout@v4
+
+      - name: Configuració de Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instal·lació de dependències OCI
+        run: |
+          python -m pip install --upgrade pip
+          pip install oci
+
+      - name: Determinació automàtica del mode
+        id: determine_mode
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "RUN_MODE=$INPUT_MODE" >> $GITHUB_ENV
+          elif [ "$EVENT_SCHEDULE" = "0 3 * * *" ]; then
+            echo "RUN_MODE=daily" >> $GITHUB_ENV
+          elif [ "$EVENT_SCHEDULE" = "0 0-2,4-23 * * *" ]; then
+            echo "RUN_MODE=hourly" >> $GITHUB_ENV
+          elif [ "$EVENT_SCHEDULE" = "15,30,45 * * * *" ]; then
+            echo "RUN_MODE=fast" >> $GITHUB_ENV
+          else
+            echo "RUN_MODE=fast" >> $GITHUB_ENV
+          fi
+
+      - name: Execució del vigilant de costos OCI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          COST_GUARD_ISSUE_NUMBER: ${{ vars.COST_GUARD_ISSUE_NUMBER }}
+          OCI_TENANCY_OCID: ${{ secrets.OCI_TENANCY_OCID }}
+          OCI_USER_OCID: ${{ secrets.OCI_USER_OCID }}
+          OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
+          OCI_REGION: ${{ secrets.OCI_REGION || 'eu-madrid-1' }}
+          OCI_COMPARTMENT_OCID: ${{ secrets.OCI_COMPARTMENT_OCID }}
+          OCI_INSTANCE_OCID: ${{ secrets.OCI_INSTANCE_OCID }}
+          LIVE_API_URL: ${{ secrets.LIVE_API_URL }}
+          INPUT_ACTION: ${{ github.event.inputs.action }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+          INPUT_DRY_RUN: ${{ github.event.inputs.dry_run }}
+          INPUT_ACTOR: ${{ github.actor }}
+          INPUT_RUN_ID: ${{ github.run_id }}
+          INPUT_UNLOCK_REASON: ${{ github.event.inputs.unlock_reason }}
+        run: |
+          DRY_ARG=""
+          if [ "$INPUT_DRY_RUN" != "false" ]; then
+            DRY_ARG="--dry-run"
+          fi
+          if [ "$INPUT_ACTION" = "recover" ]; then
+            python scripts/oci_external_watchdog.py \
+              --action recover \
+              --instance-ocid "${OCI_INSTANCE_OCID}" \
+              --compartment-ocid "${OCI_COMPARTMENT_OCID}" \
+              --actor "${INPUT_ACTOR}" \
+              --workflow-run-id "${INPUT_RUN_ID}" \
+              --unlock-reason "${INPUT_UNLOCK_REASON}" \
+              $DRY_ARG
+          else
+            python scripts/oci_external_watchdog.py \
+              --mode "${RUN_MODE}" \
+              --url "${LIVE_API_URL}" \
+              --instance-ocid "${OCI_INSTANCE_OCID}" \
+              --compartment-ocid "${OCI_COMPARTMENT_OCID}" \
+              $DRY_ARG
+          fi
+
+      - name: Alerta en cas de fallada del vigilant extern
+        if: failure()
+        run: |
+          echo "::error title=Alerta Vigilant OCI::El flux de treball del vigilant extern (oci_cost_guard.yml) ha fallat! Comproveu les credencials OCI o l'estat de GitHub Actions."

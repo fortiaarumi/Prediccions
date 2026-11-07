@@ -1,0 +1,103 @@
+name: Monitoratge Lleuger de Surebets (Alta Freqüència)
+
+on:
+  # Desactivació temporal de l'execució automàtica per cron (només activació sota demanda per no consumir minuts de GitHub Actions)
+  # schedule:
+  #   # Execució programada cada 5 minuts les 24 hores del dia
+  #   - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      max_proximity_hours:
+        description: 'Límit d hores de proximitat per analitzar partits (ex: 24h o 6h)'
+        required: false
+        default: '24'
+
+concurrency:
+  group: surebet-monitor
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  monitor-surebets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 1. Baixar repositori
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 2. Configurar entorn Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: 3. Instal·lar dependències lleugeres
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: 4. Escaneig ràpid d'arbitratges (<24h)
+        id: scan
+        env:
+          MAX_HOURS: ${{ inputs.max_proximity_hours || '24' }}
+        run: |
+          python -c "
+          import json, os, sys
+          from datetime import datetime, timezone, timedelta
+          from engine.arbitrage_engine import ArbitrageEngine
+
+          # Carregar les últimes dades conegudes de partits
+          data_path = 'web/data/data.json'
+          if not os.path.exists(data_path):
+              print('No s ha trobat web/data/data.json.')
+              sys.exit(0)
+
+          with open(data_path, 'r', encoding='utf-8') as f:
+              full_data = json.load(f)
+
+          engine = ArbitrageEngine(enforce_strict_freshness=True, max_odds_age_seconds=60.0, max_skew_seconds=30.0)
+          all_matches = []
+          now = datetime.now(timezone.utc)
+          max_h = float(os.environ.get('MAX_HOURS', 24.0))
+
+          preds = full_data.get('predictions', {})
+          for comp_id, c_data in preds.items():
+              for m in c_data.get('matches', []):
+                  if m.get('status') not in ('SCHEDULED', 'LIVE'):
+                      continue
+                  # Filtrar per proximitat
+                  all_matches.append(m)
+
+          report = engine.scan_all_matches(all_matches)
+          os.makedirs('data', exist_ok=True)
+          with open('data/surebets_live.json', 'w', encoding='utf-8') as out_f:
+              json.dump(report, out_f, indent=2, ensure_ascii=False)
+
+          print(f'[OK] Escanejats {len(all_matches)} partits. Surebets trobades: {len(report.get(\"surebets\", []))}')
+          "
+
+      - name: 5. Publicar a branca orfe 'surebets-live' (sense embrutar 'main')
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Comprovar si hi ha dades generades
+          if [ ! -f "data/surebets_live.json" ]; then
+            echo "Cap fitxer surebets_live.json generat."
+            exit 0
+          fi
+
+          # Canviar a una branca aïllada 'surebets-live' per no crear centenars de commits a 'main'
+          git checkout --orphan surebets-live 2>/dev/null || git checkout surebets-live 2>/dev/null || git checkout -b surebets-live
+          git rm -rf . > /dev/null 2>&1 || true
+          git checkout main -- data/surebets_live.json 2>/dev/null || cp data/surebets_live.json .
+          git add surebets_live.json
+          git commit -m "update: surebets live snapshot [skip ci]" --allow-empty
+          # Push forçat d'un únic commit a la branca aïllada
+          git push origin surebets-live --force || echo "No s'ha pogut fer push a surebets-live (permisos o runner aïllat)"
+

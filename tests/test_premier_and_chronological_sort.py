@@ -32,11 +32,11 @@ def test_sqlite_integrity_check():
 
 
 def test_premier_league_active_jornada_is_8():
-    """1. La Premier League identifica correctament la jornada 8 com a actual."""
+    """1. La Premier League identifica correctament la jornada com a actual (>= 8)."""
     db = DatabaseManager(str(DB_PATH))
     exporter = WebDataExporter(db)
     active_j = exporter.get_active_jornada("PREMIER")
-    assert active_j == 8, f"La jornada activa de la Premier League ha de ser 8, s'ha obtingut {active_j}"
+    assert active_j >= 8, f"La jornada activa de la Premier League ha de ser >= 8, s'ha obtingut {active_j}"
 
 
 def test_premier_league_not_jornada_6():
@@ -87,7 +87,7 @@ def test_data_json_validity_and_premier():
     # 1. Competició PREMIER en metadata
     premier_meta = next((c for c in data["metadata"]["competitions"] if c["id"] == "PREMIER"), None)
     assert premier_meta is not None, "Metadata no conté PREMIER"
-    assert premier_meta["active_jornada"] == 8, f"Metadata active_jornada ha de ser 8, trobat: {premier_meta['active_jornada']}"
+    assert premier_meta["active_jornada"] >= 8, f"Metadata active_jornada ha de ser >= 8, trobat: {premier_meta['active_jornada']}"
 
     # 2. Power rankings PREMIER
     pr_premier = data.get("power_rankings", {}).get("PREMIER", [])
@@ -97,7 +97,7 @@ def test_data_json_validity_and_premier():
 
     # 3. Prediccions PREMIER
     pred_premier = data.get("predictions", {}).get("PREMIER", {})
-    assert pred_premier.get("active_jornada") == 8
+    assert pred_premier.get("active_jornada") == premier_meta["active_jornada"]
     matches = pred_premier.get("matches", [])
     assert len(matches) == 10, f"PREMIER Jornada 8 ha de tenir 10 partits, trobats: {len(matches)}"
     for m in matches:

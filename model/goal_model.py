@@ -154,6 +154,7 @@ class GoalModel:
 
         return {
             "expected_goals_home": round(lambda_home, 2),
+            "total_goals_distribution": [float(p) for p in total_goals_prob],
             "expected_goals_away": round(lambda_away, 2),
             "prob_1X2": {
                 "1": round(prob_1, 1),

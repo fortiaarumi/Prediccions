@@ -258,7 +258,7 @@ def test_04_few_matches_produces_fewer_combos_without_fabrication(combo_engine):
         "date": "2026-10-25 21:00",
         "bet_analysis": {
             "single_markets": [
-                {"name": "1X - Sevilla o Empat", "category": "Doble Oportunitat", "bookie_odd": 1.35, "model_prob": 74.0},
+                {"name": "1X - Sevilla o Empat", "category": "Doble Oportunitat", "bookie_odd": 1.40, "model_prob": 74.0},
                 {"name": "Més de 1.5 Gols", "category": "Gols", "bookie_odd": 1.28, "model_prob": 78.0}
             ]
         }

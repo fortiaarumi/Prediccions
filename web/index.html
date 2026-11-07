@@ -263,7 +263,85 @@
       <div class="section-hero">
         <div>
           <h1 class="section-title">⚡ Surebets & Arbitratge Esportiu</h1>
-          <p class="section-subtitle">Detecció de discrepàncies entre quotes oficials verificades de <strong>Winamax</strong> i <strong>Bet365</strong>. L'arbitratge s'aplica exclusivament quan es disposa de quotes reals simultànies d'ambdues cases per cobrir totes les opcions del mercat amb retorn positiu.</p>
+          <p class="section-subtitle">Detecció de discrepàncies entre quotes oficials verificades de <strong>Winamax</strong>, <strong>Bet365</strong> i <strong>Betway</strong>. L'arbitratge s'aplica exclusivament quan es disposa de quotes reals simultànies per cobrir totes les opcions del mercat amb retorn positiu garantit.</p>
+        </div>
+      </div>
+
+      <!-- Avís Visible Obligatori de Volatilitat -->
+      <div class="arb-warning-banner" id="arb-warning-banner">
+        <span class="arb-warning-icon">⚠️</span>
+        <div class="arb-warning-text">
+          <strong>Avís de volatilitat de quotes:</strong> Les quotes poden canviar en qualsevol moment. Comprova manualment totes les quotes i els imports a les cases abans d'apostar.
+        </div>
+      </div>
+
+      <!-- Panell de Transparència i Monitoratge del Sistema (Bloc A: Surebets | Bloc B: GitHub Actions) -->
+      <div class="system-monitoring-panel" id="system-monitoring-panel">
+        <!-- BLOC A: MONITORATGE DE QUOTES EN TEMPS REAL -->
+        <div class="monitoring-block monitoring-block-quotes" id="monitoring-block-quotes">
+          <div class="monitoring-block-header">
+            <div class="monitoring-block-title-group">
+              <span class="monitoring-block-icon">⚡</span>
+              <div>
+                <h3 class="monitoring-block-title">Bloc A · Monitoratge de Quotes en Temps Real</h3>
+                <p class="monitoring-block-subtitle">Frescor, independència i estat de connexió de les 3 cases d'apostes reals (Winamax, Bet365, Betway)</p>
+              </div>
+            </div>
+            <div class="monitoring-block-meta" id="quotes-daemon-meta">
+              <span class="daemon-pulse-dot" style="background: #94a3b8; box-shadow: none;"></span>
+              <span id="quotes-daemon-status-text">Snapshot emmagatzemat (Monitoratge sota demanda pendent)</span>
+            </div>
+          </div>
+
+          <div class="arbitrage-bookmakers-bar" id="arbitrage-bookmakers-bar">
+            <!-- 3 targetes detallades generades dinàmicament per JS amb estat, timestamps i recompte de quotes -->
+          </div>
+
+          <div class="monitoring-timestamps-legend">
+            <div class="ts-legend-item">
+              <span class="ts-legend-pill">⏱️ Consulta:</span>
+              <span>Inici i fi de la petició de quotes pel procés monitor independent.</span>
+            </div>
+            <div class="ts-legend-item">
+              <span class="ts-legend-pill">📡 Resposta HTTP:</span>
+              <span>Hora de recepció de dades del servidor de la casa d'apostes (no hora de canvi de quota per la casa).</span>
+            </div>
+            <div class="ts-legend-item">
+              <span class="ts-legend-pill">💾 data.json:</span>
+              <span id="legend-data-json-timestamp" data-live-timestamp="" data-time-prefix="generat">Carregant...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOC B: ESTAT DE L'ÚLTIMA EXECUCIÓ DE GITHUB ACTIONS (PIPELINE GENERAL) -->
+        <div class="monitoring-block monitoring-block-pipeline" id="monitoring-block-pipeline">
+          <div class="monitoring-block-header">
+            <div class="monitoring-block-title-group">
+              <span class="monitoring-block-icon">🔄</span>
+              <div>
+                <h3 class="monitoring-block-title">Bloc B · Actualització General del Model (GitHub Actions)</h3>
+                <p class="monitoring-block-subtitle">Workflow diari (<code>daily_pipeline.yml</code>): resultats finals, gols, rànquings Elo, designacions CTA/PGMOL i combinades</p>
+              </div>
+            </div>
+            <div class="pipeline-overall-badge" id="pipeline-overall-badge">
+              <!-- Píndola d'estat general (Verd: Èxit, Groc: Parcial, Vermell: Fallada) -->
+            </div>
+          </div>
+
+          <!-- Mètriques de l'última execució del pipeline -->
+          <div class="pipeline-summary-bar" id="pipeline-summary-bar">
+            <!-- Generat dinàmicament per JS: data/hora, temps transcorregut, estat, durada, última correcta vs intent -->
+          </div>
+
+          <!-- Desglossament de tasques individuals -->
+          <div class="pipeline-tasks-container">
+            <div class="pipeline-tasks-header">
+              <span>Desglossament de tasques operatives del cicle diari:</span>
+            </div>
+            <div class="pipeline-tasks-grid" id="pipeline-tasks-grid">
+              <!-- Targetes de tasques generades per JS -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -278,13 +356,13 @@
           <span class="arb-calc-icon">🧮</span>
           <div>
             <div class="arb-calc-heading">Calculadora d'Arbitratge en Temps Real</div>
-            <div class="arb-calc-subheading">Indica el capital total que vols repartir entre Winamax i Bet365:</div>
+            <div class="arb-calc-subheading">Indica el capital total que vols repartir entre les cases d'apostes (Winamax, Bet365, Betway):</div>
           </div>
         </div>
         <div class="arb-calc-inputs">
           <label for="arb-total-stake">Inversió total:</label>
           <div class="arb-input-box">
-            <input type="number" id="arb-total-stake" min="10" step="5" value="100" />
+            <input type="number" id="arb-total-stake" min="2" step="1" value="100" />
             <span class="currency-symbol">€</span>
           </div>
           <button class="arb-btn-recalc" id="arb-btn-recalc">⚡ Recalcular Apostes</button>
@@ -299,21 +377,32 @@
           <ul class="arb-tip-list">
             <li><strong>Aposta imports rodons:</strong> El sistema arrodoneix automàticament les apostes (ex: 52€ i 48€ en lloc de 51.73€) per no aixecar sospites en els sistemes de control de risc de les cases.</li>
             <li><strong>Executa primer l'aposta a la casa feble:</strong> Fes l'aposta a la casa amb la cuota més desajustada abans que el mercat corregeixi el preu.</li>
-            <li><strong>Verifica les regles del mercat:</strong> Assegura't que ambdues cases computin les mateixes condicions (90 minuts reglamentaris).</li>
+            <li><strong>Verifica les regles del mercat:</strong> Assegura't que les cases computin les mateixes condicions (90 minuts reglamentaris).</li>
           </ul>
         </div>
       </div>
 
       <!-- Surebets Grid -->
       <div class="arbitrage-grid-wrapper">
+        <!-- Secció 1: Surebets Vigents (Quotes Fresques) -->
         <div class="arb-section-header">
-          <h2 class="arb-section-heading">🔥 Surebets Actives (Benefici Net > 0%)</h2>
+          <h2 class="arb-section-heading">🔥 Surebets Vigents (Quotes Fresques ≤60s)</h2>
           <span class="arb-section-count" id="surebets-count-badge">0 oportunitats</span>
         </div>
         <div class="arbitrage-grid" id="surebets-container">
           <!-- Generat per JS -->
         </div>
 
+        <!-- Secció 2: Oportunitats Caducades / Stale (>60s) -->
+        <div class="arb-section-header stale-arb-header" id="stale-arbs-header" style="margin-top: 36px;">
+          <h2 class="arb-section-heading" style="color: #fbbf24;">⚠️ Oportunitats Caducades / Stale (Quotes >60s)</h2>
+          <span class="arb-section-count" id="stale-arbs-count-badge">0 oportunitats</span>
+        </div>
+        <div class="arbitrage-grid" id="stale-arbs-container">
+          <!-- Generat per JS -->
+        </div>
+
+        <!-- Secció 3: Monitorització de Mercat (Quasi-Arbitratge / Marge Estret) -->
         <div class="arb-section-header near-arb-header" style="margin-top: 36px;">
           <h2 class="arb-section-heading near-arb-heading">👀 Monitorització de Mercat (Quasi-Arbitratge / Marge Estret)</h2>
           <span class="arb-section-count" id="near-arbs-count-badge">0 partits</span>
@@ -703,6 +792,9 @@
       </div>
 
       <div class="modal-body auth-body">
+        <div class="auth-local-disclaimer" style="margin-bottom: 14px; padding: 10px 14px; background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: var(--radius-sm); font-size: 12px; color: var(--text-muted); line-height: 1.4;">
+          ℹ️ <strong>Avís de privadesa local:</strong> Aquest perfil s'emmagatzema exclusivament al teu navegador (localStorage) per calcular el teu bankroll personal. No s'envia a cap servidor ni atorga permisos d'administració.
+        </div>
         <p class="auth-intro">
           Guarda el teu registre personal d'apostes, calcula el teu benefici net i fes seguiment del teu ROI de manera privada i segura al teu navegador.
         </p>
@@ -899,6 +991,86 @@
       <div class="odds-modal-footer">
         <button class="btn-secondary-modal" onclick="copyOverridesJson()">📋 Copiar JSON per al servidor</button>
         <button class="btn-primary-modal" onclick="saveManualOdds()">💾 Desar Quotes a la Web</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FITXA DETALLADA DE PARTIT (FASE 2) -->
+  <div id="modal-match-details" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="md-modal-title">
+    <div class="modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <div class="modal-header-meta">
+          <span id="md-comp-badge" class="modal-badge-comp">⚽ LaLiga EA Sports</span>
+          <span id="md-jornada-badge" class="modal-badge-jornada">Jornada Activa</span>
+          <span id="md-date-badge" class="modal-badge-date">📅 Data</span>
+          <span id="md-status-badge" class="modal-badge-status">Estat</span>
+        </div>
+        <button class="modal-close-btn" id="modal-match-details-close" onclick="closeMatchDetailsModal()" aria-label="Tancar">&times;</button>
+      </div>
+
+      <!-- Matchup Header -->
+      <div class="md-matchup-header">
+        <div class="md-team-box md-home">
+          <div class="md-team-icon">🏠</div>
+          <div class="md-team-name" id="md-home-name">Local</div>
+          <div class="md-team-sub" id="md-home-sub">Elo: -</div>
+        </div>
+        <div class="md-vs-score-box">
+          <div class="md-vs-label" id="md-vs-label">VS</div>
+          <div class="md-score-display" id="md-score-display" style="display: none;">-</div>
+        </div>
+        <div class="md-team-box md-away">
+          <div class="md-team-icon">✈️</div>
+          <div class="md-team-name" id="md-away-name">Visitant</div>
+          <div class="md-team-sub" id="md-away-sub">Elo: -</div>
+        </div>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="md-tabs-bar">
+        <button class="md-tab-btn active" data-tab="summary" onclick="switchMatchTab('summary')">📋 Resum</button>
+        <button class="md-tab-btn" data-tab="comparison" onclick="switchMatchTab('comparison')">📊 Comparativa</button>
+        <button class="md-tab-btn" data-tab="stats" onclick="switchMatchTab('stats')">📈 Estadístiques & Forma</button>
+        <button class="md-tab-btn" data-tab="markets" onclick="switchMatchTab('markets')">💰 Mercats & Quotes</button>
+        <button class="md-tab-btn" data-tab="lines" onclick="switchMatchTab('lines')">🎚️ Selector de Línies</button>
+        <button class="md-tab-btn" data-tab="recommendations" onclick="switchMatchTab('recommendations')">💡 Recomanacions</button>
+      </div>
+
+      <!-- Modal Body (Tab Panes) -->
+      <div class="modal-body md-modal-body">
+        <!-- 1. RESUM -->
+        <div id="md-pane-summary" class="md-tab-pane active">
+          <!-- Dinàmic per JS -->
+        </div>
+
+        <!-- 2. COMPARATIVA D'EQUIPS -->
+        <div id="md-pane-comparison" class="md-tab-pane" style="display: none;">
+          <!-- Dinàmic per JS -->
+        </div>
+
+        <!-- 3. ESTADÍSTIQUES & FORMA -->
+        <div id="md-pane-stats" class="md-tab-pane" style="display: none;">
+          <!-- Dinàmic per JS -->
+        </div>
+
+        <!-- 4. MERCATS & QUOTES -->
+        <div id="md-pane-markets" class="md-tab-pane" style="display: none;">
+          <!-- Dinàmic per JS -->
+        </div>
+
+        <!-- 5. SELECTOR DE LÍNIES INTERACTIU -->
+        <div id="md-pane-lines" class="md-tab-pane" style="display: none;">
+          <!-- Dinàmic per JS -->
+        </div>
+
+        <!-- 6. RECOMANACIONS -->
+        <div id="md-pane-recommendations" class="md-tab-pane" style="display: none;">
+          <!-- Dinàmic per JS -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary-modal" onclick="closeMatchDetailsModal()">Tancar Fitxa</button>
       </div>
     </div>
   </div>
