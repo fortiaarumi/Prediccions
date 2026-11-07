@@ -5,9 +5,11 @@ Motor d'anàlisi de valor (+EV%) i detecció d'apostes rendibles.
 Avalua ÚNICAMENT les cuotes que realment estan publicades a Winamax.
 """
 
+from __future__ import annotations
+
 import re
 import math
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Iterable
 from scipy.stats import poisson
 
 class ValueBetEngine:
