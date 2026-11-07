@@ -1071,8 +1071,13 @@ class WebDataExporter:
         # Si a SQLite no hi ha suficients partits O hi ha partits pendents/en joc (SCHEDULED o LIVE), consultar JornadaResolver per sincronitzar estats reals
         has_pending = any(r.get("status") in ("SCHEDULED", "LIVE") for r in rows)
         if len(rows) < 8 or has_pending:
-            resolver = JornadaResolver(competition_id=competition_id)
-            fixtures = resolver.get_jornada_fixtures(active_jornada)
+            try:
+                resolver = JornadaResolver(competition_id=competition_id)
+                fixtures = resolver.get_jornada_fixtures(active_jornada)
+            except Exception:
+                fixtures = []
+                if len(rows) == 0:
+                    raise
             if fixtures:
                 existing_keys = {f"{r['home_team_id']}_{r['away_team_id']}" for r in rows}
                 for f in fixtures:

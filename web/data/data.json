@@ -71854,7 +71854,15 @@
         "last_attempt_status": "success",
         "last_success": "2026-11-07T02:06:39.999467",
         "events_count": 69,
-        "odds_count": 207
+        "odds_count": 207,
+        "name": "winamax",
+        "age_seconds": 120.0,
+        "suspended_until": null,
+        "last_attempt_time": "2026-11-07T02:06:39.999467",
+        "query_start": "2026-11-07T02:06:35.000000",
+        "query_end": "2026-11-07T02:06:39.000000",
+        "http_captured_at": "2026-11-07T02:06:39.000000",
+        "partial_details": null
       },
       "bet365": {
         "status": "active",
@@ -71863,7 +71871,15 @@
         "last_attempt_status": "success",
         "last_success": "2026-11-07T02:06:39.999467",
         "events_count": 69,
-        "odds_count": 207
+        "odds_count": 207,
+        "name": "bet365",
+        "age_seconds": 120.0,
+        "suspended_until": null,
+        "last_attempt_time": "2026-11-07T02:06:39.999467",
+        "query_start": "2026-11-07T02:06:35.000000",
+        "query_end": "2026-11-07T02:06:39.000000",
+        "http_captured_at": "2026-11-07T02:06:39.000000",
+        "partial_details": null
       },
       "betway": {
         "status": "active",
@@ -71872,7 +71888,15 @@
         "last_attempt_status": "success",
         "last_success": "2026-11-07T02:06:39.999467",
         "events_count": 69,
-        "odds_count": 207
+        "odds_count": 207,
+        "name": "betway",
+        "age_seconds": 120.0,
+        "suspended_until": null,
+        "last_attempt_time": "2026-11-07T02:06:39.999467",
+        "query_start": "2026-11-07T02:06:35.000000",
+        "query_end": "2026-11-07T02:06:39.000000",
+        "http_captured_at": "2026-11-07T02:06:39.000000",
+        "partial_details": null
       }
     },
     "last_generation": "2026-11-07T02:06:39.999467"
