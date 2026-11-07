@@ -592,11 +592,18 @@ class WinamaxScraper:
                 fetch_success = False
 
                 if not self.offline:
-                    cmd = ['curl.exe' if os.name == 'nt' else 'curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', base_tournament_url]
-                    res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
+                    cmd = ['curl.exe' if os.name == 'nt' else 'curl', '-s', '--connect-timeout', '5', '--max-time', '15', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', base_tournament_url]
+                    try:
+                        res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20)
+                    except subprocess.TimeoutExpired:
+                        print(f"   [!] Timeout (20s) consultant Winamax per a {tournament_id} ({base_tournament_url})")
+                        res = None
+                    except Exception as e:
+                        print(f"   [!] Error consultant Winamax per a {tournament_id}: {e}")
+                        res = None
 
-                    start = res.stdout.find('var PRELOADED_STATE = ')
-                    if start == -1:
+                    start = res.stdout.find('var PRELOADED_STATE = ') if (res and res.stdout) else -1
+                    if start == -1 and res and res.stdout:
                         start = res.stdout.find('PRELOADED_STATE = ')
 
                     if start != -1:
@@ -751,9 +758,17 @@ class WinamaxScraper:
                             pass
 
                     if not match_state and not self.offline:
-                        cmd_m = ['curl.exe' if os.name == 'nt' else 'curl', '-s', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', match_url]
-                        res_m = subprocess.run(cmd_m, capture_output=True, text=True, encoding='utf-8', errors='replace')
-                        start_m = res_m.stdout.find('var PRELOADED_STATE = ')
+                        cmd_m = ['curl.exe' if os.name == 'nt' else 'curl', '-s', '--connect-timeout', '5', '--max-time', '15', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36', match_url]
+                        try:
+                            res_m = subprocess.run(cmd_m, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20)
+                        except subprocess.TimeoutExpired:
+                            print(f"   [!] Timeout (20s) consultant partit Winamax {match_id} ({match_url})")
+                            res_m = None
+                        except Exception as e:
+                            print(f"   [!] Error consultant partit Winamax {match_id}: {e}")
+                            res_m = None
+
+                        start_m = res_m.stdout.find('var PRELOADED_STATE = ') if (res_m and res_m.stdout) else -1
                         if start_m != -1:
                             state_m_str = res_m.stdout[start_m + len('var PRELOADED_STATE = '):]
                             try:

@@ -133,8 +133,15 @@ class JornadaResolver:
         target_url = urls.get(comp_id, urls["LALIGA"])
 
         curl_bin = 'curl.exe' if os.name == 'nt' else 'curl'
-        cmd = [curl_bin, '-s', target_url]
-        res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
+        cmd = [curl_bin, '-s', '--connect-timeout', '5', '--max-time', '15', target_url]
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20)
+        except subprocess.TimeoutExpired:
+            print(f"   [!] Timeout (20s) determinant jornada a Flashscore per a {comp_id} ({target_url})")
+            return None
+        except Exception as e:
+            print(f"   [!] Error determinant jornada a Flashscore per a {comp_id}: {e}")
+            return None
 
         blocks = res.stdout.split('~')
         current_round = None

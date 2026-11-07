@@ -63,10 +63,23 @@ class MatchScraper:
             "raw_stats": {}
         }
 
+        curl_bin = 'curl.exe' if os.name == 'nt' else 'curl'
+
+        def _fetch_feed(feed_type: str, url_feed: str, timeout_sec: int = 12) -> Optional[str]:
+            cmd = [curl_bin, '-s', '--connect-timeout', '4', '--max-time', str(timeout_sec), '-H', 'x-fsign: SW9D1eZo', url_feed]
+            try:
+                res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=timeout_sec + 3)
+                return res.stdout
+            except subprocess.TimeoutExpired:
+                print(f"   [!] Timeout ({timeout_sec}s) consultant feed '{feed_type}' per al partit {match_code} ({url_feed})")
+                return None
+            except Exception as ex:
+                print(f"   [!] Error consultant feed '{feed_type}' per al partit {match_code}: {ex}")
+                return None
+
         try:
             # 1. Extreure estadístiques detallades
-            cmd = ['curl', '-s', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/df_st_1_{match_code}']
-            res_st = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
+            stdout_st = _fetch_feed('stats', f'https://local-global.flashscore.ninja/2/x/feed/df_st_1_{match_code}')
             
             def parse_num(val):
                 try:
@@ -75,8 +88,8 @@ class MatchScraper:
                     return 0.0
 
             stats_dict = {}
-            if res_st.stdout:
-                blocks = res_st.stdout.split('~')
+            if stdout_st:
+                blocks = stdout_st.split('~')
                 for b in blocks:
                     if 'SG÷' in b:
                         m_cat = re.search(r'SG÷([^¬]+)', b)
@@ -115,11 +128,10 @@ class MatchScraper:
                         result["away_fouls"] = int(parse_num(vals["visitante"]))
 
             # 2. Extreure marcador i equips des del feed bàsic o del resum
-            cmd_dc = ['curl', '-s', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/dc_1_{match_code}']
-            res_dc = subprocess.run(cmd_dc, capture_output=True, text=True, encoding='utf-8', errors='replace')
-            if res_dc.stdout:
+            stdout_dc = _fetch_feed('score', f'https://local-global.flashscore.ninja/2/x/feed/dc_1_{match_code}')
+            if stdout_dc:
                 fields = {}
-                for token in re.split(r'[\xac\r\n\t]+', res_dc.stdout):
+                for token in re.split(r'[\xac\r\n\t]+', stdout_dc):
                     if '÷' in token:
                         parts = token.split('÷', 1)
                         fields[parts[0]] = parts[1]
@@ -136,19 +148,17 @@ class MatchScraper:
                     result["status"] = "FINISHED" if da_code == '3' else ("LIVE" if da_code in ['2', '7', '8', '9'] else "SCHEDULED")
 
             # 3. Extreure àrbitre des del feed oficial d'informació (df_sui_1)
-            cmd_sui = ['curl', '-s', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/df_sui_1_{match_code}']
-            res_sui = subprocess.run(cmd_sui, capture_output=True, text=True, encoding='utf-8', errors='replace')
-            if res_sui.stdout:
-                m_ref = re.search(r'REF[^\w]*MIV[^\w]*([A-Za-z\s\.\-]+)', res_sui.stdout)
+            stdout_sui = _fetch_feed('referee_info', f'https://local-global.flashscore.ninja/2/x/feed/df_sui_1_{match_code}')
+            if stdout_sui:
+                m_ref = re.search(r'REF[^\w]*MIV[^\w]*([A-Za-z\s\.\-]+)', stdout_sui)
                 if m_ref:
                     result["referee"] = m_ref.group(1).strip()
 
             # Fallback secundari: comentaris en viu (df_li_1) si no s'ha trobat
             if result["referee"] == "REF_DEFAULT":
-                cmd_li = ['curl', '-s', '-H', 'x-fsign: SW9D1eZo', f'https://local-global.flashscore.ninja/2/x/feed/df_li_1_{match_code}']
-                res_li = subprocess.run(cmd_li, capture_output=True, text=True, encoding='utf-8', errors='replace')
-                if res_li.stdout:
-                    for b in res_li.stdout.split('~'):
+                stdout_li = _fetch_feed('live_comments', f'https://local-global.flashscore.ninja/2/x/feed/df_li_1_{match_code}')
+                if stdout_li:
+                    for b in stdout_li.split('~'):
                         if 'Referee' in b or 'Árbitro' in b:
                             m_ref2 = re.search(r'([A-Za-z\s\.-]+(?:Referee|Árbitro))', b)
                             if m_ref2:

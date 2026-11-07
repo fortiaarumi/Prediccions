@@ -275,6 +275,64 @@
         </div>
       </div>
 
+      <!-- PANELL INTERACTIU DE CONTROL: SUREBET MONITOR LOCAL (AGENT WINDOWS) -->
+      <div class="surebet-agent-panel" id="surebet-agent-panel">
+        <div class="surebet-agent-header">
+          <div class="surebet-agent-title-group">
+            <span class="surebet-agent-icon">🖥️</span>
+            <div>
+              <h3 class="surebet-agent-title">Control de Cerca Remota (Agent Windows)</h3>
+              <p class="surebet-agent-subtitle">Execució d'scrapers en temps real des de la teva IP residencial amb connexió sortint segura.</p>
+            </div>
+          </div>
+          <div class="agent-connection-badge" id="agent-connection-badge">
+            <span class="agent-pulse-dot" id="agent-pulse-dot"></span>
+            <span id="agent-connection-status-text">Agent PC: Preparat (Local)</span>
+          </div>
+        </div>
+
+        <div class="surebet-agent-controls-row">
+          <div class="surebet-control-group">
+            <label for="surebet-duration-select">⏱️ Durada de cerca:</label>
+            <select id="surebet-duration-select" class="surebet-select">
+              <option value="300">5 minuts</option>
+              <option value="600" selected>10 minuts (Recomanat)</option>
+              <option value="900">15 minuts</option>
+              <option value="1800">30 minuts (Màxim permès)</option>
+            </select>
+          </div>
+
+          <div class="surebet-btn-group">
+            <button id="btn-start-surebet-search" class="btn-surebet-action btn-surebet-start">
+              <span>🔍</span> Buscar surebets
+            </button>
+            <button id="btn-stop-surebet-search" class="btn-surebet-action btn-surebet-stop" disabled>
+              <span>🛑</span> Aturar cerca
+            </button>
+          </div>
+        </div>
+
+        <!-- TARGETA D'ESTAT DE LA FEINA EN CURS -->
+        <div class="surebet-job-status-card" id="surebet-job-status-card">
+          <div class="job-status-col">
+            <span class="job-status-label">Estat de la feina</span>
+            <span class="job-status-val" id="surebet-job-state">En repòs (Sense cerca activa)</span>
+          </div>
+          <div class="job-status-col">
+            <span class="job-status-label">Temps transcorregut</span>
+            <span class="job-status-val" id="surebet-job-timer">--:--</span>
+          </div>
+          <div class="job-status-col">
+            <span class="job-status-label">Oportunitats en finestra (≤30m)</span>
+            <span class="job-status-val" id="surebet-job-opps">0 actives</span>
+          </div>
+          <div class="job-status-col">
+            <span class="job-status-label">Sessió ID</span>
+            <span class="job-status-val job-status-code" id="surebet-job-id">Cap</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Panell de Transparència i Monitoratge del Sistema (Bloc A: Surebets | Bloc B: GitHub Actions) -->
       <div class="system-monitoring-panel" id="system-monitoring-panel">
         <!-- BLOC A: MONITORATGE DE QUOTES EN TEMPS REAL -->

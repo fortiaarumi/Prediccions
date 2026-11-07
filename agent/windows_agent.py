@@ -35,7 +35,7 @@ from surebet_daemon import SurebetDaemon
 class WindowsSurebetAgent:
     def __init__(
         self,
-        coordinator: MockCoordinator,
+        coordinator: Any,
         agent_id: str = "agent-win-local-01",
         heartbeat_interval_seconds: float = 5.0,
         offline: bool = True,
@@ -54,16 +54,58 @@ class WindowsSurebetAgent:
 
         self._last_heartbeat_time = 0.0
 
-    def send_heartbeat(self, status: Optional[str] = None) -> None:
-        """Envia un pols periòdic de vida al coordinador."""
-        st = status or ("BUSY" if self.active_session_id else "ONLINE")
-        self.coordinator.register_heartbeat(
-            agent_id=self.agent_id,
-            status=st,
-            version="2.1.0",
-            active_session_id=self.active_session_id
-        )
+    def send_heartbeat(self, status: Optional[str] = None) -> bool:
+        """Envia un pols periòdic de vida al coordinador. Retorna True si s'ha sol·licitat cancel·lació."""
         self._last_heartbeat_time = time.time()
+        if hasattr(self.coordinator, "send_heartbeat"):
+            # SupabaseCoordinator (PostgreSQL RPC)
+            res = self.coordinator.send_heartbeat(self.agent_id, self.active_session_id)
+            return bool(res.get("cancel_requested", False))
+        elif hasattr(self.coordinator, "register_heartbeat"):
+            # MockCoordinator (Memòria / Proves locals)
+            st = status or ("BUSY" if self.active_session_id else "ONLINE")
+            self.coordinator.register_heartbeat(
+                agent_id=self.agent_id,
+                status=st,
+                version="2.1.0",
+                active_session_id=self.active_session_id
+            )
+            return False
+        return False
+
+    def _is_cancel_requested(self, session_id: str) -> bool:
+        """Comprova cooperativament si cal cancel·lar la sessió."""
+        if self.send_heartbeat(status="BUSY"):
+            return True
+        if hasattr(self.coordinator, "poll_order_status"):
+            st = self.coordinator.poll_order_status(session_id)
+            if st == STATUS_CANCEL_REQUESTED:
+                return True
+        return False
+
+    def _finalize_session(
+        self,
+        session_id: str,
+        final_status: str,
+        error_message: Optional[str] = None,
+        summary: Optional[Dict[str, Any]] = None
+    ) -> None:
+        """Tanca la sessió atòmicament al coordinador de forma compatible."""
+        if final_status == STATUS_COMPLETED:
+            if hasattr(self.coordinator, "complete_order"):
+                self.coordinator.complete_order(session_id, summary=summary or {})
+            elif hasattr(self.coordinator, "update_session_state"):
+                self.coordinator.update_session_state(session_id, STATUS_COMPLETED, self.agent_id)
+        elif final_status == STATUS_CANCELLED:
+            if hasattr(self.coordinator, "cancel_order"):
+                self.coordinator.cancel_order(session_id)
+            elif hasattr(self.coordinator, "update_session_state"):
+                self.coordinator.update_session_state(session_id, STATUS_CANCELLED, self.agent_id)
+        else:
+            if hasattr(self.coordinator, "fail_order"):
+                self.coordinator.fail_order(session_id, error_message=error_message or "Error d'execució")
+            elif hasattr(self.coordinator, "update_session_state"):
+                self.coordinator.update_session_state(session_id, STATUS_FAILED, self.agent_id, error_message=error_message)
 
     def process_one_order(self, order) -> str:
         """
@@ -87,34 +129,31 @@ class WindowsSurebetAgent:
         start_time = time.time()
         cycle_count = 0
         final_status = STATUS_COMPLETED
+        err_msg = None
 
         try:
             while True:
-                # 1. Enviar heartbeat
-                self.send_heartbeat(status="BUSY")
-
-                # 2. Comprovar si des del web s'ha demanat cancel·lació
-                remote_status = self.coordinator.poll_order_status(session_id)
-                if remote_status == STATUS_CANCEL_REQUESTED or daemon.cancel_requested:
+                # 1. Comprovar cancel·lació cooperativa
+                if self._is_cancel_requested(session_id) or daemon.cancel_requested:
                     print(f"🛑 [AGENT] Cancel·lació sol·licitada pel web per a {session_id}!")
                     daemon.request_cancellation()
                     daemon.check_cancellation()
                     final_status = STATUS_CANCELLED
                     break
 
-                # 3. Comprovar si s'ha superat el temps de cerca demanat
+                # 2. Comprovar si s'ha superat el temps de cerca demanat
                 elapsed = time.time() - start_time
                 if elapsed >= max_duration_seconds:
                     print(f"🏁 [AGENT] Temps màxim de sessió assolit ({elapsed:.1f}s >= {max_duration_seconds}s).")
                     final_status = STATUS_COMPLETED
                     break
 
-                # 4. Executar un cicle de cerca amb SurebetDaemon
+                # 3. Executar un cicle de cerca amb SurebetDaemon
                 cycle_count += 1
                 cycle_res = daemon.run_cycle()
                 surebets = cycle_res.get("surebets", [])
 
-                # 5. Publicar snapshots a l'SnapshotStore (amb historial de 30 minuts)
+                # 4. Publicar snapshots a l'SnapshotStore (amb historial de 30 minuts)
                 now_utc = datetime.now(timezone.utc)
                 for arb in surebets:
                     snap_record = self.snapshot_store.add_opportunity(
@@ -128,15 +167,13 @@ class WindowsSurebetAgent:
 
                 print(f"   [Cicle #{cycle_count}] Oportunitats registrades a l'historial de 30 min: {len(surebets)}.")
 
-                # Si és una execució ràpida de prova de durada molt curta, dormir amb micro-pauses
-                # per atendre immediatament peticions de cancel·lació cooperativa
+                # Pauses curtes atenent cancel·lacions ràpides
                 sleep_target = min(5, int(max_duration_seconds - elapsed))
                 if sleep_target <= 0:
                     break
 
                 for _ in range(sleep_target):
-                    remote_st = self.coordinator.poll_order_status(session_id)
-                    if remote_st == STATUS_CANCEL_REQUESTED:
+                    if self._is_cancel_requested(session_id) or daemon.cancel_requested:
                         daemon.request_cancellation()
                         daemon.check_cancellation()
                         final_status = STATUS_CANCELLED
@@ -149,14 +186,16 @@ class WindowsSurebetAgent:
         except Exception as e:
             print(f"⚠️  [AGENT] Error durant l'execució de la sessió: {e}")
             final_status = STATUS_FAILED
-            self.coordinator.update_session_state(session_id, STATUS_FAILED, self.agent_id, error_message=str(e))
-            self.cleanup_resources()
-            self.active_session_id = None
-            return STATUS_FAILED
+            err_msg = str(e)
 
-        # 6. Finalitzar la sessió atòmicament al coordinador
+        # 5. Finalitzar la sessió atòmicament al coordinador
         print(f"✅ [AGENT] Sessió {session_id} finalitzada amb estat: {final_status}.")
-        self.coordinator.update_session_state(session_id, final_status, self.agent_id)
+        self._finalize_session(
+            session_id=session_id,
+            final_status=final_status,
+            error_message=err_msg,
+            summary={"cycles": cycle_count, "completed_at": datetime.now(timezone.utc).isoformat()}
+        )
         self.cleanup_resources()
         self.active_session_id = None
         self.send_heartbeat(status="ONLINE")

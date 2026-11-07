@@ -11,15 +11,33 @@ BEGIN;
 -- Setup: Crear usuaris i agents de prova si no existeixen
 DO $$
 DECLARE
-    v_admin_id UUID := '00000000-0000-0000-0000-000000000001'::UUID;
-    v_oper1_id UUID := '00000000-0000-0000-0000-000000000002'::UUID;
-    v_oper2_id UUID := '00000000-0000-0000-0000-000000000003'::UUID;
-    v_agent_user_id UUID := '00000000-0000-0000-0000-000000000004'::UUID;
-    v_viewer_id UUID := '00000000-0000-0000-0000-000000000005'::UUID;
+    v_admin_id UUID := 'a0000000-0000-4000-8000-000000000001'::UUID;
+    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
+    v_oper2_id UUID := 'a0000000-0000-4000-8000-000000000003'::UUID;
+    v_agent_user_id UUID := 'a0000000-0000-4000-8000-000000000004'::UUID;
+    v_viewer_id UUID := 'a0000000-0000-4000-8000-000000000005'::UUID;
     v_agent_id UUID;
     v_sess_id UUID;
+    v_has_auth BOOLEAN;
 BEGIN
-    RAISE NOTICE '--- INICIANT SETUP DE PROVA ---';
+    RAISE NOTICE '--- INICIANT SETUP DE PROVA AMB UUIDs v4 ---';
+
+    -- Comprovar si auth.users existeix a l'esquema (entorn Supabase)
+    SELECT EXISTS (
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_schema = 'auth' AND table_name = 'users'
+    ) INTO v_has_auth;
+
+    IF v_has_auth THEN
+        -- Inserir usuaris temporals a auth.users per satisfer FK si cal
+        INSERT INTO auth.users (id, email) VALUES
+            (v_admin_id, 'admin@prediccions.test'),
+            (v_oper1_id, 'operador1@prediccions.test'),
+            (v_oper2_id, 'operador2@prediccions.test'),
+            (v_agent_user_id, 'agent_win@prediccions.test'),
+            (v_viewer_id, 'viewer@prediccions.test')
+        ON CONFLICT (id) DO NOTHING;
+    END IF;
 
     -- Registrar usuaris RBAC
     INSERT INTO app_users (user_id, email, role) VALUES
@@ -44,7 +62,7 @@ END $$;
 -- ---------------------------------------------------------------------
 DO $$
 DECLARE
-    v_viewer_id UUID := '00000000-0000-0000-0000-000000000005'::UUID;
+    v_viewer_id UUID := 'a0000000-0000-4000-8000-000000000005'::UUID;
 BEGIN
     -- Simular context d'usuari viewer
     PERFORM set_config('request.jwt.claim.sub', v_viewer_id::text, true);
@@ -65,7 +83,7 @@ END $$;
 -- ---------------------------------------------------------------------
 DO $$
 DECLARE
-    v_oper1_id UUID := '00000000-0000-0000-0000-000000000002'::UUID;
+    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
 BEGIN
     PERFORM set_config('request.jwt.claim.sub', v_oper1_id::text, true);
 
@@ -86,7 +104,7 @@ END $$;
 -- ---------------------------------------------------------------------
 DO $$
 DECLARE
-    v_oper1_id UUID := '00000000-0000-0000-0000-000000000002'::UUID;
+    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
     v_sess_id UUID;
 BEGIN
     PERFORM set_config('request.jwt.claim.sub', v_oper1_id::text, true);
@@ -113,8 +131,8 @@ END $$;
 -- ---------------------------------------------------------------------
 DO $$
 DECLARE
-    v_oper1_id UUID := '00000000-0000-0000-0000-000000000002'::UUID;
-    v_oper2_id UUID := '00000000-0000-0000-0000-000000000003'::UUID;
+    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
+    v_oper2_id UUID := 'a0000000-0000-4000-8000-000000000003'::UUID;
     v_sess_id UUID;
 BEGIN
     PERFORM set_config('request.jwt.claim.sub', v_oper1_id::text, true);
@@ -141,8 +159,8 @@ END $$;
 -- ---------------------------------------------------------------------
 DO $$
 DECLARE
-    v_oper1_id UUID := '00000000-0000-0000-0000-000000000002'::UUID;
-    v_oper2_id UUID := '00000000-0000-0000-0000-000000000003'::UUID;
+    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
+    v_oper2_id UUID := 'a0000000-0000-4000-8000-000000000003'::UUID;
     v_sess_id UUID;
 BEGIN
     PERFORM set_config('request.jwt.claim.sub', v_oper1_id::text, true);
@@ -168,8 +186,8 @@ END $$;
 -- ---------------------------------------------------------------------
 DO $$
 DECLARE
-    v_oper1_id UUID := '00000000-0000-0000-0000-000000000002'::UUID;
-    v_agent_user_id UUID := '00000000-0000-0000-0000-000000000004'::UUID;
+    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
+    v_agent_user_id UUID := 'a0000000-0000-4000-8000-000000000004'::UUID;
     v_claimed_sess UUID;
 BEGIN
     -- Crear ordre legítima
@@ -193,8 +211,8 @@ END $$;
 -- ---------------------------------------------------------------------
 DO $$
 DECLARE
-    v_oper1_id UUID := '00000000-0000-0000-0000-000000000002'::UUID;
-    v_agent_user_id UUID := '00000000-0000-0000-0000-000000000004'::UUID;
+    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
+    v_agent_user_id UUID := 'a0000000-0000-4000-8000-000000000004'::UUID;
     v_claimed_sess_2 UUID;
 BEGIN
     -- Crear segona ordre
