@@ -58,6 +58,23 @@ class MockSupabaseServerHandler(BaseHTTPRequestHandler):
         body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
         payload = json.loads(body) if body else {}
 
+        # 1.5 Autenticació d'usuari dedicada (Supabase Auth /token)
+        if "/auth/v1/token" in self.path:
+            email = payload.get("email", "")
+            pwd = payload.get("password", "")
+            if email == "agent_win@prediccions.test" and pwd == "AgentSecret123!":
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"access_token": "valid_agent_user_jwt_token_12345", "token_type": "bearer"}')
+                return
+            else:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"error": "invalid_grant", "error_description": "Invalid login credentials"}')
+                return
+
         # 2. Emulació d'error transitori per provar el reintent
         if self.path == "/rest/v1/rpc/flaky_rpc":
             MockSupabaseServerHandler.flaky_counter += 1
@@ -389,4 +406,42 @@ def test_supabase_coordinator_snapshot_idempotency(mock_supabase_server):
     # El servidor ha rebut el snapshot_uuid determinista i no ha generat duplicats
     matching = [s for s in MockSupabaseServerHandler.snapshots if s.get("p_snapshot_id") == uuid_token]
     assert len(matching) == 2  # Registrades les dues peticions pel mock handler amb el mateix token idempotent
+
+
+def test_supabase_coordinator_rejects_service_role_credentials():
+    """Verifica que l'agent rebutja frontalment claus privileged service_role."""
+    with pytest.raises(ValueError) as exc1:
+        SupabaseCoordinator(
+            supabase_url="http://127.0.0.1:54321",
+            supabase_anon_key="sbp_eyJhbGciOi...service_role...secret"
+        )
+    assert "service_role" in str(exc1.value)
+
+    with pytest.raises(ValueError) as exc2:
+        coord = SupabaseCoordinator(
+            supabase_url="http://127.0.0.1:54321",
+            supabase_anon_key="valid-anon-key-public"
+        )
+        coord.set_agent_jwt("ey...service_role...token")
+    assert "service_role" in str(exc2.value)
+
+
+def test_supabase_coordinator_agent_authentication_flow(mock_supabase_server):
+    """Verifica que l'agent pot autenticar-se via Supabase Auth per obtenir un JWT d'usuari limitat."""
+    coord = SupabaseCoordinator(
+        supabase_url=mock_supabase_server,
+        supabase_anon_key="anon-key-public",
+        timeout_seconds=2.0
+    )
+
+    # 1. Login amb credencials incorrectes
+    with pytest.raises(SupabaseCoordinatorError):
+        coord.authenticate_agent_user("bad@agent.test", "WrongPassword")
+
+    # 2. Login vàlid d'agent
+    jwt_token = coord.authenticate_agent_user("agent_win@prediccions.test", "AgentSecret123!")
+    assert jwt_token == "valid_agent_user_jwt_token_12345"
+    assert coord.agent_token == "valid_agent_user_jwt_token_12345"
+    assert coord._headers["Authorization"] == "Bearer valid_agent_user_jwt_token_12345"
+
 

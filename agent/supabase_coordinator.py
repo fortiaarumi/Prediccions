@@ -51,32 +51,77 @@ class SupabaseCoordinator:
     def __init__(
         self,
         supabase_url: str,
-        supabase_key: str,
+        supabase_anon_key: Optional[str] = None,
+        agent_token: Optional[str] = None,
         agent_name: str = "WindowsAgent",
         timeout_seconds: float = 10.0,
         max_retries: int = 3,
         backoff_factor: float = 0.5,
-        token_provider: Optional[Any] = None
+        token_provider: Optional[Any] = None,
+        supabase_key: Optional[str] = None,  # Compatibilitat amb crides prèvies
     ):
+        anon_key = supabase_anon_key or supabase_key
+        if not anon_key:
+            raise ValueError("Cal proporcionar la clau pública supabase_anon_key.")
+
         self.supabase_url = supabase_url.rstrip("/")
-        self.supabase_key = supabase_key
+        self.supabase_anon_key = anon_key
+        self.agent_token = agent_token
         self.agent_name = agent_name
         self.timeout_seconds = timeout_seconds
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor
         self.token_provider = token_provider
 
+        # Validació de seguretat estricta (Mínim Privilegi):
+        # L'agent NO pot tenir sota cap concepte una clau privilegiada 'service_role' o d'administrador.
+        for k in (self.supabase_anon_key, self.agent_token):
+            if k and any(bad in k.lower() for bad in ("service_role", "secret", "master_key")):
+                raise ValueError(
+                    "Seguretat: L'agent local no admet claus privilegiades 'service_role'. "
+                    "Ha d'operar exclusivament amb supabase_anon_key pública i autenticació d'usuari dedicada (JWT)."
+                )
+
+        bearer_token = self.agent_token or self.supabase_anon_key
         self._headers = {
-            "apikey": self.supabase_key,
-            "Authorization": f"Bearer {self.supabase_key}",
+            "apikey": self.supabase_anon_key,
+            "Authorization": f"Bearer {bearer_token}",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "User-Agent": f"Prediccions-Agent/{self.agent_name}"
         }
 
+    def authenticate_agent_user(self, email: str, password: str) -> str:
+        """
+        Autentica l'agent com a usuari dedicat amb rol 'agent' via Supabase Auth
+        (POST /auth/v1/token?grant_type=password).
+        Retorna l'access_token (JWT) i l'assigna a les capçaleres Authorization.
+        """
+        payload = {
+            "email": email,
+            "password": password
+        }
+        res = self._request("POST", "/auth/v1/token?grant_type=password", payload)
+        if not res or "access_token" not in res:
+            raise SupabaseAuthenticationError("No s'ha pogut obtenir el JWT d'autenticació de l'agent")
+
+        token = res["access_token"]
+        self.set_agent_jwt(token)
+        return token
+
+    def set_agent_jwt(self, jwt_token: str) -> None:
+        """Estableix o renova el JWT limitat de l'agent per a peticions autenticades."""
+        if any(bad in jwt_token.lower() for bad in ("service_role", "secret", "master_key")):
+            raise ValueError("No es permet assignar una clau de servei privilegiada ('service_role') com a token d'agent")
+        self.agent_token = jwt_token
+        self._headers["Authorization"] = f"Bearer {jwt_token}"
+
     def refresh_auth_token(self, new_token: str) -> None:
-        """Actualitza el token d'autorització Bearer en calent sense reiniciar l'agent."""
-        self.supabase_key = new_token
+        """Mètode de compatibilitat: renova el JWT d'agent o la clau d'accés en calent."""
+        if any(bad in new_token.lower() for bad in ("service_role", "secret", "master_key")):
+            raise ValueError("No es permet assignar una clau privilegiada ('service_role') com a token")
+        self.supabase_anon_key = new_token
+        self.agent_token = new_token
         self._headers["apikey"] = new_token
         self._headers["Authorization"] = f"Bearer {new_token}"
 
