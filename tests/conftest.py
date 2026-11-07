@@ -211,6 +211,9 @@ def isolate_data_and_enforce_offline_reproducibility(tmp_path_factory):
     orig_urlopen = urllib.request.urlopen
     def offline_urlopen(url_or_req, *args, **kwargs):
         url_str = url_or_req.full_url if hasattr(url_or_req, "full_url") else str(url_or_req)
+        # Si és connexió local per a servidors de prova (localhost / 127.0.0.1), permetre
+        if "127.0.0.1" in url_str or "localhost" in url_str or "::1" in url_str:
+            return orig_urlopen(url_or_req, *args, **kwargs)
         # Si no és local, llançar error d'inaccessibilitat
         raise urllib.error.URLError(f"[BLOCATGE OFFLINE]: Accés HTTP extern bloquejat a '{url_str}' pel harness de proves.")
 
