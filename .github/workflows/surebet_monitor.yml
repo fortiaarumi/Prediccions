@@ -1,9 +1,10 @@
 name: Monitoratge Lleuger de Surebets (Alta Freqüència)
 
 on:
-  schedule:
-    # Execució programada cada 5 minuts les 24 hores del dia
-    - cron: '*/5 * * * *'
+  # Desactivació temporal de l'execució automàtica per cron (només activació sota demanda per no consumir minuts de GitHub Actions)
+  # schedule:
+  #   # Execució programada cada 5 minuts les 24 hores del dia
+  #   - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       max_proximity_hours:
