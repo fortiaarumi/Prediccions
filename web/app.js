@@ -1682,7 +1682,7 @@ function formatArbitrageInstructions(arb, totalBankroll) {
   const legs = arb.legs || [];
   const { bankroll: effectiveBankroll, roundStakes, grossPayouts, minReturn, netProfit, profitPct, isPositive } = computeArbitrageValues(arb, total);
 
-  let text = `⚡ INSTRUCCIONS D'ARBITRATGE SEGUR (+${profitPct.toFixed(1)}% NET GARANTIT)\n`;
+  let text = `⚡ INSTRUCCIONS D'ARBITRATGE MATEMÀTIC (+${profitPct.toFixed(1)}% Teòric)\n`;
   text += `Partit: ${arb.matchup} (${arb.competition_name || arb.competition_id})\n`;
   text += `Mercat: ${arb.market_name}\n`;
   text += `Data: ${arb.date}\n`;
@@ -1700,7 +1700,7 @@ function formatArbitrageInstructions(arb, totalBankroll) {
 
   text += `--------------------------------------------------\n`;
   text += `💼 RETORN GLOBAL MÍNIM DE CARTERA: ${minReturn.toFixed(2)} € (després de cobrir la resta d'apostes i comissions)\n`;
-  text += `💰 BENEFICI NET GARANTIT: ${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)} € (Passi el que passi al partit!)\n`;
+  text += `💰 BENEFICI NET GARANTIT: ${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)} € (Teòric matemàtic: subjecte a reconfirmació de quotes i liquiditat a cada casa)\n`;
 
   return text;
 }
@@ -2222,7 +2222,7 @@ function renderArbitrage() {
       <div class="arb-hero-card glow-green">
         <span class="arb-hero-icon">📈</span>
         <div class="arb-hero-val">+${Number(maxP).toFixed(1)}%</div>
-        <div class="arb-hero-lbl">Benefici Màx. Garantit</div>
+        <div class="arb-hero-lbl">Diferencial Màxim Teòric</div>
       </div>
       <div class="arb-hero-card">
         <span class="arb-hero-icon">💰</span>
@@ -2260,13 +2260,19 @@ function renderArbitrage() {
     let badgeText = `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
     let cardGlowClass = 'arb-card-near';
     let noticeHtml = '';
-    let profitLabel = 'Benefici Net Garantit:';
+    let profitLabel = 'Diferencial Net Teòric:';
 
     if (tierType === 'fresh') {
       badgeClass = isPositive ? 'arb-badge-profit' : 'arb-badge-near';
-      badgeText = isPositive ? `+${profitPct.toFixed(1)}% NET GARANTIT` : `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
+      badgeText = isPositive ? `+${profitPct.toFixed(1)}% Teòric (≤60s)` : `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
       cardGlowClass = 'arb-card-surebet';
-      profitLabel = 'Benefici Net Garantit:';
+      profitLabel = 'Diferencial Net Teòric:';
+      noticeHtml = `
+        <div class="arb-fresh-notice" style="font-size: 11.5px; color: #10b981; margin-top: 4px; display: flex; align-items: center; gap: 4px; font-weight: 500;">
+          <span>⚡</span>
+          <span><strong>Captura Recent (≤60s):</strong> Discrepància detectada fa menys d'un minut. Requereix reconfirmació immediata de quotes i liquiditat a les cases abans d'operar.</span>
+        </div>
+      `;
     } else if (tierType === 'stale') {
       badgeClass = 'arb-badge-stale';
       badgeText = `⚠️ +${profitPct.toFixed(1)}% (1-5 min)`;

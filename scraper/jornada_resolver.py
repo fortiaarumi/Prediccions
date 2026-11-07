@@ -31,10 +31,12 @@ class JornadaResolver:
         fixtures = crawler.crawl_jornada_fixtures_from_web(jornada, competition_id=self.competition_id)
 
         if not fixtures:
-            # Fallback defensiu a fitxer d'urls existent per a execucions offline o tests
+            # Fallback defensiu a fitxer d'urls existent per a execucions offline o entorns de test
             urls_file = DATA_DIR / f"{self.competition_id.lower()}_jornada_{jornada}_urls.txt"
             if urls_file.exists():
                 fixtures = crawler._parse_urls_file(urls_file, self.competition_id, jornada)
+                if fixtures:
+                    print(f"⚠️  [AVÍS DE JORNADA RESOLVER]: Fallback offline activat per a {self.competition_id} J{jornada}. S'han utilitzat dades de {urls_file.name} perquè el crawler web no ha retornat partits.")
 
         if not fixtures:
             raise ValueError(f"[ERROR CRÍTIC]: No s'han pogut resoldre partits per a la Jornada {jornada} de {self.competition_id}.")

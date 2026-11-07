@@ -676,8 +676,10 @@ class ComboBetEngine:
                     continue
                 if counts.get(k, 0) >= max_usage:
                     continue
-                # Si s'exigeix EV positiu, evitar que seleccions amb valor esperat fortament negatiu
-                # (p_i * odd_i < 0.90) degradin de manera paràsita la rendibilitat matemàtica del conjunt
+                # NOTA D'AUDITORIA: El filtre `leg_ev_factor >= 0.90` (p_i * odd_i >= 0.90) és una
+                # heurística provisional tolerant al marge habitual del bookmaker (vig de fins al 10%).
+                # Evita que seleccions severament descalibrades degradin l'EV combinat de forma paràsita.
+                # Aquesta regla està PENDENT DE VALIDACIÓ RETROSPECTIVA i NO garanteix rendibilitat.
                 leg_ev_factor = float(m.get("model_prob", 0.0)) / 100.0 * float(m.get("bookie_odd", 1.0))
                 if require_positive_ev and leg_ev_factor < 0.90:
                     continue
