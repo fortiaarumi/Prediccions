@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-11-07T02:06:39.999467",
-    "formatted_date": "07/11/2026 a les 02:06",
+    "generated_at": "2026-11-07T13:22:39.513837",
+    "formatted_date": "07/11/2026 a les 13:22",
     "season": "2026-2027",
     "version": "2.0.0",
     "app_title": "Prediccions de Futbol · Poisson GLM & Winamax",
@@ -67,187 +67,19 @@
   "changelog": [
     {
       "date": "2026-11-07",
-      "timestamp": "2026-11-07T02:07:28.518701",
+      "timestamp": "2026-11-07T13:23:37.164567",
       "title": "Actualització Diària del Model · 07/11/2026",
       "badge": "Diari (08:00 UTC)",
       "badge_type": "primary",
       "items": [
-        "⚽ S'han ingesta resultats oficials i mètriques de 6 partit(s) disputat(s):",
-        "   • [LALIGA J12] Sevilla 0 - 0 Alavés | xG: 1.58-0.54 | Targetes: 4 🟨 | Córners: 9 🚩 | Àrbitre: Bestard Servera L.",
-        "   • [PREMIER J10] Everton 3 - 1 Coventry | xG: 1.42-1.21 | Targetes: 2 🟨 | Córners: 4 🚩 | Àrbitre: Attwell S.",
-        "   • [CHAMPIONSHIP J15] Derby 3 - 1 Bolton | xG: 1.55-1.69 | Targetes: 3 🟨 | Córners: 10 🚩 | Àrbitre: Bell J.",
-        "   • [BUNDESLIGA J9] Hamburgo 3 - 1 Borussia M'gladbach | xG: 2.28-2.22 | Targetes: 5 🟨 | Córners: 8 🚩 | Àrbitre: Jablonski S.",
-        "   • [LIGUE1 J10] Toulouse 3 - 1 Estrasburgo | xG: 1.17-0.75 | Targetes: 6 🟨 | Córners: 8 🚩 | Àrbitre: Vernice M.",
-        "   • [SERIEA J11] Venezia 2 - 1 Udinese | xG: 1.54-0.92 | Targetes: 2 🟨 | Córners: 10 🚩 | Àrbitre: Sacchi J. L.",
-        "📊 Actualització de Power Rànquings Elo:",
-        "   • Sevilla (-1.9 ➔ 1618.6) | Alavés (+1.9 ➔ 1613.2)",
-        "   • Everton (+10.8 ➔ 1623.6) | Coventry (-10.8 ➔ 1510.5)",
-        "   • Derby (+16.5 ➔ 1397.7) | Bolton (-16.5 ➔ 1393.7)",
-        "   • Hamburgo (+13.3 ➔ 1467.2) | Borussia M'gladbach (-13.3 ➔ 1405.2)",
-        "   • Toulouse (+14.7 ➔ 1507.8) | Estrasburgo (-14.7 ➔ 1471.7)",
-        "   • Venezia (+9.9 ➔ 1407.6) | Udinese (-9.9 ➔ 1401.5)",
+        "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+        "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
         "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
         "🎯 Generades 2 noves combinades recomanades (Segures, Semi i Arriscades) per a: DAILY.",
-        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+        "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+        "ℹ️ Sincronització de les darreres dades i mètriques del model."
       ],
-      "matches": [
-        {
-          "match_id": "LALIGA_2026-2027_xMjDMVAj",
-          "competition_id": "LALIGA",
-          "jornada": 12,
-          "home_team": "Sevilla",
-          "away_team": "Alavés",
-          "home_team_id": "SEV",
-          "away_team_id": "ALA",
-          "home_goals": 0,
-          "away_goals": 0,
-          "score": "0 - 0",
-          "home_xg": 1.58,
-          "away_xg": 0.54,
-          "home_yellow_cards": 1,
-          "away_yellow_cards": 3,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 5,
-          "away_corners": 4,
-          "referee": "Bestard Servera L.",
-          "elo_change_home": -1.9,
-          "elo_change_away": 1.9,
-          "new_elo_home": 1618.6,
-          "new_elo_away": 1613.2,
-          "date": "06.11.2026 20:00"
-        },
-        {
-          "match_id": "PREMIER_2026-2027_OUYQUF9b",
-          "competition_id": "PREMIER",
-          "jornada": 10,
-          "home_team": "Everton",
-          "away_team": "Coventry",
-          "home_team_id": "EVE",
-          "away_team_id": "COV",
-          "home_goals": 3,
-          "away_goals": 1,
-          "score": "3 - 1",
-          "home_xg": 1.42,
-          "away_xg": 1.21,
-          "home_yellow_cards": 1,
-          "away_yellow_cards": 1,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 2,
-          "away_corners": 2,
-          "referee": "Attwell S.",
-          "elo_change_home": 10.8,
-          "elo_change_away": -10.8,
-          "new_elo_home": 1623.6,
-          "new_elo_away": 1510.5,
-          "date": "06.11.2026 20:00"
-        },
-        {
-          "match_id": "CHAMPIONSHIP_2026-2027_SriMjKJ0",
-          "competition_id": "CHAMPIONSHIP",
-          "jornada": 15,
-          "home_team": "Derby",
-          "away_team": "Bolton",
-          "home_team_id": "DER",
-          "away_team_id": "BOL",
-          "home_goals": 3,
-          "away_goals": 1,
-          "score": "3 - 1",
-          "home_xg": 1.55,
-          "away_xg": 1.69,
-          "home_yellow_cards": 1,
-          "away_yellow_cards": 2,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 4,
-          "away_corners": 6,
-          "referee": "Bell J.",
-          "elo_change_home": 16.5,
-          "elo_change_away": -16.5,
-          "new_elo_home": 1397.7,
-          "new_elo_away": 1393.7,
-          "date": "06.11.2026 20:00"
-        },
-        {
-          "match_id": "BUNDESLIGA_2026-2027_pMxurfFb",
-          "competition_id": "BUNDESLIGA",
-          "jornada": 9,
-          "home_team": "Hamburgo",
-          "away_team": "Borussia M'gladbach",
-          "home_team_id": "HSV",
-          "away_team_id": "BMG",
-          "home_goals": 3,
-          "away_goals": 1,
-          "score": "3 - 1",
-          "home_xg": 2.28,
-          "away_xg": 2.22,
-          "home_yellow_cards": 1,
-          "away_yellow_cards": 3,
-          "home_red_cards": 0,
-          "away_red_cards": 1,
-          "home_corners": 5,
-          "away_corners": 3,
-          "referee": "Jablonski S.",
-          "elo_change_home": 13.3,
-          "elo_change_away": -13.3,
-          "new_elo_home": 1467.2,
-          "new_elo_away": 1405.2,
-          "date": "06.11.2026 19:30"
-        },
-        {
-          "match_id": "LIGUE1_2026-2027_UD4kzN84",
-          "competition_id": "LIGUE1",
-          "jornada": 10,
-          "home_team": "Toulouse",
-          "away_team": "Estrasburgo",
-          "home_team_id": "TFC",
-          "away_team_id": "RCS",
-          "home_goals": 3,
-          "away_goals": 1,
-          "score": "3 - 1",
-          "home_xg": 1.17,
-          "away_xg": 0.75,
-          "home_yellow_cards": 3,
-          "away_yellow_cards": 3,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 7,
-          "away_corners": 1,
-          "referee": "Vernice M.",
-          "elo_change_home": 14.7,
-          "elo_change_away": -14.7,
-          "new_elo_home": 1507.8,
-          "new_elo_away": 1471.7,
-          "date": "06.11.2026 19:45"
-        },
-        {
-          "match_id": "SERIEA_2026-2027_phmJte3n",
-          "competition_id": "SERIEA",
-          "jornada": 11,
-          "home_team": "Venezia",
-          "away_team": "Udinese",
-          "home_team_id": "VEN",
-          "away_team_id": "UDI",
-          "home_goals": 2,
-          "away_goals": 1,
-          "score": "2 - 1",
-          "home_xg": 1.54,
-          "away_xg": 0.92,
-          "home_yellow_cards": 1,
-          "away_yellow_cards": 1,
-          "home_red_cards": 0,
-          "away_red_cards": 0,
-          "home_corners": 3,
-          "away_corners": 7,
-          "referee": "Sacchi J. L.",
-          "elo_change_home": 9.9,
-          "elo_change_away": -9.9,
-          "new_elo_home": 1407.6,
-          "new_elo_away": 1401.5,
-          "date": "06.11.2026 19:45"
-        }
-      ],
+      "matches": [],
       "combos_evaluated": [],
       "combos_generated": [
         {
@@ -22364,36 +22196,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72221378",
-              "cached_value_bets": [
-                {
-                  "model_prob": 25.6,
-                  "bookie_odd": 4.7,
-                  "fair_odd": 3.91,
-                  "implied_prob": 21.3,
-                  "ev_pct": 20.3,
-                  "kelly_pct": 1.4,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "2 - Victòria Visitant (Coventry)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 4.7,
-                  "bookie_odd_bet365": null
-                },
-                {
-                  "model_prob": 27.9,
-                  "bookie_odd": 4.1,
-                  "fair_odd": 3.58,
-                  "implied_prob": 24.4,
-                  "ev_pct": 14.4,
-                  "kelly_pct": 1.2,
-                  "is_value": true,
-                  "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 4.1,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_winamax": {
               "matched": true,
@@ -22418,36 +22221,7 @@
                 "X2": null
               },
               "url": "https://www.winamax.es/apuestas-deportivas/match/72221378",
-              "cached_value_bets": [
-                {
-                  "model_prob": 25.6,
-                  "bookie_odd": 4.7,
-                  "fair_odd": 3.91,
-                  "implied_prob": 21.3,
-                  "ev_pct": 20.3,
-                  "kelly_pct": 1.4,
-                  "is_value": true,
-                  "rating": "🔥 EXCEL·LENT (+15% EV)",
-                  "name": "2 - Victòria Visitant (Coventry)",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 4.7,
-                  "bookie_odd_bet365": null
-                },
-                {
-                  "model_prob": 27.9,
-                  "bookie_odd": 4.1,
-                  "fair_odd": 3.58,
-                  "implied_prob": 24.4,
-                  "ev_pct": 14.4,
-                  "kelly_pct": 1.2,
-                  "is_value": true,
-                  "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                  "name": "X - Empat",
-                  "category": "1X2",
-                  "bookie_odd_winamax": 4.1,
-                  "bookie_odd_bet365": null
-                }
-              ]
+              "cached_value_bets": []
             },
             "odds_bet365": {},
             "has_winamax_odds": true,
@@ -24419,36 +24193,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72221378",
-            "cached_value_bets": [
-              {
-                "model_prob": 25.6,
-                "bookie_odd": 4.7,
-                "fair_odd": 3.91,
-                "implied_prob": 21.3,
-                "ev_pct": 20.3,
-                "kelly_pct": 1.4,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "2 - Victòria Visitant (Coventry)",
-                "category": "1X2",
-                "bookie_odd_winamax": 4.7,
-                "bookie_odd_bet365": null
-              },
-              {
-                "model_prob": 27.9,
-                "bookie_odd": 4.1,
-                "fair_odd": 3.58,
-                "implied_prob": 24.4,
-                "ev_pct": 14.4,
-                "kelly_pct": 1.2,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 4.1,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_winamax": {
             "matched": true,
@@ -24473,36 +24218,7 @@
               "X2": null
             },
             "url": "https://www.winamax.es/apuestas-deportivas/match/72221378",
-            "cached_value_bets": [
-              {
-                "model_prob": 25.6,
-                "bookie_odd": 4.7,
-                "fair_odd": 3.91,
-                "implied_prob": 21.3,
-                "ev_pct": 20.3,
-                "kelly_pct": 1.4,
-                "is_value": true,
-                "rating": "🔥 EXCEL·LENT (+15% EV)",
-                "name": "2 - Victòria Visitant (Coventry)",
-                "category": "1X2",
-                "bookie_odd_winamax": 4.7,
-                "bookie_odd_bet365": null
-              },
-              {
-                "model_prob": 27.9,
-                "bookie_odd": 4.1,
-                "fair_odd": 3.58,
-                "implied_prob": 24.4,
-                "ev_pct": 14.4,
-                "kelly_pct": 1.2,
-                "is_value": true,
-                "rating": "⭐ MOLT BONA (+5% a +15% EV)",
-                "name": "X - Empat",
-                "category": "1X2",
-                "bookie_odd_winamax": 4.1,
-                "bookie_odd_bet365": null
-              }
-            ]
+            "cached_value_bets": []
           },
           "odds_bet365": {},
           "has_winamax_odds": true,
@@ -85567,7 +85283,7 @@
           "formatted_date": "Dissabte, 31 d'octubre",
           "has_matches": true,
           "matches_count": 37,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, EFL Championship, LaLiga EA Sports, Ligue 1, Bundesliga, LaLiga Hypermotion) · 37 partits",
+          "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 37 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-10-31_SAFE_1",
@@ -86048,7 +85764,7 @@
           "formatted_date": "Diumenge, 1 de novembre",
           "has_matches": true,
           "matches_count": 19,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, Ligue 1, Bundesliga, LaLiga Hypermotion) · 19 partits",
+          "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 19 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-11-01_SAFE_1",
@@ -86545,7 +86261,7 @@
           "formatted_date": "Dilluns, 2 de novembre",
           "has_matches": true,
           "matches_count": 9,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, Ligue 1, LaLiga Hypermotion) · 9 partits",
+          "league_note": "Partits del dia de múltiples lligues (Ligue 1, LaLiga Hypermotion, Serie A, LaLiga EA Sports, Premier League) · 9 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-11-02_SAFE_1",
@@ -87062,7 +86778,7 @@
           "formatted_date": "Divendres, 6 de novembre",
           "has_matches": true,
           "matches_count": 7,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, EFL Championship, Ligue 1, Bundesliga, LaLiga Hypermotion) · 7 partits",
+          "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 7 partits",
           "safe": [],
           "semi": [],
           "risky": []
@@ -87072,7 +86788,7 @@
           "formatted_date": "Dissabte, 7 de novembre",
           "has_matches": true,
           "matches_count": 34,
-          "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, EFL Championship, Ligue 1, Bundesliga, LaLiga Hypermotion) · 34 partits",
+          "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 34 partits",
           "safe": [
             {
               "id": "COMBO_DAILY_2026-11-07_SAFE_1",
@@ -87219,7 +86935,7 @@
           "formatted_date": "Diumenge, 8 de novembre",
           "has_matches": true,
           "matches_count": 27,
-          "league_note": "Partits programats: 27 (Premier League, Serie A, LaLiga EA Sports, Ligue 1, Bundesliga, LaLiga Hypermotion). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+          "league_note": "Partits programats: 27 (Ligue 1, Bundesliga, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
           "safe": [],
           "semi": [],
           "risky": []
@@ -87237,7 +86953,7 @@
       },
       "has_matches": true,
       "matches_count": 34,
-      "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, EFL Championship, Ligue 1, Bundesliga, LaLiga Hypermotion) · 34 partits",
+      "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 34 partits",
       "safe": [
         {
           "id": "COMBO_DAILY_2026-11-07_SAFE_1",
@@ -87464,7 +87180,7 @@
         "formatted_date": "Dissabte, 31 d'octubre",
         "has_matches": true,
         "matches_count": 37,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, EFL Championship, LaLiga EA Sports, Ligue 1, Bundesliga, LaLiga Hypermotion) · 37 partits",
+        "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 37 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-10-31_SAFE_1",
@@ -87945,7 +87661,7 @@
         "formatted_date": "Diumenge, 1 de novembre",
         "has_matches": true,
         "matches_count": 19,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, Ligue 1, Bundesliga, LaLiga Hypermotion) · 19 partits",
+        "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 19 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-11-01_SAFE_1",
@@ -88442,7 +88158,7 @@
         "formatted_date": "Dilluns, 2 de novembre",
         "has_matches": true,
         "matches_count": 9,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, Ligue 1, LaLiga Hypermotion) · 9 partits",
+        "league_note": "Partits del dia de múltiples lligues (Ligue 1, LaLiga Hypermotion, Serie A, LaLiga EA Sports, Premier League) · 9 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-11-02_SAFE_1",
@@ -88959,7 +88675,7 @@
         "formatted_date": "Divendres, 6 de novembre",
         "has_matches": true,
         "matches_count": 7,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, EFL Championship, Ligue 1, Bundesliga, LaLiga Hypermotion) · 7 partits",
+        "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 7 partits",
         "safe": [],
         "semi": [],
         "risky": []
@@ -88969,7 +88685,7 @@
         "formatted_date": "Dissabte, 7 de novembre",
         "has_matches": true,
         "matches_count": 34,
-        "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, EFL Championship, Ligue 1, Bundesliga, LaLiga Hypermotion) · 34 partits",
+        "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 34 partits",
         "safe": [
           {
             "id": "COMBO_DAILY_2026-11-07_SAFE_1",
@@ -89116,7 +88832,7 @@
         "formatted_date": "Diumenge, 8 de novembre",
         "has_matches": true,
         "matches_count": 27,
-        "league_note": "Partits programats: 27 (Premier League, Serie A, LaLiga EA Sports, Ligue 1, Bundesliga, LaLiga Hypermotion). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
+        "league_note": "Partits programats: 27 (Ligue 1, Bundesliga, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League). Les 6 combinades oficials del dia es generaran el mateix dia al primer pipeline (08:23h), un cop confirmades les designacions arbitrals oficials i les quotes definitives.",
         "safe": [],
         "semi": [],
         "risky": []
@@ -89134,7 +88850,7 @@
     },
     "has_matches": true,
     "matches_count": 34,
-    "league_note": "Partits del dia de múltiples lligues (Premier League, Serie A, LaLiga EA Sports, EFL Championship, Ligue 1, Bundesliga, LaLiga Hypermotion) · 34 partits",
+    "league_note": "Partits del dia de múltiples lligues (Ligue 1, Bundesliga, EFL Championship, LaLiga Hypermotion, LaLiga EA Sports, Serie A, Premier League) · 34 partits",
     "safe": [
       {
         "id": "COMBO_DAILY_2026-11-07_SAFE_1",
@@ -103483,11 +103199,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-11-07 02:07:28",
+            "created_at": "2026-11-07 13:23:37",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3576,
+                "id": 3586,
                 "combo_id": "COMBO_DAILY_2026-11-07_SAFE_1",
                 "matchup": "Leeds Utd vs Tottenham Hotspur",
                 "selection_name": "2 - Victòria Visitant (Tottenham Hotspur)",
@@ -103503,7 +103219,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3577,
+                "id": 3587,
                 "combo_id": "COMBO_DAILY_2026-11-07_SAFE_1",
                 "matchup": "Nottingham Forest vs Manchester City",
                 "selection_name": "2 - Victòria Visitant (Manchester City)",
@@ -106231,11 +105947,11 @@
             "payout": 0.0,
             "profit": 0.0,
             "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-            "created_at": "2026-11-07 02:07:28",
+            "created_at": "2026-11-07 13:23:37",
             "evaluated_at": null,
             "legs": [
               {
-                "id": 3578,
+                "id": 3588,
                 "combo_id": "COMBO_DAILY_2026-11-07_SEMI_1",
                 "matchup": "Leeds Utd vs Tottenham Hotspur",
                 "selection_name": "2 - Victòria Visitant (Tottenham Hotspur)",
@@ -106251,7 +105967,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3579,
+                "id": 3589,
                 "combo_id": "COMBO_DAILY_2026-11-07_SEMI_1",
                 "matchup": "Fulham vs Newcastle United",
                 "selection_name": "2 - Victòria Visitant (Newcastle United)",
@@ -106267,7 +105983,7 @@
                 "evaluated_at": null
               },
               {
-                "id": 3580,
+                "id": 3590,
                 "combo_id": "COMBO_DAILY_2026-11-07_SEMI_1",
                 "matchup": "Nottingham Forest vs Manchester City",
                 "selection_name": "2 - Victòria Visitant (Manchester City)",
@@ -115527,11 +115243,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-11-07 02:07:28",
+        "created_at": "2026-11-07 13:23:37",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3576,
+            "id": 3586,
             "combo_id": "COMBO_DAILY_2026-11-07_SAFE_1",
             "matchup": "Leeds Utd vs Tottenham Hotspur",
             "selection_name": "2 - Victòria Visitant (Tottenham Hotspur)",
@@ -115547,7 +115263,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3577,
+            "id": 3587,
             "combo_id": "COMBO_DAILY_2026-11-07_SAFE_1",
             "matchup": "Nottingham Forest vs Manchester City",
             "selection_name": "2 - Victòria Visitant (Manchester City)",
@@ -118275,11 +117991,11 @@
         "payout": 0.0,
         "profit": 0.0,
         "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
-        "created_at": "2026-11-07 02:07:28",
+        "created_at": "2026-11-07 13:23:37",
         "evaluated_at": null,
         "legs": [
           {
-            "id": 3578,
+            "id": 3588,
             "combo_id": "COMBO_DAILY_2026-11-07_SEMI_1",
             "matchup": "Leeds Utd vs Tottenham Hotspur",
             "selection_name": "2 - Victòria Visitant (Tottenham Hotspur)",
@@ -118295,7 +118011,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3579,
+            "id": 3589,
             "combo_id": "COMBO_DAILY_2026-11-07_SEMI_1",
             "matchup": "Fulham vs Newcastle United",
             "selection_name": "2 - Victòria Visitant (Newcastle United)",
@@ -118311,7 +118027,7 @@
             "evaluated_at": null
           },
           {
-            "id": 3580,
+            "id": 3590,
             "combo_id": "COMBO_DAILY_2026-11-07_SEMI_1",
             "matchup": "Nottingham Forest vs Manchester City",
             "selection_name": "2 - Victòria Visitant (Manchester City)",
