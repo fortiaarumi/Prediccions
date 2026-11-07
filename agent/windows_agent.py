@@ -259,7 +259,7 @@ def main():
 
     # Iniciar el pont HTTP local loopback per permetre la connexió des del navegador web
     from agent.local_bridge import LocalCoordinatorServer
-    bridge = LocalCoordinatorServer(coordinator=coordinator, port=8765)
+    bridge = LocalCoordinatorServer(coordinator=coordinator, port=8777)
     bridge.start()
 
     # Registrar gestors de senyals per neteja neta

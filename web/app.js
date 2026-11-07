@@ -512,7 +512,7 @@ function initEventListeners() {
 let _activeSurebetSession = null;
 let _surebetSessionTimerInterval = null;
 let _surebetPollInterval = null;
-const LOCAL_BRIDGE_URL = 'http://127.0.0.1:8765';
+const LOCAL_BRIDGE_URL = 'http://127.0.0.1:8777';
 
 function setupSurebetAgentControls() {
   const btnStart = document.getElementById('btn-start-surebet-search');

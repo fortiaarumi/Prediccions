@@ -4,10 +4,20 @@ agent/local_bridge.py
 Servidor pont HTTP local en loopback (127.0.0.1:8765) per comunicar
 la interfície web amb el MockCoordinator i l'Agent Windows durant
 proves de desenvolupament local, sense ports externs ni serveis al núvol.
+
+AVÍS DE SEGURETAT I DISSENY:
+1. Ús exclusiu de desenvolupament local: Aquest pont està restringit a loopback (127.0.0.1).
+   En producció, la interfície web es comunica directament amb Supabase REST/PostgreSQL RLS.
+2. Sense secrets exposats: Cap clau d'administració ni credencial privilegiada viatja pel pont.
+3. Protecció DNS Rebinding i CORS: Es valida Host i Origin per bloquejar peticions d'origen remot.
+4. Validació estricta de càrrega útil: Límits estrictes de mida de cos (max 4 KB), durada (1 a 30 minuts)
+   i caràcters alfanumèrics a identificadors.
+5. Prevenció de duplicats: Es rebutja crear una nova sessió si ja n'hi ha una en curs (409 Conflict).
 """
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
+import re
 import threading
 import time
 from datetime import datetime, timezone
@@ -22,24 +32,60 @@ from agent.protocol import (
     STATUS_COMPLETED
 )
 
+ALLOWED_ORIGINS = {
+    "http://localhost",
+    "http://127.0.0.1",
+    "null"  # file:// origins
+}
+
 
 class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
     coordinator: Optional[MockCoordinator] = None
     agent_ref = None
 
+    def _is_origin_allowed(self) -> bool:
+        """Valida que l'Origin i el Host pertanyin estrictament a loopback local."""
+        host = self.headers.get("Host", "")
+        # Validació DNS rebinding: el Host ha de ser localhost o 127.0.0.1
+        if not (host.startswith("localhost") or host.startswith("127.0.0.1")):
+            return False
+
+        origin = self.headers.get("Origin")
+        if not origin:
+            # Peticions directes (curl, tests interns, o sense capçalera Origin) són vàlides des de 127.0.0.1
+            return True
+
+        origin_clean = origin.split(":", 2)[0] + ":" + origin.split(":", 2)[1] if origin.count(":") >= 2 else origin
+        return origin in ALLOWED_ORIGINS or origin_clean in ALLOWED_ORIGINS
+
     def _set_headers(self, status: int = 200, content_type: str = "application/json"):
         self.send_response(status)
         self.send_header("Content-Type", content_type)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self.headers.get("Origin", "*")
+        if self._is_origin_allowed():
+            self.send_header("Access-Control-Allow-Origin", origin if origin != "null" else "*")
+        else:
+            self.send_header("Access-Control-Allow-Origin", "null")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
         self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
         self.end_headers()
 
     def do_OPTIONS(self):
+        if not self._is_origin_allowed():
+            self.send_response(403)
+            self.end_headers()
+            return
         self._set_headers(204)
 
     def do_GET(self):
+        if not self._is_origin_allowed():
+            self._set_headers(403)
+            self.wfile.write(b'{"error": "Forbidden: Peticio d\'origen no autoritzat"}')
+            return
+
         coord = self.coordinator
         if not coord:
             self._set_headers(500)
@@ -73,14 +119,19 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(payload).encode("utf-8"))
 
         elif self.path.startswith("/api/sessions/"):
-            session_id = self.path.split("/")[-1].split("?")[0]
-            order = coord.orders.get(session_id)
+            raw_id = self.path.split("/")[-1].split("?")[0]
+            if not re.match(r'^[a-zA-Z0-9_\-]+$', raw_id):
+                self._set_headers(400)
+                self.wfile.write(b'{"error": "Identificador de sessio invalid"}')
+                return
+
+            order = coord.orders.get(raw_id)
             if not order:
                 self._set_headers(404)
                 self.wfile.write(b'{"error": "Session not found"}')
                 return
 
-            snaps = coord.snapshots.get(session_id, [])
+            snaps = coord.snapshots.get(raw_id, [])
             payload = {
                 "session_id": order.session_id,
                 "status": order.status,
@@ -108,13 +159,24 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
             self.wfile.write(b'{"error": "Not found"}')
 
     def do_POST(self):
+        if not self._is_origin_allowed():
+            self._set_headers(403)
+            self.wfile.write(b'{"error": "Forbidden: Peticio d\'origen no autoritzat"}')
+            return
+
         coord = self.coordinator
         if not coord:
             self._set_headers(500)
             self.wfile.write(b'{"error": "Coordinator not initialized"}')
             return
 
+        # Protecció de memòria: màxim 4096 bytes per petició
         content_length = int(self.headers.get("Content-Length", 0))
+        if content_length > 4096:
+            self._set_headers(413)
+            self.wfile.write(b'{"error": "Payload massa gran (limit 4KB)"}')
+            return
+
         body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
         try:
             data = json.loads(body)
@@ -122,8 +184,31 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
             data = {}
 
         if self.path == "/api/sessions":
-            duration = int(data.get("duration_minutes", 10))
-            user_id = data.get("user_id", "user_local_web")
+            # 1. Protecció davant execucions duplicades concurrents
+            with coord._lock:
+                for s_id, ord_item in coord.orders.items():
+                    if ord_item.status in (STATUS_PENDING, STATUS_RUNNING, STATUS_CANCEL_REQUESTED):
+                        self._set_headers(409)
+                        self.wfile.write(json.dumps({
+                            "error": "Ja hi ha una sessio de cerca en curs",
+                            "active_session_id": s_id,
+                            "status": ord_item.status
+                        }).encode("utf-8"))
+                        return
+
+            # 2. Validació estricta de durada (1 a 30 minuts)
+            raw_duration = data.get("duration_minutes", 10)
+            try:
+                duration = int(raw_duration)
+            except (ValueError, TypeError):
+                duration = 10
+
+            if duration < 1 or duration > 30:
+                self._set_headers(400)
+                self.wfile.write(b'{"error": "La durada ha d\'estar compresa estrictament entre 1 i 30 minuts"}')
+                return
+
+            user_id = str(data.get("user_id", "user_local_web"))[:64]
             order = coord.create_order(user_id=user_id, duration_minutes=duration)
             payload = {
                 "session_id": order.session_id,
@@ -136,12 +221,17 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
 
         elif self.path.startswith("/api/sessions/") and self.path.endswith("/cancel"):
             parts = self.path.split("/")
-            session_id = parts[3]
-            user_id = data.get("user_id", "user_local_web")
+            raw_id = parts[3]
+            if not re.match(r'^[a-zA-Z0-9_\-]+$', raw_id):
+                self._set_headers(400)
+                self.wfile.write(b'{"error": "Identificador de sessio invalid"}')
+                return
+
+            user_id = str(data.get("user_id", "user_local_web"))[:64]
             try:
-                order = coord.request_cancellation(session_id, requesting_user_id=user_id)
+                order = coord.request_cancellation(raw_id, requesting_user_id=user_id)
                 self._set_headers(200)
-                self.wfile.write(json.dumps({"session_id": session_id, "status": order.status}).encode("utf-8"))
+                self.wfile.write(json.dumps({"session_id": raw_id, "status": order.status}).encode("utf-8"))
             except Exception as e:
                 self._set_headers(400)
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
@@ -156,9 +246,9 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
 
 
 class LocalCoordinatorServer:
-    """Aixeca el servidor HTTP en un fil separat sobre 127.0.0.1:8765."""
+    """Aixeca el servidor HTTP en un fil separat sobre 127.0.0.1:8777."""
 
-    def __init__(self, coordinator: MockCoordinator, port: int = 8765):
+    def __init__(self, coordinator: MockCoordinator, port: int = 8777):
         self.coordinator = coordinator
         self.port = port
         self.server: Optional[HTTPServer] = None
@@ -167,6 +257,7 @@ class LocalCoordinatorServer:
     def start(self):
         handler_class = LocalCoordinatorHTTPHandler
         handler_class.coordinator = self.coordinator
+        # Bind estrictament a 127.0.0.1 (mai 0.0.0.0)
         self.server = HTTPServer(("127.0.0.1", self.port), handler_class)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
