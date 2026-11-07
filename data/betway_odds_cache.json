@@ -1,0 +1,92 @@
+{
+  "LALIGA_valencia_real madrid": {
+    "source": "Betway Espanya (LALIGA)",
+    "bookmaker": "BETWAY",
+    "url": "https://betway.es/es/es/sports/grp/soccer/spain/la-liga",
+    "tournament_url": "https://betway.es/es/es/sports/grp/soccer/spain/la-liga",
+    "match_id": "17398313",
+    "matched_title": "Valencia vs Real Madrid",
+    "matched": true,
+    "captured_at": "2026-11-02T17:35:05.782259+00:00",
+    "freshness": "FRESH",
+    "is_stale": false,
+    "freshness_reason": "not_processed",
+    "age_seconds": 0.42,
+    "provider_updated_at": null,
+    "provenance": "BETWAY",
+    "1X2": {
+      "1": 7.0,
+      "X": 6.0,
+      "2": 1.286
+    },
+    "double_chance": {
+      "1X": 3.4,
+      "12": 1.133,
+      "X2": 1.091
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 1.35,
+      "under": 2.9
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 1.667,
+      "no": 2.05
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {},
+    "market_id_1x2": 652686395,
+    "market_id_dc": 652686427,
+    "market_id_ou25": 653043934,
+    "market_id_btts": 652686402,
+    "rejection_reason": "ok",
+    "polled_at": "2026-11-02T17:35:05.782259+00:00"
+  },
+  "LALIGA_deportivo de la coruna_osasuna": {
+    "source": "Betway Espanya (LALIGA)",
+    "bookmaker": "BETWAY",
+    "url": "https://betway.es/es/es/sports/grp/soccer/spain/la-liga",
+    "tournament_url": "https://betway.es/es/es/sports/grp/soccer/spain/la-liga",
+    "match_id": "17376114",
+    "matched_title": "Deportivo de La Coruña vs Osasuna",
+    "matched": true,
+    "captured_at": "2026-11-02T17:35:16.621526+00:00",
+    "freshness": "FRESH",
+    "is_stale": false,
+    "freshness_reason": "not_processed",
+    "age_seconds": 0.53,
+    "provider_updated_at": null,
+    "provenance": "BETWAY",
+    "1X2": {
+      "1": 2.1,
+      "X": 3.1,
+      "2": 3.6
+    },
+    "double_chance": {
+      "1X": 1.25,
+      "12": 1.375,
+      "X2": 1.75
+    },
+    "goals": {},
+    "over_under_2_5": {
+      "over": 2.2,
+      "under": 1.65
+    },
+    "team_goals": {},
+    "btts": {
+      "yes": 2.0,
+      "no": 1.75
+    },
+    "cards": {},
+    "corners": {},
+    "combos": {},
+    "market_id_1x2": 650633557,
+    "market_id_dc": 650633589,
+    "market_id_ou25": 650634129,
+    "market_id_btts": 650633564,
+    "rejection_reason": "ok",
+    "polled_at": "2026-11-02T17:35:16.621526+00:00"
+  }
+}
