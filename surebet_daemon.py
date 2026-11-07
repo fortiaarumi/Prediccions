@@ -373,6 +373,69 @@ class SurebetDaemon:
 
         self.running = False
 
+        # Control de sessió cancellable i cicle de vida (FASE 2)
+        # Transicions d'estat: PENDING -> RUNNING -> CANCEL_REQUESTED -> CANCELLED
+        # Finalització natural sense cancel·lació: RUNNING -> COMPLETED
+        self.session_id: Optional[str] = None
+        self.session_status: str = "PENDING"
+        self.session_start_time: Optional[float] = None
+        self.max_duration_seconds: Optional[int] = None
+        self.cancel_requested: bool = False
+
+    def start_session(self, session_id: str, max_duration_seconds: Optional[int] = None) -> None:
+        """Inicia una nova sessió de monitoratge amb límits temporals configurables."""
+        self.session_id = session_id
+        self.session_status = "RUNNING"
+        self.session_start_time = time.time()
+        self.max_duration_seconds = max_duration_seconds
+        self.cancel_requested = False
+        print(f"[*] Sessió {session_id} iniciada amb estat RUNNING (durada màxima: {max_duration_seconds}s).")
+
+    def request_cancellation(self) -> None:
+        """Sol·licita la cancel·lació cooperativa de la sessió en curs."""
+        self.cancel_requested = True
+        self.session_status = "CANCEL_REQUESTED"
+        print(f"⚠️  Cancel·lació sol·licitada per a la sessió {self.session_id}. Estat: CANCEL_REQUESTED.")
+
+    def check_cancellation(self) -> bool:
+        """Comprova si s'ha sol·licitat la cancel·lació i aplica la transició atòmica a CANCELLED."""
+        if self.cancel_requested:
+            self.session_status = "CANCELLED"
+            self.running = False
+            print(f"🛑 Sessió {self.session_id} cancel·lada correctament. Estat final: CANCELLED.")
+            return True
+        return False
+
+    def check_duration_limit(self) -> bool:
+        """Comprova si s'ha assolit la durada màxima de la sessió."""
+        if self.max_duration_seconds and self.session_start_time:
+            elapsed = time.time() - self.session_start_time
+            if elapsed >= self.max_duration_seconds:
+                # IMPORTANT: Si hi ha una cancel·lació demanada, preval CANCELLED
+                if self.cancel_requested:
+                    self.session_status = "CANCELLED"
+                else:
+                    self.session_status = "COMPLETED"
+                self.running = False
+                print(f"🏁 Sessió {self.session_id} ha assolit la durada màxima ({elapsed:.1f}s >= {self.max_duration_seconds}s). Estat: {self.session_status}.")
+                return True
+        return False
+
+    def get_session_state(self) -> Dict[str, Any]:
+        """Retorna l'estat actual de la sessió per a telemetria web i API."""
+        elapsed = round(time.time() - self.session_start_time, 1) if self.session_start_time else 0.0
+        remaining = None
+        if self.max_duration_seconds and self.session_start_time:
+            remaining = max(0.0, round(self.max_duration_seconds - elapsed, 1))
+        return {
+            "session_id": self.session_id,
+            "status": self.session_status,
+            "cancel_requested": self.cancel_requested,
+            "elapsed_seconds": elapsed,
+            "remaining_seconds": remaining,
+            "max_duration_seconds": self.max_duration_seconds
+        }
+
     # ----- Avaluació de la finestra de partits i càlcul de freqüències -----
 
     @staticmethod
@@ -570,7 +633,12 @@ class SurebetDaemon:
             "betway": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc)},
         }
 
+        if self.check_cancellation() or self.check_duration_limit():
+            return {}
+
         for m in matches_to_eval:
+            if self.check_cancellation() or self.check_duration_limit():
+                break
             h_name = m["home_team"]["name"]
             a_name = m["away_team"]["name"]
             comp_id = m.get("competition_id", "LALIGA")
@@ -723,38 +791,43 @@ class SurebetDaemon:
         # 4. Escaneig de Surebets amb el motor matemàtic
         print(f"🔍 Escanejant oportunitats d'arbitratge per a {len(evaluated_matches_flat)} partits...")
 
-        # 4.1 Escaneig ampli (detecta surebets i near-arbs)
-        broad_report = self.broad_engine.scan_all_matches(evaluated_matches_flat)
+        # 4.1 Escaneig ampli amb política de 30 minuts
+        broad_report = self.broad_engine.scan_all_matches(evaluated_matches_flat, now=now_utc)
         all_found = broad_report.get("all_opportunities", [])
 
-        # 4.2 Validació estricta de frescor per a cada oportunitat
-        fresh_surebets: List[Dict[str, Any]] = []
-        stale_surebets: List[Dict[str, Any]] = []
+        # 4.2 Classificació estricta en 4 nivells de frescor (fins a 30 minuts)
+        verified_fresh_surebets: List[Dict[str, Any]] = []
+        potentially_stale_surebets: List[Dict[str, Any]] = []
+        recent_historical_surebets: List[Dict[str, Any]] = []
         near_arbs: List[Dict[str, Any]] = []
 
         for arb in all_found:
-            legs = arb.get("legs", [])
-            is_fresh, fresh_reason, age_s = self.strict_engine.validate_legs_freshness(legs, now_utc)
-
-            arb["is_fresh"] = is_fresh
-            arb["freshness_reason"] = fresh_reason
-            arb["max_leg_age_seconds"] = age_s
-
-            if arb.get("is_surebet"):
-                if is_fresh or not self.enforce_strict_freshness:
-                    fresh_surebets.append(arb)
-                else:
-                    # Surebet matemàtica però descartada per quotes no fresques
-                    stale_surebets.append(arb)
+            tier = arb.get("freshness_tier")
+            is_surebet = arb.get("is_surebet", False)
+            if is_surebet:
+                if tier == ArbitrageEngine.TIER_VERIFIED_FRESH:
+                    verified_fresh_surebets.append(arb)
+                elif tier == ArbitrageEngine.TIER_POTENTIALLY_STALE:
+                    potentially_stale_surebets.append(arb)
+                elif tier == ArbitrageEngine.TIER_RECENT_HISTORICAL:
+                    recent_historical_surebets.append(arb)
             else:
-                near_arbs.append(arb)
+                if tier != ArbitrageEngine.TIER_EXCLUDED:
+                    near_arbs.append(arb)
 
-        fresh_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
-        stale_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
+        verified_fresh_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
+        potentially_stale_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
+        recent_historical_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
         near_arbs.sort(key=lambda x: x.get("profit_pct", -999.0), reverse=True)
 
-        max_profit = fresh_surebets[0]["profit_pct"] if fresh_surebets else (near_arbs[0]["profit_pct"] if near_arbs else 0.0)
-        avg_profit = round(sum(a["profit_pct"] for a in fresh_surebets) / len(fresh_surebets), 2) if fresh_surebets else 0.0
+        max_profit = verified_fresh_surebets[0]["profit_pct"] if verified_fresh_surebets else (
+            potentially_stale_surebets[0]["profit_pct"] if potentially_stale_surebets else (
+                recent_historical_surebets[0]["profit_pct"] if recent_historical_surebets else (
+                    near_arbs[0]["profit_pct"] if near_arbs else 0.0
+                )
+            )
+        )
+        avg_profit = round(sum(a["profit_pct"] for a in verified_fresh_surebets) / len(verified_fresh_surebets), 2) if verified_fresh_surebets else 0.0
 
         # Estat consolidat de les cases d'apostes amb timestamps independents
         bookmakers_status = {
@@ -765,8 +838,11 @@ class SurebetDaemon:
 
         arbitrage_payload = {
             "summary": {
-                "total_surebets": len(fresh_surebets),
-                "total_stale_surebets": len(stale_surebets),
+                "total_surebets": len(verified_fresh_surebets),
+                "total_verified_fresh": len(verified_fresh_surebets),
+                "total_potentially_stale": len(potentially_stale_surebets),
+                "total_recent_historical": len(recent_historical_surebets),
+                "total_stale_surebets": len(potentially_stale_surebets) + len(recent_historical_surebets),
                 "total_near_arbs": len(near_arbs),
                 "max_profit_pct": max_profit,
                 "avg_profit_pct": avg_profit,
@@ -775,17 +851,21 @@ class SurebetDaemon:
                 "min_hours_until_kickoff": round(min_hours, 2),
                 "enforce_strict_freshness": self.enforce_strict_freshness
             },
-            "surebets": fresh_surebets,
-            "stale_surebets": stale_surebets[:10],
+            "surebets": verified_fresh_surebets,
+            "verified_fresh_surebets": verified_fresh_surebets,
+            "potentially_stale_surebets": potentially_stale_surebets,
+            "recent_historical_surebets": recent_historical_surebets,
+            "stale_surebets": potentially_stale_surebets + recent_historical_surebets,
             "near_arbs": near_arbs[:10],
-            "all_opportunities": fresh_surebets + stale_surebets + near_arbs[:10],
+            "all_opportunities": verified_fresh_surebets + potentially_stale_surebets + recent_historical_surebets + near_arbs[:10],
             "bookmakers_status": bookmakers_status,
+            "session": self.get_session_state(),
             "last_generation": now_iso,
             "cycle_duration_seconds": round(time.time() - cycle_start, 2),
             "next_cycle_seconds": policy["cycle_min"]
         }
 
-        print(f"✅ Resultats: {len(fresh_surebets)} Surebets fresques | {len(stale_surebets)} Surebets caducades | {len(near_arbs)} Near-Arbs")
+        print(f"✅ Resultats: {len(verified_fresh_surebets)} Verificades (≤60s) | {len(potentially_stale_surebets)} Potencialment Desactualitzades (1-5m) | {len(recent_historical_surebets)} Històriques Recents (5-30m) | {len(near_arbs)} Near-Arbs")
         print(f"⏱️  Cicle completat en {arbitrage_payload['cycle_duration_seconds']}s. Proper cicle en {policy['cycle_min']}s.")
 
         # 5. Actualització atòmica a web/data/data.json
@@ -844,28 +924,55 @@ class SurebetDaemon:
     # ----- Bucle continu del daemon -----
 
     def start(self, once: bool = False, interval_override: Optional[int] = None) -> None:
-        """Inicia el bucle d'execució continu del daemon."""
+        """Inicia el bucle d'execució continu del daemon amb suport per a cancel·lació cooperativa."""
         self.running = True
+        if self.session_status == "PENDING":
+            self.session_status = "RUNNING"
+            self.session_start_time = time.time()
         print("[*] Iniciant Surebet Daemon persistent...")
 
         while self.running:
+            if self.check_cancellation():
+                break
+            if self.check_duration_limit():
+                break
             try:
                 res = self.run_cycle()
+                if self.check_cancellation():
+                    break
+                if self.check_duration_limit():
+                    break
                 if once:
+                    if not self.cancel_requested:
+                        self.session_status = "COMPLETED"
                     break
 
                 sleep_s = interval_override if interval_override is not None else res.get("next_cycle_seconds", 300)
                 print(f"💤 Esperant {sleep_s} segons fins al següent cicle...\n")
-                time.sleep(sleep_s)
+
+                # Dormir en intervals petits de 1s per permetre cancel·lació cooperativa immediata
+                for _ in range(int(sleep_s)):
+                    if not self.running or self.cancel_requested:
+                        break
+                    if self.max_duration_seconds and self.session_start_time:
+                        if time.time() - self.session_start_time >= self.max_duration_seconds:
+                            break
+                    time.sleep(1)
             except KeyboardInterrupt:
                 print("\n[!] Aturada manual del Surebet Daemon.")
+                self.session_status = "CANCELLED"
                 self.running = False
                 break
             except Exception as e:
                 print(f"[!] Error inesperat al bucle del daemon: {e}")
                 if once:
                     break
-                time.sleep(30)
+                time.sleep(5)
+
+        if self.session_status == "CANCEL_REQUESTED":
+            self.session_status = "CANCELLED"
+        elif self.session_status == "RUNNING" and not self.cancel_requested:
+            self.session_status = "COMPLETED"
 
 
 def main():

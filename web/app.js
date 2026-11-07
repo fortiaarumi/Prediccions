@@ -1930,21 +1930,22 @@ function renderArbitrage() {
   const containerSurebets = document.getElementById('surebets-container');
   const containerStale = document.getElementById('stale-arbs-container');
   const staleHeader = document.getElementById('stale-arbs-header');
+  const containerHistorical = document.getElementById('historical-arbs-container');
+  const historicalHeader = document.getElementById('historical-arbs-header');
   const containerNear = document.getElementById('near-arbs-container');
   const heroBanner = document.getElementById('arbitrage-hero-banner');
   const bookmakersBar = document.getElementById('arbitrage-bookmakers-bar');
   const countBadge = document.getElementById('surebets-count-badge');
   const countStaleBadge = document.getElementById('stale-arbs-count-badge');
+  const countHistoricalBadge = document.getElementById('historical-arbs-count-badge');
   const countNearBadge = document.getElementById('near-arbs-count-badge');
 
   if (!containerSurebets || !appData || !appData.arbitrage) return;
 
   const arbData = appData.arbitrage;
   const summary = arbData.summary || {};
-  let surebets = arbData.surebets || [];
-  let staleSurebets = arbData.stale_surebets || [];
-  let nearArbs = arbData.near_arbs || [];
   const bStatus = arbData.bookmakers_status || {};
+  const nowMs = Date.now();
 
   // Funció auxiliar per formatar edat de quotes
   function formatRelativeAge(seconds, isoDate) {
@@ -2068,7 +2069,6 @@ function renderArbitrage() {
           ? `${lastGenDate.toLocaleDateString('ca-ES')} a les ${lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' })}`
           : lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
       : 'N/A';
-    const cycleSec = arbData.cycle_duration_seconds != null ? `${arbData.cycle_duration_seconds}s` : 'Lleuger';
 
     bookmakersBar.innerHTML = `
       ${cardsHtml}
@@ -2089,39 +2089,135 @@ function renderArbitrage() {
   // Renderitzar Bloc B: Pipeline de GitHub Actions
   renderPipelineStatus();
 
+  // Avaluació dinàmica de frescor i classificació en 4 nivells de la política de 30 minuts
+  function computeDynamicFreshness(arb) {
+    const legs = arb.legs || [];
+    if (!legs.length) return { tier: 'EXCLUDED', ageMax: 99999, skew: 0, legAges: [] };
+    let minTs = Infinity;
+    let maxTs = -Infinity;
+    let hasMissing = false;
+    let hasFuture = false;
+    const legAges = [];
+
+    for (const l of legs) {
+      const tsStr = l.captured_at || l.timestamp || l.polled_at;
+      if (!tsStr) {
+        hasMissing = true;
+        break;
+      }
+      const t = new Date(tsStr).getTime();
+      if (isNaN(t)) {
+        hasMissing = true;
+        break;
+      }
+      // Tolerància de 5s per timestamps futurs
+      if (t > nowMs + 5000) {
+        hasFuture = true;
+        break;
+      }
+      if (t < minTs) minTs = t;
+      if (t > maxTs) maxTs = t;
+      const legAge = Math.max(0, (nowMs - t) / 1000);
+      legAges.push(legAge);
+    }
+
+    if (hasMissing || hasFuture) {
+      return { tier: 'EXCLUDED', ageMax: 99999, skew: 0, legAges: [] };
+    }
+
+    // Exclusió de partits ja començats o finalitzats
+    if (arb.date) {
+      const mMs = parseMatchDateToMs(arb.date);
+      if (mMs && mMs < nowMs) {
+        return { tier: 'EXCLUDED', ageMax: 99999, skew: 0, legAges: [], isPastMatch: true };
+      }
+    }
+
+    const ageMax = Math.max(0, (nowMs - minTs) / 1000);
+    const skew = Math.max(0, (maxTs - minTs) / 1000);
+
+    // Màxim absolut 1800s (30 minuts)
+    if (ageMax > 1800) {
+      return { tier: 'EXCLUDED', ageMax, skew, legAges };
+    }
+    if (ageMax <= 60 && skew <= 30) {
+      return { tier: 'VERIFIED_FRESH', ageMax, skew, legAges };
+    }
+    if (ageMax <= 300) {
+      return { tier: 'POTENTIALLY_STALE', ageMax, skew, legAges };
+    }
+    return { tier: 'RECENT_HISTORICAL', ageMax, skew, legAges };
+  }
+
+  // Agrupació de totes les fonts de surebets per re-avaluar l'envelliment dinàmic
+  const allSurebetSources = [
+    ...(arbData.surebets || []),
+    ...(arbData.verified_fresh_surebets || []),
+    ...(arbData.potentially_stale_surebets || []),
+    ...(arbData.recent_historical_surebets || []),
+    ...(arbData.stale_surebets || [])
+  ];
+
+  const seenKeys = new Set();
+  const rawUniqueSurebets = [];
+  for (const s of allSurebetSources) {
+    const k = `${s.matchup}::${s.market_name}::${(s.legs || []).map(l => `${l.bookmaker}@${l.odd}`).join('|')}`;
+    if (!seenKeys.has(k)) {
+      seenKeys.add(k);
+      rawUniqueSurebets.push(s);
+    }
+  }
+
+  let verifiedFreshSurebets = [];
+  let potentiallyStaleSurebets = [];
+  let recentHistoricalSurebets = [];
+
+  for (const arb of rawUniqueSurebets) {
+    const freshMeta = computeDynamicFreshness(arb);
+    arb._dynamicFreshness = freshMeta;
+    if (freshMeta.tier === 'VERIFIED_FRESH') {
+      verifiedFreshSurebets.push(arb);
+    } else if (freshMeta.tier === 'POTENTIALLY_STALE') {
+      potentiallyStaleSurebets.push(arb);
+    } else if (freshMeta.tier === 'RECENT_HISTORICAL') {
+      recentHistoricalSurebets.push(arb);
+    }
+  }
+
+  let nearArbs = (arbData.near_arbs || []).filter(a => {
+    const freshMeta = computeDynamicFreshness(a);
+    a._dynamicFreshness = freshMeta;
+    return freshMeta.tier !== 'EXCLUDED';
+  });
+
   // Filtre per cerca de text
   if (currentSearch) {
     const q = currentSearch.toLowerCase();
-    surebets = surebets.filter(a =>
+    const filterFn = a =>
       a.matchup.toLowerCase().includes(q) ||
       a.market_name.toLowerCase().includes(q) ||
-      (a.legs && a.legs.some(l => l.selection.toLowerCase().includes(q)))
-    );
-    staleSurebets = staleSurebets.filter(a =>
-      a.matchup.toLowerCase().includes(q) ||
-      a.market_name.toLowerCase().includes(q) ||
-      (a.legs && a.legs.some(l => l.selection.toLowerCase().includes(q)))
-    );
-    nearArbs = nearArbs.filter(a =>
-      a.matchup.toLowerCase().includes(q) ||
-      a.market_name.toLowerCase().includes(q)
-    );
-  }
+      (a.legs && a.legs.some(l => (l.selection || '').toLowerCase().includes(q)));
 
-  // Filtrar que cap partit ja finalitzat o començat passi com a surebet vigent
-  const nowMs = Date.now();
-  surebets = surebets.filter(a => parseMatchDateToMs(a.date) > nowMs);
+    verifiedFreshSurebets = verifiedFreshSurebets.filter(filterFn);
+    potentiallyStaleSurebets = potentiallyStaleSurebets.filter(filterFn);
+    recentHistoricalSurebets = recentHistoricalSurebets.filter(filterFn);
+    nearArbs = nearArbs.filter(filterFn);
+  }
 
   // Render Hero KPI Banner
   if (heroBanner) {
-    const maxP = surebets.length > 0 ? Math.max(...surebets.map(s => s.profit_pct)) : summary.max_profit_pct || 0;
-    const avgP = surebets.length > 0 ? (surebets.reduce((acc, s) => acc + s.profit_pct, 0) / surebets.length) : summary.avg_profit_pct || 0;
+    const maxP = verifiedFreshSurebets.length > 0
+      ? Math.max(...verifiedFreshSurebets.map(s => s.profit_pct))
+      : (summary.max_profit_pct || 0);
+    const avgP = verifiedFreshSurebets.length > 0
+      ? (verifiedFreshSurebets.reduce((acc, s) => acc + s.profit_pct, 0) / verifiedFreshSurebets.length)
+      : (summary.avg_profit_pct || 0);
 
     heroBanner.innerHTML = `
       <div class="arb-hero-card">
         <span class="arb-hero-icon">⚡</span>
-        <div class="arb-hero-val">${surebets.length}</div>
-        <div class="arb-hero-lbl">Surebets Vigents (≤60s)</div>
+        <div class="arb-hero-val">${verifiedFreshSurebets.length}</div>
+        <div class="arb-hero-lbl">Verificades Recentment (≤60s)</div>
       </div>
       <div class="arb-hero-card glow-green">
         <span class="arb-hero-icon">📈</span>
@@ -2131,60 +2227,86 @@ function renderArbitrage() {
       <div class="arb-hero-card">
         <span class="arb-hero-icon">💰</span>
         <div class="arb-hero-val">+${Number(avgP).toFixed(1)}%</div>
-        <div class="arb-hero-lbl">Retorn Mitjà per Arb</div>
+        <div class="arb-hero-lbl">Retorn Mitjà (Fresc)</div>
       </div>
       <div class="arb-hero-card">
         <span class="arb-hero-icon">🛡️</span>
-        <div class="arb-hero-val">100%</div>
-        <div class="arb-hero-lbl">Risc Esportiu Cobert</div>
+        <div class="arb-hero-val">30 min</div>
+        <div class="arb-hero-lbl">Finestra de Monitoratge</div>
       </div>
     `;
   }
 
-  if (countBadge) countBadge.textContent = `${surebets.length} oportunitats`;
-  if (countStaleBadge) countStaleBadge.textContent = `${staleSurebets.length} oportunitats`;
+  if (countBadge) countBadge.textContent = `${verifiedFreshSurebets.length} oportunitats`;
+  if (countStaleBadge) countStaleBadge.textContent = `${potentiallyStaleSurebets.length} oportunitats`;
+  if (countHistoricalBadge) countHistoricalBadge.textContent = `${recentHistoricalSurebets.length} oportunitats`;
   if (countNearBadge) countNearBadge.textContent = `${nearArbs.length} partits`;
 
   window.arbitrageRegistry = {};
   const totalBankroll = currentArbTotalStake || 100;
 
-  function renderCard(arb, idx, type) {
-    const isSurebet = type === 'sure';
-    const isStale = type === 'stale';
-    const arbKey = `arb_${arb.competition_id}_${idx}_${type}`;
+  function renderCard(arb, idx, tierType) {
+    const arbKey = `arb_${arb.competition_id || 'match'}_${idx}_${tierType}`;
     window.arbitrageRegistry[arbKey] = arb;
 
     const legs = arb.legs || [];
     const { bankroll: effectiveBankroll, roundStakes, grossPayouts, minReturn, netProfit, profitPct, isPositive } = computeArbitrageValues(arb, totalBankroll);
 
-    const matchMs = parseMatchDateToMs(arb.date);
-    const isPast = matchMs < Date.now();
+    const freshMeta = arb._dynamicFreshness || computeDynamicFreshness(arb);
+    const ageMax = freshMeta.ageMax || 0;
+    const legAges = freshMeta.legAges || [];
 
     let badgeClass = 'arb-badge-near';
     let badgeText = `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
     let cardGlowClass = 'arb-card-near';
+    let noticeHtml = '';
+    let profitLabel = 'Benefici Net Garantit:';
 
-    if (isPast) {
-      badgeClass = 'arb-badge-stale';
-      badgeText = '🏁 PARTIT FINALITZAT (HISTÒRIC)';
-      cardGlowClass = 'arb-card-stale';
-    } else if (isSurebet) {
+    if (tierType === 'fresh') {
       badgeClass = isPositive ? 'arb-badge-profit' : 'arb-badge-near';
       badgeText = isPositive ? `+${profitPct.toFixed(1)}% NET GARANTIT` : `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
       cardGlowClass = 'arb-card-surebet';
-    } else if (isStale) {
+      profitLabel = 'Benefici Net Garantit:';
+    } else if (tierType === 'stale') {
       badgeClass = 'arb-badge-stale';
-      badgeText = `⚠️ +${profitPct.toFixed(1)}% (QUOTES >60s)`;
+      badgeText = `⚠️ +${profitPct.toFixed(1)}% (1-5 min)`;
       cardGlowClass = 'arb-card-stale';
+      profitLabel = 'Benefici Teòric Estimat:';
+      noticeHtml = `
+        <div class="arb-stale-notice">
+          <span>⚠️</span>
+          <span><strong>Oportunitat Potencialment Desactualitzada:</strong> Quotes capturades fa entre 1 i 5 minuts (${Math.round(ageMax)}s). Les quotes de les cases poden haver canviat; comprova els preus actuals abans d'apostar.</span>
+        </div>
+      `;
+    } else if (tierType === 'historical') {
+      badgeClass = 'arb-badge-historical';
+      badgeText = `📜 +${profitPct.toFixed(1)}% (5-30 min)`;
+      cardGlowClass = 'arb-card-historical';
+      profitLabel = 'Benefici Teòric d\'Arxiu:';
+      noticeHtml = `
+        <div class="arb-historical-notice">
+          <span>📜</span>
+          <span><strong>Registre Històric Recent:</strong> Quotes capturades fa entre 5 i 30 minuts (${Math.round(ageMax / 60)} min). Caràcter purament informatiu d'arxiu; benefici NO garantit ja que el mercat sol corregir la discrepància.</span>
+        </div>
+      `;
+    } else if (tierType === 'near') {
+      badgeClass = 'arb-badge-near';
+      badgeText = `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
+      cardGlowClass = 'arb-card-near';
+      profitLabel = 'Dèficit de Marge:';
     }
 
     const legsHtml = legs.map((leg, i) => {
       const op = getOperatorInfo(leg.bookmaker, leg.url);
-      const actionBtnHtml = isPast
-        ? `<span class="btn-arb-leg btn-arb-leg-disabled" title="El partit ja ha finalitzat">Partit finalitzat</span>`
-        : (op.hasValidUrl
-          ? `<a href="${op.validUrl}" target="_blank" rel="noopener noreferrer" class="btn-arb-leg ${op.btnClass}">${op.actionLabel}</a>`
-          : `<span class="btn-arb-leg btn-arb-leg-disabled" title="No hi ha enllaç directe disponible">Sense enllaç directe</span>`);
+      const legAge = legAges[i] != null ? legAges[i] : (leg.age_seconds != null ? leg.age_seconds : null);
+      const legCapTimeStr = leg.captured_at
+        ? new Date(leg.captured_at).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        : '--';
+      const legAgeStr = formatRelativeAge(legAge, leg.captured_at);
+
+      const actionBtnHtml = op.hasValidUrl
+        ? `<a href="${op.validUrl}" target="_blank" rel="noopener noreferrer" class="btn-arb-leg ${op.btnClass}">${op.actionLabel}</a>`
+        : `<span class="btn-arb-leg btn-arb-leg-disabled" title="No hi ha enllaç directe disponible">Sense enllaç directe</span>`;
 
       return `
         <div class="arb-leg-box">
@@ -2199,26 +2321,18 @@ function renderArbitrage() {
               <span class="arb-m-val stake-val">${roundStakes[i]} €</span>
             </div>
             <div class="arb-leg-mitem">
-              <span class="arb-m-label">Pagament brut individual:</span>
+              <span class="arb-m-label">Pagament brut:</span>
               <span class="arb-m-val return-val">${grossPayouts[i].toFixed(2)} €</span>
             </div>
+          </div>
+          <div class="arb-leg-time-footer" style="font-size: 10.5px; color: var(--text-muted); margin-top: 4px; display: flex; justify-content: space-between;">
+            <span>🕒 Captura: ${legCapTimeStr}</span>
+            <span>(${legAgeStr})</span>
           </div>
           ${actionBtnHtml}
         </div>
       `;
     }).join('');
-
-    const staleWarningHtml = isPast ? `
-      <div class="arb-stale-notice" style="background: rgba(100, 116, 139, 0.15); border-color: rgba(148, 163, 184, 0.3); color: #cbd5e1;">
-        <span>🏁</span>
-        <span>Aquest partit ja s'ha disputat (${arb.date}). Registre exclusivament informatiu d'arxiu (no apostable).</span>
-      </div>
-    ` : (isStale ? `
-      <div class="arb-stale-notice">
-        <span>⚠️</span>
-        <span>Aquesta oportunitat utilitza quotes capturades fa més de 60 segons. Comprova el preu abans d'apostar.</span>
-      </div>
-    ` : '');
 
     return `
       <div class="arb-card ${cardGlowClass}">
@@ -2227,7 +2341,7 @@ function renderArbitrage() {
             <div class="arb-league-badge">${arb.competition_name || arb.competition_id} · 📅 ${arb.date}</div>
             <h3 class="arb-matchup-title">${arb.matchup}</h3>
             <div class="arb-market-name">🎯 ${arb.market_name}</div>
-            ${staleWarningHtml}
+            ${noticeHtml}
           </div>
           <div class="arb-badge-container">
             <span class="arb-badge ${badgeClass}">${badgeText}</span>
@@ -2249,53 +2363,62 @@ function renderArbitrage() {
               <span class="arb-sum-val" style="color: #6ee7b7;">${minReturn.toFixed(2)} €</span>
             </div>
             <div class="arb-summary-item">
-              <span class="arb-sum-lbl">Benefici Net Garantit:</span>
+              <span class="arb-sum-lbl">${profitLabel}</span>
               <span class="arb-sum-val ${isPositive ? 'profit-green' : 'loss-orange'}">${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)} €</span>
             </div>
           </div>
           <div class="arb-card-actions">
-            ${isPast ? `
-              <span class="arb-past-disclaimer" style="font-size: 11px; color: var(--text-muted); padding: 6px 12px; background: rgba(255,255,255,0.05); border-radius: 6px;">📁 Registre d'arxiu</span>
-            ` : `
-              <button class="btn-copy-arb" onclick="copyArbitrageInstructions('${arbKey}')" title="Copia instruccions detallades per executar l'arbitratge pas a pas">
-                📋 Copiar Instruccions
-              </button>
-            `}
+            <button class="btn-copy-arb" onclick="copyArbitrageInstructions('${arbKey}')" title="Copia instruccions detallades per executar l'arbitratge pas a pas">
+              📋 Copiar Instruccions
+            </button>
           </div>
         </div>
       </div>
     `;
   }
 
-  // Render Surebets Vigents (Quotes Fresques)
-  if (surebets.length === 0) {
+  // Nivell 1: Surebets Verificades Recentment (≤60s)
+  if (verifiedFreshSurebets.length === 0) {
     containerSurebets.innerHTML = `
       <div class="empty-jornada-state" style="grid-column: 1/-1; text-align: center; padding: 36px 20px; background: rgba(17, 24, 39, 0.45); border: 1px dashed rgba(255,255,255,0.12); border-radius: var(--radius-md);">
         <span style="font-size: 36px; display: block; margin-bottom: 8px;">⚡</span>
-        <h3 style="font-size: 17px; color: var(--text-primary); margin-bottom: 6px;">No hi ha surebets fresques actives en aquest moment</h3>
+        <h3 style="font-size: 17px; color: var(--text-primary); margin-bottom: 6px;">No hi ha surebets verificades recentment (≤60s)</h3>
         <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto; font-size: 13px;">
-          El motor només mostra com a vigents les oportunitats amb quotes actualitzades en els darrers 60 segons simultàniament entre les cases.
+          El motor només mostra com a verificades les oportunitats amb quotes capturades en els darrers 60 segons i amb decalatge ≤30s entre les cases.
         </p>
       </div>
     `;
   } else {
-    containerSurebets.innerHTML = surebets.map((arb, i) => renderCard(arb, i, 'sure')).join('');
+    containerSurebets.innerHTML = verifiedFreshSurebets.map((arb, i) => renderCard(arb, i, 'fresh')).join('');
   }
 
-  // Render Surebets Caducades / Stale
+  // Nivell 2: Surebets Potencialment Desactualitzades (1–5 min)
   if (containerStale) {
-    if (staleSurebets.length === 0) {
+    if (potentiallyStaleSurebets.length === 0) {
       if (staleHeader) staleHeader.style.display = 'none';
       containerStale.style.display = 'none';
       containerStale.innerHTML = '';
     } else {
       if (staleHeader) staleHeader.style.display = 'flex';
       containerStale.style.display = 'grid';
-      containerStale.innerHTML = staleSurebets.map((arb, i) => renderCard(arb, i, 'stale')).join('');
+      containerStale.innerHTML = potentiallyStaleSurebets.map((arb, i) => renderCard(arb, i, 'stale')).join('');
     }
   }
 
-  // Render Near-Arbs
+  // Nivell 3: Surebets Històriques Recents (5–30 min)
+  if (containerHistorical) {
+    if (recentHistoricalSurebets.length === 0) {
+      if (historicalHeader) historicalHeader.style.display = 'none';
+      containerHistorical.style.display = 'none';
+      containerHistorical.innerHTML = '';
+    } else {
+      if (historicalHeader) historicalHeader.style.display = 'flex';
+      containerHistorical.style.display = 'grid';
+      containerHistorical.innerHTML = recentHistoricalSurebets.map((arb, i) => renderCard(arb, i, 'historical')).join('');
+    }
+  }
+
+  // Nivell 4: Near-Arbs (Marge Estret)
   if (containerNear) {
     if (nearArbs.length === 0) {
       containerNear.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 24px;">No hi ha partits en monitorització d'estretor de marge.</p>`;
@@ -2305,6 +2428,21 @@ function renderArbitrage() {
   }
 }
 window.renderArbitrage = renderArbitrage;
+
+// Temporitzador per a l'envelliment dinàmic en temps real (cada 10s al navegador)
+if (typeof window !== 'undefined' && typeof document !== 'undefined' && !window._arbitrageAgingInterval) {
+  const agingTimer = setInterval(() => {
+    if (typeof document === 'undefined') return;
+    const containerSurebets = document.getElementById('surebets-container');
+    if (containerSurebets && typeof appData !== 'undefined' && appData && appData.arbitrage) {
+      renderArbitrage();
+    }
+  }, 10000);
+  if (agingTimer && typeof agingTimer.unref === 'function') {
+    agingTimer.unref();
+  }
+  window._arbitrageAgingInterval = agingTimer;
+}
 
 // -----------------------------------------------------------------------------
 // 4. COMBINADES RECOMANADES (6 PER LLIGA + COMBINADES DEL DIA)

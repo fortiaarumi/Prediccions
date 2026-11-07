@@ -5997,6 +5997,33 @@ body {
   font-weight: 500;
 }
 
+/* Targetes de Surebets Històriques Recents (5-30 min) */
+.arb-card.arb-card-historical {
+  border-color: rgba(249, 115, 22, 0.35);
+  background: radial-gradient(circle at top right, rgba(249, 115, 22, 0.05), rgba(15, 23, 42, 0.8) 60%);
+  opacity: 0.88;
+}
+
+.arb-card.arb-card-historical:hover {
+  border-color: rgba(249, 115, 22, 0.55);
+}
+
+.arb-badge-historical {
+  background: rgba(249, 115, 22, 0.2);
+  border: 1px solid rgba(249, 115, 22, 0.5);
+  color: #fdba74;
+}
+
+.arb-historical-notice {
+  font-size: 11.5px;
+  color: #fb923c;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
 /* ==========================================================================
    PANELL DE TRANSPARÈNCIA I MONITORATGE (BLOC A: QUOTES | BLOC B: GITHUB ACTIONS)
    ========================================================================== */

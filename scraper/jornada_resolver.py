@@ -26,9 +26,15 @@ class JornadaResolver:
         Retorna els partits oficials de la jornada per a la competició triada.
         Obté els enllaços i enfrontaments reals dinàmicament d'internet.
         """
-        from scraper.live_crawler import LiveCrawler
+        from scraper.live_crawler import LiveCrawler, DATA_DIR
         crawler = LiveCrawler(headless=True)
         fixtures = crawler.crawl_jornada_fixtures_from_web(jornada, competition_id=self.competition_id)
+
+        if not fixtures:
+            # Fallback defensiu a fitxer d'urls existent per a execucions offline o tests
+            urls_file = DATA_DIR / f"{self.competition_id.lower()}_jornada_{jornada}_urls.txt"
+            if urls_file.exists():
+                fixtures = crawler._parse_urls_file(urls_file, self.competition_id, jornada)
 
         if not fixtures:
             raise ValueError(f"[ERROR CRÍTIC]: No s'han pogut resoldre partits per a la Jornada {jornada} de {self.competition_id}.")

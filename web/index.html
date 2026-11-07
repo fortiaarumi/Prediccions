@@ -384,25 +384,34 @@
 
       <!-- Surebets Grid -->
       <div class="arbitrage-grid-wrapper">
-        <!-- Secció 1: Surebets Vigents (Quotes Fresques) -->
+        <!-- Nivell 1: Recentment Verificada (≤60s) -->
         <div class="arb-section-header">
-          <h2 class="arb-section-heading">🔥 Surebets Vigents (Quotes Fresques ≤60s)</h2>
+          <h2 class="arb-section-heading">🔥 Surebets Verificades Recentment (≤60s)</h2>
           <span class="arb-section-count" id="surebets-count-badge">0 oportunitats</span>
         </div>
         <div class="arbitrage-grid" id="surebets-container">
           <!-- Generat per JS -->
         </div>
 
-        <!-- Secció 2: Oportunitats Caducades / Stale (>60s) -->
+        <!-- Nivell 2: Potencialment Desactualitzada (1–5 min) -->
         <div class="arb-section-header stale-arb-header" id="stale-arbs-header" style="margin-top: 36px;">
-          <h2 class="arb-section-heading" style="color: #fbbf24;">⚠️ Oportunitats Caducades / Stale (Quotes >60s)</h2>
+          <h2 class="arb-section-heading" style="color: #fbbf24;">⚠️ Surebets Potencialment Desactualitzades (1–5 min)</h2>
           <span class="arb-section-count" id="stale-arbs-count-badge">0 oportunitats</span>
         </div>
         <div class="arbitrage-grid" id="stale-arbs-container">
           <!-- Generat per JS -->
         </div>
 
-        <!-- Secció 3: Monitorització de Mercat (Quasi-Arbitratge / Marge Estret) -->
+        <!-- Nivell 3: Històrica Recent (5–30 min) -->
+        <div class="arb-section-header historical-arb-header" id="historical-arbs-header" style="margin-top: 36px;">
+          <h2 class="arb-section-heading" style="color: #f97316;">📜 Surebets Històriques Recents (5–30 min)</h2>
+          <span class="arb-section-count" id="historical-arbs-count-badge">0 oportunitats</span>
+        </div>
+        <div class="arbitrage-grid" id="historical-arbs-container">
+          <!-- Generat per JS -->
+        </div>
+
+        <!-- Secció 4: Monitorització de Mercat (Quasi-Arbitratge / Marge Estret) -->
         <div class="arb-section-header near-arb-header" style="margin-top: 36px;">
           <h2 class="arb-section-heading near-arb-heading">👀 Monitorització de Mercat (Quasi-Arbitratge / Marge Estret)</h2>
           <span class="arb-section-count" id="near-arbs-count-badge">0 partits</span>
