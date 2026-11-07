@@ -172,13 +172,24 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
             self.wfile.write(b'{"error": "Not found"}')
 
     def do_POST(self):
-        # 1. Protecció CSRF i validació d'origen per a accions sensibles
+        # Drenar de forma segura fins a 4KB del buffer per evitar TCP RST (WinError 10053) a Windows
+        content_length = int(self.headers.get("Content-Length", 0))
+        drain_len = min(content_length, 4096)
+        raw_body = self.rfile.read(drain_len) if drain_len > 0 else b""
+
+        # 1. Protecció de mida màxima de memòria (4KB)
+        if content_length > 4096:
+            self._set_headers(413)
+            self.wfile.write(b'{"error": "Payload massa gran (limit 4KB)"}')
+            return
+
+        # 2. Protecció CSRF i validació d'origen per a accions sensibles
         if not self._is_origin_allowed(is_mutating=True):
             self._set_headers(403)
             self.wfile.write(b'{"error": "Forbidden: Peticio d\'origen no autoritzat o sense capcalera de seguretat"}')
             return
 
-        # 2. Bloqueig d'enviaments de formularis HTML simples (evita CSRF de formulari)
+        # 3. Bloqueig d'enviaments de formularis HTML simples (evita CSRF de formulari)
         content_type = self.headers.get("Content-Type", "")
         if "application/json" not in content_type:
             self._set_headers(415)
@@ -191,14 +202,7 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
             self.wfile.write(b'{"error": "Coordinator not initialized"}')
             return
 
-        # Protecció de memòria: màxim 4096 bytes per petició
-        content_length = int(self.headers.get("Content-Length", 0))
-        if content_length > 4096:
-            self._set_headers(413)
-            self.wfile.write(b'{"error": "Payload massa gran (limit 4KB)"}')
-            return
-
-        body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+        body = raw_body.decode("utf-8", errors="replace") if raw_body else "{}"
         try:
             data = json.loads(body)
         except Exception:
