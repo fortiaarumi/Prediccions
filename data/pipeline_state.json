@@ -17,7 +17,7 @@
   "CHAMPIONSHIP": {
     "last_predicted_jornada": 11,
     "last_predicted_date": "2026-10-17",
-    "last_scraped_jornada": 14
+    "last_scraped_jornada": 15
   },
   "BUNDESLIGA": {
     "last_predicted_jornada": 7,
@@ -34,5 +34,56 @@
     "last_predicted_date": "2026-10-19",
     "last_scraped_jornada": 10
   },
-  "updated_at": "2026-11-07T13:23:37.424649"
+  "updated_at": "2026-11-07T22:58:11.516694",
+  "pipeline_status": {
+    "workflow_name": "Pipeline Diari Autònom de Prediccions",
+    "workflow_file": "daily_pipeline.yml",
+    "schedule": "08:23, 15:23 i 00:23 BCN (06:23, 13:23 i 22:23 UTC)",
+    "status": "COMPLETED",
+    "last_run_timestamp": "2026-10-25T12:05:07.729707+00:00",
+    "last_success_timestamp": "2026-10-25T12:05:07.729707+00:00",
+    "duration_seconds": 142.3,
+    "last_attempt_status": "COMPLETED",
+    "last_attempt_timestamp": "2026-10-25T12:05:07.729707+00:00",
+    "last_error": null,
+    "runner_env": "GitHub Actions (ubuntu-latest)",
+    "tasks": {
+      "results_and_scores": {
+        "name": "Resultats i marcadors (Flashscore)",
+        "status": "COMPLETED",
+        "last_success": "2026-10-25T12:03:10+00:00",
+        "details": "Jornades finalitzades comprovades i resultats ingerits per a 7 lligues."
+      },
+      "elo_and_stats": {
+        "name": "Elo ratings i estadístiques",
+        "status": "COMPLETED",
+        "last_success": "2026-10-25T12:03:25+00:00",
+        "details": "Recalculat Elo de 7 lligues i mètriques xG/targetes/córners."
+      },
+      "referee_designations": {
+        "name": "Designacions arbitrals (CTA / PGMOL)",
+        "status": "COMPLETED",
+        "last_success": "2026-10-25T12:03:45+00:00",
+        "details": "Àrbitres oficials actualitzats des de Flashscore."
+      },
+      "predictions": {
+        "name": "Prediccions Poisson GLM i Valor (+EV)",
+        "status": "COMPLETED",
+        "last_success": "2026-10-25T12:04:15+00:00",
+        "details": "Models Poisson GLM calculats i valor comparat amb quotes."
+      },
+      "combos": {
+        "name": "Combinades del dia i multi-lliga",
+        "status": "COMPLETED",
+        "last_success": "2026-10-25T12:04:50+00:00",
+        "details": "6 combinades oficials del dia i multi-lliga congelades."
+      },
+      "web_export": {
+        "name": "Exportació web (data.json)",
+        "status": "COMPLETED",
+        "last_success": "2026-10-25T12:05:05+00:00",
+        "details": "Sincronització de data.json completada amb èxit."
+      }
+    }
+  }
 }
