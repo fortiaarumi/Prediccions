@@ -89,7 +89,7 @@ def parse_feed_blocks(html_text: str, feed_key: str) -> List[Dict[str, Any]]:
 def extract_live_matches_from_feed(pat: str) -> List[Dict[str, Any]]:
     """Consulta el feed en viu global per a partits en directe de la competició."""
     curl_bin = 'curl.exe' if os.name == 'nt' else 'curl'
-    cmd_live = [curl_bin, '-s', '-H', 'x-fsign: SW9D1eZo', 'https://local-global.flashscore.ninja/2/x/feed/f_1_0_3_es_1']
+    cmd_live = [curl_bin, '-s', '--connect-timeout', '3', '--max-time', '8', '-H', 'x-fsign: SW9D1eZo', 'https://local-global.flashscore.ninja/2/x/feed/f_1_0_3_es_1']
     try:
         res = subprocess.run(cmd_live, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=8)
         if not res.stdout:
@@ -160,16 +160,30 @@ class HistoricalLoader:
 
         # 1. Descarregar /resultados/ (partits finalitzats de la temporada)
         print(f"[*] Descarregant /resultados/ per a {comp_id}...")
-        cmd_res = [self.curl_bin, '-s', f'{base_url}/resultados/']
-        res_res = subprocess.run(cmd_res, capture_output=True, text=True, encoding='utf-8', errors='replace')
-        results_items = parse_feed_blocks(res_res.stdout, 'results')
+        cmd_res = [self.curl_bin, '-s', '--connect-timeout', '5', '--max-time', '15', f'{base_url}/resultados/']
+        results_items = []
+        try:
+            res_res = subprocess.run(cmd_res, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20)
+            if res_res.stdout:
+                results_items = parse_feed_blocks(res_res.stdout, 'results')
+        except subprocess.TimeoutExpired:
+            print(f"   [!] Timeout (20s) descarregant /resultados/ per a {comp_id}")
+        except Exception as e:
+            print(f"   [!] Error descarregant /resultados/ per a {comp_id}: {e}")
         print(f"   • Trobats {len(results_items)} partits jugats a /resultados/.")
 
         # 2. Descarregar /partidos/ (fixtures de la temporada)
         print(f"[*] Descarregant /partidos/ per a {comp_id}...")
-        cmd_fix = [self.curl_bin, '-s', f'{base_url}/partidos/']
-        res_fix = subprocess.run(cmd_fix, capture_output=True, text=True, encoding='utf-8', errors='replace')
-        fixtures_items = parse_feed_blocks(res_fix.stdout, 'fixtures')
+        cmd_fix = [self.curl_bin, '-s', '--connect-timeout', '5', '--max-time', '15', f'{base_url}/partidos/']
+        fixtures_items = []
+        try:
+            res_fix = subprocess.run(cmd_fix, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20)
+            if res_fix.stdout:
+                fixtures_items = parse_feed_blocks(res_fix.stdout, 'fixtures')
+        except subprocess.TimeoutExpired:
+            print(f"   [!] Timeout (20s) descarregant /partidos/ per a {comp_id}")
+        except Exception as e:
+            print(f"   [!] Error descarregant /partidos/ per a {comp_id}: {e}")
         print(f"   • Trobats {len(fixtures_items)} partits programats a /partidos/.")
 
         # 3. Comprovar feed en viu per a partits que s'estiguin jugant avui

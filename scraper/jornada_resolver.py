@@ -26,9 +26,17 @@ class JornadaResolver:
         Retorna els partits oficials de la jornada per a la competició triada.
         Obté els enllaços i enfrontaments reals dinàmicament d'internet.
         """
-        from scraper.live_crawler import LiveCrawler
+        from scraper.live_crawler import LiveCrawler, DATA_DIR
         crawler = LiveCrawler(headless=True)
         fixtures = crawler.crawl_jornada_fixtures_from_web(jornada, competition_id=self.competition_id)
+
+        if not fixtures:
+            # Fallback defensiu a fitxer d'urls existent per a execucions offline o entorns de test
+            urls_file = DATA_DIR / f"{self.competition_id.lower()}_jornada_{jornada}_urls.txt"
+            if urls_file.exists():
+                fixtures = crawler._parse_urls_file(urls_file, self.competition_id, jornada)
+                if fixtures:
+                    print(f"⚠️  [AVÍS DE JORNADA RESOLVER]: Fallback offline activat per a {self.competition_id} J{jornada}. S'han utilitzat dades de {urls_file.name} perquè el crawler web no ha retornat partits.")
 
         if not fixtures:
             raise ValueError(f"[ERROR CRÍTIC]: No s'han pogut resoldre partits per a la Jornada {jornada} de {self.competition_id}.")
@@ -125,8 +133,15 @@ class JornadaResolver:
         target_url = urls.get(comp_id, urls["LALIGA"])
 
         curl_bin = 'curl.exe' if os.name == 'nt' else 'curl'
-        cmd = [curl_bin, '-s', target_url]
-        res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
+        cmd = [curl_bin, '-s', '--connect-timeout', '5', '--max-time', '15', target_url]
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20)
+        except subprocess.TimeoutExpired:
+            print(f"   [!] Timeout (20s) determinant jornada a Flashscore per a {comp_id} ({target_url})")
+            return None
+        except Exception as e:
+            print(f"   [!] Error determinant jornada a Flashscore per a {comp_id}: {e}")
+            return None
 
         blocks = res.stdout.split('~')
         current_round = None

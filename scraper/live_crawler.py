@@ -158,14 +158,27 @@ class LiveCrawler:
 
         # 1. Obtenir resultats jugats
         curl_bin = 'curl.exe' if os.name == 'nt' else 'curl'
-        cmd_res = [curl_bin, '-s', f'{base_url}/resultados/']
-        res_res = subprocess.run(cmd_res, capture_output=True, text=True, encoding='utf-8', errors='replace')
-        all_matches = parse_feed_blocks(res_res.stdout, 'results')
+        cmd_res = [curl_bin, '-s', '--connect-timeout', '5', '--max-time', '15', f'{base_url}/resultados/']
+        all_matches = []
+        try:
+            res_res = subprocess.run(cmd_res, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20)
+            if res_res.stdout:
+                all_matches = parse_feed_blocks(res_res.stdout, 'results')
+        except subprocess.TimeoutExpired:
+            print(f"   [!] Timeout (20s) consultant resultats jugats per a {comp_id} ({base_url}/resultados/)")
+        except Exception as e:
+            print(f"   [!] Error consultant resultats jugats per a {comp_id}: {e}")
 
         # 2. Obtenir fixtures pendents
-        cmd_fix = [curl_bin, '-s', f'{base_url}/partidos/']
-        res_fix = subprocess.run(cmd_fix, capture_output=True, text=True, encoding='utf-8', errors='replace')
-        all_matches.extend(parse_feed_blocks(res_fix.stdout, 'fixtures'))
+        cmd_fix = [curl_bin, '-s', '--connect-timeout', '5', '--max-time', '15', f'{base_url}/partidos/']
+        try:
+            res_fix = subprocess.run(cmd_fix, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20)
+            if res_fix.stdout:
+                all_matches.extend(parse_feed_blocks(res_fix.stdout, 'fixtures'))
+        except subprocess.TimeoutExpired:
+            print(f"   [!] Timeout (20s) consultant partits pendents per a {comp_id} ({base_url}/partidos/)")
+        except Exception as e:
+            print(f"   [!] Error consultant partits pendents per a {comp_id}: {e}")
 
         # 3. Obtenir partits en joc (LIVE) o de la jornada d'avui que no figurin a fixtures/results
         comp_patterns = {
@@ -180,8 +193,8 @@ class LiveCrawler:
         pat = comp_patterns.get(comp_id)
         if pat:
             try:
-                cmd_live = [curl_bin, '-s', '-H', 'x-fsign: SW9D1eZo', 'https://local-global.flashscore.ninja/2/x/feed/f_1_0_3_es_1']
-                res_live = subprocess.run(cmd_live, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=5)
+                cmd_live = [curl_bin, '-s', '--connect-timeout', '3', '--max-time', '8', '-H', 'x-fsign: SW9D1eZo', 'https://local-global.flashscore.ninja/2/x/feed/f_1_0_3_es_1']
+                res_live = subprocess.run(cmd_live, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=10)
                 if res_live.stdout:
                     live_blocks = res_live.stdout.split('~')
                     in_comp = False
