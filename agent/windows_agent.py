@@ -257,14 +257,23 @@ def main():
     coordinator = MockCoordinator()
     agent = WindowsSurebetAgent(coordinator=coordinator, offline=True, dry_run=True)
 
+    # Iniciar el pont HTTP local loopback per permetre la connexió des del navegador web
+    from agent.local_bridge import LocalCoordinatorServer
+    bridge = LocalCoordinatorServer(coordinator=coordinator, port=8765)
+    bridge.start()
+
     # Registrar gestors de senyals per neteja neta
     def handle_exit(sig, frame):
         print("\nRebuda senyal de finalització. Tancant l'agent nètament...")
+        bridge.stop()
         agent.cleanup_resources()
         sys.exit(0)
 
     signal.signal(signal.SIGINT, handle_exit)
-    agent.run_poll_loop()
+    try:
+        agent.run_poll_loop()
+    finally:
+        bridge.stop()
 
 
 if __name__ == "__main__":

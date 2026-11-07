@@ -209,6 +209,25 @@ class MockCoordinator:
                 return []
             return list(self.snapshots.get(session_id, []))
 
+    def get_active_opportunities(self, max_age_seconds: float = 1800.0) -> List[SnapshotRecord]:
+        """Recupera totes les oportunitats registrades en snapshots amb antiguitat <= max_age_seconds (30 minuts)."""
+        with self._lock:
+            now = datetime.now(timezone.utc)
+            active = []
+            for sess_id, snaps in self.snapshots.items():
+                for s in snaps:
+                    try:
+                        c_dt = datetime.fromisoformat(s.captured_at)
+                        if c_dt.tzinfo is None:
+                            c_dt = c_dt.replace(tzinfo=timezone.utc)
+                        age = (now - c_dt).total_seconds()
+                    except Exception:
+                        age = 0.0
+                    if age <= max_age_seconds:
+                        active.append(s)
+            active.sort(key=lambda x: x.captured_at, reverse=True)
+            return active
+
     def check_timeouts(self) -> List[str]:
         """
         Detecta sessions en RUNNING sense heartbeat recent i les marca com a TIMEOUT.
