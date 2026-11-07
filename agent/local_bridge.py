@@ -43,16 +43,29 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
     coordinator: Optional[MockCoordinator] = None
     agent_ref = None
 
-    def _is_origin_allowed(self) -> bool:
-        """Valida que l'Origin i el Host pertanyin estrictament a loopback local."""
+    def _is_origin_allowed(self, is_mutating: bool = False) -> bool:
+        """Valida que l'Origin i el Host pertanyin estrictament a loopback local amb protecció CSRF."""
         host = self.headers.get("Host", "")
         # Validació DNS rebinding: el Host ha de ser localhost o 127.0.0.1
         if not (host.startswith("localhost") or host.startswith("127.0.0.1")):
             return False
 
+        # Protecció contra atacs CSRF i navegació creuada (Sec-Fetch-Site i Sec-Fetch-Mode)
+        sec_fetch_site = self.headers.get("Sec-Fetch-Site", "").lower()
+        if sec_fetch_site in ("cross-site",):
+            return False
+        sec_fetch_mode = self.headers.get("Sec-Fetch-Mode", "").lower()
+        if sec_fetch_mode in ("navigate", "nested-navigate"):
+            return False
+
         origin = self.headers.get("Origin")
         if not origin:
-            # Peticions directes (curl, tests interns, o sense capçalera Origin) són vàlides des de 127.0.0.1
+            # Per a accions sensibles (POST), rebutgem peticions amb origen absent tret que
+            # incorporin la capçalera explícita anti-CSRF X-Requested-With (que un formulari HTML no pot enviar)
+            if is_mutating:
+                csrf_header = self.headers.get("X-Requested-With", "")
+                if csrf_header != "XMLHttpRequest":
+                    return False
             return True
 
         origin_clean = origin.split(":", 2)[0] + ":" + origin.split(":", 2)[1] if origin.count(":") >= 2 else origin
@@ -67,7 +80,7 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
         else:
             self.send_header("Access-Control-Allow-Origin", "null")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
         self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
@@ -81,7 +94,7 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
         self._set_headers(204)
 
     def do_GET(self):
-        if not self._is_origin_allowed():
+        if not self._is_origin_allowed(is_mutating=False):
             self._set_headers(403)
             self.wfile.write(b'{"error": "Forbidden: Peticio d\'origen no autoritzat"}')
             return
@@ -159,9 +172,17 @@ class LocalCoordinatorHTTPHandler(BaseHTTPRequestHandler):
             self.wfile.write(b'{"error": "Not found"}')
 
     def do_POST(self):
-        if not self._is_origin_allowed():
+        # 1. Protecció CSRF i validació d'origen per a accions sensibles
+        if not self._is_origin_allowed(is_mutating=True):
             self._set_headers(403)
-            self.wfile.write(b'{"error": "Forbidden: Peticio d\'origen no autoritzat"}')
+            self.wfile.write(b'{"error": "Forbidden: Peticio d\'origen no autoritzat o sense capcalera de seguretat"}')
+            return
+
+        # 2. Bloqueig d'enviaments de formularis HTML simples (evita CSRF de formulari)
+        content_type = self.headers.get("Content-Type", "")
+        if "application/json" not in content_type:
+            self._set_headers(415)
+            self.wfile.write(b'{"error": "Unsupported Media Type: Es requereix Content-Type application/json"}')
             return
 
         coord = self.coordinator

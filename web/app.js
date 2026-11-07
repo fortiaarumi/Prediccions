@@ -598,7 +598,10 @@ function setupSurebetAgentControls() {
     try {
       const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
         body: JSON.stringify({ duration_minutes: durationMins, user_id: 'user_local_web' })
       });
 
@@ -686,7 +689,10 @@ function setupSurebetAgentControls() {
 
         const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions/${_activeSurebetSession.id}/cancel`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
           body: JSON.stringify({ user_id: 'user_local_web' })
         });
 

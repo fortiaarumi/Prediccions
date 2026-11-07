@@ -66,7 +66,11 @@ def test_complete_10_step_e2e_local_flow(local_e2e_env):
 
     # 3. Clicar «Buscar surebets»: Web fa POST /api/sessions
     req_data = json.dumps({"duration_minutes": 10, "user_id": "user_local_web"}).encode("utf-8")
-    req = urllib.request.Request(f"{base_url}/api/sessions", data=req_data, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(
+        f"{base_url}/api/sessions",
+        data=req_data,
+        headers={"Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest"}
+    )
     create_resp = json.loads(urllib.request.urlopen(req).read())
     session_id = create_resp["session_id"]
     assert create_resp["status"] == STATUS_PENDING
@@ -108,7 +112,7 @@ def test_complete_10_step_e2e_local_flow(local_e2e_env):
     cancel_req = urllib.request.Request(
         f"{base_url}/api/sessions/{session_id}/cancel",
         data=json.dumps({"user_id": "user_local_web"}).encode("utf-8"),
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest"}
     )
     cancel_resp = json.loads(urllib.request.urlopen(cancel_req).read())
     assert cancel_resp["status"] == STATUS_CANCEL_REQUESTED
@@ -163,3 +167,89 @@ def test_complete_10_step_e2e_local_flow(local_e2e_env):
     assert len(active_opps) == 1
     assert active_opps[0].matchup == "Real Madrid vs Barcelona"
     assert all(o.matchup != "Arsenal vs Chelsea" for o in active_opps)
+
+
+def test_local_bridge_csrf_and_security_controls(local_e2e_env):
+    port = local_e2e_env["port"]
+    base_url = f"http://127.0.0.1:{port}"
+    valid_payload = json.dumps({"duration_minutes": 5, "user_id": "test_user"}).encode("utf-8")
+
+    # 1. Peticions mutating sense capçalera X-Requested-With (i sense Origin permès) han de ser blocades (403)
+    req_no_csrf = urllib.request.Request(
+        f"{base_url}/api/sessions",
+        data=valid_payload,
+        headers={"Content-Type": "application/json"}
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        urllib.request.urlopen(req_no_csrf)
+    assert exc_info.value.code == 403
+
+    # 2. Origen maliciós / no permès ha de ser blocat (403)
+    req_bad_origin = urllib.request.Request(
+        f"{base_url}/api/sessions",
+        data=valid_payload,
+        headers={
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "Origin": "http://malicious-site.com"
+        }
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        urllib.request.urlopen(req_bad_origin)
+    assert exc_info.value.code == 403
+
+    # 3. Content-Type invàlid (formulari simple o text pla) ha de ser rebutjat (415)
+    req_bad_ct = urllib.request.Request(
+        f"{base_url}/api/sessions",
+        data=valid_payload,
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        urllib.request.urlopen(req_bad_ct)
+    assert exc_info.value.code == 415
+
+    # 4. Sec-Fetch-Site cross-site ha de ser blocat (403)
+    req_cross_site = urllib.request.Request(
+        f"{base_url}/api/sessions",
+        data=valid_payload,
+        headers={
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "Sec-Fetch-Site": "cross-site"
+        }
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        urllib.request.urlopen(req_cross_site)
+    assert exc_info.value.code == 403
+
+    # 5. Payload superior a 4KB ha de retornar 413
+    big_payload = json.dumps({"duration_minutes": 5, "padding": "x" * 5000}).encode("utf-8")
+    req_large = urllib.request.Request(
+        f"{base_url}/api/sessions",
+        data=big_payload,
+        headers={
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        urllib.request.urlopen(req_large)
+    assert exc_info.value.code == 413
+
+    # 6. Durada invàlida (<1 o >30) ha de retornar 400
+    invalid_dur_payload = json.dumps({"duration_minutes": 60}).encode("utf-8")
+    req_dur = urllib.request.Request(
+        f"{base_url}/api/sessions",
+        data=invalid_dur_payload,
+        headers={
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        urllib.request.urlopen(req_dur)
+    assert exc_info.value.code == 400
+
