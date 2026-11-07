@@ -1,5 +1,23 @@
 {
   "outputDirectory": "web",
   "cleanUrls": true,
-  "framework": null
+  "framework": null,
+  "redirects": [
+    {
+      "source": "/((?!maintenance).*)",
+      "destination": "/maintenance",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/maintenance(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ]
 }
