@@ -103,7 +103,10 @@ ON surebet_opportunities (detected_at DESC, net_roi_pct DESC)
 WHERE is_stale = false;
 
 -- 8. VISTA PÚBLICA / OPERADORA D'OPORTUNITATS ACTIVES (< 30 MINUTS)
-CREATE OR REPLACE VIEW v_active_surebets AS
+-- Utilitza 'WITH (security_invoker = on)' per garantir que la vista avalua les polítiques RLS
+-- de l'usuari cridant i mai no eludeix la seguretat per privilegis del creador.
+CREATE OR REPLACE VIEW v_active_surebets
+WITH (security_invoker = on) AS
 SELECT 
     o.id,
     o.session_id,
@@ -434,14 +437,15 @@ BEGIN
 END;
 $$;
 
--- 6. Publicació atòmica de Snapshot i Oportunitats des de l'agent
+-- 6. Publicació atòmica de Snapshot i Oportunitats des de l'agent (Idempotent)
 CREATE OR REPLACE FUNCTION publish_session_snapshot(
     p_session_id UUID,
     p_odds_age_seconds INT,
     p_market_type VARCHAR,
     p_match_id VARCHAR,
     p_payload JSONB,
-    p_opportunities JSONB
+    p_opportunities JSONB,
+    p_snapshot_id UUID DEFAULT NULL
 )
 RETURNS UUID
 LANGUAGE plpgsql
@@ -472,16 +476,24 @@ BEGIN
             USING ERRCODE = '42501';
     END IF;
 
-    -- Inserir snapshot
+    -- Si el client proporciona un UUID canònic (per idempotència de reintents), usar-lo
+    v_snapshot_id := COALESCE(p_snapshot_id, gen_random_uuid());
+
+    -- Inserir snapshot de manera idempotent (evita duplicats en cas de reintents per caiguda de xarxa)
     INSERT INTO surebet_snapshots (
-        session_id, agent_id, market_type, match_id,
+        id, session_id, agent_id, market_type, match_id,
         odds_age_seconds, opportunities_count, payload
     ) VALUES (
-        p_session_id, v_agent_id, p_market_type, p_match_id,
+        v_snapshot_id, p_session_id, v_agent_id, p_market_type, p_match_id,
         p_odds_age_seconds, COALESCE(jsonb_array_length(p_opportunities), 0), p_payload
-    ) RETURNING id INTO v_snapshot_id;
+    )
+    ON CONFLICT (id) DO UPDATE
+    SET odds_age_seconds = EXCLUDED.odds_age_seconds,
+        payload = EXCLUDED.payload;
 
-    -- Desglossar oportunitats accionables si n'hi ha
+    -- Desglossar oportunitats accionables si n'hi ha (esborrant prèvies d'aquest snapshot si és reintent)
+    DELETE FROM surebet_opportunities WHERE snapshot_id = v_snapshot_id;
+
     IF p_opportunities IS NOT NULL AND jsonb_typeof(p_opportunities) = 'array' THEN
         FOR v_item IN SELECT * FROM jsonb_array_elements(p_opportunities)
         LOOP
@@ -594,3 +606,16 @@ USING (
           AND role IN ('admin', 'operator', 'viewer')
     )
 );
+
+-- =====================================================================
+-- RESTRICCIONS EXPLÍCITES DE DRETS DE TAULA (Principi de Mínim Privilegi)
+-- =====================================================================
+-- Impedeix absolutament que cap client pugui executar operacions directes d'UPDATE
+-- o DELETE per saltar-se les RPCs o manipular camps de control de concurrència.
+REVOKE UPDATE, DELETE ON surebet_sessions FROM PUBLIC, authenticated, anon;
+REVOKE INSERT, UPDATE, DELETE ON surebet_snapshots FROM PUBLIC, authenticated, anon;
+REVOKE INSERT, UPDATE, DELETE ON surebet_opportunities FROM PUBLIC, authenticated, anon;
+REVOKE INSERT, UPDATE, DELETE ON daemon_agents FROM PUBLIC, authenticated, anon;
+REVOKE INSERT, UPDATE, DELETE ON app_users FROM PUBLIC, authenticated, anon;
+
+

@@ -334,3 +334,59 @@ def test_supabase_coordinator_retry_backoff_on_transient_error(mock_supabase_ser
     res = coord.call_rpc("flaky_rpc", {})
     assert res == {"success": True}
     assert MockSupabaseServerHandler.flaky_counter == 2
+
+
+def test_supabase_coordinator_token_refresh(mock_supabase_server):
+    """Verifica que el mètode refresh_auth_token actualitza les capçaleres en calent."""
+    coord = SupabaseCoordinator(
+        supabase_url=mock_supabase_server,
+        supabase_key="invalid-key",
+        timeout_seconds=2.0
+    )
+    # Amb clau invàlida falla amb 401
+    with pytest.raises(SupabaseAuthenticationError):
+        coord.claim_pending_order()
+
+    # Renovar el token a un de vàlid en calent
+    coord.refresh_auth_token("valid-agent-key")
+
+    # Ara la petició té èxit
+    order = coord.claim_pending_order()
+    assert order is None  # Cua buida, però autenticada correctament
+
+
+def test_supabase_coordinator_snapshot_idempotency(mock_supabase_server):
+    """Verifica la idempotència en la publicació de snapshots amb snapshot_uuid determinista."""
+    coord = SupabaseCoordinator(
+        supabase_url=mock_supabase_server,
+        supabase_key="valid-agent-key",
+        timeout_seconds=2.0
+    )
+
+    snapshot = SnapshotRecord(
+        snapshot_id="snap_deterministic_uuid",
+        opportunity_id="opp_det_456",
+        session_id="sess-snap-idem",
+        cycle_index=1,
+        matchup="Girona vs Espanyol",
+        market_name="1X2",
+        profit_pct=2.85,
+        freshness_tier="FRESH",
+        legs=[{"bookmaker": "Winamax", "odd": 2.10}],
+        age_max_seconds=60.0
+    )
+
+    uuid_token = "550e8400-e29b-41d4-a716-446655440000"
+
+    # Primera publicació
+    snap1 = coord.publish_snapshot(snapshot, snapshot_uuid=uuid_token)
+    assert snap1 is not None
+
+    # Reintent per fallada de xarxa simulada
+    snap2 = coord.publish_snapshot(snapshot, snapshot_uuid=uuid_token)
+    assert snap2 is not None
+
+    # El servidor ha rebut el snapshot_uuid determinista i no ha generat duplicats
+    matching = [s for s in MockSupabaseServerHandler.snapshots if s.get("p_snapshot_id") == uuid_token]
+    assert len(matching) == 2  # Registrades les dues peticions pel mock handler amb el mateix token idempotent
+

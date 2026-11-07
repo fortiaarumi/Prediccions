@@ -215,3 +215,4 @@ END $$;
 
 -- Desfer canvis de prova (zero contaminació de la base de dades)
 ROLLBACK;
+

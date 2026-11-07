@@ -55,7 +55,8 @@ class SupabaseCoordinator:
         agent_name: str = "WindowsAgent",
         timeout_seconds: float = 10.0,
         max_retries: int = 3,
-        backoff_factor: float = 0.5
+        backoff_factor: float = 0.5,
+        token_provider: Optional[Any] = None
     ):
         self.supabase_url = supabase_url.rstrip("/")
         self.supabase_key = supabase_key
@@ -63,6 +64,7 @@ class SupabaseCoordinator:
         self.timeout_seconds = timeout_seconds
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor
+        self.token_provider = token_provider
 
         self._headers = {
             "apikey": self.supabase_key,
@@ -71,6 +73,12 @@ class SupabaseCoordinator:
             "Accept": "application/json",
             "User-Agent": f"Prediccions-Agent/{self.agent_name}"
         }
+
+    def refresh_auth_token(self, new_token: str) -> None:
+        """Actualitza el token d'autorització Bearer en calent sense reiniciar l'agent."""
+        self.supabase_key = new_token
+        self._headers["apikey"] = new_token
+        self._headers["Authorization"] = f"Bearer {new_token}"
 
     # -----------------------------------------------------------------
     # Mètodes de baix nivell amb gestió d'errors i reintents
@@ -200,10 +208,12 @@ class SupabaseCoordinator:
     def publish_snapshot(
         self,
         snapshot: SnapshotRecord,
-        opportunities: Optional[List[Dict[str, Any]]] = None
+        opportunities: Optional[List[Dict[str, Any]]] = None,
+        snapshot_uuid: Optional[str] = None
     ) -> Optional[str]:
         """
         Publica un snapshot de quotes fresques i les oportunitats accionables detectades.
+        Admet un snapshot_uuid determinista per garantir la idempotència de reintents.
         """
         payload = {
             "p_session_id": snapshot.session_id,
@@ -213,6 +223,9 @@ class SupabaseCoordinator:
             "p_payload": snapshot.to_dict(),
             "p_opportunities": opportunities or []
         }
+        if snapshot_uuid:
+            payload["p_snapshot_id"] = snapshot_uuid
+
         res = self.call_rpc("publish_session_snapshot", payload)
         if res:
             return str(res)
