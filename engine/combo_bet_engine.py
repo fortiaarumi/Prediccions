@@ -189,7 +189,24 @@ class ComboBetEngine:
         combined_prob_pct = round(p_dec * 100.0, 1)
 
         fair_odd = round(1.0 / p_dec, 2) if p_dec > 0.0 else 999.0
-        ev_pct = round((p_dec * combined_odd - 1.0) * 100.0, 1)
+
+        # Càlcul del valor esperat amb suport per a devolucions (push/void)
+        # Per a un conjunt de potes independents: E[Payout] = prod(P_win_i * Q_i + P_push_i * 1.0)
+        # Si P_push_i == 0 per a totes les potes, E[Payout] = prod(P_win_i * Q_i) = p_dec * combined_odd
+        expected_payout = 1.0
+        has_push = False
+        for leg in legs:
+            p_w = float(leg.get("model_prob", 0.0)) / 100.0
+            p_v = float(leg.get("push_prob", 0.0)) / 100.0
+            q_i = float(leg.get("bookie_odd", 1.0))
+            if p_v > 0.0:
+                has_push = True
+            expected_payout *= (p_w * q_i + p_v)
+
+        if has_push:
+            ev_pct = round((expected_payout - 1.0) * 100.0, 1)
+        else:
+            ev_pct = round((p_dec * combined_odd - 1.0) * 100.0, 1)
 
         booster_pct = self.calculate_winamax_booster(len(legs))
         boosted_odd = round(combined_odd * (1.0 + booster_pct / 100.0), 2) if booster_pct > 0 else combined_odd
@@ -203,10 +220,13 @@ class ComboBetEngine:
             "fair_odd": fair_odd,
             "ev_pct": ev_pct,
             "is_value": ev_pct > 0,
+            "has_push_legs": has_push,
             "booster_pct": booster_pct,
             "boosted_odd": boosted_odd,
             "winamax_url": self.winamax_base_url
         }
+
+    calculate_combo_stats = calculate_combo_summary
 
     def _get_leg_key(self, leg: Dict[str, Any]) -> str:
         """Identificador únic normalitzat d'una selecció exacta (matchup + categoria + mercat)."""
@@ -536,6 +556,22 @@ class ComboBetEngine:
         if self.has_logical_contradiction(legs):
             return False
 
+        # 4. Rebutjar seleccions amb quotes no verificades
+        for l in legs:
+            if l.get("provenance") == "UNVERIFIED_ODDS" or l.get("unverified") is True or l.get("is_verified") is False:
+                return False
+
+        # 5. Rebutjar mercats de córners EXACT o ambigús
+        for l in legs:
+            if l.get("category") == "Córners":
+                if l.get("market_type") == "EXACT" or "exact" in str(l.get("name", "") or l.get("selection_name", "")).lower():
+                    return False
+
+        # 6. Rebutjar mercats asiàtics amb devolució (push) a combinades fins a suport complet de liquidació void
+        for l in legs:
+            if l.get("market_format") == "ASIAN_2WAY" or (l.get("push_prob", 0) > 0):
+                return False
+
         return True
 
     def _get_combo_sig(self, legs: List[Dict[str, Any]]) -> frozenset:
@@ -580,15 +616,27 @@ class ComboBetEngine:
             for m in single_markets:
                 odd = m.get("bookie_odd")
                 prob = m.get("model_prob")
+                # Filtrar quotes no verificades
+                if m.get("provenance") == "UNVERIFIED_ODDS" or m.get("unverified") is True or m.get("is_verified") is False:
+                    continue
+                # Descartar mercats de córners EXACT o asiàtics amb devolució (push)
+                if m.get("category") == "Córners":
+                    if m.get("market_type") == "EXACT" or "exact" in str(m.get("name", "") or m.get("selection_name", "")).lower():
+                        continue
+                    if m.get("market_format") == "ASIAN_2WAY" or (m.get("push_prob", 0) > 0):
+                        continue
                 if odd and odd > 1.05 and prob and prob > 0:
                     item = dict(m)
                     item["matchup"] = matchup
                     item["competition_id"] = comp_id
                     item["date"] = date_str
                     item["url"] = match_url
+                    item["bookie"] = m.get("bookie") or ("Winamax" if m.get("bookie_odd_winamax") else ("Bet365" if m.get("bookie_odd_bet365") else "Winamax"))
+                    item["provenance"] = m.get("provenance") or ("WINAMAX" if item["bookie"] == "Winamax" else "BET365")
+                    item["is_verified"] = True
                     valid_markets.append(item)
 
-            # Només afegim el partit si té mercats reals publicats i verificats a Winamax
+            # Només afegim el partit si té mercats reals publicats i verificats
             if valid_markets:
                 match_markets.append({
                     "matchup": matchup,
@@ -807,7 +855,8 @@ class ComboBetEngine:
         global_counts: Optional[Dict[str, int]] = None,
         forbidden_exact: Optional[Set[str]] = None,
         max_usage: int = 2,
-        allow_duos: bool = False
+        allow_duos: bool = False,
+        require_positive_ev: bool = True
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Genera dues combinades segures (cuota 1.95 - 3.50) optimitzant la màxima probabilitat conjunta."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
@@ -849,6 +898,9 @@ class ComboBetEngine:
                     if 1.90 <= c_odd <= 3.60:
                         cats = {l.get("category") for l in leg_choice}
                         p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                        ev_comb = (p_dec * c_odd - 1.0) * 100.0
+                        if require_positive_ev and ev_comb <= 0.0:
+                            continue
                         non_win = cats - {"1X2", "Doble Oportunitat"}
                         div_bonus = 0.04 if non_win else 0.0
                         score = p_dec * (1.0 + div_bonus + league_bonus) - abs(c_odd - 2.25) * 0.01
@@ -856,6 +908,7 @@ class ComboBetEngine:
                             "legs": list(leg_choice),
                             "c_odd": c_odd,
                             "p_dec": p_dec,
+                            "ev_comb": ev_comb,
                             "score": score,
                             "matchups": {l["matchup"] for l in leg_choice},
                             "sig": self._get_combo_sig(leg_choice)
@@ -884,8 +937,12 @@ class ComboBetEngine:
                         c_odd = round(self.calculate_combined_odds(odds), 2)
                         if c_odd >= 1.70:
                             p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                            ev_comb = (p_dec * c_odd - 1.0) * 100.0
+                            if require_positive_ev and ev_comb <= 0.0:
+                                continue
                             candidates.append({
                                 "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
+                                "ev_comb": ev_comb,
                                 "score": p_dec - abs(c_odd - 2.2) * 0.01,
                                 "matchups": {l["matchup"] for l in leg_choice},
                                 "sig": self._get_combo_sig(leg_choice)
@@ -925,6 +982,10 @@ class ComboBetEngine:
 
         c1 = self.calculate_combo_summary(c1_cand.get("legs", []), f"{prefix} Segura #1 (Cuota 2-3)")
         c2 = self.calculate_combo_summary(c2_cand.get("legs", []), f"{prefix} Segura #2 (Cuota 2-3 Alternativa)")
+        if require_positive_ev and c1.get("ev_pct", 0) <= 0:
+            c1 = self.calculate_combo_summary([], f"{prefix} Segura #1 (Cuota 2-3)")
+        if require_positive_ev and c2.get("ev_pct", 0) <= 0:
+            c2 = self.calculate_combo_summary([], f"{prefix} Segura #2 (Cuota 2-3 Alternativa)")
         c1["category_code"] = "SAFE"
         c2["category_code"] = "SAFE"
         c1["recommended_stake"] = 25.0
@@ -938,7 +999,8 @@ class ComboBetEngine:
         global_counts: Optional[Dict[str, int]] = None,
         forbidden_exact: Optional[Set[str]] = None,
         max_usage: int = 2,
-        allow_duos: bool = False
+        allow_duos: bool = False,
+        require_positive_ev: bool = True
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Genera dues combinades semi-arriscades (cuota ~8.5 - 16.5) optimitzant probabilitat i varietat."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
@@ -980,6 +1042,9 @@ class ComboBetEngine:
                     if 8.50 <= c_odd <= 16.50:
                         cats = {l.get("category") for l in leg_choice}
                         p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                        ev_comb = (p_dec * c_odd - 1.0) * 100.0
+                        if require_positive_ev and ev_comb <= 0.0:
+                            continue
 
                         div_bonus = 0.0
                         if "Córners" in cats: div_bonus += 0.05
@@ -993,6 +1058,7 @@ class ComboBetEngine:
                             "legs": list(leg_choice),
                             "c_odd": c_odd,
                             "p_dec": p_dec,
+                            "ev_comb": ev_comb,
                             "score": score,
                             "matchups": {l["matchup"] for l in leg_choice},
                             "sig": self._get_combo_sig(leg_choice)
@@ -1021,8 +1087,12 @@ class ComboBetEngine:
                         c_odd = round(self.calculate_combined_odds(odds), 2)
                         if c_odd >= 6.0:
                             p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                            ev_comb = (p_dec * c_odd - 1.0) * 100.0
+                            if require_positive_ev and ev_comb <= 0.0:
+                                continue
                             candidates.append({
                                 "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
+                                "ev_comb": ev_comb,
                                 "score": p_dec - abs(c_odd - 10.0) * 0.003,
                                 "matchups": {l["matchup"] for l in leg_choice},
                                 "sig": self._get_combo_sig(leg_choice)
@@ -1037,7 +1107,7 @@ class ComboBetEngine:
         candidates.sort(key=lambda x: x["score"], reverse=True)
         if candidates:
             c1_cand = candidates[0]
-        else:
+        elif not require_positive_ev:
             c1_legs = []
             for p in pools:
                 for m in p["markets"]:
@@ -1051,6 +1121,8 @@ class ComboBetEngine:
                 c1_cand = {"legs": c1_legs, "matchups": {l["matchup"] for l in c1_legs}, "sig": self._get_combo_sig(c1_legs), "score": 0.0}
             else:
                 c1_cand = {"legs": [], "matchups": set(), "sig": frozenset(), "score": 0.0}
+        else:
+            c1_cand = {"legs": [], "matchups": set(), "sig": frozenset(), "score": 0.0}
 
         temp_counts = dict(global_counts)
         for l in c1_cand.get("legs", []):
@@ -1075,6 +1147,10 @@ class ComboBetEngine:
 
         c1 = self.calculate_combo_summary(c1_cand.get("legs", []), f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)")
         c2 = self.calculate_combo_summary(c2_cand.get("legs", []), f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
+        if require_positive_ev and c1.get("ev_pct", 0) <= 0:
+            c1 = self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #1 (Cuota ~10.0)")
+        if require_positive_ev and c2.get("ev_pct", 0) <= 0:
+            c2 = self.calculate_combo_summary([], f"{prefix} Semi-Arriscada #2 (Cuota ~10.0 Alternativa)")
         c1["category_code"] = "SEMI"
         c2["category_code"] = "SEMI"
         c1["recommended_stake"] = 10.0
@@ -1088,7 +1164,8 @@ class ComboBetEngine:
         global_counts: Optional[Dict[str, int]] = None,
         forbidden_exact: Optional[Set[str]] = None,
         max_usage: int = 2,
-        allow_duos: bool = False
+        allow_duos: bool = False,
+        require_positive_ev: bool = True
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Genera dues combinades arriscades (cuota >= 28.0) multimerkat amb activació de Combo Booster Winamax."""
         prefix = "Mega-Combinada Multi-Lliga" if is_multi else "Combinada"
@@ -1130,6 +1207,9 @@ class ComboBetEngine:
                     if 28.0 <= c_odd <= 65.0:
                         cats = {l.get("category") for l in leg_choice}
                         p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                        ev_comb = (p_dec * c_odd - 1.0) * 100.0
+                        if require_positive_ev and ev_comb <= 0.0:
+                            continue
 
                         div_bonus = 0.0
                         if "Córners" in cats: div_bonus += 0.08
@@ -1143,6 +1223,7 @@ class ComboBetEngine:
                             "legs": list(leg_choice),
                             "c_odd": c_odd,
                             "p_dec": p_dec,
+                            "ev_comb": ev_comb,
                             "score": score,
                             "matchups": {l["matchup"] for l in leg_choice},
                             "sig": self._get_combo_sig(leg_choice)
@@ -1172,8 +1253,12 @@ class ComboBetEngine:
                         c_odd = round(self.calculate_combined_odds(odds), 2)
                         if c_odd >= 28.0:
                             p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                            ev_comb = (p_dec * c_odd - 1.0) * 100.0
+                            if require_positive_ev and ev_comb <= 0.0:
+                                continue
                             candidates.append({
                                 "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
+                                "ev_comb": ev_comb,
                                 "score": p_dec, "matchups": {l["matchup"] for l in leg_choice},
                                 "sig": self._get_combo_sig(leg_choice)
                             })
@@ -1202,8 +1287,12 @@ class ComboBetEngine:
                         c_odd = round(self.calculate_combined_odds(odds), 2)
                         if c_odd >= 22.0:
                             p_dec = self.calculate_combined_probability([l["model_prob"] for l in leg_choice])
+                            ev_comb = (p_dec * c_odd - 1.0) * 100.0
+                            if require_positive_ev and ev_comb <= 0.0:
+                                continue
                             candidates.append({
                                 "legs": list(leg_choice), "c_odd": c_odd, "p_dec": p_dec,
+                                "ev_comb": ev_comb,
                                 "score": p_dec, "matchups": {l["matchup"] for l in leg_choice},
                                 "sig": self._get_combo_sig(leg_choice)
                             })
@@ -1217,7 +1306,7 @@ class ComboBetEngine:
         candidates.sort(key=lambda x: x["score"], reverse=True)
         if candidates:
             c1_cand = candidates[0]
-        else:
+        elif not require_positive_ev:
             c1_legs = []
             for p in pools:
                 for m in p["markets"]:
@@ -1231,6 +1320,8 @@ class ComboBetEngine:
                 c1_cand = {"legs": c1_legs, "matchups": {l["matchup"] for l in c1_legs}, "sig": self._get_combo_sig(c1_legs), "score": 0.0}
             else:
                 c1_cand = {"legs": [], "matchups": set(), "sig": frozenset(), "score": 0.0}
+        else:
+            c1_cand = {"legs": [], "matchups": set(), "sig": frozenset(), "score": 0.0}
 
         temp_counts = dict(global_counts)
         for l in c1_cand.get("legs", []):
@@ -1255,6 +1346,10 @@ class ComboBetEngine:
 
         c1 = self.calculate_combo_summary(c1_cand.get("legs", []), f"{prefix} Arriscada #1 (Cuota >= 30.0)")
         c2 = self.calculate_combo_summary(c2_cand.get("legs", []), f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
+        if require_positive_ev and c1.get("ev_pct", 0) <= 0:
+            c1 = self.calculate_combo_summary([], f"{prefix} Arriscada #1 (Cuota >= 30.0)")
+        if require_positive_ev and c2.get("ev_pct", 0) <= 0:
+            c2 = self.calculate_combo_summary([], f"{prefix} Arriscada #2 (Cuota >= 30.0 Alternativa)")
         c1["category_code"] = "RISKY"
         c2["category_code"] = "RISKY"
         c1["recommended_stake"] = 5.0
@@ -1337,6 +1432,10 @@ class ComboBetEngine:
         for sm in existing_single:
             odd = sm.get("bookie_odd")
             prob = sm.get("model_prob")
+            if sm.get("provenance") == "UNVERIFIED_ODDS" or sm.get("unverified") is True or sm.get("is_verified") is False:
+                continue
+            if sm.get("category") == "Córners" and (sm.get("market_type") == "EXACT" or "exact" in str(sm.get("name", "") or sm.get("selection_name", "")).lower()):
+                continue
             if odd and odd > 1.05 and prob and prob > 0:
                 item = dict(sm)
                 item["matchup"] = matchup
@@ -1345,6 +1444,9 @@ class ComboBetEngine:
                 item["url"] = url
                 item["home_team_id"] = h_id
                 item["away_team_id"] = a_id
+                item["bookie"] = sm.get("bookie") or ("Winamax" if sm.get("bookie_odd_winamax") else ("Bet365" if sm.get("bookie_odd_bet365") else "Winamax"))
+                item["provenance"] = sm.get("provenance") or ("WINAMAX" if item["bookie"] == "Winamax" else "BET365")
+                item["is_verified"] = True
                 k = self._get_leg_key(item)
                 if k not in seen_keys:
                     seen_keys.add(k)
@@ -1504,13 +1606,13 @@ class ComboBetEngine:
             "risky_combo": empty_risky
         }
 
-    def generate_full_combos_suite(self, matches: List[Dict[str, Any]], is_multi: bool = False, allow_same_match_duo: bool = False) -> Dict[str, Any]:
+    def generate_full_combos_suite(self, matches: List[Dict[str, Any]], is_multi: bool = False, allow_same_match_duo: bool = False, require_positive_ev: bool = True) -> Dict[str, Any]:
         """
         Genera el paquet de combinades ordinàries per a una jornada o conjunt de partits:
         - 2 Combinades Segures (cuota 1.95 - 3.50) totalment diferents
         - 2 Combinades Semi-Arriscades (cuota ~8.0 - 15.0) totalment diferents
         - 2 Combinades Arriscades (cuota >= 28.0) totalment diferents
-        Exigeix estrictament que cada selecció provingui d'un partit diferent.
+        Exigeix estrictament que cada selecció provingui d'un partit diferent i EV estimat estrictament positiu.
         """
         if not matches or len(matches) < 2:
             return self.generate_single_match_combos_suite(matches[0] if matches else {})
@@ -1520,16 +1622,16 @@ class ComboBetEngine:
             return self.generate_single_match_combos_suite(matches[0])
         elif len(mms) in [2, 3]:
             matches_for_few = [m for m in matches if any(m.get("matchup") == mm.get("matchup") for mm in mms)]
-            return self.generate_few_matches_combos_suite(matches_for_few or matches)
+            return self.generate_few_matches_combos_suite(matches_for_few or matches, require_positive_ev=require_positive_ev)
 
         global_counts = Counter()
 
         # 1. Combinades Segures (singles estrictament)
-        safe_1, safe_2 = self.find_pair_safe(mms, is_multi=is_multi, global_counts=global_counts, max_usage=2, allow_duos=False)
+        safe_1, safe_2 = self.find_pair_safe(mms, is_multi=is_multi, global_counts=global_counts, max_usage=2, allow_duos=False, require_positive_ev=require_positive_ev)
         safe_keys = {self._get_leg_key(l) for l in safe_1.get("legs", []) + safe_2.get("legs", [])}
 
         # 2. Combinades Semi-Arriscades (singles estrictament)
-        semi_1, semi_2 = self.find_pair_semi(mms, is_multi=is_multi, global_counts=global_counts, max_usage=2, allow_duos=False)
+        semi_1, semi_2 = self.find_pair_semi(mms, is_multi=is_multi, global_counts=global_counts, max_usage=2, allow_duos=False, require_positive_ev=require_positive_ev)
 
         # 3. Combinades Arriscades (singles estrictament)
         risky_1, risky_2 = self.find_pair_risky(
@@ -1538,12 +1640,13 @@ class ComboBetEngine:
             global_counts=global_counts,
             forbidden_exact=safe_keys,
             max_usage=2,
-            allow_duos=False
+            allow_duos=False,
+            require_positive_ev=require_positive_ev
         )
 
-        safe_list = [c for c in [safe_1, safe_2] if c.get("legs")]
-        semi_list = [c for c in [semi_1, semi_2] if c.get("legs")]
-        risky_list = [c for c in [risky_1, risky_2] if c.get("legs")]
+        safe_list = [c for c in [safe_1, safe_2] if c.get("legs") and (not require_positive_ev or c.get("ev_pct", 0) > 0)]
+        semi_list = [c for c in [semi_1, semi_2] if c.get("legs") and (not require_positive_ev or c.get("ev_pct", 0) > 0)]
+        risky_list = [c for c in [risky_1, risky_2] if c.get("legs") and (not require_positive_ev or c.get("ev_pct", 0) > 0)]
 
         return {
             "safe": safe_list,
@@ -1553,12 +1656,13 @@ class ComboBetEngine:
             "risky_combo": risky_list[0] if risky_list else risky_1
         }
 
-    def generate_few_matches_combos_suite(self, day_matches: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def generate_few_matches_combos_suite(self, day_matches: List[Dict[str, Any]], require_positive_ev: bool = True) -> Dict[str, Any]:
         """
         Genera combinades per a dies amb 2 o 3 partits:
         - Exigeix estrictament que cada selecció provingui d'un partit diferent.
         - Si no es poden assolir les quotes objectiu sense inventar seleccions dependents,
           és preferible generar menys combinades o cap combinada abans d'inventar-ne.
+        - Exigeix EV estimat estrictament positiu per defecte.
         """
         if not day_matches or len(day_matches) < 2:
             return self.generate_single_match_combos_suite(day_matches[0] if day_matches else {})
@@ -1606,11 +1710,15 @@ class ComboBetEngine:
                         c_odd = round(self.calculate_combined_odds(odds), 2)
                         if target_min_odd <= c_odd <= target_max_odd:
                             p_dec = self.calculate_combined_probability([l["model_prob"] for l in choice_legs])
+                            ev_comb = (p_dec * c_odd - 1.0) * 100.0
+                            if require_positive_ev and ev_comb <= 0.0:
+                                continue
                             score = p_dec - abs(c_odd - (target_min_odd + target_max_odd) / 2.0) * 0.001
                             candidates.append({
                                 "legs": choice_legs,
                                 "c_odd": c_odd,
                                 "p_dec": p_dec,
+                                "ev_comb": ev_comb,
                                 "score": score,
                                 "sig": self._get_combo_sig(choice_legs)
                             })
@@ -1650,12 +1758,14 @@ class ComboBetEngine:
             s1 = self.calculate_combo_summary(c1.get("legs", []), profile_name_1)
             s1["category_code"] = cat_code
             s1["recommended_stake"] = stake
-            res.append(s1)
+            if not require_positive_ev or s1.get("ev_pct", 0) > 0:
+                res.append(s1)
             if c2:
                 s2 = self.calculate_combo_summary(c2.get("legs", []), profile_name_2)
                 s2["category_code"] = cat_code
                 s2["recommended_stake"] = stake
-                res.append(s2)
+                if not require_positive_ev or s2.get("ev_pct", 0) > 0:
+                    res.append(s2)
             return res
 
         prefix = "Mega-Combinada Multi-Lliga" if len(set(m.get("competition_id") for m in day_matches if m.get("competition_id"))) > 1 else "Combinada"
