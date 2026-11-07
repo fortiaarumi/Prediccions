@@ -24,6 +24,112 @@ from typing import Dict, Any, Optional
 
 CACHE_DIR = Path(__file__).parent.parent / "data"
 
+DEFAULT_MAX_ODDS_AGE_HOURS: float = 2.0
+DEFAULT_MAX_FUTURE_SKEW_SECONDS: float = 300.0  # 5 minuts de tolerància per desajust de rellotge
+
+def parse_datetime_utc(dt_val: Any) -> Optional[datetime]:
+    """Parseja de forma robusta un timestamp a datetime amb timezone UTC."""
+    if not dt_val:
+        return None
+    if isinstance(dt_val, datetime):
+        if dt_val.tzinfo is None:
+            return dt_val.replace(tzinfo=timezone.utc)
+        return dt_val.astimezone(timezone.utc)
+    if isinstance(dt_val, (int, float)):
+        try:
+            return datetime.fromtimestamp(dt_val, tz=timezone.utc)
+        except Exception:
+            return None
+    if isinstance(dt_val, str):
+        s = dt_val.strip()
+        if not s:
+            return None
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        try:
+            dt = datetime.fromisoformat(s)
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt.astimezone(timezone.utc)
+        except Exception:
+            pass
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%d.%m.%Y %H:%M", "%Y-%m-%dT%H:%M:%S"):
+            try:
+                dt = datetime.strptime(s, fmt)
+                return dt.replace(tzinfo=timezone.utc)
+            except Exception:
+                pass
+    return None
+
+def evaluate_freshness(
+    captured_at: Any,
+    now: Optional[datetime] = None,
+    max_age_hours: Optional[float] = None,
+    max_future_skew_seconds: float = DEFAULT_MAX_FUTURE_SKEW_SECONDS
+) -> Dict[str, Any]:
+    """
+    Avalua la frescor d'una quota Bet365 segons la política oficial:
+    - FRESH: Quota vàlida i recent (age <= max_age_hours).
+    - STALE: Quota amb timestamp vàlid però que supera el llindar d'antiguitat.
+    - UNKNOWN: Quota sense timestamp fiable, mal format o amb timestamp futur incoherent.
+
+    Tant STALE com UNKNOWN tenen is_stale = True i han de ser exclosos de les value bets públiques.
+    """
+    now_utc = now if (now is not None and now.tzinfo is not None) else (now.replace(tzinfo=timezone.utc) if now else datetime.now(timezone.utc))
+    max_h = float(max_age_hours if max_age_hours is not None else float(os.environ.get("BET365_MAX_ODDS_AGE_HOURS", DEFAULT_MAX_ODDS_AGE_HOURS)))
+    max_age_seconds = max_h * 3600.0
+
+    if not captured_at or (isinstance(captured_at, str) and not captured_at.strip()):
+        return {
+            "freshness": "UNKNOWN",
+            "is_stale": True,
+            "captured_at": None,
+            "age_seconds": None,
+            "rejection_reason": "missing_timestamp"
+        }
+
+    dt = parse_datetime_utc(captured_at)
+    if not dt:
+        return {
+            "freshness": "UNKNOWN",
+            "is_stale": True,
+            "captured_at": str(captured_at),
+            "age_seconds": None,
+            "rejection_reason": "malformed_timestamp"
+        }
+
+    age_s = (now_utc - dt).total_seconds()
+
+    if age_s < -max_future_skew_seconds:
+        # Desajust cap al futur per sobre de la tolerància
+        return {
+            "freshness": "UNKNOWN",
+            "is_stale": True,
+            "captured_at": dt.isoformat(),
+            "age_seconds": round(age_s, 2),
+            "rejection_reason": "future_clock_skew"
+        }
+
+    if age_s < 0:
+        age_s = 0.0
+
+    if age_s > max_age_seconds:
+        return {
+            "freshness": "STALE",
+            "is_stale": True,
+            "captured_at": dt.isoformat(),
+            "age_seconds": round(age_s, 2),
+            "rejection_reason": "exceeded_max_age"
+        }
+
+    return {
+        "freshness": "FRESH",
+        "is_stale": False,
+        "captured_at": dt.isoformat(),
+        "age_seconds": round(age_s, 2),
+        "rejection_reason": "ok"
+    }
+
 BET365_TOURNAMENTS = {
     "LALIGA": {
         "name": "España - LaLiga EA Sports",
@@ -63,12 +169,159 @@ BET365_TOURNAMENTS = {
 }
 
 class Bet365Scraper:
-    def __init__(self, headless: bool = True):
+    def __init__(
+        self,
+        headless: bool = True,
+        cache_dir: Optional[Path] = None,
+        cache_file: Optional[Path] = None,
+        max_odds_age_hours: Optional[float] = None,
+        offline: bool = False,
+        force_fresh: bool = False
+    ):
         self.headless = headless
-        self._cache_file = CACHE_DIR / "bet365_odds_cache.json"
+        if cache_file:
+            self._cache_file = Path(cache_file)
+        elif cache_dir:
+            self._cache_file = Path(cache_dir) / "bet365_odds_cache.json"
+        else:
+            self._cache_file = CACHE_DIR / "bet365_odds_cache.json"
+        self._cache_file.parent.mkdir(parents=True, exist_ok=True)
+        self.max_odds_age_hours = float(
+            max_odds_age_hours if max_odds_age_hours is not None
+            else float(os.environ.get("BET365_MAX_ODDS_AGE_HOURS", DEFAULT_MAX_ODDS_AGE_HOURS))
+        )
+        self.offline = offline or bool(os.environ.get("PREDDICIONS_TEST_OFFLINE"))
+        self.force_fresh = force_fresh
         self._cache: Dict[str, Any] = {}
-        CACHE_DIR.mkdir(parents=True, exist_ok=True)
         self._load_cache()
+
+    def get_historical_cache_entry(self, cache_key: str) -> Optional[Dict[str, Any]]:
+        """Retorna l'entrada històrica crua emmagatzemada a la memòria cau sense aplicar exclusions."""
+        return copy.deepcopy(self._cache.get(cache_key))
+
+    def save_cache_entry(self, cache_key: str, entry: Dict[str, Any], captured_at: Optional[str] = None) -> None:
+        """Desa una entrada a la memòria cau amb l'embolcall de metadades UTC oficials."""
+        now_utc = captured_at or entry.get("captured_at") or datetime.now(timezone.utc).isoformat()
+        existing = self._cache.get(cache_key)
+        if existing and "historical_odds" in existing and "historical_odds" not in entry:
+            entry["historical_odds"] = copy.deepcopy(existing["historical_odds"])
+        entry["captured_at"] = now_utc
+        entry["polled_at"] = entry.get("polled_at") or now_utc
+        entry["freshness"] = "FRESH"
+        entry["is_stale"] = False
+        entry["provenance"] = entry.get("provenance", "BET365")
+        if "provider_updated_at" not in entry:
+            entry["provider_updated_at"] = None
+        self._cache[cache_key] = entry
+        self._save_cache()
+
+    def update_match_markets(
+        self,
+        cache_key: str,
+        updated_markets: Dict[str, Any],
+        captured_at: Optional[str] = None,
+        market_metadata: Optional[Dict[str, Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
+        """
+        Actualitza exclusivament els mercats indicats per a un partit a la memòria cau,
+        garantint que els mercats no actualitzats NO reben un timestamp nou artificialment
+        i conserven la seva pròpia marca temporal d'origen.
+        """
+        entry = self._cache.get(cache_key)
+        now_utc = captured_at or (entry.get("captured_at") if entry else None) or datetime.now(timezone.utc).isoformat()
+        if not entry:
+            entry = {
+                "source": "Bet365 Espanya",
+                "bookmaker": "BET365",
+                "matched": True,
+                "captured_at": now_utc,
+                "polled_at": now_utc,
+                "is_stale": False,
+                "provenance": "BET365",
+                "market_status": {},
+                "1X2": {},
+                "double_chance": {},
+                "over_under_2_5": {},
+                "btts": {},
+                "corners": {},
+                "cards": {},
+            }
+            self._cache[cache_key] = entry
+
+        m_stat = entry.setdefault("market_status", {})
+
+        # Actualitzar NOMÉS els mercats indicats a updated_markets
+        for m_name, m_odds in updated_markets.items():
+            prev_odds = entry.get(m_name)
+            meta = (market_metadata or {}).get(m_name, {})
+            is_composite = (
+                m_name in ("corners", "cards") or
+                m_name.startswith("corners_") or
+                m_name.startswith("cards_") or
+                m_name in ("home_corners", "away_corners", "corners_1st_half", "corners_2nd_half")
+            )
+
+            if isinstance(m_odds, dict) and isinstance(prev_odds, dict) and is_composite:
+                # Actualització parcial de línies/seleccions dins del mateix mercat compost
+                existing_selections = m_stat.setdefault(m_name, {}).setdefault("selections", {})
+                prev_market_ts = m_stat.get(m_name, {}).get("captured_at", now_utc)
+
+                # Inicialitzar seleccions prèvies si no tenien metadades individuals
+                for p_sel in prev_odds:
+                    if p_sel not in existing_selections:
+                        existing_selections[p_sel] = {
+                            "valid": True,
+                            "is_stale": False,
+                            "captured_at": prev_market_ts,
+                            "polled_at": prev_market_ts,
+                            "ts": "",
+                            "provider_updated_at": None,
+                        }
+
+                # Combinar mercat actiu i arxivar seleccions substituïdes a historical_odds
+                merged_odds = copy.deepcopy(prev_odds)
+                for s_key, s_val in m_odds.items():
+                    if s_key in merged_odds:
+                        entry.setdefault("historical_odds", {}).setdefault(m_name, {})[s_key] = copy.deepcopy(merged_odds[s_key])
+                    merged_odds[s_key] = s_val
+                    existing_selections[s_key] = {
+                        "valid": bool(s_val),
+                        "is_stale": False,
+                        "captured_at": now_utc,
+                        "polled_at": meta.get("polled_at", now_utc),
+                        "ts": meta.get("ts", ""),
+                        "provider_updated_at": meta.get("provider_updated_at", None),
+                    }
+                entry[m_name] = merged_odds
+                m_stat[m_name] = {
+                    "valid": bool(merged_odds),
+                    "stale": False,
+                    "suspended": False,
+                    "rejection_reason": "ok" if merged_odds else "absent",
+                    "captured_at": now_utc,
+                    "polled_at": meta.get("polled_at", now_utc),
+                    "ts": meta.get("ts", ""),
+                    "provider_updated_at": meta.get("provider_updated_at", None),
+                    "selections": existing_selections,
+                }
+            else:
+                if prev_odds:
+                    entry.setdefault("historical_odds", {})[m_name] = copy.deepcopy(prev_odds)
+                entry[m_name] = m_odds
+                m_stat[m_name] = {
+                    "valid": bool(m_odds),
+                    "stale": False,
+                    "suspended": False,
+                    "rejection_reason": "ok" if m_odds else "absent",
+                    "captured_at": now_utc,
+                    "polled_at": meta.get("polled_at", now_utc),
+                    "ts": meta.get("ts", ""),
+                    "provider_updated_at": meta.get("provider_updated_at", None),
+                }
+
+        entry["captured_at"] = now_utc
+        self._save_cache()
+        return entry
 
     def _load_cache(self):
         if self._cache_file.exists():
@@ -93,6 +346,7 @@ class Bet365Scraper:
         match_pred: Optional[Dict[str, Any]] = None,
         winamax_odds: Optional[Dict[str, Any]] = None,
         match_date_time: Optional[str] = None,
+        now: Optional[datetime] = None,
     ) -> Dict[str, Any]:
         """
         Descobreix i extreu les quotes reals de Bet365 per al partit indicat.
@@ -114,6 +368,13 @@ class Bet365Scraper:
             "match_id": None,
             "matched_title": f"{home_team} vs {away_team}",
             "matched": False,
+            "captured_at": None,
+            "freshness": "UNKNOWN",
+            "is_stale": True,
+            "freshness_reason": "not_processed",
+            "age_seconds": None,
+            "provider_updated_at": None,
+            "provenance": "BET365",
             "1X2": {},
             "double_chance": {},
             "goals": {},
@@ -140,10 +401,16 @@ class Bet365Scraper:
                                 "X": float(b_manual.get("X")),
                                 "2": float(b_manual.get("2"))
                             }
+                            now_utc_str = datetime.now(timezone.utc).isoformat()
                             odds_data["matched"] = True
                             odds_data["is_manual_override"] = True
                             odds_data["source"] = f"Override Manual Bet365 ({comp_id})"
                             odds_data["provenance"] = "MANUAL_OVERRIDE"
+                            odds_data["captured_at"] = now_utc_str
+                            odds_data["polled_at"] = now_utc_str
+                            odds_data["freshness"] = "FRESH"
+                            odds_data["is_stale"] = False
+                            odds_data["freshness_reason"] = "manual_override"
                             return odds_data
             except Exception:
                 pass
@@ -167,7 +434,7 @@ class Bet365Scraper:
         # 2. ALTERNATIVA / FALLBACK: Memòria cau pròpia de Bet365 revalidant cadascun dels mercats individualment
         if cache_key in self._cache:
             cached_entry = self._cache[cache_key]
-            revalidated = self.revalidate_cached_entry(cached_entry)
+            revalidated = self.revalidate_cached_entry(cached_entry, now=now)
             if revalidated and revalidated.get("matched"):
                 return revalidated
 
@@ -210,7 +477,7 @@ class Bet365Scraper:
         odds_data["access_diagnostics"] = "Bloqueig per Cloudflare Enterprise Challenge a nivell de xarxa per accés directe a bet365.es. Requereix ODDS_DATA_API_TOKEN per a dades prematch oficials (https://api.odds-data-api.com/)."
         return odds_data
 
-    def revalidate_cached_entry(self, cached_entry: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def revalidate_cached_entry(self, cached_entry: Dict[str, Any], now: Optional[datetime] = None) -> Optional[Dict[str, Any]]:
         """
         Revalida cadascun dels mercats individualment abans de retornar una entrada de memòria cau.
         - Elimina qualsevol mercat sense confirmació positiva i suficient (marques polled_at / ts de la font).
@@ -225,13 +492,41 @@ class Bet365Scraper:
         if cached_entry.get("is_derived_from_winamax"):
             return None
 
-        from scraper.moviodds_client import parse_datetime_utc, MAX_ODDS_AGE_SECONDS
-        now_utc = datetime.now(timezone.utc)
-
+        now_utc = now if (now is not None and now.tzinfo is not None) else (now.replace(tzinfo=timezone.utc) if now else datetime.now(timezone.utc))
         entry = copy.deepcopy(cached_entry)
         m_stat = entry.setdefault("market_status", {})
 
-        markets = ["1X2", "double_chance", "over_under_2_5", "btts", "corners", "cards"]
+        # Resolució de frescor global Bet365
+        if self.force_fresh:
+            freshness_info = {
+                "freshness": "FRESH",
+                "is_stale": False,
+                "captured_at": entry.get("captured_at") or entry.get("polled_at") or now_utc.isoformat(),
+                "age_seconds": 0.0,
+                "rejection_reason": "ok"
+            }
+        else:
+            cand_ts = entry.get("captured_at") or entry.get("polled_at") or entry.get("ts")
+            freshness_info = evaluate_freshness(cand_ts, now=now_utc, max_age_hours=self.max_odds_age_hours)
+
+        entry["captured_at"] = freshness_info.get("captured_at")
+        entry["polled_at"] = freshness_info.get("captured_at")
+        entry["freshness"] = freshness_info.get("freshness")
+        entry["is_stale"] = freshness_info.get("is_stale")
+        entry["freshness_reason"] = freshness_info.get("rejection_reason")
+        entry["age_seconds"] = freshness_info.get("age_seconds")
+        entry["provenance"] = entry.get("provenance", "BET365")
+
+        base_markets = ["1X2", "double_chance", "over_under_2_5", "btts", "corners", "cards"]
+        ignored_meta_keys = {
+            "source", "bookmaker", "url", "tournament_url", "match_id", "matched_title",
+            "matched", "captured_at", "polled_at", "freshness", "is_stale", "freshness_reason",
+            "age_seconds", "provider_updated_at", "provenance", "status", "error", "access_status",
+            "access_diagnostics", "historical_odds", "market_status", "is_manual_override",
+            "kickoff_utc", "match_start", "start_time", "is_derived_from_winamax"
+        }
+        extra_markets = [k for k in list(entry.keys()) + list(m_stat.keys()) if k not in ignored_meta_keys and not k.startswith("_")]
+        markets = list(dict.fromkeys(base_markets + extra_markets))
 
         for m in markets:
             # 1. Comprovació de plantilles sintètiques conegudes
@@ -262,6 +557,7 @@ class Bet365Scraper:
             # Si està marcat com a invalid, stale o suspès
             if st.get("valid") is not True or st.get("stale") is True or st.get("suspended") is True:
                 reason = "suspended" if st.get("suspended") else ("stale" if st.get("stale") else st.get("rejection_reason", "unverified"))
+                entry.setdefault("historical_odds", {})[m] = copy.deepcopy(m_val)
                 entry[m] = {}
                 m_stat[m] = {
                     "valid": False,
@@ -270,11 +566,64 @@ class Bet365Scraper:
                     "rejection_reason": reason,
                     "polled_at": st.get("polled_at"),
                     "ts": st.get("ts"),
+                    "captured_at": st.get("captured_at"),
+                    "historical_odds": copy.deepcopy(m_val),
                 }
                 continue
 
             # 4. Validació de frescor temporal individual del mercat
-            m_time = st.get("polled_at") or st.get("ts")
+            m_time = st.get("captured_at") or st.get("polled_at") or st.get("ts")
+            selections_stat = st.get("selections")
+            is_composite = (
+                m in ("corners", "cards") or
+                m.startswith("corners_") or
+                m.startswith("cards_") or
+                m in ("home_corners", "away_corners", "corners_1st_half", "corners_2nd_half")
+            )
+            if isinstance(m_val, dict) and isinstance(selections_stat, dict) and len(selections_stat) > 0 and is_composite:
+                active_selections = {}
+                max_s = self.max_odds_age_hours * 3600.0
+                for sel_name, sel_odd in list(m_val.items()):
+                    sel_meta = selections_stat.get(sel_name, {})
+                    sel_time = sel_meta.get("captured_at") or sel_meta.get("polled_at") or sel_meta.get("ts") or m_time
+                    sel_dt = parse_datetime_utc(sel_time)
+                    if not sel_dt:
+                        entry.setdefault("historical_odds", {}).setdefault(m, {})[sel_name] = sel_odd
+                        sel_meta["valid"] = False
+                        sel_meta["is_stale"] = True
+                        sel_meta["rejection_reason"] = "unverified"
+                        continue
+
+                    sel_age = (now_utc - sel_dt).total_seconds()
+                    if sel_age < -DEFAULT_MAX_FUTURE_SKEW_SECONDS or sel_age > max_s:
+                        entry.setdefault("historical_odds", {}).setdefault(m, {})[sel_name] = sel_odd
+                        sel_meta["valid"] = False
+                        sel_meta["is_stale"] = True
+                        sel_meta["rejection_reason"] = "future_clock_skew" if sel_age < -DEFAULT_MAX_FUTURE_SKEW_SECONDS else "stale"
+                    else:
+                        active_selections[sel_name] = sel_odd
+                        sel_meta["valid"] = True
+                        sel_meta["is_stale"] = False
+                        sel_meta["rejection_reason"] = "ok"
+
+                entry[m] = active_selections
+                if not active_selections:
+                    m_stat[m] = {
+                        "valid": False,
+                        "stale": True,
+                        "suspended": False,
+                        "rejection_reason": "stale",
+                        "polled_at": st.get("polled_at"),
+                        "ts": st.get("ts"),
+                        "captured_at": st.get("captured_at"),
+                        "selections": selections_stat,
+                        "historical_odds": copy.deepcopy(m_val),
+                    }
+                else:
+                    m_stat[m]["valid"] = True
+                    m_stat[m]["stale"] = False
+                    m_stat[m]["selections"] = selections_stat
+                continue
             if not m_time:
                 entry[m] = {}
                 m_stat[m] = {
@@ -298,17 +647,34 @@ class Bet365Scraper:
                 }
                 continue
 
+            if self.force_fresh:
+                m_stat[m] = {
+                    "valid": True,
+                    "stale": False,
+                    "suspended": False,
+                    "rejection_reason": "ok",
+                    "polled_at": st.get("polled_at") or entry.get("captured_at"),
+                    "ts": st.get("ts"),
+                }
+                continue
+
+            max_s = self.max_odds_age_hours * 3600.0
             age_s = (now_utc - s_dt).total_seconds()
-            if age_s < 0 or age_s > MAX_ODDS_AGE_SECONDS:
-                # Mercat caducat/obsolet individualment
+            if age_s < -DEFAULT_MAX_FUTURE_SKEW_SECONDS or age_s > max_s:
+                # Mercat caducat/obsolet individualment o amb clock skew:
+                # La quota històrica i el timestamp es conserven a nivell d'auditoria,
+                # però s'esborren del diccionari actiu per excloure'l d'all_value_bets
+                entry.setdefault("historical_odds", {})[m] = copy.deepcopy(m_val)
                 entry[m] = {}
                 m_stat[m] = {
                     "valid": False,
                     "stale": True,
                     "suspended": False,
-                    "rejection_reason": "stale",
+                    "rejection_reason": "future_clock_skew" if age_s < -DEFAULT_MAX_FUTURE_SKEW_SECONDS else "stale",
                     "polled_at": st.get("polled_at"),
                     "ts": st.get("ts"),
+                    "captured_at": st.get("captured_at"),
+                    "historical_odds": copy.deepcopy(m_val),
                 }
                 continue
 
@@ -330,13 +696,16 @@ class Bet365Scraper:
             and not m_stat.get("1X2", {}).get("stale")
         )
 
-        if not is_1x2_valid:
+        if not is_1x2_valid or entry.get("freshness") in ("STALE", "UNKNOWN"):
             entry["matched"] = False
-            entry["is_stale"] = bool(m_stat.get("1X2", {}).get("stale"))
+            entry["is_stale"] = True
+            if entry.get("freshness") not in ("STALE", "UNKNOWN"):
+                entry["freshness"] = "STALE" if m_stat.get("1X2", {}).get("stale") else "UNKNOWN"
             return None
 
         entry["matched"] = True
         entry["is_stale"] = False
+        entry["freshness"] = "FRESH"
         entry["provenance"] = entry.get("provenance", "BET365_MOVIODDS")
         return entry
 

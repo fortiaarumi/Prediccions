@@ -48,12 +48,57 @@ class LiveCrawler:
 
     _build_match_id = build_match_id
 
+    def _parse_urls_file(self, urls_file: Path, comp_id: str, jornada: int) -> List[Dict[str, Any]]:
+        """Carrega els partits d'una jornada des del fitxer de memòria cau local urls.txt (mode offline / fallback)."""
+        res = []
+        if not urls_file.exists():
+            return res
+        try:
+            with open(urls_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith("#"):
+                        continue
+                    parts = [x.strip() for x in line.split("|")]
+                    if len(parts) >= 3:
+                        matchup, dt_str, match_url = parts[0], parts[1], parts[2]
+                        if " vs " in matchup:
+                            h_name, a_name = [x.strip() for x in matchup.split(" vs ", 1)]
+                            m_code = match_url.split("/partido/")[1].split("/")[0] if "/partido/" in match_url else ""
+                            res.append({
+                                "competition_id": comp_id,
+                                "home": h_name,
+                                "away": a_name,
+                                "date": dt_str,
+                                "url": match_url,
+                                "match_code": m_code,
+                                "jornada": jornada,
+                                "score_h": None,
+                                "score_a": None,
+                                "is_suspended": False,
+                                "suspension_reason": "",
+                                "is_finished": False,
+                                "is_live": False,
+                                "ac_code": "1"
+                            })
+        except Exception:
+            pass
+        return res
+
     def crawl_jornada_fixtures_from_web(self, jornada: int, competition_id: str = "LALIGA") -> List[Dict[str, Any]]:
         """Rastreja a internet filtrant estrictament pel bloc de la 'JORNADA {jornada}' o 'Round {jornada}'."""
         comp_id = competition_id.upper()
         base_url = FLASHSCORE_COMPETITIONS.get(comp_id, FLASHSCORE_COMPETITIONS["LALIGA"])
         print(f"\n[*] Cercant a Flashscore exactament els partits de la Jornada {jornada} ({comp_id})...")
         fixtures = []
+
+        # Suport transparent per a reproducció 100% offline
+        urls_file = DATA_DIR / f"{comp_id.lower()}_jornada_{jornada}_urls.txt"
+        if bool(os.environ.get("PREDDICIONS_TEST_OFFLINE")) and urls_file.exists():
+            cached_fix = self._parse_urls_file(urls_file, comp_id, jornada)
+            if cached_fix:
+                print(f"[*] [OFFLINE] Carregats {len(cached_fix)} partits des de {urls_file.name}.")
+                return cached_fix
 
         def parse_feed_blocks(html_text, feed_key):
             start_str1 = f"cjs.initialFeeds['{feed_key}'] = {{"
@@ -278,6 +323,12 @@ class LiveCrawler:
                         "is_live": m.get("is_live", False),
                         "ac_code": m.get("ac_code", "")
                     })
+
+        if not fixtures and urls_file.exists():
+            fallback_fix = self._parse_urls_file(urls_file, comp_id, jornada)
+            if fallback_fix:
+                print(f"[*] [FALLBACK OFFLINE] Carregats {len(fallback_fix)} partits des de {urls_file.name}.")
+                return fallback_fix
 
         print(f"[*] S'han trobat {len(fixtures)} partits oficials per a la Jornada {jornada} de {comp_id}.")
 
