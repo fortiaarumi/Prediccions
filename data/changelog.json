@@ -1,5 +1,61 @@
 [
   {
+    "date": "2026-11-08",
+    "timestamp": "2026-11-08T01:39:00.382770",
+    "title": "Actualització Diària del Model · 08/11/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "🎯 Generades 6 noves combinades recomanades (Segures, Semi i Arriscades) per a: DAILY.",
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+      "ℹ️ Sincronització de les darreres dades i mètriques del model."
+    ],
+    "matches": [],
+    "combos_evaluated": [],
+    "combos_generated": [
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SAFE_1",
+        "odd": 3.08
+      },
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SAFE_2",
+        "odd": 3.56
+      },
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SEMI_1",
+        "odd": 11.21
+      },
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SEMI_2",
+        "odd": 12.8
+      },
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "RISKY_1",
+        "odd": 30.39
+      },
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "RISKY_2",
+        "odd": 38.09
+      }
+    ],
+    "referee_updates": []
+  },
+  {
     "date": "2026-11-07",
     "timestamp": "2026-11-07T22:58:11.031153",
     "title": "Actualització Diària del Model · 07/11/2026",
@@ -11967,23 +12023,5 @@
         }
       }
     ]
-  },
-  {
-    "date": "2026-09-26",
-    "timestamp": "2026-09-26T12:50:23.624848",
-    "title": "Actualització Diària del Model · 26/09/2026",
-    "badge": "Diari (08:00 UTC)",
-    "badge_type": "primary",
-    "items": [
-      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
-      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
-      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
-      "ℹ️ Sincronització de les darreres dades i mètriques del model."
-    ],
-    "matches": [],
-    "combos_evaluated": [],
-    "combos_generated": [],
-    "referee_updates": []
   }
 ]
