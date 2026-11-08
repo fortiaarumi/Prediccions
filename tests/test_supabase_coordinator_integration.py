@@ -409,7 +409,7 @@ def test_supabase_coordinator_snapshot_idempotency(mock_supabase_server):
 
 
 def test_supabase_coordinator_rejects_service_role_credentials():
-    """Verifica que l'agent rebutja frontalment claus privileged service_role."""
+    """Verifica que l'agent rebutja frontalment tant 'sb_secret_' com 'service_role'."""
     with pytest.raises(ValueError) as exc1:
         SupabaseCoordinator(
             supabase_url="http://127.0.0.1:54321",
@@ -424,6 +424,38 @@ def test_supabase_coordinator_rejects_service_role_credentials():
         )
         coord.set_agent_jwt("ey...service_role...token")
     assert "service_role" in str(exc2.value)
+
+    # Rebuig de noves claus sb_secret_
+    with pytest.raises(ValueError) as exc3:
+        SupabaseCoordinator(
+            supabase_url="http://127.0.0.1:54321",
+            publishable_key="sb_secret_super_admin_key"
+        )
+    assert "sb_secret_" in str(exc3.value) or "service_role" in str(exc3.value)
+
+
+def test_supabase_coordinator_publishable_key_headers():
+    """Valida la compatibilitat amb el nou sistema de claus sb_publishable_ de Supabase."""
+    # 1. Sense JWT d'usuari: apikey s'envia, però Authorization NO s'envia (evita 401 Invalid JWT)
+    coord = SupabaseCoordinator(
+        supabase_url="https://test.supabase.co",
+        publishable_key="sb_publishable_prod_abc123xyz"
+    )
+    assert coord.publishable_key == "sb_publishable_prod_abc123xyz"
+    assert coord._headers["apikey"] == "sb_publishable_prod_abc123xyz"
+    assert "Authorization" not in coord._headers
+
+    # 2. Després d'autenticar l'agent, s'afegeix Authorization: Bearer <jwt>
+    mock_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.agent_payload.signature"
+    coord.set_agent_jwt(mock_jwt)
+    assert coord._headers["apikey"] == "sb_publishable_prod_abc123xyz"
+    assert coord._headers["Authorization"] == f"Bearer {mock_jwt}"
+
+    # 3. Renovació de la clau publishable en calent
+    coord.refresh_auth_token("sb_publishable_new_999")
+    assert coord._headers["apikey"] == "sb_publishable_new_999"
+    # El JWT de l'agent es conserva a Authorization
+    assert coord._headers["Authorization"] == f"Bearer {mock_jwt}"
 
 
 def test_supabase_coordinator_agent_authentication_flow(mock_supabase_server):

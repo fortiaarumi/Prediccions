@@ -543,35 +543,45 @@ GRANT EXECUTE ON FUNCTION publish_session_snapshot(UUID, INT, VARCHAR, VARCHAR, 
 -- =====================================================================
 -- POLÍTIQUES RLS (ROW LEVEL SECURITY)
 -- =====================================================================
+-- S'utilitza ENABLE ROW LEVEL SECURITY estàndard (sense FORCE).
+-- D'aquesta manera:
+-- 1. Totes les peticions directes de clients (PostgREST) mitjançant els rols
+--    'authenticated' o 'anon' estan 100% sotmeses a les polítiques RLS.
+-- 2. Les funcions 'SECURITY DEFINER' auditades (propietat de 'postgres') poden
+--    executar transicions atòmiques d'estat i insercions a taules de dades sense
+--    col·lidir amb polítiques RLS inexistents per a operacions revocades directament.
 
 ALTER TABLE app_users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE app_users FORCE ROW LEVEL SECURITY;
+ALTER TABLE app_users NO FORCE ROW LEVEL SECURITY;
 
 ALTER TABLE daemon_agents ENABLE ROW LEVEL SECURITY;
-ALTER TABLE daemon_agents FORCE ROW LEVEL SECURITY;
+ALTER TABLE daemon_agents NO FORCE ROW LEVEL SECURITY;
 
 ALTER TABLE surebet_sessions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE surebet_sessions FORCE ROW LEVEL SECURITY;
+ALTER TABLE surebet_sessions NO FORCE ROW LEVEL SECURITY;
 
 ALTER TABLE surebet_snapshots ENABLE ROW LEVEL SECURITY;
-ALTER TABLE surebet_snapshots FORCE ROW LEVEL SECURITY;
+ALTER TABLE surebet_snapshots NO FORCE ROW LEVEL SECURITY;
 
 ALTER TABLE surebet_opportunities ENABLE ROW LEVEL SECURITY;
-ALTER TABLE surebet_opportunities FORCE ROW LEVEL SECURITY;
+ALTER TABLE surebet_opportunities NO FORCE ROW LEVEL SECURITY;
 
 -- 1. app_users
+DROP POLICY IF EXISTS "Usuari consulta el seu propi rol" ON app_users;
 CREATE POLICY "Usuari consulta el seu propi rol"
 ON app_users FOR SELECT
 TO authenticated
 USING (user_id = auth.uid());
 
 -- 2. daemon_agents
+DROP POLICY IF EXISTS "Agent o propietari consulta el seu perfil" ON daemon_agents;
 CREATE POLICY "Agent o propietari consulta el seu perfil"
 ON daemon_agents FOR SELECT
 TO authenticated
 USING (agent_user_id = auth.uid() OR owner_user_id = auth.uid());
 
 -- 3. surebet_sessions: SELECT
+DROP POLICY IF EXISTS "Lectura de sessions per propietari, agent assignat o admin" ON surebet_sessions;
 CREATE POLICY "Lectura de sessions per propietari, agent assignat o admin"
 ON surebet_sessions FOR SELECT
 TO authenticated
@@ -582,6 +592,7 @@ USING (
 );
 
 -- 4. surebet_sessions: INSERT (Només administradors o operadors autoritzats)
+DROP POLICY IF EXISTS "Creació de sessions reservada a operadors i administradors" ON surebet_sessions;
 CREATE POLICY "Creació de sessions reservada a operadors i administradors"
 ON surebet_sessions FOR INSERT
 TO authenticated
@@ -591,6 +602,7 @@ WITH CHECK (
 );
 
 -- 5. surebet_snapshots: SELECT (Només creador de la sessió, agent assignat o admin)
+DROP POLICY IF EXISTS "Lectura de snapshots per propietaris o admin" ON surebet_snapshots;
 CREATE POLICY "Lectura de snapshots per propietaris o admin"
 ON surebet_snapshots FOR SELECT
 TO authenticated
@@ -604,6 +616,7 @@ USING (
 );
 
 -- 6. surebet_opportunities: SELECT
+DROP POLICY IF EXISTS "Lectura d'oportunitats segons rols autoritzats" ON surebet_opportunities;
 CREATE POLICY "Lectura d'oportunitats segons rols autoritzats"
 ON surebet_opportunities FOR SELECT
 TO authenticated
