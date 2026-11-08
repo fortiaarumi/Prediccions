@@ -125,8 +125,8 @@ def cmd_predict_match(home: str, away: str, date: str = None, referee_name: str 
     print(f"      {pdf_path.resolve()}")
     print("=" * 80 + "\n")
 
-def cmd_surebet_agent(dry_run: bool = False):
-    """Execució de l'Agent Windows per a Surebets (suporta mode local loopback o Supabase remot)."""
+def cmd_surebet_agent(dry_run: bool = False, remote_mock_test: bool = False):
+    """Execució de l'Agent Windows per a Surebets (suporta mode local loopback, dry-run o Supabase remot)."""
     import os
     from agent.supabase_coordinator import SupabaseCoordinator
     from agent.windows_agent import WindowsSurebetAgent
@@ -143,7 +143,30 @@ def cmd_surebet_agent(dry_run: bool = False):
     supabase_key = os.environ.get("SUPABASE_PUBLISHABLE_KEY", os.environ.get("SUPABASE_KEY", "")).strip()
     agent_email = os.environ.get("SUREBET_AGENT_EMAIL", "").strip()
     agent_password = os.environ.get("SUREBET_AGENT_PASSWORD", "").strip()
+    operator_email = os.environ.get("SUREBET_OPERATOR_EMAIL", "").strip()
+    operator_password = os.environ.get("SUREBET_OPERATOR_PASSWORD", "").strip()
     agent_id = os.environ.get("SUREBET_AGENT_ID", "Windows-PC-Local").strip()
+
+    # Si s'ha demanat la prova remota simulada (--remote-mock-test)
+    if remote_mock_test:
+        from agent.remote_mock_runner import run_remote_mock_flow
+        if not supabase_url or not supabase_key:
+            print("[!] Error: Cal definir SUPABASE_URL i SUPABASE_PUBLISHABLE_KEY per executar --remote-mock-test.")
+            return
+        if not agent_email or not agent_password:
+            print("[!] Error: Cal definir SUREBET_AGENT_EMAIL i SUREBET_AGENT_PASSWORD per a l'agent.")
+            return
+
+        run_remote_mock_flow(
+            supabase_url=supabase_url,
+            publishable_key=supabase_key,
+            agent_email=agent_email,
+            agent_password=agent_password,
+            operator_email=operator_email or None,
+            operator_password=operator_password or None,
+            agent_name=agent_id
+        )
+        return
 
     print("=" * 65)
     print("      PREDICCIONS LLIGA — SUREBET MONITOR (AGENT WINDOWS)")
@@ -219,7 +242,8 @@ def cmd_surebet_agent(dry_run: bool = False):
 def main():
     if len(sys.argv) > 1 and sys.argv[1] == "surebet-agent":
         dry_run = "--dry-run" in sys.argv
-        cmd_surebet_agent(dry_run=dry_run)
+        remote_mock_test = "--remote-mock-test" in sys.argv
+        cmd_surebet_agent(dry_run=dry_run, remote_mock_test=remote_mock_test)
         return
 
     parser = argparse.ArgumentParser(description="Sistema Oficial de Prediccions de LaLiga + Winamax Odds")
@@ -232,11 +256,12 @@ def main():
     parser.add_argument("--rebuild-ranks", action="store_true", help="Reconstrueix deterministament els rànquings (tri-ranks) històrics a partir dels partits acabats")
     parser.add_argument("--surebet-agent", action="store_true", help="Inicia l'agent de monitoratge de Surebets")
     parser.add_argument("--dry-run", action="store_true", help="Mode comprovació en sec: verifica autenticació i batec sense iniciar scrapers")
+    parser.add_argument("--remote-mock-test", action="store_true", help="Mode prova remota simulada: executa sessió sintètica completa a Supabase sense scraping")
 
     args = parser.parse_args()
 
     if args.surebet_agent:
-        cmd_surebet_agent(dry_run=args.dry_run)
+        cmd_surebet_agent(dry_run=args.dry_run, remote_mock_test=args.remote_mock_test)
     elif args.rebuild_ranks:
         cmd_rebuild_ranks()
     elif args.scrape_jornada is not None:

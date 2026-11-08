@@ -327,29 +327,94 @@ class SupabaseCoordinator:
 
     def publish_snapshot(
         self,
-        snapshot: SnapshotRecord,
+        *args: Any,
+        snapshot: Optional[Any] = None,
         opportunities: Optional[List[Dict[str, Any]]] = None,
         snapshot_uuid: Optional[str] = None
     ) -> Optional[str]:
         """
         Publica un snapshot de quotes fresques i les oportunitats accionables detectades.
         Admet un snapshot_uuid determinista per garantir la idempotència de reintents.
+        Suporta crida directa amb SnapshotRecord o amb signatura compatible (session_id, snapshot).
         """
+        target_snap = snapshot
+        target_opps = opportunities
+        target_uuid = snapshot_uuid
+
+        if args:
+            if len(args) == 1:
+                target_snap = args[0]
+            elif len(args) >= 2:
+                # Si el primer argument és string (session_id), el segon és el snapshot
+                if isinstance(args[0], str) and not isinstance(args[1], (str, bytes)):
+                    target_snap = args[1]
+                else:
+                    target_snap = args[0]
+                    target_opps = args[1]
+                if len(args) >= 3 and target_opps is None:
+                    target_opps = args[2]
+                if len(args) >= 4 and target_uuid is None:
+                    target_uuid = args[3]
+
+        if target_snap is None:
+            raise ValueError("Cal proporcionar un snapshot per publicar")
+
+        if isinstance(target_snap, SnapshotRecord):
+            sess_id = target_snap.session_id
+            odds_age = int(target_snap.age_max_seconds)
+            market_type = str(target_snap.market_name)
+            match_id = str(target_snap.opportunity_id)
+            payload_data = target_snap.to_dict()
+        elif isinstance(target_snap, dict):
+            sess_id = str(target_snap.get("session_id", ""))
+            odds_age = int(target_snap.get("odds_age_seconds", target_snap.get("age_max_seconds", 0)))
+            market_type = str(target_snap.get("market_type", target_snap.get("market_name", "1X2")))
+            match_id = str(target_snap.get("match_id", target_snap.get("opportunity_id", "TEST_MATCH")))
+            payload_data = target_snap.get("payload", target_snap)
+        else:
+            raise ValueError(f"Format de snapshot no suportat: {type(target_snap)}")
+
+        # Normalització d'oportunitats per a la taula surebet_opportunities
+        opps_payload = []
+        if target_opps:
+            for opp in target_opps:
+                opps_payload.append({
+                    "opportunity_type": opp.get("opportunity_type", "TEST_SUREBET"),
+                    "matchup": opp.get("matchup", "[TEST] Simulació"),
+                    "market_key": opp.get("market_key", market_type),
+                    "net_roi_pct": float(opp.get("net_roi_pct", 2.5)),
+                    "gross_margin_pct": float(opp.get("gross_margin_pct", 2.8)),
+                    "commission_deducted_pct": float(opp.get("commission_deducted_pct", 0.3)),
+                    "bookmakers": opp.get("bookmakers", [])
+                })
+
         payload = {
-            "p_session_id": snapshot.session_id,
-            "p_odds_age_seconds": int(snapshot.age_max_seconds),
-            "p_market_type": str(snapshot.market_name),
-            "p_match_id": str(snapshot.opportunity_id),
-            "p_payload": snapshot.to_dict(),
-            "p_opportunities": opportunities or []
+            "p_session_id": sess_id,
+            "p_odds_age_seconds": odds_age,
+            "p_market_type": market_type,
+            "p_match_id": match_id,
+            "p_payload": payload_data,
+            "p_opportunities": opps_payload
         }
-        if snapshot_uuid:
-            payload["p_snapshot_id"] = snapshot_uuid
+        if target_uuid:
+            payload["p_snapshot_id"] = target_uuid
 
         res = self.call_rpc("publish_session_snapshot", payload)
         if res:
             return str(res)
         return None
+
+    def get_session_status(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Recupera l'estat d'una sessió via REST (protegit per polítiques RLS)."""
+        res = self._request("GET", f"/rest/v1/surebet_sessions?id=eq.{session_id}&select=*")
+        if isinstance(res, list) and len(res) > 0:
+            return res[0]
+        return None
+
+    def get_session_snapshots(self, session_id: str) -> List[Dict[str, Any]]:
+        """Recupera els snapshots d'una sessió via REST (protegit per polítiques RLS)."""
+        res = self._request("GET", f"/rest/v1/surebet_snapshots?session_id=eq.{session_id}&select=*")
+        return res if isinstance(res, list) else []
 
     def get_active_opportunities(self, limit: int = 50) -> List[Dict[str, Any]]:
         """
