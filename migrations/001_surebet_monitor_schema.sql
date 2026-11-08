@@ -15,6 +15,8 @@
 -- 5. Retenció de 30 Minuts: Filtres estrictes per antiguitat real de les quotes (<= 1800s).
 -- =====================================================================
 
+BEGIN;
+
 -- 1. TAULA D'USUARIS AUTORITZATS (RBAC)
 CREATE TABLE IF NOT EXISTS app_users (
     user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -673,7 +675,7 @@ REVOKE ALL ON FUNCTION register_agent_heartbeat() FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION request_session_cancellation(UUID) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION complete_session(UUID, JSONB) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION fail_session(UUID, TEXT) FROM PUBLIC, anon;
-REVOKE ALL ON FUNCTION publish_session_snapshot(UUID, INT, VARCHAR, VARCHAR, JSONB, JSONB) FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION publish_session_snapshot(UUID, INT, VARCHAR, VARCHAR, JSONB, JSONB, UUID) FROM PUBLIC, anon;
 
 -- Revocació de la funció trigger interna per evitar exposició directa per Data API
 REVOKE ALL ON FUNCTION trg_fn_validate_session_integrity() FROM PUBLIC, anon, authenticated;
@@ -685,7 +687,7 @@ GRANT EXECUTE ON FUNCTION register_agent_heartbeat() TO authenticated;
 GRANT EXECUTE ON FUNCTION request_session_cancellation(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION complete_session(UUID, JSONB) TO authenticated;
 GRANT EXECUTE ON FUNCTION fail_session(UUID, TEXT) TO authenticated;
-GRANT EXECUTE ON FUNCTION publish_session_snapshot(UUID, INT, VARCHAR, VARCHAR, JSONB, JSONB) TO authenticated;
+GRANT EXECUTE ON FUNCTION publish_session_snapshot(UUID, INT, VARCHAR, VARCHAR, JSONB, JSONB, UUID) TO authenticated;
 
 -- =====================================================================
 -- POLÍTIQUES RLS (ROW LEVEL SECURITY)
@@ -794,5 +796,7 @@ REVOKE INSERT, UPDATE, DELETE ON surebet_snapshots FROM authenticated;
 REVOKE INSERT, UPDATE, DELETE ON surebet_opportunities FROM authenticated;
 REVOKE INSERT, UPDATE, DELETE ON daemon_agents FROM authenticated;
 REVOKE INSERT, UPDATE, DELETE ON app_users FROM authenticated;
+
+COMMIT;
 
 

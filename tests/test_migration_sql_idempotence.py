@@ -125,3 +125,50 @@ def test_idle_agent_heartbeat_rpc_present():
     assert re.search(r"GRANT\s+EXECUTE\s+ON\s+FUNCTION\s+register_agent_heartbeat\(\)\s+TO\s+authenticated", sql, re.IGNORECASE) is not None
     assert re.search(r"REVOKE\s+ALL\s+ON\s+FUNCTION\s+register_agent_heartbeat\(\)\s+FROM\s+PUBLIC,\s*anon", sql, re.IGNORECASE) is not None
 
+
+def test_transactional_migration_wrapper():
+    sql = load_sql_content()
+    # La migració ha d'estar embolicada en una transacció BEGIN ... COMMIT per evitar estats parcials
+    clean = re.sub(r"--[^\n]*", "", sql).strip()
+    assert clean.upper().startswith("BEGIN;"), "La migració ha de començar amb BEGIN;"
+    assert clean.upper().endswith("COMMIT;"), "La migració ha d'acabar amb COMMIT;"
+
+
+def test_grant_revoke_function_signatures_match_declarations():
+    sql = load_sql_content()
+    # 1. Extreure funcions declarades i normalitzar tipus de paràmetres
+    fn_decls = re.findall(r"CREATE\s+OR\s+REPLACE\s+FUNCTION\s+([a-zA-Z0-9_]+)\s*\((.*?)\)\s*RETURNS", sql, re.DOTALL | re.IGNORECASE)
+    assert len(fn_decls) == 9, f"S'esperaven 9 funcions declarades, trobades {len(fn_decls)}"
+
+    declared_signatures = {}
+    for fn_name, params_str in fn_decls:
+        param_types = []
+        for p in params_str.split(","):
+            tokens = p.strip().split()
+            if len(tokens) >= 2:
+                param_types.append(tokens[1].upper())
+        declared_signatures[fn_name.lower()] = param_types
+
+    # 2. Extreure clàusules REVOKE i comprovar coincidència exacta de signatura
+    revokes = re.findall(r"REVOKE\s+ALL\s+ON\s+FUNCTION\s+([a-zA-Z0-9_]+)\s*\((.*?)\)", sql, re.DOTALL | re.IGNORECASE)
+    assert len(revokes) == 9, f"S'esperaven 9 instruccions REVOKE de funció, trobades {len(revokes)}"
+    for fn_name, params_str in revokes:
+        fn_key = fn_name.lower()
+        assert fn_key in declared_signatures, f"Funció {fn_name} a REVOKE no està declarada"
+        revoke_types = [p.strip().upper() for p in params_str.split(",") if p.strip()]
+        assert revoke_types == declared_signatures[fn_key], (
+            f"Discrepància a REVOKE de {fn_name}: esperat {declared_signatures[fn_key]}, obtingut {revoke_types}"
+        )
+
+    # 3. Extreure clàusules GRANT i comprovar coincidència exacta de signatura (8 RPCs)
+    grants = re.findall(r"GRANT\s+EXECUTE\s+ON\s+FUNCTION\s+([a-zA-Z0-9_]+)\s*\((.*?)\)", sql, re.DOTALL | re.IGNORECASE)
+    assert len(grants) == 8, f"S'esperaven 8 instruccions GRANT de funció RPC, trobades {len(grants)}"
+    for fn_name, params_str in grants:
+        fn_key = fn_name.lower()
+        assert fn_key in declared_signatures, f"Funció {fn_name} a GRANT no està declarada"
+        grant_types = [p.strip().upper() for p in params_str.split(",") if p.strip()]
+        assert grant_types == declared_signatures[fn_key], (
+            f"Discrepància a GRANT de {fn_name}: esperat {declared_signatures[fn_key]}, obtingut {grant_types}"
+        )
+
+

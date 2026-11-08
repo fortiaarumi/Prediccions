@@ -493,6 +493,58 @@ BEGIN
 END $$;
 RESET ROLE;
 
+-- 5.2B Agent autoritzat publica snapshot vàlid utilitzant la signatura completa de 7 paràmetres
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent
+DO $$
+DECLARE
+    v_sess_id UUID;
+    v_snap_id UUID;
+BEGIN
+    SELECT id INTO v_sess_id FROM surebet_sessions WHERE status = 'RUNNING' LIMIT 1;
+    v_snap_id := publish_session_snapshot(
+        v_sess_id,
+        15,
+        '1X2',
+        'match_test_001',
+        '{"test": true}'::JSONB,
+        '[]'::JSONB,
+        gen_random_uuid()
+    );
+    IF v_snap_id IS NOT NULL THEN
+        RAISE NOTICE '[PASS 5.2B: RPC SNAPSHOT] Agent publica snapshot correctament via signatura de 7 paràmetres: %', v_snap_id;
+    ELSE
+        RAISE EXCEPTION '[FAIL 5.2B] publish_session_snapshot ha fallat!';
+    END IF;
+END $$;
+RESET ROLE;
+
+-- 5.2C Rebuig de publicació de snapshot per a usuari no agent (viewer)
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000005'; -- viewer
+DO $$
+DECLARE
+    v_sess_id UUID;
+BEGIN
+    SELECT id INTO v_sess_id FROM surebet_sessions WHERE status = 'RUNNING' LIMIT 1;
+    BEGIN
+        PERFORM publish_session_snapshot(
+            v_sess_id,
+            15,
+            '1X2',
+            'match_test_001',
+            '{}'::JSONB,
+            '[]'::JSONB,
+            gen_random_uuid()
+        );
+        RAISE EXCEPTION '[FAIL 5.2C] Viewer ha pogut publicar snapshots!';
+    EXCEPTION
+        WHEN SQLSTATE '42501' THEN
+            RAISE NOTICE '[PASS 5.2C: RPC AUTH] publish_session_snapshot rebutja usuaris no autoritzats.';
+    END;
+END $$;
+RESET ROLE;
+
 -- 5.3 Intent de cancel·lació indeguda per usuari no propietari (operador 2)
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000003'; -- oper2
