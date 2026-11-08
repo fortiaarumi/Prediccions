@@ -1,58 +1,187 @@
 [
   {
     "date": "2026-11-08",
-    "timestamp": "2026-11-08T01:39:00.382770",
+    "timestamp": "2026-11-08T13:45:24.082322",
     "title": "Actualització Diària del Model · 08/11/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
     "items": [
-      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
-      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
-      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "🎯 Generades 6 noves combinades recomanades (Segures, Semi i Arriscades) per a: DAILY.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
-      "ℹ️ Sincronització de les darreres dades i mètriques del model."
+      "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
+      "   • [SERIEA J11] Nápoles 1 - 1 Lazio | xG: 2.36-0.86 | Targetes: 4 🟨 | Córners: 12 🚩 | Àrbitre: Pairetto L.",
+      "📊 Actualització de Power Rànquings Elo:",
+      "   • Nápoles (+0.5 ➔ 1523.4) | Lazio (-0.5 ➔ 1589.0)",
+      "📈 S'han resolt 2 combinades pendents (0 encertades, 2 fallades):",
+      "   • [SERIEA J11] SEMI_2: ❌ NO ENCERTADA (Cuota @13.74 · Balanç: -10.00 €)",
+      "   • [SERIEA J11] RISKY_1: ❌ NO ENCERTADA (Cuota @29.51 · Balanç: -5.00 €)",
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
     ],
-    "matches": [],
-    "combos_evaluated": [],
-    "combos_generated": [
+    "matches": [
       {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "SAFE_1",
-        "odd": 3.08
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "SAFE_2",
-        "odd": 3.56
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "SEMI_1",
-        "odd": 11.21
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "SEMI_2",
-        "odd": 12.8
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "RISKY_1",
-        "odd": 30.39
-      },
-      {
-        "competition_id": "DAILY",
-        "jornada": 0,
-        "profile": "RISKY_2",
-        "odd": 38.09
+        "match_id": "SERIEA_2026-2027_SY7oSelg",
+        "competition_id": "SERIEA",
+        "jornada": 11,
+        "home_team": "Nápoles",
+        "away_team": "Lazio",
+        "home_team_id": "NAP",
+        "away_team_id": "LAZ",
+        "home_goals": 1,
+        "away_goals": 1,
+        "score": "1 - 1",
+        "home_xg": 2.36,
+        "away_xg": 0.86,
+        "home_yellow_cards": 3,
+        "away_yellow_cards": 1,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 6,
+        "away_corners": 6,
+        "referee": "Pairetto L.",
+        "elo_change_home": 0.5,
+        "elo_change_away": -0.5,
+        "new_elo_home": 1523.4,
+        "new_elo_away": 1589.0,
+        "date": "08.11.2026 11:30"
       }
     ],
+    "combos_evaluated": [
+      {
+        "id": "COMBO_2026-2027_SERIEA_J11_SEMI_2",
+        "competition_id": "SERIEA",
+        "season": "2026-2027",
+        "jornada": 11,
+        "profile": "SEMI_2",
+        "stake": 10.0,
+        "combined_odd": 13.74,
+        "combined_prob_pct": 7.4,
+        "fair_odd": 13.53,
+        "ev_pct": 1.5,
+        "status": "LOST",
+        "payout": 0.0,
+        "profit": -10.0,
+        "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+        "created_at": "2026-11-08 01:39:00",
+        "evaluated_at": null,
+        "legs": [
+          {
+            "id": 3774,
+            "combo_id": "COMBO_2026-2027_SERIEA_J11_SEMI_2",
+            "matchup": "SSC Napoli vs SS Lazio",
+            "selection_name": "1 - Victòria Local (SSC Napoli)",
+            "category": "1X2",
+            "bookie_odd": 1.88,
+            "model_prob": 41.3,
+            "match_date": "08.11.2026 11:30",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/71945396",
+            "home_team_id": "NAP",
+            "away_team_id": "LAZ",
+            "status": "LOST",
+            "actual_result": "1-1 (no victòria local)",
+            "evaluated_at": null
+          },
+          {
+            "id": 3775,
+            "combo_id": "COMBO_2026-2027_SERIEA_J11_SEMI_2",
+            "matchup": "Genoa CFC vs AC Milan",
+            "selection_name": "1 - Victòria Local (Genoa CFC)",
+            "category": "1X2",
+            "bookie_odd": 4.3,
+            "model_prob": 38.9,
+            "match_date": "08.11.2026 14:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/71945390",
+            "home_team_id": "GEN",
+            "away_team_id": "ACM",
+            "status": "PENDING",
+            "actual_result": "Partit pendent de disputar",
+            "evaluated_at": null
+          },
+          {
+            "id": 3776,
+            "combo_id": "COMBO_2026-2027_SERIEA_J11_SEMI_2",
+            "matchup": "Inter de Milán vs Como 1907",
+            "selection_name": "1 - Victòria Local (Inter de Milán)",
+            "category": "1X2",
+            "bookie_odd": 1.7,
+            "model_prob": 46.0,
+            "match_date": "08.11.2026 17:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/71945392",
+            "home_team_id": "INT",
+            "away_team_id": "COM",
+            "status": "PENDING",
+            "actual_result": "Partit pendent de disputar",
+            "evaluated_at": null
+          }
+        ]
+      },
+      {
+        "id": "COMBO_2026-2027_SERIEA_J11_RISKY_1",
+        "competition_id": "SERIEA",
+        "season": "2026-2027",
+        "jornada": 11,
+        "profile": "RISKY_1",
+        "stake": 5.0,
+        "combined_odd": 29.51,
+        "combined_prob_pct": 6.3,
+        "fair_odd": 15.76,
+        "ev_pct": 87.3,
+        "status": "LOST",
+        "payout": 0.0,
+        "profit": -5.0,
+        "winamax_url": "https://www.winamax.es/apuestas-deportivas/sports/1/32",
+        "created_at": "2026-11-08 01:39:00",
+        "evaluated_at": null,
+        "legs": [
+          {
+            "id": 3777,
+            "combo_id": "COMBO_2026-2027_SERIEA_J11_RISKY_1",
+            "matchup": "SSC Napoli vs SS Lazio",
+            "selection_name": "1 - Victòria Local (SSC Napoli)",
+            "category": "1X2",
+            "bookie_odd": 1.88,
+            "model_prob": 41.3,
+            "match_date": "08.11.2026 11:30",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/71945396",
+            "home_team_id": "NAP",
+            "away_team_id": "LAZ",
+            "status": "LOST",
+            "actual_result": "1-1 (no victòria local)",
+            "evaluated_at": null
+          },
+          {
+            "id": 3778,
+            "combo_id": "COMBO_2026-2027_SERIEA_J11_RISKY_1",
+            "matchup": "Genoa CFC vs AC Milan",
+            "selection_name": "1 - Victòria Local (Genoa CFC)",
+            "category": "1X2",
+            "bookie_odd": 4.3,
+            "model_prob": 38.9,
+            "match_date": "08.11.2026 14:00",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/71945390",
+            "home_team_id": "GEN",
+            "away_team_id": "ACM",
+            "status": "PENDING",
+            "actual_result": "Partit pendent de disputar",
+            "evaluated_at": null
+          },
+          {
+            "id": 3779,
+            "combo_id": "COMBO_2026-2027_SERIEA_J11_RISKY_1",
+            "matchup": "ACF Fiorentina vs Juventus FC",
+            "selection_name": "1 - Victòria Local (ACF Fiorentina)",
+            "category": "1X2",
+            "bookie_odd": 3.65,
+            "model_prob": 39.5,
+            "match_date": "08.11.2026 19:45",
+            "url": "https://www.winamax.es/apuestas-deportivas/match/71945388",
+            "home_team_id": "FIO",
+            "away_team_id": "JUV",
+            "status": "PENDING",
+            "actual_result": "Partit pendent de disputar",
+            "evaluated_at": null
+          }
+        ]
+      }
+    ],
+    "combos_generated": [],
     "referee_updates": []
   },
   {
