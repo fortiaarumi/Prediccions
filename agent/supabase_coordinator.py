@@ -369,6 +369,18 @@ class SupabaseCoordinator:
             market_type = str(target_snap.market_name)
             match_id = str(target_snap.opportunity_id)
             payload_data = target_snap.to_dict()
+            if target_opps is None:
+                # Oportunitat real provinent de SnapshotRecord
+                target_opps = [{
+                    "opportunity_type": "SUREBET" if target_snap.profit_pct > 0 else "NEAR_ARB",
+                    "matchup": target_snap.matchup,
+                    "market_key": target_snap.market_name,
+                    "net_roi_pct": target_snap.profit_pct,
+                    "gross_margin_pct": target_snap.profit_pct,
+                    "commission_deducted_pct": 0.0,
+                    "bookmakers": target_snap.legs,
+                    "is_synthetic": False
+                }]
         elif isinstance(target_snap, dict):
             sess_id = str(target_snap.get("session_id", ""))
             odds_age = int(target_snap.get("odds_age_seconds", target_snap.get("age_max_seconds", 0)))
@@ -377,6 +389,11 @@ class SupabaseCoordinator:
             payload_data = target_snap.get("payload", target_snap)
         else:
             raise ValueError(f"Format de snapshot no suportat: {type(target_snap)}")
+
+        # Identificar si el snapshot és sintètic de simulació
+        is_snap_synthetic = bool(
+            (isinstance(payload_data, dict) and (payload_data.get("is_synthetic_test") or payload_data.get("is_synthetic")))
+        )
 
         # Validació estricta de tipus d'oportunitats (sense conversions arbitràries)
         ALLOWED_OPPORTUNITY_TYPES = ("SUREBET", "NEAR_ARB")
@@ -389,6 +406,7 @@ class SupabaseCoordinator:
                         f"Tipus d'oportunitat desconegut o no autoritzat: '{raw_type}'. "
                         f"Només s'admeten els tipus permesos per la base de dades: {ALLOWED_OPPORTUNITY_TYPES}"
                     )
+                opp_synthetic = bool(opp.get("is_synthetic", is_snap_synthetic))
                 opps_payload.append({
                     "opportunity_type": raw_type,
                     "matchup": opp.get("matchup", "[TEST SINTÈTIC] Simulació"),
@@ -396,7 +414,8 @@ class SupabaseCoordinator:
                     "net_roi_pct": float(opp.get("net_roi_pct", 2.5)),
                     "gross_margin_pct": float(opp.get("gross_margin_pct", 2.8)),
                     "commission_deducted_pct": float(opp.get("commission_deducted_pct", 0.3)),
-                    "bookmakers": opp.get("bookmakers", [])
+                    "bookmakers": opp.get("bookmakers", []),
+                    "is_synthetic": opp_synthetic
                 })
 
         payload = {

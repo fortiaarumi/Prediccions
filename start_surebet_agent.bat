@@ -3,7 +3,7 @@ chcp 65001 > nul
 title Prediccions Lliga - Surebet Local Agent (Windows)
 
 echo =====================================================================
-echo          PREDICCIONS LLIGA — SUREBET LOCAL MONITOR AGENT
+echo          PREDICCIONS LLIGA - SUREBET LOCAL MONITOR AGENT
 echo =====================================================================
 echo [*] Inicialitzant entorn d'execucio per a Windows...
 echo [*] Seguretat: Connexio sortint exclusiva (Zero ports oberts al router).

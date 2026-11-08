@@ -282,10 +282,11 @@ def run_remote_mock_flow(
             "net_roi_pct": 3.14,
             "gross_margin_pct": 3.50,
             "commission_deducted_pct": 0.36,
+            "is_synthetic": True,
             "bookmakers": [
-                {"bookmaker": "TEST_BOOKMAKER_A", "selection": "1", "odd": 3.10},
-                {"bookmaker": "TEST_BOOKMAKER_B", "selection": "X", "odd": 3.40},
-                {"bookmaker": "TEST_BOOKMAKER_C", "selection": "2", "odd": 2.45}
+                {"bookmaker": "TEST_BOOKMAKER_A", "selection": "1", "odd": 3.10, "is_synthetic": True},
+                {"bookmaker": "TEST_BOOKMAKER_B", "selection": "X", "odd": 3.40, "is_synthetic": True},
+                {"bookmaker": "TEST_BOOKMAKER_C", "selection": "2", "odd": 2.45, "is_synthetic": True}
             ]
         }]
 

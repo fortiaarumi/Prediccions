@@ -3,10 +3,10 @@ chcp 65001 > nul
 title Prediccions Lliga - Servidor Web Privat de Proves
 
 echo =====================================================================
-echo       PREDICCIONS LLIGA — SERVIDOR WEB PRIVAT DE VALIDACIÓ
+echo       PREDICCIONS LLIGA - SERVIDOR WEB PRIVAT DE VALIDACIO
 echo =====================================================================
-echo [*] Inicialitzant servidor web per a proves al PC i mòbil (iPhone)...
-echo [*] El manteniment públic a Vercel es manté actiu sense canvis.
+echo [*] Inicialitzant servidor web per a proves al PC i mobil (iPhone)...
+echo [*] El manteniment public a Vercel es mante actiu sense canvis.
 echo =====================================================================
 
 where python >nul 2>nul

@@ -973,7 +973,13 @@ function setupSurebetAgentControls() {
             if (vResp.ok) {
               const vData = await vResp.json();
               if (appData && appData.arbitrage) {
-                appData.arbitrage.surebets = vData || [];
+                // Filtratge estructurat de seguretat (booleans de simulació i metadades)
+                const realData = (vData || []).filter(item => {
+                  if (item.is_synthetic === true || item.is_synthetic === 'true') return false;
+                  if (item.bookmakers && Array.isArray(item.bookmakers) && item.bookmakers.some(b => b && b.is_synthetic)) return false;
+                  return true;
+                });
+                appData.arbitrage.surebets = realData;
                 renderArbitrage();
               }
             }
