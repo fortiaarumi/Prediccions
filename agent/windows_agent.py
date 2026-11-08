@@ -298,6 +298,9 @@ class WindowsSurebetAgent:
             "completed_at": datetime.now(timezone.utc).isoformat(),
             "bookmakers_status": daemon.get_bookmakers_status() if daemon else {},
             "evaluated_matches": getattr(daemon, "evaluated_matches_count", 0),
+            "coverage_by_bookmaker": getattr(daemon, "coverage_by_bookmaker", {}),
+            "matches_with_2plus_bookmakers": getattr(daemon, "matches_with_2plus_bookmakers", 0),
+            "matches_with_3_bookmakers": getattr(daemon, "matches_with_3_bookmakers", 0),
             "last_generation": getattr(daemon, "last_generation_iso", datetime.now(timezone.utc).isoformat())
         }
         self._finalize_session(

@@ -191,6 +191,7 @@ class CircuitBreaker:
         self.provider_updated_at: Optional[str] = None
         self.verifiable_odds_count: int = 0
         self.unverifiable_odds_count: int = 0
+        self.raw_feed_odds_count: int = 0
         self.is_historical: bool = False
 
     def record_attempt_start(self, now: Optional[datetime] = None) -> None:
@@ -209,6 +210,7 @@ class CircuitBreaker:
         provider_updated_at: Optional[str] = None,
         verifiable_odds_count: int = 0,
         unverifiable_odds_count: int = 0,
+        raw_feed_odds_count: int = 0,
         is_historical: bool = False
     ) -> None:
         now_dt = now or datetime.now(timezone.utc)
@@ -230,6 +232,7 @@ class CircuitBreaker:
         self.provider_updated_at = provider_updated_at
         self.verifiable_odds_count = verifiable_odds_count
         self.unverifiable_odds_count = unverifiable_odds_count
+        self.raw_feed_odds_count = raw_feed_odds_count
         self.is_historical = is_historical
 
     def record_partial(
@@ -246,6 +249,7 @@ class CircuitBreaker:
         provider_updated_at: Optional[str] = None,
         verifiable_odds_count: int = 0,
         unverifiable_odds_count: int = 0,
+        raw_feed_odds_count: int = 0,
         is_historical: bool = False
     ) -> None:
         now_dt = now or datetime.now(timezone.utc)
@@ -267,6 +271,7 @@ class CircuitBreaker:
         self.provider_updated_at = provider_updated_at
         self.verifiable_odds_count = verifiable_odds_count
         self.unverifiable_odds_count = unverifiable_odds_count
+        self.raw_feed_odds_count = raw_feed_odds_count
         self.is_historical = is_historical
 
     def record_failure(
@@ -338,6 +343,7 @@ class CircuitBreaker:
             "provider_updated_at": self.provider_updated_at,
             "verifiable_odds_count": self.verifiable_odds_count,
             "unverifiable_odds_count": self.unverifiable_odds_count,
+            "raw_feed_odds_count": self.raw_feed_odds_count,
             "is_historical": bool(self.is_historical or (age_s is not None and age_s > 300.0))
         }
 
@@ -415,6 +421,9 @@ class SurebetDaemon:
         self.last_bookmakers_status: Dict[str, Any] = {}
         self.last_generation_iso: Optional[str] = None
         self.evaluated_matches_count: int = 0
+        self.coverage_by_bookmaker: Dict[str, Any] = {}
+        self.matches_with_2plus_bookmakers: int = 0
+        self.matches_with_3_bookmakers: int = 0
 
     def start_session(self, session_id: str, max_duration_seconds: Optional[int] = None) -> None:
         """Inicia una nova sessió de monitoratge amb límits temporals configurables."""
@@ -684,9 +693,9 @@ class SurebetDaemon:
 
         # Estadístiques d'execució d'aquest cicle per a cada casa (FASE 1 & FASE 4)
         cycle_stats = {
-            "winamax": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "is_historical": False},
-            "bet365": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "is_historical": False},
-            "betway": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "is_historical": False},
+            "winamax": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "raw_feed_odds": 0, "is_historical": False},
+            "bet365": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "raw_feed_odds": 0, "is_historical": False},
+            "betway": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "raw_feed_odds": 0, "is_historical": False},
         }
 
         if self.check_cancellation():
@@ -747,7 +756,9 @@ class SurebetDaemon:
                         cap = w_odds.get("captured_at")
                         if cap:
                             cycle_stats["winamax"]["captured_at"] = cap
-                            cycle_stats["winamax"]["provider_updated_at"] = cap
+                            curr_upd = cycle_stats["winamax"].get("provider_updated_at")
+                            if not curr_upd or cap > curr_upd:
+                                cycle_stats["winamax"]["provider_updated_at"] = cap
                         m_record["odds_winamax_captured_at"] = cap
                         m_record["odds_winamax_polled_at"] = cap
                         m_record["odds_winamax_provider_updated_at"] = cap
@@ -783,10 +794,18 @@ class SurebetDaemon:
                             cycle_stats["bet365"]["captured_at"] = cap
                         if b_odds.get("feed_synced_at"):
                             cycle_stats["bet365"]["feed_synced_at"] = b_odds.get("feed_synced_at")
-                        if b_odds.get("provider_updated_at"):
-                            cycle_stats["bet365"]["provider_updated_at"] = b_odds.get("provider_updated_at")
-                        cycle_stats["bet365"]["verifiable_odds"] += b_odds.get("verifiable_odds_count", 0)
-                        cycle_stats["bet365"]["unverifiable_odds"] += b_odds.get("unverifiable_odds_count", 0)
+                        b_upd = b_odds.get("provider_updated_at")
+                        if b_upd:
+                            curr_upd = cycle_stats["bet365"].get("provider_updated_at")
+                            if not curr_upd or b_upd > curr_upd:
+                                cycle_stats["bet365"]["provider_updated_at"] = b_upd
+                        # Distinció rigorosa: verifiable_odds reflecteix les quotes utilitzables amb ts confirmat
+                        if b_odds.get("origin_freshness") == "CONFIRMED":
+                            cycle_stats["bet365"]["verifiable_odds"] += cnt
+                        else:
+                            cycle_stats["bet365"]["unverifiable_odds"] += cnt
+                        # raw_feed_odds emmagatzema les quotes contingudes al feed global de MoviOdds per a telemetria
+                        cycle_stats["bet365"]["raw_feed_odds"] += (b_odds.get("verifiable_odds_count", 0) + b_odds.get("unverifiable_odds_count", 0))
                         m_record["odds_bet365_captured_at"] = cap
                         m_record["odds_bet365_polled_at"] = b_odds.get("polled_at")
                         m_record["odds_bet365_provider_updated_at"] = b_odds.get("provider_updated_at")
@@ -821,7 +840,9 @@ class SurebetDaemon:
                         cap = bw_odds.get("captured_at")
                         if cap:
                             cycle_stats["betway"]["captured_at"] = cap
-                            cycle_stats["betway"]["provider_updated_at"] = cap
+                            curr_upd = cycle_stats["betway"].get("provider_updated_at")
+                            if not curr_upd or cap > curr_upd:
+                                cycle_stats["betway"]["provider_updated_at"] = cap
                         m_record["odds_betway_captured_at"] = cap
                         m_record["odds_betway_polled_at"] = cap
                         m_record["odds_betway_provider_updated_at"] = cap
@@ -858,6 +879,7 @@ class SurebetDaemon:
                         provider_updated_at=st.get("provider_updated_at"),
                         verifiable_odds_count=st.get("verifiable_odds", 0),
                         unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        raw_feed_odds_count=st.get("raw_feed_odds", 0),
                         is_historical=st.get("is_historical", False)
                     )
                 elif st["events"] > 0:
@@ -872,6 +894,7 @@ class SurebetDaemon:
                         provider_updated_at=st.get("provider_updated_at"),
                         verifiable_odds_count=st.get("verifiable_odds", 0),
                         unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        raw_feed_odds_count=st.get("raw_feed_odds", 0),
                         is_historical=st.get("is_historical", False)
                     )
                 else:
@@ -887,6 +910,7 @@ class SurebetDaemon:
                         provider_updated_at=st.get("provider_updated_at"),
                         verifiable_odds_count=st.get("verifiable_odds", 0),
                         unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        raw_feed_odds_count=st.get("raw_feed_odds", 0),
                         is_historical=st.get("is_historical", False)
                     )
 
@@ -935,6 +959,50 @@ class SurebetDaemon:
         )
         avg_profit = round(sum(a["profit_pct"] for a in verified_fresh_surebets) / len(verified_fresh_surebets), 2) if verified_fresh_surebets else 0.0
 
+        # Càlcul estructurat de cobertura real i partits multi-casa (Punts 4 i 5)
+        coverage_by_bookmaker = {
+            "winamax": {"matches": 0, "usable_odds": 0, "verifiable_odds": 0, "unverifiable_odds": 0},
+            "bet365": {"matches": 0, "usable_odds": 0, "verifiable_odds": 0, "unverifiable_odds": 0},
+            "betway": {"matches": 0, "usable_odds": 0, "verifiable_odds": 0, "unverifiable_odds": 0}
+        }
+        matches_with_2plus_bookmakers = 0
+        matches_with_3_bookmakers = 0
+
+        for m_rec in evaluated_matches_flat:
+            w_cnt = len(m_rec.get("odds_1x2_winamax", {})) + len(m_rec.get("odds_dc_winamax", {})) + len(m_rec.get("odds_ou25_winamax", {})) + len(m_rec.get("odds_btts_winamax", {}))
+            b_cnt = len(m_rec.get("odds_1x2_bet365", {})) + len(m_rec.get("odds_dc_bet365", {})) + len(m_rec.get("odds_ou25_bet365", {})) + len(m_rec.get("odds_btts_bet365", {}))
+            bw_cnt = len(m_rec.get("odds_1x2_betway", {})) + len(m_rec.get("odds_dc_betway", {})) + len(m_rec.get("odds_ou25_betway", {})) + len(m_rec.get("odds_btts_betway", {}))
+
+            has_w = w_cnt > 0
+            has_b = b_cnt > 0
+            has_bw = bw_cnt > 0
+
+            if has_w:
+                coverage_by_bookmaker["winamax"]["matches"] += 1
+                coverage_by_bookmaker["winamax"]["usable_odds"] += w_cnt
+                coverage_by_bookmaker["winamax"]["verifiable_odds"] += w_cnt
+            if has_b:
+                coverage_by_bookmaker["bet365"]["matches"] += 1
+                coverage_by_bookmaker["bet365"]["usable_odds"] += b_cnt
+                if m_rec.get("odds_bet365_origin_freshness") == "CONFIRMED":
+                    coverage_by_bookmaker["bet365"]["verifiable_odds"] += b_cnt
+                else:
+                    coverage_by_bookmaker["bet365"]["unverifiable_odds"] += b_cnt
+            if has_bw:
+                coverage_by_bookmaker["betway"]["matches"] += 1
+                coverage_by_bookmaker["betway"]["usable_odds"] += bw_cnt
+                coverage_by_bookmaker["betway"]["verifiable_odds"] += bw_cnt
+
+            active_cnt = (1 if has_w else 0) + (1 if has_b else 0) + (1 if has_bw else 0)
+            if active_cnt >= 2:
+                matches_with_2plus_bookmakers += 1
+            if active_cnt >= 3:
+                matches_with_3_bookmakers += 1
+
+        self.coverage_by_bookmaker = coverage_by_bookmaker
+        self.matches_with_2plus_bookmakers = matches_with_2plus_bookmakers
+        self.matches_with_3_bookmakers = matches_with_3_bookmakers
+
         # Estat consolidat de les cases d'apostes amb timestamps independents
         bookmakers_status = {
             "winamax": self.breakers["winamax"].to_dict(now_utc),
@@ -958,7 +1026,10 @@ class SurebetDaemon:
                 "evaluated_matches": len(evaluated_matches_flat),
                 "frequency_category": freq_category,
                 "min_hours_until_kickoff": round(min_hours, 2),
-                "enforce_strict_freshness": self.enforce_strict_freshness
+                "enforce_strict_freshness": self.enforce_strict_freshness,
+                "coverage_by_bookmaker": coverage_by_bookmaker,
+                "matches_with_2plus_bookmakers": matches_with_2plus_bookmakers,
+                "matches_with_3_bookmakers": matches_with_3_bookmakers
             },
             "surebets": verified_fresh_surebets,
             "verified_fresh_surebets": verified_fresh_surebets,

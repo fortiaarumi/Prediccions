@@ -138,3 +138,104 @@ def test_circuit_breaker_and_moviodds_metadata_separation():
     future_utc = now_utc + timedelta(seconds=350)
     d_stale = breaker.to_dict(future_utc)
     assert d_stale["is_historical"] is True
+
+
+def test_multi_bookmaker_coverage_counts_and_usable_odds():
+    """
+    Punt 4: Verificació que el resum de la sessió calcula correctament:
+    - coverage_by_bookmaker (partits i quotes utilitzables per bookmaker)
+    - matches_with_2plus_bookmakers (partits amb cobertura de 2 o més cases)
+    - matches_with_3_bookmakers (partits amb cobertura de les 3 cases)
+    """
+    daemon = SurebetDaemon(offline=True, dry_run=True)
+    now_utc = datetime.now(timezone.utc)
+
+    # 3 partits simulats:
+    # Partit 1: Cobert per Winamax, Bet365 i Betway (3 cases)
+    # Partit 2: Cobert per Winamax i Bet365 (2 cases)
+    # Partit 3: Cobert només per Winamax (1 casa)
+    mock_matches = [
+        {"id": "m1", "home_team": {"name": "H1"}, "away_team": {"name": "A1"}, "diff_hours": 10.0, "date_time": "2026-11-09 19:30:00"},
+        {"id": "m2", "home_team": {"name": "H2"}, "away_team": {"name": "A2"}, "diff_hours": 20.0, "date_time": "2026-11-09 21:00:00"},
+        {"id": "m3", "home_team": {"name": "H3"}, "away_team": {"name": "A3"}, "diff_hours": 30.0, "date_time": "2026-11-10 18:00:00"},
+    ]
+    daemon.get_upcoming_matches_window = MagicMock(return_value=(mock_matches, "NO_UPCOMING", 10.0))
+
+    def mock_winamax(h, a, **kwargs):
+        return {"matched": True, "captured_at": now_utc.isoformat(), "1X2": {"1": 2.0, "X": 3.0, "2": 4.0}}
+
+    def mock_bet365(h, a, **kwargs):
+        if h in ("H1", "H2"):
+            return {
+                "matched": True,
+                "captured_at": now_utc.isoformat(),
+                "provider_updated_at": now_utc.isoformat(),
+                "origin_freshness": "CONFIRMED",
+                "verifiable_odds_count": 800,
+                "unverifiable_odds_count": 0,
+                "1X2": {"1": 2.1, "X": 3.1, "2": 3.9}
+            }
+        return {"matched": False}
+
+    def mock_betway(h, a, **kwargs):
+        if h == "H1":
+            return {"matched": True, "captured_at": now_utc.isoformat(), "1X2": {"1": 2.05, "X": 3.05, "2": 3.95}}
+        return {"matched": False}
+
+    daemon.winamax_scraper.get_match_odds = mock_winamax
+    daemon.bet365_scraper.get_match_odds = mock_bet365
+    daemon.betway_scraper.get_match_odds = mock_betway
+
+    res = daemon.run_cycle(now=now_utc)
+    summary = res.get("summary", {})
+    cov = summary.get("coverage_by_bookmaker", {})
+
+    assert cov["winamax"]["matches"] == 3
+    assert cov["winamax"]["usable_odds"] == 9  # 3 quotes * 3 partits
+    assert cov["bet365"]["matches"] == 2
+    assert cov["bet365"]["usable_odds"] == 6   # 3 quotes * 2 partits
+    assert cov["bet365"]["verifiable_odds"] == 6
+    assert cov["betway"]["matches"] == 1
+    assert cov["betway"]["usable_odds"] == 3
+
+    assert summary["matches_with_2plus_bookmakers"] == 2  # H1 i H2
+    assert summary["matches_with_3_bookmakers"] == 1      # Només H1
+
+    # Verificació de la separació entre feed brut (1600 quotes) i quotes utilitzables de la sessió (6)
+    b365_breaker = res.get("bookmakers_status", {}).get("bet365", {})
+    assert b365_breaker["odds_count"] == 6
+    assert b365_breaker["verifiable_odds_count"] == 6
+    assert b365_breaker["raw_feed_odds_count"] == 1600  # 800 * 2 partits
+
+
+def test_latest_origin_timestamp_retained_across_matches():
+    """
+    Punt 2: Verificació que provider_updated_at conserva el timestamp més recent
+    d'origen entre els partits analitzats, evitant ser sobreescrit pel darrer partit avaluat.
+    """
+    daemon = SurebetDaemon(offline=True, dry_run=True)
+    now_utc = datetime.now(timezone.utc)
+    ts_newer = (now_utc - timedelta(hours=2)).isoformat()
+    ts_older = (now_utc - timedelta(hours=19)).isoformat()
+
+    mock_matches = [
+        {"id": "m1", "home_team": {"name": "MatchNewer"}, "away_team": {"name": "Away1"}, "diff_hours": 10.0},
+        {"id": "m2", "home_team": {"name": "MatchOlder"}, "away_team": {"name": "Away2"}, "diff_hours": 20.0},
+    ]
+    daemon.get_upcoming_matches_window = MagicMock(return_value=(mock_matches, "NO_UPCOMING", 10.0))
+    daemon.winamax_scraper.get_match_odds = MagicMock(return_value={"matched": False})
+    daemon.betway_scraper.get_match_odds = MagicMock(return_value={"matched": False})
+
+    def mock_bet365_ordering(h, a, **kwargs):
+        if h == "MatchNewer":
+            return {"matched": True, "captured_at": now_utc.isoformat(), "provider_updated_at": ts_newer, "origin_freshness": "CONFIRMED", "1X2": {"1": 1.5, "X": 3.5, "2": 5.0}}
+        else:
+            return {"matched": True, "captured_at": now_utc.isoformat(), "provider_updated_at": ts_older, "origin_freshness": "CONFIRMED", "1X2": {"1": 1.8, "X": 3.4, "2": 4.2}}
+
+    daemon.bet365_scraper.get_match_odds = mock_bet365_ordering
+    res = daemon.run_cycle(now=now_utc)
+    b365_status = res.get("bookmakers_status", {}).get("bet365", {})
+
+    # provider_updated_at ha de ser ts_newer (el més recent), no pas ts_older
+    assert b365_status["provider_updated_at"] == ts_newer
+

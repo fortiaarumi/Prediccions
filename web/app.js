@@ -952,6 +952,12 @@ function setupSurebetAgentControls() {
                 if (sData[0].summary && sData[0].summary.bookmakers_status) {
                   if (appData && appData.arbitrage) {
                     appData.arbitrage.bookmakers_status = sData[0].summary.bookmakers_status;
+                    if (sData[0].summary.coverage_by_bookmaker) {
+                      appData.arbitrage.summary = appData.arbitrage.summary || {};
+                      appData.arbitrage.summary.coverage_by_bookmaker = sData[0].summary.coverage_by_bookmaker;
+                      appData.arbitrage.summary.matches_with_2plus_bookmakers = sData[0].summary.matches_with_2plus_bookmakers;
+                      appData.arbitrage.summary.matches_with_3_bookmakers = sData[0].summary.matches_with_3_bookmakers;
+                    }
                     if (sData[0].summary.last_generation) {
                       appData.arbitrage.last_generation = sData[0].summary.last_generation;
                     }
@@ -2619,17 +2625,28 @@ function renderArbitrage() {
         `
         : '';
 
-      const provUpdStr = info.provider_updated_at
-        ? new Date(info.provider_updated_at).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-        : (b.key === 'bet365' ? 'Desconeguda (origen)' : null);
-      const provUpdHtml = provUpdStr
-        ? `
+      let provUpdHtml = '';
+      if (info.provider_updated_at) {
+        const provDate = new Date(info.provider_updated_at);
+        const provTimeStr = provDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const diffMs = Math.max(0, Date.now() - provDate.getTime());
+        const diffH = Math.floor(diffMs / 3600000);
+        const diffM = Math.floor((diffMs % 3600000) / 60000);
+        const ageLabel = diffH > 0 ? `fa ${diffH}h ${diffM}m` : (diffM > 0 ? `fa ${diffM}m` : 'fa <1m');
+        provUpdHtml = `
           <div class="arb-bookie-detail">
-            <span class="detail-label" title="Timestamp real de modificació de la quota a la casa d'apostes (origen)">Actualització origen:</span>
-            <span class="arb-bookie-detail-val font-mono" style="${provUpdStr.includes('Desconeguda') ? 'color: var(--text-muted, #94a3b8);' : ''}">${provUpdStr}</span>
+            <span class="detail-label" title="Timestamp d'origen de la darrera modificació de quota: ${info.provider_updated_at}">Actualització origen:</span>
+            <span class="arb-bookie-detail-val font-mono" title="Data UTC d'origen: ${info.provider_updated_at}">${provTimeStr} (${ageLabel})</span>
           </div>
-        `
-        : '';
+        `;
+      } else if (b.key === 'bet365') {
+        provUpdHtml = `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="La font no proporciona timestamp d'origen per a aquestes quotes">Actualització origen:</span>
+            <span class="arb-bookie-detail-val font-mono" style="color: var(--text-muted, #94a3b8);">Desconeguda</span>
+          </div>
+        `;
+      }
 
       let verifiableHtml = '';
       if (info.verifiable_odds_count != null || info.unverifiable_odds_count != null) {
@@ -2637,8 +2654,18 @@ function renderArbitrage() {
         const uCount = info.unverifiable_odds_count || 0;
         verifiableHtml = `
           <div class="arb-bookie-detail">
-            <span class="detail-label" title="Quotes amb timestamp de variació d'origen vs quotes només amb hora de recepció">Verificabilitat quotes:</span>
+            <span class="detail-label" title="Quotes de la sessió amb timestamp d'origen confirmat vs quotes amb origen desconegut">Verificabilitat quotes:</span>
             <span class="arb-bookie-detail-val font-mono">${vCount} verif. · ${uCount} no verif.</span>
+          </div>
+        `;
+      }
+
+      let rawFeedHtml = '';
+      if (info.raw_feed_odds_count != null && info.raw_feed_odds_count > 0) {
+        rawFeedHtml = `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="Total de línies de quota contingudes al feed global brut dels partits analitzats">Feed global brut:</span>
+            <span class="arb-bookie-detail-val font-mono" style="color: var(--text-muted, #94a3b8);">${Number(info.raw_feed_odds_count).toLocaleString('ca-ES')} quotes</span>
           </div>
         `;
       }
@@ -2681,6 +2708,7 @@ function renderArbitrage() {
             ${feedSyncHtml}
             ${provUpdHtml}
             ${verifiableHtml}
+            ${rawFeedHtml}
           </div>
 
           <div class="arb-card-query-window">
@@ -2691,6 +2719,17 @@ function renderArbitrage() {
         </div>
       `;
     }).join('');
+
+    const cov = summary.coverage_by_bookmaker || {};
+    const covWinamax = cov.winamax ? `${cov.winamax.matches} partits · ${cov.winamax.usable_odds} quotes` : '';
+    const covBet365 = cov.bet365 ? `${cov.bet365.matches} partits · ${cov.bet365.usable_odds} quotes` : '';
+    const covBetway = cov.betway ? `${cov.betway.matches} partits · ${cov.betway.usable_odds} quotes` : '';
+    const multiCov = summary.matches_with_2plus_bookmakers != null
+      ? `<div class="arb-daemon-coverage-bar">
+           <span>🤝 <strong>Cobertura creuada:</strong> ${summary.matches_with_2plus_bookmakers} partits amb quotes de 2 o més cases (${summary.matches_with_3_bookmakers || 0} amb 3 cases)</span>
+           <span>📊 <strong>Quotes utilitzables per casa:</strong> Winamax (${covWinamax || '--'}) · Bet365 (${covBet365 || '--'}) · Betway (${covBetway || '--'})</span>
+         </div>`
+      : '';
 
     const lastGen = arbData.last_generation || (appData.metadata && appData.metadata.generated_at);
     const lastGenDate = lastGen ? new Date(lastGen) : null;
@@ -2703,9 +2742,10 @@ function renderArbitrage() {
 
     bookmakersBar.innerHTML = `
       ${cardsHtml}
+      ${multiCov}
       <div class="arb-daemon-meta">
         <span>📁 <strong>Surebet Snapshot:</strong> Darrera comprovació ${isOldSnapshot ? 'd\'arxiu ' : ''}${lastGenStr}</span>
-        <span>📡 Monitoratge sota demanda des del web: Pendent d'activació</span>
+        <span>📡 Monitoratge sota demanda des del web: Actiu</span>
       </div>
     `;
 
