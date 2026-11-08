@@ -196,6 +196,76 @@ EXECUTE FUNCTION trg_fn_validate_session_integrity();
 -- FUNCIONS RPC PROTEGIDES (SECURITY DEFINER)
 -- =====================================================================
 
+-- 0. Creació controlada de sessió de cerca des del panell web (Només Operadors i Administradors)
+CREATE OR REPLACE FUNCTION create_search_session(p_duration_seconds INT DEFAULT 600)
+RETURNS UUID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+    v_user_role VARCHAR(20);
+    v_session_id UUID;
+    v_active_agent_exists BOOLEAN;
+BEGIN
+    -- 1. Validació d'identitat i rol: només usuaris 'admin' o 'operator' actius
+    SELECT role INTO v_user_role
+    FROM app_users
+    WHERE user_id = auth.uid()
+      AND is_active = true;
+
+    IF v_user_role IS NULL OR v_user_role NOT IN ('admin', 'operator') THEN
+        RAISE EXCEPTION 'Accés denegat: la creació de sessions està reservada a operadors i administradors actius'
+            USING ERRCODE = '42501';
+    END IF;
+
+    -- 2. Validació estricta de la durada (entre 60s i 1800s / 1-30 minuts)
+    IF p_duration_seconds < 60 OR p_duration_seconds > 1800 THEN
+        RAISE EXCEPTION 'La durada de la sessió ha d''estar compresa entre 60 i 1800 segons (1-30 minuts)'
+            USING ERRCODE = '22000';
+    END IF;
+
+    -- 3. Comprovació de disponibilitat d'agents autoritzats
+    SELECT EXISTS (
+        SELECT 1 FROM daemon_agents WHERE is_active = true
+    ) INTO v_active_agent_exists;
+
+    IF NOT v_active_agent_exists THEN
+        RAISE EXCEPTION 'No hi ha cap agent Windows registrat i actiu per gestionar la cerca de surebets'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 4. Prevenció de sessions concurrents o duplicades a la cua
+    IF EXISTS (
+        SELECT 1 FROM surebet_sessions
+        WHERE status IN ('PENDING', 'RUNNING', 'CANCEL_REQUESTED')
+    ) THEN
+        RAISE EXCEPTION 'Ja existeix una sessió de cerca activa o en cua. Espereu que finalitzi o cancel·leu-la.'
+            USING ERRCODE = '23505';
+    END IF;
+
+    -- 5. Inserció controlada: created_by prové exclusivament de auth.uid() al servidor
+    v_session_id := gen_random_uuid();
+    INSERT INTO surebet_sessions (
+        id,
+        created_by,
+        duration_seconds,
+        status,
+        created_at,
+        updated_at
+    ) VALUES (
+        v_session_id,
+        auth.uid(),
+        p_duration_seconds,
+        'PENDING',
+        clock_timestamp(),
+        clock_timestamp()
+    );
+
+    RETURN v_session_id;
+END;
+$$;
+
 -- 1. Reclamació atòmica de la següent tasca pendent
 CREATE OR REPLACE FUNCTION claim_next_pending_session()
 RETURNS TABLE (
@@ -526,6 +596,7 @@ END;
 $$;
 
 -- Permisos estrictes per a les funcions RPC
+REVOKE ALL ON FUNCTION create_search_session(INT) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION claim_next_pending_session() FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION send_session_heartbeat(UUID) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION request_session_cancellation(UUID) FROM PUBLIC, anon;
@@ -533,6 +604,7 @@ REVOKE ALL ON FUNCTION complete_session(UUID, JSONB) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION fail_session(UUID, TEXT) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION publish_session_snapshot(UUID, INT, VARCHAR, VARCHAR, JSONB, JSONB) FROM PUBLIC, anon;
 
+GRANT EXECUTE ON FUNCTION create_search_session(INT) TO authenticated;
 GRANT EXECUTE ON FUNCTION claim_next_pending_session() TO authenticated;
 GRANT EXECUTE ON FUNCTION send_session_heartbeat(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION request_session_cancellation(UUID) TO authenticated;
@@ -591,15 +663,9 @@ USING (
     EXISTS (SELECT 1 FROM app_users WHERE user_id = auth.uid() AND role = 'admin' AND is_active = true)
 );
 
--- 4. surebet_sessions: INSERT (Només administradors o operadors autoritzats)
+-- 4. surebet_sessions: Creació restringida exclusivament a l'RPC create_search_session()
+-- Es retira la política d'INSERT directa perquè les mutacions es fan exclusivament via RPC.
 DROP POLICY IF EXISTS "Creació de sessions reservada a operadors i administradors" ON surebet_sessions;
-CREATE POLICY "Creació de sessions reservada a operadors i administradors"
-ON surebet_sessions FOR INSERT
-TO authenticated
-WITH CHECK (
-    created_by = auth.uid() AND
-    EXISTS (SELECT 1 FROM app_users WHERE user_id = auth.uid() AND role IN ('admin', 'operator') AND is_active = true)
-);
 
 -- 5. surebet_snapshots: SELECT (Només creador de la sessió, agent assignat o admin)
 DROP POLICY IF EXISTS "Lectura de snapshots per propietaris o admin" ON surebet_snapshots;
@@ -639,16 +705,16 @@ REVOKE ALL ON surebet_sessions FROM anon, PUBLIC;
 REVOKE ALL ON surebet_snapshots FROM anon, PUBLIC;
 REVOKE ALL ON surebet_opportunities FROM anon, PUBLIC;
 
--- 2. Concessió exclusiva de lectura i inserció controlada al rol authenticated
+-- 2. Concessió exclusiva de lectura al rol authenticated (les mutacions es fan via RPCs)
 GRANT SELECT ON app_users TO authenticated;
 GRANT SELECT ON daemon_agents TO authenticated;
-GRANT SELECT, INSERT ON surebet_sessions TO authenticated;
+GRANT SELECT ON surebet_sessions TO authenticated;
 GRANT SELECT ON surebet_snapshots TO authenticated;
 GRANT SELECT ON surebet_opportunities TO authenticated;
 GRANT SELECT ON v_active_surebets TO authenticated;
 
 -- 3. Bloqueig absolut d'operacions directes d'escriptura per forçar l'ús de les RPCs
-REVOKE UPDATE, DELETE ON surebet_sessions FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON surebet_sessions FROM authenticated;
 REVOKE INSERT, UPDATE, DELETE ON surebet_snapshots FROM authenticated;
 REVOKE INSERT, UPDATE, DELETE ON surebet_opportunities FROM authenticated;
 REVOKE INSERT, UPDATE, DELETE ON daemon_agents FROM authenticated;

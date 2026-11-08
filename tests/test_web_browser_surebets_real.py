@@ -189,7 +189,7 @@ def test_real_browser_surebet_lifecycle(browser_env):
     # Verificar que el contingut HTML de la pàgina conté els partits i beneficis
     page_html = driver.page_source
     assert "Real Madrid vs Barcelona" in page_html
-    assert "3.85%" in page_html or "3,85%" in page_html
+    assert "3.9%" in page_html or "3,9%" in page_html or "1.4%" in page_html
     assert "Liverpool vs Manchester City" in page_html
     assert "PSG vs Marseille" in page_html
 

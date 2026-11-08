@@ -213,6 +213,16 @@ class SupabaseCoordinator:
     # Cicle de vida de la Cua de Feines (Job Queue)
     # -----------------------------------------------------------------
 
+    def create_search_session(self, duration_seconds: int = 600) -> str:
+        """
+        Crea una sessió de cerca a Supabase mitjançant l'RPC 'create_search_session'.
+        L'usuari s'identifica a través del seu JWT (auth.uid()).
+        """
+        res = self.call_rpc("create_search_session", {"p_duration_seconds": int(duration_seconds)})
+        if not res:
+            raise SupabaseCoordinatorError("No s'ha pogut obtenir l'identificador de sessió creada")
+        return str(res)
+
     def claim_pending_order(self) -> Optional[SearchOrder]:
         """
         Reclama de forma atòmica la següent ordre de cerca pendent a Supabase.

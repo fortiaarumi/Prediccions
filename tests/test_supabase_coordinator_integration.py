@@ -91,6 +91,27 @@ class MockSupabaseServerHandler(BaseHTTPRequestHandler):
                 self.wfile.write(b'{"success": true}')
                 return
 
+        # 2.5 RPC create_search_session
+        if self.path == "/rest/v1/rpc/create_search_session":
+            dur = payload.get("p_duration_seconds", 600)
+            if dur < 60 or dur > 1800:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"message": "La durada ha d\'estar entre 60 i 1800s", "code": "22000"}')
+                return
+
+            new_id = f"sess-rpc-{len(MockSupabaseServerHandler.pending_queue) + 1}"
+            MockSupabaseServerHandler.pending_queue.append({
+                "id": new_id,
+                "duration_seconds": dur
+            })
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(new_id).encode("utf-8"))
+            return
+
         # 3. RPC claim_next_pending_session
         if self.path == "/rest/v1/rpc/claim_next_pending_session":
             self.send_response(200)
@@ -475,5 +496,27 @@ def test_supabase_coordinator_agent_authentication_flow(mock_supabase_server):
     assert jwt_token == "valid_agent_user_jwt_token_12345"
     assert coord.agent_token == "valid_agent_user_jwt_token_12345"
     assert coord._headers["Authorization"] == "Bearer valid_agent_user_jwt_token_12345"
+
+
+def test_supabase_coordinator_create_search_session(mock_supabase_server):
+    """Verifica la creació de sessió mitjançant l'RPC protegida create_search_session."""
+    coord = SupabaseCoordinator(
+        supabase_url=mock_supabase_server,
+        publishable_key="sb_publishable_valid",
+        timeout_seconds=2.0
+    )
+
+    # 1. Creació amb durada vàlida (600 segons)
+    sess_id = coord.create_search_session(duration_seconds=600)
+    assert sess_id.startswith("sess-rpc-")
+
+    # 2. Comprovar que la sessió s'ha afegit a la cua i l'agent la pot reclamar
+    order = coord.claim_pending_order()
+    assert order is not None
+    assert order.session_id == sess_id
+
+    # 3. Rebuig de durada fora de rang (> 1800 segons)
+    with pytest.raises(SupabaseCoordinatorError):
+        coord.create_search_session(duration_seconds=3600)
 
 

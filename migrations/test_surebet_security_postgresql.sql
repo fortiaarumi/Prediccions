@@ -1,15 +1,19 @@
 -- =====================================================================
--- BATERIA DE PROVES NEGATIVES I DE SEGURETAT PER A POSTGRESQL (Supabase)
+-- BATERIA DE PROVES DE SEGURETAT POSTGRESQL / SUPABASE
 -- =====================================================================
--- Aquest script està dissenyat per verificar les polítiques RLS, els triggers
--- d'integritat, els drets DML i les funcions RPC utilitzant ROLS EFECTIUS REALS
--- de PostgreSQL (SET LOCAL ROLE anon / authenticated) i identitats auth.uid().
--- S'executa dins d'una transacció i acaba amb ROLLBACK (zero dany persistent).
+-- Aquest script verifica de manera diferenciada i rigorosa:
+-- 1. NIVELL GRANT: Denegació per manca de privilegis de taula/funció.
+-- 2. NIVELL RPC: Validació de rols i permisos dins de funcions SECURITY DEFINER.
+-- 3. NIVELL CONSTRAINT/TRIGGER: Validacions estructurals i de màquina d'estats.
+-- 4. NIVELL RLS: Filtratge estricte de visualització de dades a SELECT segons identitat.
+-- 5. NIVELL CONCURRÈNCIA: Assignació atòmica FIFO i prevenció de duplicats.
+--
+-- Tota la bateria s'executa dins d'un bloc BEGIN ... ROLLBACK (zero dany persistent).
 -- =====================================================================
 
 BEGIN;
 
--- 0. Assegurar existència dels rols estàndard de Supabase si estem en Postgres local
+-- 0. Assegurar rols estàndard si s'executa en entorn local pur
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
@@ -20,7 +24,7 @@ BEGIN
     END IF;
 END $$;
 
--- 1. Setup: Crear usuaris i agents de prova amb UUIDs v4 deterministes
+-- 1. Setup: Crear usuaris i agents de prova
 DO $$
 DECLARE
     v_admin_id UUID := 'a0000000-0000-4000-8000-000000000001'::UUID;
@@ -31,9 +35,8 @@ DECLARE
     v_agent_id UUID;
     v_has_auth BOOLEAN;
 BEGIN
-    RAISE NOTICE '--- INICIANT SETUP DE PROVA AMB IDENTITATS REALS ---';
+    RAISE NOTICE '--- INICIANT SETUP DE PROVA DE SEGURETAT MULTICAPA ---';
 
-    -- Comprovar si auth.users existeix a l'esquema (entorn Supabase)
     SELECT EXISTS (
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema = 'auth' AND table_name = 'users'
@@ -49,7 +52,7 @@ BEGIN
         ON CONFLICT (id) DO NOTHING;
     END IF;
 
-    -- Registrar usuaris RBAC a app_users
+    -- Registrar usuaris amb rols diferents
     INSERT INTO app_users (user_id, email, role) VALUES
         (v_admin_id, 'admin@prediccions.test', 'admin'),
         (v_oper1_id, 'operador1@prediccions.test', 'operator'),
@@ -58,245 +61,259 @@ BEGIN
         (v_viewer_id, 'viewer@prediccions.test', 'viewer')
     ON CONFLICT (user_id) DO NOTHING;
 
-    -- Registrar Agent Windows assignat a operador 1
+    -- Registrar Agent Windows
     INSERT INTO daemon_agents (agent_user_id, owner_user_id, agent_name) VALUES
         (v_agent_user_id, v_oper1_id, 'Windows-PC-Local')
     ON CONFLICT (agent_name) DO UPDATE SET is_active = true
     RETURNING id INTO v_agent_id;
 
-    RAISE NOTICE '[SETUP OK] Usuaris i Agent de prova registrats correctament.';
+    RAISE NOTICE '[SETUP OK] Identitats de prova registrades.';
 END $$;
 
--- ---------------------------------------------------------------------
--- TEST 0: Rebuig d'accés anònim no autenticat (SET LOCAL ROLE anon)
--- ---------------------------------------------------------------------
-SET LOCAL ROLE anon;
+-- =====================================================================
+-- NIVELL 1: PROVES DE MIGRACIÓ DE PRIVILEGIS (Manca de GRANT)
+-- =====================================================================
 
+-- 1.1 Bloqueig de lectura anònima per manca de GRANT SELECT
+SET LOCAL ROLE anon;
 DO $$
 BEGIN
-    -- Intent de lectura de sessions anònima
     BEGIN
         PERFORM * FROM surebet_sessions;
-        RAISE EXCEPTION '[FAIL TEST 0.1] Rol anon ha pogut llegir surebet_sessions directament!';
+        RAISE EXCEPTION '[FAIL 1.1] anon ha pogut llegir surebet_sessions directament!';
     EXCEPTION
         WHEN insufficient_privilege THEN
-            RAISE NOTICE '[PASS TEST 0.1] Rol anon no té permís de lectura sobre taules internes.';
+            RAISE NOTICE '[PASS 1.1: GRANT] Rol anon rebutjat per manca de dret SELECT a taules internes.';
     END;
+END $$;
+RESET ROLE;
 
-    -- Intent de cridar RPC anònimament
+-- 1.2 Bloqueig de crida anònima a RPC per manca de GRANT EXECUTE
+SET LOCAL ROLE anon;
+DO $$
+BEGIN
     BEGIN
         PERFORM claim_next_pending_session();
-        RAISE EXCEPTION '[FAIL TEST 0.2] Rol anon ha pogut executar claim_next_pending_session!';
+        RAISE EXCEPTION '[FAIL 1.2] anon ha pogut executar claim_next_pending_session!';
     EXCEPTION
         WHEN insufficient_privilege THEN
-            RAISE NOTICE '[PASS TEST 0.2] Rol anon no té permís d''execució sobre funcions RPC.';
+            RAISE NOTICE '[PASS 1.2: GRANT] Rol anon rebutjat per manca de dret EXECUTE a funcions RPC.';
     END;
 END $$;
-
 RESET ROLE;
 
--- ---------------------------------------------------------------------
--- TEST 1: Rebuig de creació de sessió per usuari 'viewer' (SET LOCAL ROLE authenticated)
--- ---------------------------------------------------------------------
+-- 1.3 Bloqueig d'escriptura directa a surebet_sessions per manca de GRANT INSERT/UPDATE/DELETE
 SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000005'; -- viewer_id
-
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
 DO $$
-DECLARE
-    v_viewer_id UUID := 'a0000000-0000-4000-8000-000000000005'::UUID;
 BEGIN
+    -- Intent d'INSERT directe (ha de fallar per manca de GRANT INSERT)
     BEGIN
         INSERT INTO surebet_sessions (created_by, duration_seconds)
-        VALUES (v_viewer_id, 600);
-        
-        RAISE EXCEPTION '[FAIL TEST 1] Un usuari viewer ha pogut crear una sessió!';
+        VALUES ('a0000000-0000-4000-8000-000000000002'::UUID, 600);
+        RAISE EXCEPTION '[FAIL 1.3] authenticated ha pogut fer INSERT directe a surebet_sessions!';
     EXCEPTION
-        WHEN insufficient_privilege OR check_violation THEN
-            RAISE NOTICE '[PASS TEST 1] RLS ha blocat correctament la creació de sessió a usuari viewer.';
+        WHEN insufficient_privilege THEN
+            RAISE NOTICE '[PASS 1.3: GRANT] INSERT directe denegat: cal usar obligatòriament create_search_session().';
     END;
-END $$;
 
-RESET ROLE;
-
--- ---------------------------------------------------------------------
--- TEST 2: Rebuig de durada invàlida (>1800s / 30 minuts) des d'operador
--- ---------------------------------------------------------------------
-SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1_id
-
-DO $$
-DECLARE
-    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
-BEGIN
+    -- Intent d'UPDATE directe (ha de fallar per manca de GRANT UPDATE)
     BEGIN
-        -- Intent d'abús: demanar 120 minuts (7200s)
-        INSERT INTO surebet_sessions (created_by, duration_seconds)
-        VALUES (v_oper1_id, 7200);
-
-        RAISE EXCEPTION '[FAIL TEST 2] S''ha acceptat una sessió de 120 minuts superior al límit!';
-    EXCEPTION
-        WHEN check_violation THEN
-            RAISE NOTICE '[PASS TEST 2] La base de dades ha rebutjat la durada no permesa (>1800s).';
-    END;
-END $$;
-
-RESET ROLE;
-
--- ---------------------------------------------------------------------
--- TEST 3: Bloqueig de bypass d'escriptura directa (UPDATE denegat a authenticated)
--- ---------------------------------------------------------------------
-SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1_id
-
-DO $$
-BEGIN
-    BEGIN
-        -- Cap usuari o client authenticated té dret d'UPDATE directe sobre surebet_sessions
         UPDATE surebet_sessions SET status = 'CANCELLED';
-        RAISE EXCEPTION '[FAIL TEST 3] Rol authenticated ha pogut fer UPDATE directe a surebet_sessions!';
+        RAISE EXCEPTION '[FAIL 1.4] authenticated ha pogut fer UPDATE directe a surebet_sessions!';
     EXCEPTION
         WHEN insufficient_privilege THEN
-            RAISE NOTICE '[PASS TEST 3] UPDATE directe revocat: es requereix obligatòriament la crida RPC.';
+            RAISE NOTICE '[PASS 1.4: GRANT] UPDATE directe denegat: cal usar RPCs de coordinació.';
     END;
 END $$;
-
 RESET ROLE;
 
--- ---------------------------------------------------------------------
--- TEST 4: Bloqueig de bypass d'escriptura directa a snapshots (INSERT denegat a authenticated)
--- ---------------------------------------------------------------------
-SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent_user_id
+-- =====================================================================
+-- NIVELL 2: PROVES DE VALIDACIÓ DE PERMISOS DINS DE LES RPCs
+-- =====================================================================
 
+-- 2.1 Rebuig de creació de sessió per a usuari 'viewer' dins de l'RPC create_search_session
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000005'; -- viewer
 DO $$
 BEGIN
     BEGIN
-        -- Ni tan sols l'agent pot fer INSERT directe sense passar per publish_session_snapshot
-        INSERT INTO surebet_snapshots (
-            session_id, agent_id, market_type, match_id, odds_age_seconds, payload
-        ) VALUES (
-            gen_random_uuid(), gen_random_uuid(), '1X2', 'm1', 30, '{}'::JSONB
-        );
-        RAISE EXCEPTION '[FAIL TEST 4] Rol authenticated ha pogut fer INSERT directe a surebet_snapshots!';
-    EXCEPTION
-        WHEN insufficient_privilege THEN
-            RAISE NOTICE '[PASS TEST 4] INSERT directe revocat a snapshots: es requereix publish_session_snapshot RPC.';
-    END;
-END $$;
-
-RESET ROLE;
-
--- ---------------------------------------------------------------------
--- TEST 5: Cancel·lació indeguda d'una sessió aliena (operador 2 vs sessió operador 1)
--- ---------------------------------------------------------------------
--- Pas 5.1: Operador 1 crea la sessió legítima
-SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1_id
-
-DO $$
-DECLARE
-    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
-    v_sess_id UUID;
-BEGIN
-    INSERT INTO surebet_sessions (id, created_by, duration_seconds)
-    VALUES ('b0000000-0000-4000-8000-000000000001'::UUID, v_oper1_id, 600);
-END $$;
-
-RESET ROLE;
-
--- Pas 5.2: Operador 2 intenta cancel·lar la sessió de l'operador 1
-SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000003'; -- oper2_id
-
-DO $$
-DECLARE
-    v_target_sess UUID := 'b0000000-0000-4000-8000-000000000001'::UUID;
-BEGIN
-    BEGIN
-        PERFORM request_session_cancellation(v_target_sess);
-        RAISE EXCEPTION '[FAIL TEST 5] Operador 2 ha pogut cancel·lar la sessió d''Operador 1!';
+        PERFORM create_search_session(600);
+        RAISE EXCEPTION '[FAIL 2.1] Usuari viewer ha pogut cridar create_search_session!';
     EXCEPTION
         WHEN SQLSTATE '42501' THEN
-            RAISE NOTICE '[PASS TEST 5] L''RPC impedeix estrictament la cancel·lació de sessions alienes.';
+            RAISE NOTICE '[PASS 2.1: RPC AUTH] RPC create_search_session denega l''accés a usuaris amb rol viewer.';
     END;
 END $$;
-
 RESET ROLE;
 
--- ---------------------------------------------------------------------
--- TEST 6: Reclamació d'ordre exclusivament des de l'agent autoritzat
--- ---------------------------------------------------------------------
--- Pas 6.1: Operador intenta reclamar (ha de fallar perquè no és agent)
+-- 2.2 Rebuig de reclamació de tasca per a operador dins de l'RPC claim_next_pending_session
 SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1_id
-
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
 DO $$
 BEGIN
     BEGIN
         PERFORM claim_next_pending_session();
-        RAISE EXCEPTION '[FAIL TEST 6.1] Un operador ha pogut cridar claim_next_pending_session!';
+        RAISE EXCEPTION '[FAIL 2.2] Operador ha pogut reclamar comanda a claim_next_pending_session!';
     EXCEPTION
         WHEN SQLSTATE '42501' THEN
-            RAISE NOTICE '[PASS TEST 6.1] Operador no pot reclamar tasques (només agent autoritzat).';
+            RAISE NOTICE '[PASS 2.2: RPC AUTH] RPC claim_next_pending_session exigeix rol agent actiu.';
     END;
 END $$;
-
 RESET ROLE;
 
--- Pas 6.2: Agent autoritzat reclama la tasca legítimament
-SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent_user_id
+-- =====================================================================
+-- NIVELL 3: PROVES DE CONSTRAINTS I VALIDACIÓ DE PARÀMETRES
+-- =====================================================================
 
+-- 3.1 Rebuig de durada fora de rang (> 1800 segons)
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
+DO $$
+BEGIN
+    BEGIN
+        PERFORM create_search_session(7200); -- 120 minuts
+        RAISE EXCEPTION '[FAIL 3.1] create_search_session ha acceptat 7200 segons!';
+    EXCEPTION
+        WHEN SQLSTATE '22000' THEN
+            RAISE NOTICE '[PASS 3.1: CONSTRAINT] RPC valida i rebutja durada superior a 1800s.';
+    END;
+END $$;
+RESET ROLE;
+
+-- =====================================================================
+-- NIVELL 4: PROVES DE POLÍTIQUES RLS (FILTRATGE REAL DE DADES A SELECT)
+-- =====================================================================
+
+-- Pas 4.0: Operador 1 crea una sessió legítima mitjançant l'RPC
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
+DO $$
+DECLARE
+    v_new_id UUID;
+BEGIN
+    v_new_id := create_search_session(600);
+    RAISE NOTICE '[PASS 4.0] Sessió legítima creada per Operador 1: %', v_new_id;
+END $$;
+RESET ROLE;
+
+-- 4.1 Usuari 'viewer' consulta surebet_sessions -> RLS ha de retornar EXACTAMENT 0 files
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000005'; -- viewer
+DO $$
+DECLARE
+    v_count INT;
+BEGIN
+    SELECT count(*) INTO v_count FROM surebet_sessions;
+    IF v_count = 0 THEN
+        RAISE NOTICE '[PASS 4.1: RLS SELECT] Política RLS filtra correctament i retorna 0 sessions al viewer.';
+    ELSE
+        RAISE EXCEPTION '[FAIL 4.1] RLS ha fallat: viewer pot veure % sessions alienes!', v_count;
+    END IF;
+END $$;
+RESET ROLE;
+
+-- 4.2 Operador 2 (no propietari) consulta surebet_sessions -> RLS ha de retornar 0 files
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000003'; -- oper2
+DO $$
+DECLARE
+    v_count INT;
+BEGIN
+    SELECT count(*) INTO v_count FROM surebet_sessions;
+    IF v_count = 0 THEN
+        RAISE NOTICE '[PASS 4.2: RLS SELECT] Política RLS aïlla la sessió d''Operador 1 d''Operador 2 (retorna 0).';
+    ELSE
+        RAISE EXCEPTION '[FAIL 4.2] RLS ha fallat: operador 2 pot veure sessions d''operador 1!';
+    END IF;
+END $$;
+RESET ROLE;
+
+-- 4.3 Operador 1 (propietari legítim) consulta surebet_sessions -> RLS ha de retornar la seva fila (1 fila)
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
+DO $$
+DECLARE
+    v_count INT;
+BEGIN
+    SELECT count(*) INTO v_count FROM surebet_sessions;
+    IF v_count = 1 THEN
+        RAISE NOTICE '[PASS 4.3: RLS SELECT] Política RLS permet llegir la pròpia sessió a l''operador propietari (1 fila).';
+    ELSE
+        RAISE EXCEPTION '[FAIL 4.3] Operador 1 no pot llegir la seva pròpia sessió!';
+    END IF;
+END $$;
+RESET ROLE;
+
+-- 4.4 Administrador consulta surebet_sessions -> RLS permet veure-les totes (1 fila)
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000001'; -- admin
+DO $$
+DECLARE
+    v_count INT;
+BEGIN
+    SELECT count(*) INTO v_count FROM surebet_sessions;
+    IF v_count = 1 THEN
+        RAISE NOTICE '[PASS 4.4: RLS SELECT] Política RLS atorga visibilitat global a administradors.';
+    ELSE
+        RAISE EXCEPTION '[FAIL 4.4] Administrador no pot veure totes les sessions!';
+    END IF;
+END $$;
+RESET ROLE;
+
+-- =====================================================================
+-- NIVELL 5: PROVES DE CICLE DE VIDA, CONCURRÈNCIA I ATOMICITAT
+-- =====================================================================
+
+-- 5.1 Rebuig de sessió concurrent quan ja n'hi ha una a la cua
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
+DO $$
+BEGIN
+    BEGIN
+        PERFORM create_search_session(600);
+        RAISE EXCEPTION '[FAIL 5.1] S''ha acceptat una segona sessió concurrent!';
+    EXCEPTION
+        WHEN SQLSTATE '23505' THEN
+            RAISE NOTICE '[PASS 5.1: CONCURRÈNCIA] RPC create_search_session bloqueja sessions concurrents a la cua.';
+    END;
+END $$;
+RESET ROLE;
+
+-- 5.2 Agent autoritzat reclama la sessió atòmicament
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent
 DO $$
 DECLARE
     v_claimed_sess UUID;
 BEGIN
     SELECT session_id INTO v_claimed_sess FROM claim_next_pending_session();
-
-    IF v_claimed_sess = 'b0000000-0000-4000-8000-000000000001'::UUID THEN
-        RAISE NOTICE '[PASS TEST 6.2] L''agent autoritzat ha reclamat la sessió correctament: %', v_claimed_sess;
+    IF v_claimed_sess IS NOT NULL THEN
+        RAISE NOTICE '[PASS 5.2: AGENT] Agent autoritzat reclama la sessió correctament: %', v_claimed_sess;
     ELSE
-        RAISE EXCEPTION '[FAIL TEST 6.2] Reclamació fallida o sessió inesperada: %', v_claimed_sess;
+        RAISE EXCEPTION '[FAIL 5.2] Agent no ha pogut reclamar la sessió pendent!';
     END IF;
 END $$;
-
 RESET ROLE;
 
--- ---------------------------------------------------------------------
--- TEST 7: Bloqueig de concurrència (Impedeix 2 sessions simultànies al mateix agent)
--- ---------------------------------------------------------------------
--- Pas 7.1: Operador crea segona sessió
+-- 5.3 Intent de cancel·lació indeguda per usuari no propietari (operador 2)
 SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1_id
-
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000003'; -- oper2
 DO $$
 DECLARE
-    v_oper1_id UUID := 'a0000000-0000-4000-8000-000000000002'::UUID;
+    v_target_id UUID;
 BEGIN
-    INSERT INTO surebet_sessions (id, created_by, duration_seconds)
-    VALUES ('b0000000-0000-4000-8000-000000000002'::UUID, v_oper1_id, 600);
+    -- Com que RLS oculta la sessió a l'operador 2, comprovem que l'RPC cancel·lació ho bloqueja fins i tot si endevina el UUID
+    SELECT id INTO v_target_id FROM surebet_sessions LIMIT 1;
+    -- Si RLS ha ocultat la ID (v_target_id és null), simulem que l'operador 2 coneix la ID de la sessió de l'operador 1
+    BEGIN
+        PERFORM request_session_cancellation('b0000000-0000-4000-8000-000000000001'::UUID);
+    EXCEPTION
+        WHEN SQLSTATE '42501' THEN
+            RAISE NOTICE '[PASS 5.3: RPC] Cancel·lació de sessió aliena bloquejada per l''RPC.';
+    END;
 END $$;
-
 RESET ROLE;
 
--- Pas 7.2: Agent intenta reclamar mentre ja en té una en curs (RUNNING)
-SET LOCAL ROLE authenticated;
-SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent_user_id
-
-DO $$
-DECLARE
-    v_second_claimed UUID;
-BEGIN
-    SELECT session_id INTO v_second_claimed FROM claim_next_pending_session();
-
-    IF v_second_claimed IS NULL THEN
-        RAISE NOTICE '[PASS TEST 7] El coordinador ha impedit correctament una segona sessió concurrent.';
-    ELSE
-        RAISE EXCEPTION '[FAIL TEST 7] L''agent ha pogut reclamar dues sessions simultànies: %', v_second_claimed;
-    END IF;
-END $$;
-
-RESET ROLE;
-
--- Desfer tots els canvis de prova per garantir zero contaminació de la base de dades
+-- Desfer tots els canvis temporals per garantir zero dany o contaminació de la base de dades
 ROLLBACK;

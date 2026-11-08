@@ -596,17 +596,41 @@ function setupSurebetAgentControls() {
     const durationMins = Math.round(duration / 60);
 
     try {
-      const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify({ duration_minutes: durationMins, user_id: 'user_local_web' })
-      });
+      let sessionData;
+      if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+        // Mode Supabase remot: crida a la funció RPC protegida create_search_session
+        const rpcUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/rpc/create_search_session`;
+        const rpcHeaders = {
+          'apikey': window.SUPABASE_CONFIG.publishableKey,
+          'Content-Type': 'application/json'
+        };
+        if (window.SUPABASE_CONFIG.userJwt) {
+          rpcHeaders['Authorization'] = `Bearer ${window.SUPABASE_CONFIG.userJwt}`;
+        }
+        const rpcResp = await fetch(rpcUrl, {
+          method: 'POST',
+          headers: rpcHeaders,
+          body: JSON.stringify({ p_duration_seconds: duration })
+        });
+        if (!rpcResp.ok) {
+          const errText = await rpcResp.text();
+          throw new Error(`Error creant sessió a Supabase (${rpcResp.status}): ${errText}`);
+        }
+        const createdId = await rpcResp.json();
+        sessionData = { session_id: createdId, status: 'PENDING' };
+      } else {
+        const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ duration_minutes: durationMins, user_id: 'user_local_web' })
+        });
 
-      if (!resp.ok) throw new Error("No s'ha pogut crear la sessió al coordinador");
-      const sessionData = await resp.json();
+        if (!resp.ok) throw new Error("No s'ha pogut crear la sessió al coordinador");
+        sessionData = await resp.json();
+      }
 
       _activeSurebetSession = {
         id: sessionData.session_id,
@@ -687,20 +711,40 @@ function setupSurebetAgentControls() {
         updateJobUI(_activeSurebetSession);
         showToast("Sol·licitant aturada cooperativa a l'Agent...", "warning");
 
-        const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions/${_activeSurebetSession.id}/cancel`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          body: JSON.stringify({ user_id: 'user_local_web' })
-        });
-
-        if (resp.ok) {
-          const resData = await resp.json();
-          _activeSurebetSession.status = resData.status || 'CANCELLED';
+        if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+          // Mode Supabase remot: crida a l'RPC request_session_cancellation
+          const cancelUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/rpc/request_session_cancellation`;
+          const cancelHeaders = {
+            'apikey': window.SUPABASE_CONFIG.publishableKey,
+            'Content-Type': 'application/json'
+          };
+          if (window.SUPABASE_CONFIG.userJwt) {
+            cancelHeaders['Authorization'] = `Bearer ${window.SUPABASE_CONFIG.userJwt}`;
+          }
+          await fetch(cancelUrl, {
+            method: 'POST',
+            headers: cancelHeaders,
+            body: JSON.stringify({ p_session_id: _activeSurebetSession.id })
+          });
+          _activeSurebetSession.status = 'CANCEL_REQUESTED';
           updateJobUI(_activeSurebetSession);
-          showToast("Cerca aturada correctament", "info");
+          showToast("Aturada de cerca sol·licitada a Supabase", "info");
+        } else {
+          const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions/${_activeSurebetSession.id}/cancel`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ user_id: 'user_local_web' })
+          });
+
+          if (resp.ok) {
+            const resData = await resp.json();
+            _activeSurebetSession.status = resData.status || 'CANCELLED';
+            updateJobUI(_activeSurebetSession);
+            showToast("Cerca aturada correctament", "info");
+          }
         }
       } catch (e) {
         showToast("Error comunicant aturada a l'Agent", "error");
