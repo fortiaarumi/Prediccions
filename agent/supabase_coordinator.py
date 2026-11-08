@@ -81,6 +81,8 @@ class SupabaseCoordinator:
         token_provider: Optional[Any] = None,
         supabase_key: Optional[str] = None,  # Compatibilitat amb crides prèvies
         publishable_key: Optional[str] = None, # Suport explícit al format modern de Supabase
+        agent_email: Optional[str] = None,
+        agent_password: Optional[str] = None,
     ):
         pub_key = publishable_key or supabase_anon_key or supabase_key
         if not pub_key:
@@ -112,6 +114,9 @@ class SupabaseCoordinator:
             "User-Agent": f"Prediccions-Agent/{self.agent_name}"
         }
         self._update_auth_header()
+
+        if agent_email and agent_password and not self.agent_token:
+            self.authenticate_agent_user(agent_email, agent_password)
 
     def _update_auth_header(self) -> None:
         """Configura la capçalera Authorization: només s'envia Bearer JWT si hi ha sessió d'usuari o clau JWT."""

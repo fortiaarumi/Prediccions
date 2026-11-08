@@ -132,6 +132,13 @@ def cmd_surebet_agent(dry_run: bool = False):
     from agent.windows_agent import WindowsSurebetAgent
     from agent.coordinator import MockCoordinator
 
+    # Carregar variables de fitxer .env local si existeix (ignorat per git)
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except Exception:
+        pass
+
     supabase_url = os.environ.get("SUPABASE_URL", "").strip()
     supabase_key = os.environ.get("SUPABASE_PUBLISHABLE_KEY", os.environ.get("SUPABASE_KEY", "")).strip()
     agent_email = os.environ.get("SUREBET_AGENT_EMAIL", "").strip()
@@ -149,24 +156,39 @@ def cmd_surebet_agent(dry_run: bool = False):
         coord = SupabaseCoordinator(
             supabase_url=supabase_url,
             publishable_key=supabase_key,
-            agent_email=agent_email or None,
-            agent_password=agent_password or None
+            agent_name=agent_id
         )
 
         if agent_email and agent_password:
             print(f"[*] Autenticant agent com a '{agent_email}' a Supabase Auth...")
-            coord.authenticate_agent_user(agent_email, agent_password)
-            print("[+] Autenticació d'agent satisfactòria via JWT (token generat pel servidor).")
+            try:
+                coord.authenticate_agent_user(agent_email, agent_password)
+                print("[+] Autenticació d'agent satisfactòria via JWT (token generat pel servidor).")
+            except Exception as e:
+                print(f"[!] Error d'autenticació a Supabase: {e}")
+                if dry_run:
+                    print("\n[!] Mode --dry-run finalitzat amb error d'autenticació.")
+                    print("=" * 65)
+                    return
+                raise
         else:
             print("[*] Avís: sense SUREBET_AGENT_EMAIL / SUREBET_AGENT_PASSWORD; utilitzant clau pública.")
 
         # Enviar batec de vida en repòs
         print("[*] Enviant batec de presència (heartbeat) a PostgreSQL...")
-        hb_res = coord.send_heartbeat()
-        if hb_res.alive:
-            print("[+] [HEARTBEAT] Batec de vida registrat satisfactòriament a Supabase per a l'agent.")
-        else:
-            print("[!] Avís: No s'ha pogut registrar el batec (revisa que l'agent estigui registrat a daemon_agents).")
+        try:
+            hb_res = coord.send_heartbeat()
+            if hb_res.alive:
+                print("[+] [HEARTBEAT] Batec de vida registrat satisfactòriament a Supabase per a l'agent.")
+            else:
+                print("[!] Avís: No s'ha pogut registrar el batec (revisa que l'agent estigui registrat a daemon_agents).")
+        except Exception as e:
+            print(f"[!] Error enviant batec a Supabase: {e}")
+            if dry_run:
+                print("\n[!] Mode --dry-run finalitzat amb error en el batec.")
+                print("=" * 65)
+                return
+            raise
 
         if dry_run:
             print("\n[+] Mode --dry-run: comprovació de connexió remota completada.")
