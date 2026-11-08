@@ -250,10 +250,13 @@ class WindowsSurebetAgent:
                 cycle_count += 1
                 cycle_res = daemon.run_cycle()
                 surebets = cycle_res.get("surebets", [])
+                near_arbs = cycle_res.get("near_arbs", [])
 
-                # 4. Publicar snapshots a l'SnapshotStore (amb historial de 30 minuts)
+                # 4. Publicar oportunitats accionables (Surebets i Near-Arbs)
                 now_utc = datetime.now(timezone.utc)
-                for arb in surebets:
+                opps_to_publish = surebets + near_arbs
+                published_count = 0
+                for arb in opps_to_publish:
                     snap_record = self.snapshot_store.add_opportunity(
                         session_id=session_id,
                         cycle_index=cycle_count,
@@ -262,8 +265,9 @@ class WindowsSurebetAgent:
                     )
                     if snap_record:
                         self.coordinator.publish_snapshot(session_id, snap_record)
+                        published_count += 1
 
-                print(f"   [Cicle #{cycle_count}] Oportunitats registrades a l'historial de 30 min: {len(surebets)}.")
+                print(f"   [Cicle #{cycle_count}] Detectat: {len(surebets)} surebets (>0%), {len(near_arbs)} near-arbs | Publicats a Supabase: {published_count}.")
 
                 # Pauses curtes atenent cancel·lacions ràpides
                 sleep_target = min(5, int(max_duration_seconds - elapsed))

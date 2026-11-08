@@ -867,6 +867,8 @@ class SurebetDaemon:
 
         print(f"✅ Resultats: {len(verified_fresh_surebets)} Verificades (≤60s) | {len(potentially_stale_surebets)} Potencialment Desactualitzades (1-5m) | {len(recent_historical_surebets)} Històriques Recents (5-30m) | {len(near_arbs)} Near-Arbs")
         print(f"⏱️  Cicle completat en {arbitrage_payload['cycle_duration_seconds']}s. Proper cicle en {policy['cycle_min']}s.")
+        if not scrapers_to_run:
+            print(f"ℹ️  [Freqüència] Reavaluació en memòria ({arbitrage_payload['cycle_duration_seconds']}s): Scrapers en repòs per política de refresc ({policy['cycle_min']}s).")
 
         # 5. Actualització atòmica a web/data/data.json
         if not self.dry_run:
