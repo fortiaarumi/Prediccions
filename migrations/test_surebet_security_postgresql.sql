@@ -32,6 +32,7 @@ DECLARE
     v_oper2_id UUID := 'a0000000-0000-4000-8000-000000000003'::UUID;
     v_agent_user_id UUID := 'a0000000-0000-4000-8000-000000000004'::UUID;
     v_viewer_id UUID := 'a0000000-0000-4000-8000-000000000005'::UUID;
+    v_agent2_id UUID := 'a0000000-0000-4000-8000-000000000006'::UUID;
     v_agent_id UUID;
     v_has_auth BOOLEAN;
 BEGIN
@@ -48,6 +49,7 @@ BEGIN
             (v_oper1_id, 'operador1@prediccions.test'),
             (v_oper2_id, 'operador2@prediccions.test'),
             (v_agent_user_id, 'agent_win@prediccions.test'),
+            (v_agent2_id, 'agent2@prediccions.test'),
             (v_viewer_id, 'viewer@prediccions.test')
         ON CONFLICT (id) DO NOTHING;
     END IF;
@@ -58,7 +60,7 @@ BEGIN
         (v_oper1_id, 'operador1@prediccions.test', 'operator'),
         (v_oper2_id, 'operador2@prediccions.test', 'operator'),
         (v_agent_user_id, 'agent_win@prediccions.test', 'agent'),
-        ('a0000000-0000-4000-8000-000000000006'::UUID, 'agent2@prediccions.test', 'agent'),
+        (v_agent2_id, 'agent2@prediccions.test', 'agent'),
         (v_viewer_id, 'viewer@prediccions.test', 'viewer')
     ON CONFLICT (user_id) DO NOTHING;
 
