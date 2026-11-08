@@ -545,10 +545,19 @@ GRANT EXECUTE ON FUNCTION publish_session_snapshot(UUID, INT, VARCHAR, VARCHAR, 
 -- =====================================================================
 
 ALTER TABLE app_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE app_users FORCE ROW LEVEL SECURITY;
+
 ALTER TABLE daemon_agents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE daemon_agents FORCE ROW LEVEL SECURITY;
+
 ALTER TABLE surebet_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE surebet_sessions FORCE ROW LEVEL SECURITY;
+
 ALTER TABLE surebet_snapshots ENABLE ROW LEVEL SECURITY;
+ALTER TABLE surebet_snapshots FORCE ROW LEVEL SECURITY;
+
 ALTER TABLE surebet_opportunities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE surebet_opportunities FORCE ROW LEVEL SECURITY;
 
 -- 1. app_users
 CREATE POLICY "Usuari consulta el seu propi rol"
@@ -610,12 +619,26 @@ USING (
 -- =====================================================================
 -- RESTRICCIONS EXPLÍCITES DE DRETS DE TAULA (Principi de Mínim Privilegi)
 -- =====================================================================
--- Impedeix absolutament que cap client pugui executar operacions directes d'UPDATE
--- o DELETE per saltar-se les RPCs o manipular camps de control de concurrència.
-REVOKE UPDATE, DELETE ON surebet_sessions FROM PUBLIC, authenticated, anon;
-REVOKE INSERT, UPDATE, DELETE ON surebet_snapshots FROM PUBLIC, authenticated, anon;
-REVOKE INSERT, UPDATE, DELETE ON surebet_opportunities FROM PUBLIC, authenticated, anon;
-REVOKE INSERT, UPDATE, DELETE ON daemon_agents FROM PUBLIC, authenticated, anon;
-REVOKE INSERT, UPDATE, DELETE ON app_users FROM PUBLIC, authenticated, anon;
+-- 1. Revocació absoluta d'accés anònim no autenticat a les taules internes
+REVOKE ALL ON app_users FROM anon, PUBLIC;
+REVOKE ALL ON daemon_agents FROM anon, PUBLIC;
+REVOKE ALL ON surebet_sessions FROM anon, PUBLIC;
+REVOKE ALL ON surebet_snapshots FROM anon, PUBLIC;
+REVOKE ALL ON surebet_opportunities FROM anon, PUBLIC;
+
+-- 2. Concessió exclusiva de lectura i inserció controlada al rol authenticated
+GRANT SELECT ON app_users TO authenticated;
+GRANT SELECT ON daemon_agents TO authenticated;
+GRANT SELECT, INSERT ON surebet_sessions TO authenticated;
+GRANT SELECT ON surebet_snapshots TO authenticated;
+GRANT SELECT ON surebet_opportunities TO authenticated;
+GRANT SELECT ON v_active_surebets TO authenticated;
+
+-- 3. Bloqueig absolut d'operacions directes d'escriptura per forçar l'ús de les RPCs
+REVOKE UPDATE, DELETE ON surebet_sessions FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON surebet_snapshots FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON surebet_opportunities FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON daemon_agents FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON app_users FROM authenticated;
 
 
