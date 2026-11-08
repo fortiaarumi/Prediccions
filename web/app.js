@@ -967,8 +967,8 @@ function setupSurebetAgentControls() {
               }
             }
 
-            // 3. Oportunitats actives des de la vista v_active_surebets amb FILTRATGE SERVIDOR
-            const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?matchup=not.ilike.*TEST*&matchup=not.ilike.*SIMULAC*&select=*`;
+            // 3. Oportunitats actives des de la vista v_active_surebets
+            const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?select=*`;
             const vResp = await fetch(vUrl, { headers, cache: 'no-store' });
             if (vResp.ok) {
               const vData = await vResp.json();

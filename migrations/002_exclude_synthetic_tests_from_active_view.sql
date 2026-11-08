@@ -1,16 +1,20 @@
 -- =====================================================================
--- Migració 002: Separació Estructurada de Simulacions i Exclusió a v_active_surebets
+-- Migració 002: Separació Estructurada de Simulacions i Protecció de v_active_surebets
 -- =====================================================================
--- Objectiu:
--- 1. Afegir la columna 'is_synthetic BOOLEAN' a surebet_opportunities i surebet_snapshots
---    per identificar de manera robusta dades de simulació/prova sense dependre de text.
--- 2. Marcar les dades de simulació existents com a is_synthetic = true.
--- 3. Actualitzar publish_session_snapshot per persistir 'is_synthetic' directament.
--- 4. Actualitzar la vista v_active_surebets filtrant per 'o.is_synthetic = false'
---    mantenint el filtre de text com a segona línia de defensa per compatibilitat.
+-- Objectius de seguretat i coherència:
+-- 1. Transacció atòmica (BEGIN / COMMIT) amb verificacions prèvies al commit.
+-- 2. Afegir columnes 'is_synthetic BOOLEAN NOT NULL DEFAULT false' a taules de dades.
+-- 3. Actualitzar 'publish_session_snapshot': regla conservadora on si el snapshot
+--    és sintètic (true), totes les seves oportunitats es forcen a is_synthetic = true.
+-- 4. Recrear 'v_active_surebets' mantenint estrictament els mateixos 11 camps, ordre
+--    i tipus de la migració 001, amb exclusió basada purament en 'o.is_synthetic = false'
+--    sense filtrar per cadenes de text (evita falsos positius en partits reals).
+-- 5. Mínim Privilegi: revocar accés anònim (anon/PUBLIC) i concedir només a 'authenticated'.
 -- =====================================================================
 
--- 1. Afegir columnes estructurades (idempotent)
+BEGIN;
+
+-- 1. Afegir columnes estructurades booleanes
 ALTER TABLE surebet_opportunities 
 ADD COLUMN IF NOT EXISTS is_synthetic BOOLEAN NOT NULL DEFAULT false;
 
@@ -22,7 +26,7 @@ CREATE INDEX IF NOT EXISTS idx_surebet_opps_real_active
 ON surebet_opportunities (detected_at DESC, net_roi_pct DESC) 
 WHERE is_stale = false AND is_synthetic = false;
 
--- 3. Actualitzar dades històriques de prova existents
+-- 3. Marcar les dades històriques de prova prèvies a la creació del camp booleà
 UPDATE surebet_opportunities 
 SET is_synthetic = true 
 WHERE matchup ILIKE '%TEST%' 
@@ -35,7 +39,7 @@ WHERE match_id ILIKE '%TEST%'
    OR payload->>'is_synthetic_test' = 'true'
    OR payload->>'is_synthetic' = 'true';
 
--- 4. Actualització de la funció RPC publish_session_snapshot (signatura idèntica de 7 paràmetres)
+-- 4. Actualització de la funció RPC publish_session_snapshot (signatura canònica de 7 paràmetres)
 CREATE OR REPLACE FUNCTION publish_session_snapshot(
     p_session_id UUID,
     p_odds_age_seconds INT,
@@ -55,6 +59,7 @@ DECLARE
     v_snapshot_id UUID;
     v_item JSONB;
     v_is_synthetic BOOLEAN;
+    v_opp_is_synthetic BOOLEAN;
 BEGIN
     SELECT id INTO v_agent_id
     FROM daemon_agents
@@ -75,7 +80,7 @@ BEGIN
             USING ERRCODE = '42501';
     END IF;
 
-    -- Determinar si el snapshot conté dades sintètiques de simulació
+    -- Avaluar si el snapshot és sintètic
     v_is_synthetic := COALESCE(
         (p_payload->>'is_synthetic')::BOOLEAN,
         (p_payload->>'is_synthetic_test')::BOOLEAN,
@@ -84,7 +89,7 @@ BEGIN
 
     v_snapshot_id := COALESCE(p_snapshot_id, gen_random_uuid());
 
-    -- Inserir snapshot amb el camp estructurat is_synthetic
+    -- Inserir o actualitzar snapshot de forma idempotent
     INSERT INTO surebet_snapshots (
         id, session_id, agent_id, market_type, match_id,
         odds_age_seconds, opportunities_count, payload, is_synthetic
@@ -103,6 +108,14 @@ BEGIN
     IF p_opportunities IS NOT NULL AND jsonb_typeof(p_opportunities) = 'array' THEN
         FOR v_item IN SELECT * FROM jsonb_array_elements(p_opportunities)
         LOOP
+            -- Condició estricta i conservadora (Punt 1):
+            -- Si el snapshot és sintètic (true), cap oportunitat filla pot marcar-se com a real (false).
+            v_opp_is_synthetic := v_is_synthetic OR COALESCE(
+                (v_item->>'is_synthetic')::BOOLEAN,
+                (v_item->>'is_synthetic_test')::BOOLEAN,
+                false
+            );
+
             INSERT INTO surebet_opportunities (
                 snapshot_id,
                 session_id,
@@ -124,11 +137,7 @@ BEGIN
                 (v_item->>'gross_margin_pct')::NUMERIC,
                 COALESCE((v_item->>'commission_deducted_pct')::NUMERIC, 0.0),
                 v_item->'bookmakers',
-                COALESCE(
-                    (v_item->>'is_synthetic')::BOOLEAN,
-                    v_is_synthetic,
-                    false
-                )
+                v_opp_is_synthetic
             );
         END LOOP;
     END IF;
@@ -137,7 +146,9 @@ BEGIN
 END;
 $$;
 
--- 5. Actualització de la vista v_active_surebets amb filtratge estructurat per is_synthetic
+-- 5. Actualització de la vista v_active_surebets (Punts 2, 3 i 4)
+-- Manté exactament les 11 columnes, ordre i tipus de la migració 001.
+-- Filtra exclusivament per 'o.is_synthetic = false' (Punt 4: no filtra per text 'TEST').
 CREATE OR REPLACE VIEW v_active_surebets
 WITH (security_invoker = on) AS
 SELECT 
@@ -150,20 +161,56 @@ SELECT
     o.gross_margin_pct,
     o.commission_deducted_pct,
     o.bookmakers,
-    o.is_synthetic,
     o.detected_at,
     EXTRACT(EPOCH FROM (now() - o.detected_at))::INT AS age_seconds
 FROM surebet_opportunities o
 WHERE o.detected_at >= (now() - INTERVAL '30 minutes')
   AND o.is_stale = false
-  -- Filtratge estructurat per camp booleà
   AND o.is_synthetic = false
-  -- Doble protecció de seguretat per text
-  AND o.matchup NOT ILIKE '%TEST%'
-  AND o.matchup NOT ILIKE '%SIMULAC%'
-  AND o.market_key NOT ILIKE '%TEST%'
 ORDER BY o.net_roi_pct DESC;
 
-COMMENT ON VIEW v_active_surebets IS 'Oportunitats d''arbitratge reals i fresques (<30 min), excloent estrictament les simulacions sintètiques de prova via camp booleà is_synthetic.';
+COMMENT ON VIEW v_active_surebets IS 'Oportunitats d''arbitratge reals i fresques (<30 min), excloent oportunitats sintètiques mitjançant el camp booleà is_synthetic.';
 
-GRANT SELECT ON v_active_surebets TO authenticated, anon;
+-- Permisos estrictes de lectura (Punt 3: Mínim privilegi, sense accés anònim)
+REVOKE ALL ON v_active_surebets FROM anon, PUBLIC;
+GRANT SELECT ON v_active_surebets TO authenticated;
+
+-- 6. Bloc de Verificació i Detecció d'Errors abans de confirmar (Punt 5)
+DO $$
+DECLARE
+    v_col_count INT;
+BEGIN
+    -- Comprovació 1: Columna is_synthetic a surebet_opportunities
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+          AND table_name = 'surebet_opportunities' 
+          AND column_name = 'is_synthetic'
+    ) THEN
+        RAISE EXCEPTION 'VERIFICACIÓ FALLIDA: Columna is_synthetic no trobada a surebet_opportunities';
+    END IF;
+
+    -- Comprovació 2: Columna is_synthetic a surebet_snapshots
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+          AND table_name = 'surebet_snapshots' 
+          AND column_name = 'is_synthetic'
+    ) THEN
+        RAISE EXCEPTION 'VERIFICACIÓ FALLIDA: Columna is_synthetic no trobada a surebet_snapshots';
+    END IF;
+
+    -- Comprovació 3: Nombre exacte de columnes a v_active_surebets (ha de ser exactament 11)
+    SELECT COUNT(*) INTO v_col_count
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'v_active_surebets';
+
+    IF v_col_count <> 11 THEN
+        RAISE EXCEPTION 'VERIFICACIÓ FALLIDA: v_active_surebets té % columnes (s''esperaven exactament 11)', v_col_count;
+    END IF;
+
+    RAISE NOTICE 'Verificacions de la migració 002 completades amb èxit. Confirmant canvis.';
+END $$;
+
+COMMIT;

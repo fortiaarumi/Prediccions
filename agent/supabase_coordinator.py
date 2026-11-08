@@ -406,7 +406,9 @@ class SupabaseCoordinator:
                         f"Tipus d'oportunitat desconegut o no autoritzat: '{raw_type}'. "
                         f"Només s'admeten els tipus permesos per la base de dades: {ALLOWED_OPPORTUNITY_TYPES}"
                     )
-                opp_synthetic = bool(opp.get("is_synthetic", is_snap_synthetic))
+                # Regla conservadora i coherent: si el snapshot és sintètic,
+                # cap oportunitat filla pot marcar-se com a real (is_synthetic=False)
+                opp_synthetic = is_snap_synthetic or bool(opp.get("is_synthetic", False))
                 opps_payload.append({
                     "opportunity_type": raw_type,
                     "matchup": opp.get("matchup", "[TEST SINTÈTIC] Simulació"),

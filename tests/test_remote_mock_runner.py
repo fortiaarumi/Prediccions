@@ -262,6 +262,34 @@ def test_full_remote_mock_flow_success(mock_supabase_server):
     assert "[TEST SINTÈTIC]" in opps[0]["matchup"]
 
 
+def test_synthetic_snapshot_forces_opportunity_synthetic_flag(mock_supabase_server):
+    """Verifica que si el snapshot és sintètic (is_synthetic_test=True),
+    cap oportunitat filla pot marcar-se com a real (is_synthetic=False és forçat a True)."""
+    coord = SupabaseCoordinator(supabase_url=mock_supabase_server, publishable_key="sb_publishable_test_key_12345")
+    coord.set_agent_jwt("mock_agent_jwt")
+
+    snap_id = coord.publish_snapshot(
+        snapshot={
+            "session_id": "test-session-uuid-001",
+            "odds_age_seconds": 1,
+            "market_type": "1X2",
+            "payload": {"is_synthetic_test": True}
+        },
+        opportunities=[{
+            "opportunity_type": "SUREBET",
+            "matchup": "Test Match",
+            "market_key": "1X2",
+            "is_synthetic": False  # Intent explícit de marcar com a real
+        }],
+        snapshot_uuid="test-uuid-force-syn-01"
+    )
+    assert snap_id is not None
+    stored_snap = MockSupabaseFlowHandler.snapshots["test-uuid-force-syn-01"]
+    stored_opps = stored_snap["p_opportunities"]
+    assert len(stored_opps) == 1
+    assert stored_opps[0]["is_synthetic"] is True
+
+
 def test_coordinator_rejects_invalid_opportunity_type(mock_supabase_server):
     """Verifica que SupabaseCoordinator rebutja de forma estricta qualsevol type invàlid
     amb ValueError per evitar fallades 23514 a PostgreSQL, sense conversió silenciosa."""
