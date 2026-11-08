@@ -166,15 +166,16 @@ END $$;
 RESET ROLE;
 
 -- 2.3 Rebuig de creació de sessió si l'agent està desconnectat (heartbeat expirat > 120 segons)
+-- Preparació d'estat (rol privilegiat): simular que l'agent porta 10 minuts sense donar senyals de vida
+UPDATE daemon_agents
+SET last_heartbeat = clock_timestamp() - INTERVAL '10 minutes'
+WHERE agent_name = 'Windows-PC-Local';
+
+-- Execució amb el rol sota prova (operador 1):
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
 DO $$
 BEGIN
-    -- Simular que l'agent porta 10 minuts sense donar senyals de vida
-    UPDATE daemon_agents
-    SET last_heartbeat = clock_timestamp() - INTERVAL '10 minutes'
-    WHERE agent_name = 'Windows-PC-Local';
-
     BEGIN
         PERFORM create_search_session(600);
         RAISE EXCEPTION '[FAIL 2.3] S''ha acceptat crear sessió amb un agent desconnectat (>120s)!';
@@ -182,13 +183,13 @@ BEGIN
         WHEN SQLSTATE 'P0002' THEN
             RAISE NOTICE '[PASS 2.3: AGENT AVAILABILITY] RPC rebutja la creació si l''agent no té un batec recent (<=120s).';
     END;
-
-    -- Restaurar batec actiu de l'agent
-    UPDATE daemon_agents
-    SET last_heartbeat = clock_timestamp()
-    WHERE agent_name = 'Windows-PC-Local';
 END $$;
 RESET ROLE;
+
+-- Restauració de l'estat (rol privilegiat):
+UPDATE daemon_agents
+SET last_heartbeat = clock_timestamp()
+WHERE agent_name = 'Windows-PC-Local';
 
 -- 2.4 Rebuig si l'operador no té cap agent autoritzat assignat (operador 2)
 SET LOCAL ROLE authenticated;
@@ -221,12 +222,14 @@ END $$;
 RESET ROLE;
 
 -- 2.5B Rebuig si l'agent està inactiu o revocat a daemon_agents
+-- Preparació d'estat (rol privilegiat): desactivar temporalment l'agent
+UPDATE daemon_agents SET is_active = false WHERE agent_name = 'Windows-PC-Local';
+
+-- Execució amb el rol sota prova (agent):
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent
 DO $$
 BEGIN
-    UPDATE daemon_agents SET is_active = false WHERE agent_name = 'Windows-PC-Local';
-
     BEGIN
         PERFORM register_agent_heartbeat();
         RAISE EXCEPTION '[FAIL 2.5B] Agent inactiu ha pogut renovar batec!';
@@ -234,18 +237,21 @@ BEGIN
         WHEN SQLSTATE '42501' THEN
             RAISE NOTICE '[PASS 2.5B: AGENT AUTH] Agent inactiu o revocat no pot renovar el seu batec de presència.';
     END;
-
-    UPDATE daemon_agents SET is_active = true WHERE agent_name = 'Windows-PC-Local';
 END $$;
 RESET ROLE;
 
+-- Restauració de l'estat (rol privilegiat): reactivar l'agent
+UPDATE daemon_agents SET is_active = true WHERE agent_name = 'Windows-PC-Local';
+
 -- 2.5C Rebuig si l'usuari agent està desactivat a app_users
+-- Preparació d'estat (rol privilegiat): desactivar l'usuari agent
+UPDATE app_users SET is_active = false WHERE user_id = 'a0000000-0000-4000-8000-000000000004'::UUID;
+
+-- Execució amb el rol sota prova (agent):
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent
 DO $$
 BEGIN
-    UPDATE app_users SET is_active = false WHERE user_id = 'a0000000-0000-4000-8000-000000000004'::UUID;
-
     BEGIN
         PERFORM register_agent_heartbeat();
         RAISE EXCEPTION '[FAIL 2.5C] Usuari agent desactivat a app_users ha pogut renovar batec!';
@@ -253,10 +259,11 @@ BEGIN
         WHEN SQLSTATE '42501' THEN
             RAISE NOTICE '[PASS 2.5C: AGENT AUTH] Usuari agent amb compte desactivat no pot executar l''RPC.';
     END;
-
-    UPDATE app_users SET is_active = true WHERE user_id = 'a0000000-0000-4000-8000-000000000004'::UUID;
 END $$;
 RESET ROLE;
+
+-- Restauració de l'estat (rol privilegiat): reactivar l'usuari agent
+UPDATE app_users SET is_active = true WHERE user_id = 'a0000000-0000-4000-8000-000000000004'::UUID;
 
 -- 2.5D L'agent actiu i autoritzat renova satisfactòriament el seu batec amb timestamp del servidor
 SET LOCAL ROLE authenticated;
@@ -281,27 +288,30 @@ END $$;
 RESET ROLE;
 
 -- 2.5E Impossibilitat de modificar el batec d'un altre agent
+-- Preparació de dades (rol privilegiat): registrar un segon agent amb heartbeat antic
 DO $$
 DECLARE
     v_old_hb TIMESTAMPTZ := '2020-01-01 00:00:00Z'::TIMESTAMPTZ;
-    v_curr_hb TIMESTAMPTZ;
 BEGIN
-    -- Registrar un segon agent amb heartbeat antic
     INSERT INTO daemon_agents (agent_user_id, owner_user_id, agent_name, last_heartbeat)
     VALUES ('a0000000-0000-4000-8000-000000000006'::UUID, 'a0000000-0000-4000-8000-000000000003'::UUID, 'Agent-Alie', v_old_hb)
     ON CONFLICT (agent_name) DO UPDATE SET last_heartbeat = v_old_hb;
 END $$;
 
--- Agent 1 executa el seu heartbeat
+-- Execució amb el rol sota prova (agent 1):
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent 1
+DO $$
+BEGIN
+    PERFORM register_agent_heartbeat();
+END $$;
+RESET ROLE;
+
+-- Comprovació de resultats (rol privilegiat per evitar que RLS filtri l'agent aliè):
 DO $$
 DECLARE
     v_curr_hb TIMESTAMPTZ;
 BEGIN
-    PERFORM register_agent_heartbeat();
-
-    -- Comprovar que el heartbeat d'Agent-Alie NO s'ha alterat
     SELECT last_heartbeat INTO v_curr_hb FROM daemon_agents WHERE agent_name = 'Agent-Alie';
     IF v_curr_hb = '2020-01-01 00:00:00Z'::TIMESTAMPTZ THEN
         RAISE NOTICE '[PASS 2.5E: AGENT ISOLATION] L''execució de register_agent_heartbeat només afecta el propi agent i no pot alterar agents aliens.';
@@ -309,7 +319,6 @@ BEGIN
         RAISE EXCEPTION '[FAIL 2.5E] El batec de l''agent aliè s''ha modificat indegudament!';
     END IF;
 END $$;
-RESET ROLE;
 
 -- =====================================================================
 -- NIVELL 3: PROVES DE CONSTRAINTS I VALIDACIÓ DE PARÀMETRES
@@ -373,6 +382,8 @@ DECLARE
 BEGIN
     v_new_id := create_search_session(600);
     RAISE NOTICE '[PASS 4.0] Sessió legítima creada per Operador 1: %', v_new_id;
+    -- Guardar l'identificador real de sessió per a les proves posteriors (5.2B, 5.2C, 5.3)
+    PERFORM set_config('test.real_session_id', v_new_id::text, true);
 END $$;
 RESET ROLE;
 
@@ -503,7 +514,7 @@ DECLARE
     v_sess_id UUID;
     v_snap_id UUID;
 BEGIN
-    SELECT id INTO v_sess_id FROM surebet_sessions WHERE status = 'RUNNING' LIMIT 1;
+    v_sess_id := current_setting('test.real_session_id', true)::UUID;
     v_snap_id := publish_session_snapshot(
         v_sess_id,
         15,
@@ -528,7 +539,7 @@ DO $$
 DECLARE
     v_sess_id UUID;
 BEGIN
-    SELECT id INTO v_sess_id FROM surebet_sessions WHERE status = 'RUNNING' LIMIT 1;
+    v_sess_id := current_setting('test.real_session_id', true)::UUID;
     BEGIN
         PERFORM publish_session_snapshot(
             v_sess_id,
@@ -552,16 +563,21 @@ SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000003'; -- oper2
 DO $$
 DECLARE
-    v_target_id UUID;
+    v_real_sess_id UUID;
 BEGIN
-    -- Com que RLS oculta la sessió a l'operador 2, comprovem que l'RPC cancel·lació ho bloqueja fins i tot si endevina el UUID
-    SELECT id INTO v_target_id FROM surebet_sessions LIMIT 1;
-    -- Si RLS ha ocultat la ID (v_target_id és null), simulem que l'operador 2 coneix la ID de la sessió de l'operador 1
+    -- L'operador 2 coneix l'identificador real de la sessió creada per l'Operador 1
+    v_real_sess_id := current_setting('test.real_session_id', true)::UUID;
+    IF v_real_sess_id IS NULL THEN
+        RAISE EXCEPTION '[FAIL 5.3] No es disposa de l''UUID de la sessió real d''Operador 1!';
+    END IF;
+
     BEGIN
-        PERFORM request_session_cancellation('b0000000-0000-4000-8000-000000000001'::UUID);
+        PERFORM request_session_cancellation(v_real_sess_id);
+        -- Si no genera l'excepció 42501, l'RPC ha permès indegudament cancel·lar una sessió aliena
+        RAISE EXCEPTION '[FAIL 5.3] Operador 2 ha pogut cancel·lar la sessió aliena d''Operador 1!';
     EXCEPTION
         WHEN SQLSTATE '42501' THEN
-            RAISE NOTICE '[PASS 5.3: RPC] Cancel·lació de sessió aliena bloquejada per l''RPC.';
+            RAISE NOTICE '[PASS 5.3: RPC] Cancel·lació de sessió aliena bloquejada correctament per l''RPC (SQLSTATE 42501).';
     END;
 END $$;
 RESET ROLE;
