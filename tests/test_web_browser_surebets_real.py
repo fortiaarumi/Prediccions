@@ -92,9 +92,9 @@ def test_real_browser_surebet_lifecycle(browser_env):
     coord = browser_env["coord"]
     agent = browser_env["agent"]
 
-    # 0. Verificar que en accés públic normal (sense configuració Supabase ni mode dev explícit),
-    # el web NO fa fallback silenciós a 127.0.0.1:8777
-    driver.get("http://127.0.0.1:8088/index.html")
+    # 0. Verificar que en accés públic normal (sense configuració Supabase ni dev build segellada),
+    # el web NO fa fallback silenciós a 127.0.0.1:8777, ignorant absolutament paràmetres com ?local_bridge=1
+    driver.get("http://127.0.0.1:8088/index.html?local_bridge=1")
     wait = WebDriverWait(driver, 10)
     tab_btn = wait.until(EC.element_to_be_clickable((By.ID, "tab-btn-surebets")))
     tab_btn.click()
@@ -103,13 +103,20 @@ def test_real_browser_surebet_lifecycle(browser_env):
     assert "Desconnectat" in status_public
     assert "pendent de configuració" in status_public
 
-    # 1. Carregar la pàgina web en mode desenvolupament local explícit (?local_bridge=1)
-    driver.get("http://127.0.0.1:8088/index.html?local_bridge=1")
-    tab_btn = wait.until(EC.element_to_be_clickable((By.ID, "tab-btn-surebets")))
-    tab_btn.click()
+    # 1. Habilitar l'entorn de desenvolupament local de forma immutable i explícita (només permès a loopback)
+    driver.execute_script("""
+        Object.defineProperty(window, '__PREDICCIONS_DEV_BUILD__', {
+            value: true,
+            writable: false,
+            configurable: false
+        });
+        if (typeof setupSurebetAgentControls === 'function') {
+            setupSurebetAgentControls();
+        }
+    """)
     time.sleep(1)
 
-    # 2. Verificar que abans del batec, el PC es mostra DESCONNECTAT
+    # 2. Verificar que abans del batec de l'agent, el PC es mostra DESCONNECTAT pel pont
     status_text = driver.find_element(By.ID, "agent-connection-status-text").text
     assert "Desconnectat" in status_text, f"S'esperava Desconnectat pero s'ha obtingut: {status_text}"
 

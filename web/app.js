@@ -514,16 +514,28 @@ let _surebetSessionTimerInterval = null;
 let _surebetPollInterval = null;
 const LOCAL_BRIDGE_URL = 'http://127.0.0.1:8777';
 
+// El pont local només és admissible si es compleixen TOTES les condicions de seguretat:
+// 1. Hostname és estrictament loopback local ('localhost' o '127.0.0.1') sota protocol HTTP (bloqueig total a Vercel/producció).
+// 2. Prohibició absoluta de vectors controlats per visitants: ni paràmetres URL (?local_bridge, ?dev) ni localStorage.
+// 3. Requereix una configuració de compilació/test explícitament immutable (Object.defineProperty amb writable: false i configurable: false).
 function isDevBridgeExplicitlyEnabled() {
-  if (typeof window === 'undefined') return false;
-  if (window.ENABLE_LOCAL_BRIDGE === true || window.__DEV_MODE__ === true) return true;
+  if (typeof window === 'undefined' || !window.location) return false;
+
+  // 1. Bloqueig d'origen: mai permès fora de loopback local (rebuig immediat de dominis públics o Vercel)
+  const host = window.location.hostname;
+  if (host !== 'localhost' && host !== '127.0.0.1') return false;
+
+  // 2. Bloqueig de protocol: en HTTPS (producció) mai s'admet connectivitat loopback
+  if (window.location.protocol !== 'http:') return false;
+
+  // 3. Verificació de configuració de compilació/test immutable (no modificable per visitants)
   try {
-    if (window.location && window.location.search) {
-      const q = window.location.search;
-      if (q.includes('dev_bridge=1') || q.includes('local_bridge=1') || q.includes('dev_mode=1')) return true;
+    const desc = Object.getOwnPropertyDescriptor(window, '__PREDICCIONS_DEV_BUILD__');
+    if (desc && desc.configurable === false && desc.writable === false && desc.value === true) {
+      return true;
     }
-    if (window.localStorage && window.localStorage.getItem('ENABLE_LOCAL_BRIDGE') === 'true') return true;
   } catch (e) { }
+
   return false;
 }
 

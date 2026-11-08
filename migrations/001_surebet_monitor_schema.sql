@@ -285,26 +285,39 @@ SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 DECLARE
+    v_user_role VARCHAR(20);
     v_agent_id UUID;
     v_session_id UUID;
     v_duration INT;
     v_now TIMESTAMPTZ := clock_timestamp();
 BEGIN
-    -- Identificar exclusivament l'agent a través de l'usuari autenticat al token
+    -- 1. Validació estricta d'identitat a app_users: només usuaris actius amb rol 'agent'
+    SELECT role INTO v_user_role
+    FROM app_users
+    WHERE user_id = auth.uid()
+      AND is_active = true;
+
+    IF v_user_role IS NULL OR v_user_role != 'agent' THEN
+        RAISE EXCEPTION 'Accés denegat: la reclamació de tasques està reservada exclusivament a usuaris amb rol agent actiu'
+            USING ERRCODE = '42501';
+    END IF;
+
+    -- 2. Derivació de l'agent autoritzat exclusivament a través de auth.uid()
     SELECT id INTO v_agent_id
     FROM daemon_agents
     WHERE agent_user_id = auth.uid()
       AND is_active = true;
 
     IF v_agent_id IS NULL THEN
-        RAISE EXCEPTION 'Accés denegat: El cridant no correspon a cap agent actiu autoritzat'
+        RAISE EXCEPTION 'Accés denegat: L''agent associat no existeix, està inactiu o ha estat revocat'
             USING ERRCODE = '42501';
     END IF;
 
     -- Actualitzar el darrer batec de l'agent durant el sondeig de cua
     UPDATE daemon_agents
     SET last_heartbeat = v_now
-    WHERE id = v_agent_id;
+    WHERE id = v_agent_id
+      AND agent_user_id = auth.uid();
 
     -- Comprovar que l'agent no té cap sessió activa (RUNNING o CANCEL_REQUESTED)
     IF EXISTS (
@@ -615,22 +628,38 @@ SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 DECLARE
+    v_user_role VARCHAR(20);
     v_agent_id UUID;
     v_now TIMESTAMPTZ := clock_timestamp();
 BEGIN
+    -- 1. Validació estricta de rol a app_users: només usuaris actius amb rol 'agent'
+    SELECT role INTO v_user_role
+    FROM app_users
+    WHERE user_id = auth.uid()
+      AND is_active = true;
+
+    IF v_user_role IS NULL OR v_user_role != 'agent' THEN
+        RAISE EXCEPTION 'Accés denegat: la renovació del batec està reservada exclusivament a usuaris amb rol agent actiu'
+            USING ERRCODE = '42501';
+    END IF;
+
+    -- 2. Derivació de l'agent autoritzat exclusivament a través de auth.uid()
     SELECT id INTO v_agent_id
     FROM daemon_agents
     WHERE agent_user_id = auth.uid()
       AND is_active = true;
 
     IF v_agent_id IS NULL THEN
-        RAISE EXCEPTION 'Accés denegat: El cridant no correspon a cap agent actiu autoritzat'
+        RAISE EXCEPTION 'Accés denegat: L''agent associat no existeix, està inactiu o ha estat revocat'
             USING ERRCODE = '42501';
     END IF;
 
+    -- 3. Actualització exclusiva del propi agent generant el timestamp al servidor
+    --    (impedeix modificar dades d'altres agents o manipular timestamps des del client)
     UPDATE daemon_agents
     SET last_heartbeat = v_now
-    WHERE id = v_agent_id;
+    WHERE id = v_agent_id
+      AND agent_user_id = auth.uid();
 
     RETURN true;
 END;

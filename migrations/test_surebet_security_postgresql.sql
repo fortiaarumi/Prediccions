@@ -58,6 +58,7 @@ BEGIN
         (v_oper1_id, 'operador1@prediccions.test', 'operator'),
         (v_oper2_id, 'operador2@prediccions.test', 'operator'),
         (v_agent_user_id, 'agent_win@prediccions.test', 'agent'),
+        ('a0000000-0000-4000-8000-000000000006'::UUID, 'agent2@prediccions.test', 'agent'),
         (v_viewer_id, 'viewer@prediccions.test', 'viewer')
     ON CONFLICT (user_id) DO NOTHING;
 
@@ -202,18 +203,108 @@ BEGIN
 END $$;
 RESET ROLE;
 
--- 2.5 L'agent autoritzat pot renovar el seu batec en repòs mitjançant register_agent_heartbeat
+-- 2.5A Rebuig si un operador intenta cridar register_agent_heartbeat (Només rol 'agent')
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
+DO $$
+BEGIN
+    BEGIN
+        PERFORM register_agent_heartbeat();
+        RAISE EXCEPTION '[FAIL 2.5A] Operador 1 ha pogut cridar register_agent_heartbeat!';
+    EXCEPTION
+        WHEN SQLSTATE '42501' THEN
+            RAISE NOTICE '[PASS 2.5A: AGENT AUTH] register_agent_heartbeat rebutja usuaris que no tenen rol agent actiu.';
+    END;
+END $$;
+RESET ROLE;
+
+-- 2.5B Rebuig si l'agent està inactiu o revocat a daemon_agents
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent
+DO $$
+BEGIN
+    UPDATE daemon_agents SET is_active = false WHERE agent_name = 'Windows-PC-Local';
+
+    BEGIN
+        PERFORM register_agent_heartbeat();
+        RAISE EXCEPTION '[FAIL 2.5B] Agent inactiu ha pogut renovar batec!';
+    EXCEPTION
+        WHEN SQLSTATE '42501' THEN
+            RAISE NOTICE '[PASS 2.5B: AGENT AUTH] Agent inactiu o revocat no pot renovar el seu batec de presència.';
+    END;
+
+    UPDATE daemon_agents SET is_active = true WHERE agent_name = 'Windows-PC-Local';
+END $$;
+RESET ROLE;
+
+-- 2.5C Rebuig si l'usuari agent està desactivat a app_users
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent
+DO $$
+BEGIN
+    UPDATE app_users SET is_active = false WHERE user_id = 'a0000000-0000-4000-8000-000000000004'::UUID;
+
+    BEGIN
+        PERFORM register_agent_heartbeat();
+        RAISE EXCEPTION '[FAIL 2.5C] Usuari agent desactivat a app_users ha pogut renovar batec!';
+    EXCEPTION
+        WHEN SQLSTATE '42501' THEN
+            RAISE NOTICE '[PASS 2.5C: AGENT AUTH] Usuari agent amb compte desactivat no pot executar l''RPC.';
+    END;
+
+    UPDATE app_users SET is_active = true WHERE user_id = 'a0000000-0000-4000-8000-000000000004'::UUID;
+END $$;
+RESET ROLE;
+
+-- 2.5D L'agent actiu i autoritzat renova satisfactòriament el seu batec amb timestamp del servidor
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent
 DO $$
 DECLARE
     v_ok BOOLEAN;
+    v_hb TIMESTAMPTZ;
 BEGIN
     v_ok := register_agent_heartbeat();
-    IF v_ok THEN
-        RAISE NOTICE '[PASS 2.5: AGENT HEARTBEAT] Agent en repòs actualitza satisfactòriament el seu batec de vida.';
+    IF NOT v_ok THEN
+        RAISE EXCEPTION '[FAIL 2.5D] register_agent_heartbeat ha retornat false!';
+    END IF;
+
+    SELECT last_heartbeat INTO v_hb FROM daemon_agents WHERE agent_name = 'Windows-PC-Local';
+    IF v_hb >= (clock_timestamp() - INTERVAL '5 seconds') THEN
+        RAISE NOTICE '[PASS 2.5D: AGENT HEARTBEAT] Agent en repòs renova presència amb timestamp legítim del servidor (%s).', v_hb;
     ELSE
-        RAISE EXCEPTION '[FAIL 2.5] register_agent_heartbeat ha retornat false!';
+        RAISE EXCEPTION '[FAIL 2.5D] Timestamp no coincideix amb el servidor: %s', v_hb;
+    END IF;
+END $$;
+RESET ROLE;
+
+-- 2.5E Impossibilitat de modificar el batec d'un altre agent
+DO $$
+DECLARE
+    v_old_hb TIMESTAMPTZ := '2020-01-01 00:00:00Z'::TIMESTAMPTZ;
+    v_curr_hb TIMESTAMPTZ;
+BEGIN
+    -- Registrar un segon agent amb heartbeat antic
+    INSERT INTO daemon_agents (agent_user_id, owner_user_id, agent_name, last_heartbeat)
+    VALUES ('a0000000-0000-4000-8000-000000000006'::UUID, 'a0000000-0000-4000-8000-000000000003'::UUID, 'Agent-Alie', v_old_hb)
+    ON CONFLICT (agent_name) DO UPDATE SET last_heartbeat = v_old_hb;
+END $$;
+
+-- Agent 1 executa el seu heartbeat
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent 1
+DO $$
+DECLARE
+    v_curr_hb TIMESTAMPTZ;
+BEGIN
+    PERFORM register_agent_heartbeat();
+
+    -- Comprovar que el heartbeat d'Agent-Alie NO s'ha alterat
+    SELECT last_heartbeat INTO v_curr_hb FROM daemon_agents WHERE agent_name = 'Agent-Alie';
+    IF v_curr_hb = '2020-01-01 00:00:00Z'::TIMESTAMPTZ THEN
+        RAISE NOTICE '[PASS 2.5E: AGENT ISOLATION] L''execució de register_agent_heartbeat només afecta el propi agent i no pot alterar agents aliens.';
+    ELSE
+        RAISE EXCEPTION '[FAIL 2.5E] El batec de l''agent aliè s''ha modificat indegudament!';
     END IF;
 END $$;
 RESET ROLE;
