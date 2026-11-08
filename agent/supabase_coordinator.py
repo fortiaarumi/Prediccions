@@ -378,9 +378,11 @@ class SupabaseCoordinator:
         opps_payload = []
         if target_opps:
             for opp in target_opps:
+                raw_type = opp.get("opportunity_type", "SUREBET")
+                valid_type = raw_type if raw_type in ("SUREBET", "NEAR_ARB") else "SUREBET"
                 opps_payload.append({
-                    "opportunity_type": opp.get("opportunity_type", "TEST_SUREBET"),
-                    "matchup": opp.get("matchup", "[TEST] Simulació"),
+                    "opportunity_type": valid_type,
+                    "matchup": opp.get("matchup", "[TEST SINTÈTIC] Simulació"),
                     "market_key": opp.get("market_key", market_type),
                     "net_roi_pct": float(opp.get("net_roi_pct", 2.5)),
                     "gross_margin_pct": float(opp.get("gross_margin_pct", 2.8)),

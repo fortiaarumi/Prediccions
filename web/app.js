@@ -777,7 +777,14 @@ function setupSurebetAgentControls() {
             if (vResp.ok) {
               const vData = await vResp.json();
               if (appData && appData.arbitrage) {
-                appData.arbitrage.surebets = vData || [];
+                // Filtrar oportunitats sintètiques de prova perquè no apareguin com a reals
+                const realData = (vData || []).filter(item => {
+                  if (item.matchup && (item.matchup.includes('[TEST') || item.matchup.includes('TEST_'))) return false;
+                  if (item.match_id && String(item.match_id).startsWith('TEST_')) return false;
+                  if (item.is_synthetic_test) return false;
+                  return true;
+                });
+                appData.arbitrage.surebets = realData;
                 renderArbitrage();
               }
             }

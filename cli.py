@@ -14,8 +14,16 @@ import io
 from pathlib import Path
 
 # Sortida UTF-8 per a Windows
-if hasattr(sys.stdout, 'buffer'):
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+elif hasattr(sys.stdout, 'buffer') and not getattr(sys.stdout, '_is_pytest_capture', False):
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 from database.db_manager import DatabaseManager
 from scraper.live_crawler import LiveCrawler
@@ -152,12 +160,12 @@ def cmd_surebet_agent(dry_run: bool = False, remote_mock_test: bool = False):
         from agent.remote_mock_runner import run_remote_mock_flow
         if not supabase_url or not supabase_key:
             print("[!] Error: Cal definir SUPABASE_URL i SUPABASE_PUBLISHABLE_KEY per executar --remote-mock-test.")
-            return
+            sys.exit(1)
         if not agent_email or not agent_password:
             print("[!] Error: Cal definir SUREBET_AGENT_EMAIL i SUREBET_AGENT_PASSWORD per a l'agent.")
-            return
+            sys.exit(1)
 
-        run_remote_mock_flow(
+        res = run_remote_mock_flow(
             supabase_url=supabase_url,
             publishable_key=supabase_key,
             agent_email=agent_email,
@@ -166,6 +174,10 @@ def cmd_surebet_agent(dry_run: bool = False, remote_mock_test: bool = False):
             operator_password=operator_password or None,
             agent_name=agent_id
         )
+        if not res.get("success"):
+            print("[!] La prova remota simulada ha fallat. Codi de sortida: 1.")
+            sys.exit(1)
+        print("[+] Prova remota simulada finalitzada amb èxit de punta a punta (Codi de sortida: 0).")
         return
 
     print("=" * 65)

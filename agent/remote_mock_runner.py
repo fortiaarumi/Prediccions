@@ -13,7 +13,8 @@ Flux verificat:
 7. Emissió de heartbeat de sessió activa per l'agent.
 8. Publicació de snapshot sintètic clarament marcat TEST amb UUID únic.
 9. Idempotència comprovada: reintent de publicació del mateix snapshot sense duplicats.
-10. Finalització de sessió (RUNNING -> COMPLETED).
+10. Finalització de sessió (RUNNING -> COMPLETED) ÚNICAMENT si la publicació té èxit.
+    En cas de fallada en el snapshot, marca la sessió com a FAILED via fail_session().
 """
 
 from __future__ import annotations
@@ -29,7 +30,28 @@ from agent.supabase_coordinator import (
     SupabaseCoordinatorError,
     SupabaseAuthenticationError
 )
-from agent.protocol import STATUS_PENDING, STATUS_RUNNING, STATUS_COMPLETED
+from agent.protocol import STATUS_PENDING, STATUS_RUNNING, STATUS_COMPLETED, STATUS_FAILED
+
+
+def _print_summary(results: Dict[str, Any], operator_email: Optional[str]) -> None:
+    print("\n" + "=" * 70)
+    print("      RESUM DE LA PROVA REMOTA SIMULADA")
+    print("=" * 70)
+    print(f"Sessió de prova:          {results.get('session_id')}")
+    print(f"Estat final:              {results.get('final_status')}")
+    print(f"Autenticació Agent:       {'PASS' if results.get('agent_auth') else 'FAIL'}")
+    print(f"Heartbeat inicial:        {'PASS' if results.get('agent_heartbeat') else 'FAIL'}")
+    if operator_email:
+        print(f"Autenticació Operador:    {'PASS' if results.get('operator_auth') else 'FAIL'}")
+        print(f"Creació de Sessió:        {'PASS' if results.get('session_created') else 'FAIL'}")
+        print(f"Bloqueig Concurrència:    {'PASS' if results.get('concurrency_blocked') else 'FAIL'}")
+        print(f"Bloqueig crida no autor.: {'PASS' if results.get('unauthorized_blocked') else 'FAIL'}")
+    print(f"Reclamació de Sessió:     {'PASS' if results.get('session_claimed') else 'FAIL'}")
+    print(f"Publicació Snapshot TEST: {'PASS' if results.get('snapshot_published') else 'FAIL'}")
+    print(f"Idempotència Reintent:    {'PASS' if results.get('snapshot_idempotent') else 'FAIL'}")
+    print(f"Completació Sessió:       {'PASS' if results.get('session_completed') else 'FAIL'}")
+    print(f"Resultat Global:          {'PASS (EXIT CODE 0)' if results.get('success') else 'FAIL (EXIT CODE 1)'}")
+    print("=" * 70 + "\n")
 
 
 def run_remote_mock_flow(
@@ -58,6 +80,7 @@ def run_remote_mock_flow(
     print("-" * 70)
 
     results: Dict[str, Any] = {
+        "success": False,
         "agent_auth": False,
         "agent_heartbeat": False,
         "operator_auth": False,
@@ -92,6 +115,7 @@ def run_remote_mock_flow(
         err = f"Error autenticant agent ({agent_email}): {e}"
         print(f"  [ERROR] {err}")
         results["errors"].append(err)
+        _print_summary(results, operator_email)
         return results
 
     print("\n[Pas 2] Enviant batec de presència inicial de l'agent (RPC register_agent_heartbeat)...")
@@ -106,6 +130,7 @@ def run_remote_mock_flow(
         err = f"Error enviant batec inicial: {e}"
         print(f"  [ERROR] {err}")
         results["errors"].append(err)
+        _print_summary(results, operator_email)
         return results
 
     # -----------------------------------------------------------------
@@ -129,6 +154,7 @@ def run_remote_mock_flow(
             err = f"Error autenticant operador: {e}"
             print(f"  [ERROR] {err}")
             results["errors"].append(err)
+            _print_summary(results, operator_email)
             return results
 
         print(f"\n[Pas 4] Operador crea la sessió de cerca via RPC create_search_session({duration_seconds}s)...")
@@ -148,6 +174,7 @@ def run_remote_mock_flow(
             err = f"Error creant sessió: {e}"
             print(f"  [ERROR] {err}")
             results["errors"].append(err)
+            _print_summary(results, operator_email)
             return results
 
         # -----------------------------------------------------------------
@@ -185,6 +212,7 @@ def run_remote_mock_flow(
         err = f"Error reclamant sessió pendent: {e}"
         print(f"  [ERROR] {err}")
         results["errors"].append(err)
+        _print_summary(results, operator_email)
         return results
 
     # -----------------------------------------------------------------
@@ -245,8 +273,10 @@ def run_remote_mock_flow(
                 "source": "cli_remote_mock_runner"
             }
         }
+        # Inserció amb opportunity_type = 'SUREBET' per respectar la constraint SQL
+        # Manté identificació inequívoca de test a matchup, match_id i payload
         simulated_opportunities = [{
-            "opportunity_type": "TEST_SUREBET",
+            "opportunity_type": "SUREBET",
             "matchup": "[TEST SINTÈTIC] Reial Madrid vs FC Barcelona",
             "market_key": "1X2",
             "net_roi_pct": 3.14,
@@ -264,14 +294,41 @@ def run_remote_mock_flow(
             opportunities=simulated_opportunities,
             snapshot_uuid=test_snapshot_uuid
         )
+        if not snap_id:
+            raise SupabaseCoordinatorError("La crida a publish_session_snapshot no ha retornat ID de snapshot")
+
         results["snapshot_published"] = True
         results["snapshot_id"] = snap_id or test_snapshot_uuid
         print(f"  [OK] Snapshot sintètic publicat satisfactòriament: {results['snapshot_id']}")
 
-        # -----------------------------------------------------------------
-        # Pas 10: Idempotència de Reintent
-        # -----------------------------------------------------------------
-        print("\n[Pas 10] Verificant idempotència: reintentant publicar el mateix snapshot UUID...")
+    except Exception as e:
+        err = f"Error publicant snapshot: {e}"
+        print(f"  [ERROR] {err}")
+        results["errors"].append(err)
+
+        # Gestió estricta de fallada: no continuar amb idempotència ni completar com a èxit
+        print(f"\n[!] Marcatge de la sessió com a FAILED per fallada en la publicació inicial...")
+        try:
+            agent_coord.fail_order(session_id, error_message=f"Fallada publicant snapshot sintètic: {e}")
+            st_fail = agent_coord.get_session_status(session_id)
+            if st_fail:
+                results["final_status"] = st_fail.get("status")
+            else:
+                results["final_status"] = STATUS_FAILED
+            print(f"  [OK] Sessió marcada com a {results['final_status']} a Supabase.")
+        except Exception as fe:
+            print(f"  [ERROR] No s'ha pogut marcar la sessió com a FAILED: {fe}")
+            results["final_status"] = STATUS_FAILED
+
+        results["success"] = False
+        _print_summary(results, operator_email)
+        return results
+
+    # -----------------------------------------------------------------
+    # Pas 10: Idempotència de Reintent
+    # -----------------------------------------------------------------
+    print("\n[Pas 10] Verificant idempotència: reintentant publicar el mateix snapshot UUID...")
+    try:
         re_snap_id = agent_coord.publish_snapshot(
             snapshot=simulated_snapshot_payload,
             opportunities=simulated_opportunities,
@@ -281,15 +338,27 @@ def run_remote_mock_flow(
             results["snapshot_idempotent"] = True
             print("  [OK] Reintent idempotent acceptat sense errors ni duplicar files.")
         else:
-            print(f"  [!] Retorn inesperat a la idempotència: {re_snap_id}")
-
+            raise SupabaseCoordinatorError(f"Retorn inesperat a la idempotència: {re_snap_id} != {results['snapshot_id']}")
     except Exception as e:
-        err = f"Error publicant snapshot: {e}"
+        err = f"Error en la prova d'idempotència: {e}"
         print(f"  [ERROR] {err}")
         results["errors"].append(err)
 
+        print(f"\n[!] Marcatge de la sessió com a FAILED per fallada en la prova d'idempotència...")
+        try:
+            agent_coord.fail_order(session_id, error_message=f"Fallada prova idempotència: {e}")
+            st_fail = agent_coord.get_session_status(session_id)
+            results["final_status"] = st_fail.get("status") if st_fail else STATUS_FAILED
+        except Exception:
+            results["final_status"] = STATUS_FAILED
+
+        results["success"] = False
+        _print_summary(results, operator_email)
+        return results
+
     # -----------------------------------------------------------------
     # Pas 11: Finalització de Sessió (complete_session)
+    # ÚNICAMENT si els passos 9 i 10 han tingut èxit!
     # -----------------------------------------------------------------
     print(f"\n[Pas 11] Finalitzant la sessió a Supabase (RPC complete_session)...")
     try:
@@ -305,7 +374,9 @@ def run_remote_mock_flow(
             results["session_completed"] = True
             print("  [OK] RPC complete_session ha retornat true.")
         else:
-            print("  [!] complete_session ha retornat false.")
+            err = "RPC complete_session ha retornat false."
+            print(f"  [ERROR] {err}")
+            results["errors"].append(err)
 
         # Verificar estat final via REST
         st_final = agent_coord.get_session_status(session_id)
@@ -317,22 +388,26 @@ def run_remote_mock_flow(
         print(f"  [ERROR] {err}")
         results["errors"].append(err)
 
-    print("\n" + "=" * 70)
-    print("      RESUM DE LA PROVA REMOTA SIMULADA")
-    print("=" * 70)
-    print(f"Sessió de prova:          {results['session_id']}")
-    print(f"Estat final:              {results['final_status']}")
-    print(f"Autenticació Agent:       {'PASS' if results['agent_auth'] else 'FAIL'}")
-    print(f"Heartbeat inicial:        {'PASS' if results['agent_heartbeat'] else 'FAIL'}")
+    all_passed = (
+        results["agent_auth"]
+        and results["agent_heartbeat"]
+        and results["session_claimed"]
+        and results["snapshot_published"]
+        and results["snapshot_idempotent"]
+        and results["session_completed"]
+        and results["final_status"] == STATUS_COMPLETED
+        and len(results["errors"]) == 0
+    )
     if operator_email:
-        print(f"Autenticació Operador:    {'PASS' if results['operator_auth'] else 'FAIL'}")
-        print(f"Creació de Sessió:        {'PASS' if results['session_created'] else 'FAIL'}")
-        print(f"Bloqueig Concurrència:    {'PASS' if results['concurrency_blocked'] else 'FAIL'}")
-        print(f"Bloqueig crida no autor.: {'PASS' if results['unauthorized_blocked'] else 'FAIL'}")
-    print(f"Reclamació de Sessió:     {'PASS' if results['session_claimed'] else 'FAIL'}")
-    print(f"Publicació Snapshot TEST: {'PASS' if results['snapshot_published'] else 'FAIL'}")
-    print(f"Idempotència Reintent:    {'PASS' if results['snapshot_idempotent'] else 'FAIL'}")
-    print(f"Completació Sessió:       {'PASS' if results['session_completed'] else 'FAIL'}")
-    print("=" * 70 + "\n")
+        all_passed = (
+            all_passed
+            and results["operator_auth"]
+            and results["session_created"]
+            and results["concurrency_blocked"]
+            and results["unauthorized_blocked"]
+        )
 
+    results["success"] = all_passed
+
+    _print_summary(results, operator_email)
     return results
