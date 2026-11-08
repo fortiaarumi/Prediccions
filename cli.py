@@ -125,7 +125,81 @@ def cmd_predict_match(home: str, away: str, date: str = None, referee_name: str 
     print(f"      {pdf_path.resolve()}")
     print("=" * 80 + "\n")
 
+def cmd_surebet_agent(dry_run: bool = False):
+    """Execució de l'Agent Windows per a Surebets (suporta mode local loopback o Supabase remot)."""
+    import os
+    from agent.supabase_coordinator import SupabaseCoordinator
+    from agent.windows_agent import WindowsSurebetAgent
+    from agent.coordinator import MockCoordinator
+
+    supabase_url = os.environ.get("SUPABASE_URL", "").strip()
+    supabase_key = os.environ.get("SUPABASE_PUBLISHABLE_KEY", os.environ.get("SUPABASE_KEY", "")).strip()
+    agent_email = os.environ.get("SUREBET_AGENT_EMAIL", "").strip()
+    agent_password = os.environ.get("SUREBET_AGENT_PASSWORD", "").strip()
+    agent_id = os.environ.get("SUREBET_AGENT_ID", "Windows-PC-Local").strip()
+
+    print("=" * 65)
+    print("      PREDICCIONS LLIGA — SUREBET MONITOR (AGENT WINDOWS)")
+    print("=" * 65)
+    print(f"Agent ID: {agent_id}")
+    print(f"Mode: {'--dry-run (Comprovació de connectivitat)' if dry_run else 'Operació contínua'}")
+
+    if supabase_url and supabase_key:
+        print(f"Coordinador: Supabase Remot ({supabase_url})")
+        coord = SupabaseCoordinator(
+            supabase_url=supabase_url,
+            publishable_key=supabase_key,
+            agent_email=agent_email or None,
+            agent_password=agent_password or None
+        )
+
+        if agent_email and agent_password:
+            print(f"[*] Autenticant agent com a '{agent_email}' a Supabase Auth...")
+            coord.authenticate_agent_user(agent_email, agent_password)
+            print("[+] Autenticació d'agent satisfactòria via JWT (token generat pel servidor).")
+        else:
+            print("[*] Avís: sense SUREBET_AGENT_EMAIL / SUREBET_AGENT_PASSWORD; utilitzant clau pública.")
+
+        # Enviar batec de vida en repòs
+        print("[*] Enviant batec de presència (heartbeat) a PostgreSQL...")
+        hb_res = coord.send_heartbeat()
+        if hb_res.alive:
+            print("[+] [HEARTBEAT] Batec de vida registrat satisfactòriament a Supabase per a l'agent.")
+        else:
+            print("[!] Avís: No s'ha pogut registrar el batec (revisa que l'agent estigui registrat a daemon_agents).")
+
+        if dry_run:
+            print("\n[+] Mode --dry-run: comprovació de connexió remota completada.")
+            print("[+] No s'han enviat peticions als bookmakers ni s'ha activat cap procés de scraping.")
+            print("=" * 65)
+            return
+
+        agent = WindowsSurebetAgent(coordinator=coord, agent_id=agent_id, offline=False, dry_run=False)
+        agent.run_poll_loop()
+    else:
+        print("Coordinador: Mode Local (Mock / Loopback)")
+        if dry_run:
+            print("[+] Mode --dry-run en entorn local completat amb èxit.")
+            print("=" * 65)
+            return
+
+        coord = MockCoordinator()
+        agent = WindowsSurebetAgent(coordinator=coord, agent_id=agent_id, offline=True, dry_run=True)
+        from agent.local_bridge import LocalCoordinatorServer
+        bridge = LocalCoordinatorServer(coordinator=coord, port=8777)
+        bridge.start()
+        try:
+            agent.run_poll_loop()
+        finally:
+            bridge.stop()
+
+
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "surebet-agent":
+        dry_run = "--dry-run" in sys.argv
+        cmd_surebet_agent(dry_run=dry_run)
+        return
+
     parser = argparse.ArgumentParser(description="Sistema Oficial de Prediccions de LaLiga + Winamax Odds")
     parser.add_argument("--scrape-jornada", type=int, help="Descobreix els enllaços, corre l'scraper i actualitza rànquings")
     parser.add_argument("--predict-jornada", type=int, help="Prediu tots els partits de la Jornada N i genera informe PDF")
@@ -134,10 +208,14 @@ def main():
     parser.add_argument("--date", type=str, help="Data del partit (YYYY-MM-DD)")
     parser.add_argument("--referee", type=str, default=None, help="Nom o ID de l'àrbitre (opcional: si s'omet, es resol automàticament)")
     parser.add_argument("--rebuild-ranks", action="store_true", help="Reconstrueix deterministament els rànquings (tri-ranks) històrics a partir dels partits acabats")
+    parser.add_argument("--surebet-agent", action="store_true", help="Inicia l'agent de monitoratge de Surebets")
+    parser.add_argument("--dry-run", action="store_true", help="Mode comprovació en sec: verifica autenticació i batec sense iniciar scrapers")
 
     args = parser.parse_args()
 
-    if args.rebuild_ranks:
+    if args.surebet_agent:
+        cmd_surebet_agent(dry_run=args.dry_run)
+    elif args.rebuild_ranks:
         cmd_rebuild_ranks()
     elif args.scrape_jornada is not None:
         cmd_scrape_jornada(args.scrape_jornada, league=args.league)
