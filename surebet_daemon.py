@@ -636,6 +636,17 @@ class SurebetDaemon:
         if self.check_cancellation() or self.check_duration_limit():
             return {}
 
+        # Pre-sincronització eficient del feed oficial MoviOdds si Bet365 s'ha d'actualitzar
+        if "bet365" in scrapers_to_run and not self.offline:
+            try:
+                from scraper.moviodds_client import MoviOddsClient
+                m_cli = MoviOddsClient.get_instance()
+                if not m_cli.has_feed():
+                    print("   • Bet365: Sincronitzant feed oficial en viu de MoviOdds abans d'avaluar partits...")
+                    m_cli.fetch_feed()
+            except Exception as e:
+                print(f"   • Bet365: Avís pre-fetch MoviOdds: {e}")
+
         for m in matches_to_eval:
             if self.check_cancellation() or self.check_duration_limit():
                 break

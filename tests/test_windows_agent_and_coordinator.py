@@ -354,3 +354,70 @@ def test_snapshot_deduplication_and_odd_change():
     assert rec3.snapshot_id != rec1.snapshot_id
     assert len(store._snapshots) == 2  # Ambdós snapshots conservats a l'historial
 
+
+def test_near_arb_and_surebet_publication_separation():
+    """
+    Verifica que el coordinador diferencia estrictament entre SUREBET (>0%) i NEAR_ARB (<=0%),
+    assigna is_synthetic = False a les dades reals i conserva els ROI i quotes originals.
+    """
+    from agent.supabase_coordinator import SupabaseCoordinator
+    from unittest.mock import MagicMock
+
+    coord = SupabaseCoordinator(supabase_url="https://fake.supabase.co", publishable_key="fake-key")
+    coord.call_rpc = MagicMock(return_value="00000000-0000-4000-8000-000000000001")
+
+    store = SnapshotStore()
+    now = datetime(2026, 11, 8, 20, 0, 0, tzinfo=timezone.utc)
+    t0 = now - timedelta(seconds=15)
+
+    # 1. Prova d'una Near-Arb real (ROI negatiu, ex: -2.5%)
+    near_arb = {
+        "match_id": "M_REAL_NEAR",
+        "matchup": "Atlético de Madrid vs FC Barcelona",
+        "market_name": "Doble Oportunitat (12 vs X)",
+        "profit_pct": -2.5,
+        "legs": [
+            {"bookmaker": "Winamax", "selection": "12", "odd": 1.25, "captured_at": t0.isoformat()},
+            {"bookmaker": "Betway", "selection": "X", "odd": 4.5, "captured_at": t0.isoformat()}
+        ]
+    }
+    snap_near = store.add_opportunity("sess_real_01", 1, near_arb, now=now)
+    assert snap_near is not None
+
+    coord.publish_snapshot("sess_real_01", snap_near)
+    assert coord.call_rpc.called
+    call_args = coord.call_rpc.call_args[0]
+    rpc_name = call_args[0]
+    payload = call_args[1]
+
+    assert rpc_name == "publish_session_snapshot"
+    assert payload["p_session_id"] == "sess_real_01"
+    opps = payload["p_opportunities"]
+    assert len(opps) == 1
+    assert opps[0]["opportunity_type"] == "NEAR_ARB"
+    assert opps[0]["net_roi_pct"] == -2.5
+    assert opps[0]["is_synthetic"] is False
+    assert opps[0]["matchup"] == "Atlético de Madrid vs FC Barcelona"
+
+    # 2. Prova d'una Surebet positiva real (ROI positiu, ex: +3.2%)
+    surebet_pos = {
+        "match_id": "M_REAL_SURE",
+        "matchup": "Real Madrid vs Valencia",
+        "market_name": "1X vs 2",
+        "profit_pct": 3.2,
+        "legs": [
+            {"bookmaker": "Winamax", "selection": "1X", "odd": 2.10, "captured_at": t0.isoformat()},
+            {"bookmaker": "Bet365", "selection": "2", "odd": 2.05, "captured_at": t0.isoformat()}
+        ]
+    }
+    snap_sure = store.add_opportunity("sess_real_02", 1, surebet_pos, now=now)
+    coord.publish_snapshot("sess_real_02", snap_sure)
+
+    last_payload = coord.call_rpc.call_args[0][1]
+    last_opps = last_payload["p_opportunities"]
+    assert len(last_opps) == 1
+    assert last_opps[0]["opportunity_type"] == "SUREBET"
+    assert last_opps[0]["net_roi_pct"] == 3.2
+    assert last_opps[0]["is_synthetic"] is False
+
+

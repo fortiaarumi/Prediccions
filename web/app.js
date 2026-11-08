@@ -2545,6 +2545,10 @@ function renderArbitrage() {
     const cardsHtml = bookies.map(b => {
       const info = bStatus[b.key] || {};
       const statusRaw = (info.status || 'active').toLowerCase();
+      const eventsCount = info.events_count != null ? info.events_count : 0;
+      const oddsCount = info.odds_count != null ? info.odds_count : 0;
+      const attemptStatus = (info.last_attempt_status || (statusRaw === 'error' ? 'error' : (oddsCount > 0 ? 'success' : 'partial'))).toLowerCase();
+
       let statusLabel = 'Actiu';
       let statusClass = 'arb-status-active';
 
@@ -2557,15 +2561,17 @@ function renderArbitrage() {
       } else if (statusRaw === 'updating') {
         statusLabel = 'Actualitzant...';
         statusClass = 'arb-status-updating';
+      } else if (statusRaw === 'pending' || oddsCount === 0 || (attemptStatus === 'partial' && oddsCount === 0)) {
+        statusLabel = 'Pendent de quotes en viu';
+        statusClass = 'arb-status-pending';
       }
 
       // Resultat de l'últim intent (èxit, error o parcial)
-      const attemptStatus = (info.last_attempt_status || (statusRaw === 'error' ? 'error' : 'success')).toLowerCase();
       let attemptHtml = '';
-      if (attemptStatus === 'success') {
+      if (attemptStatus === 'success' && oddsCount > 0) {
         attemptHtml = '<span class="arb-attempt-tag attempt-success">✅ Últim intent: Èxit</span>';
-      } else if (attemptStatus === 'partial') {
-        attemptHtml = `<span class="arb-attempt-tag attempt-partial" title="${escapeHtml(info.partial_details || 'Dades parcials')}">⚠️ Últim intent: Parcial</span>`;
+      } else if (attemptStatus === 'partial' || oddsCount === 0) {
+        attemptHtml = `<span class="arb-attempt-tag attempt-partial" title="${escapeHtml(info.partial_details || (oddsCount === 0 ? 'Sense quotes fresques disponibles en aquest cicle' : 'Dades parcials'))}">⚠️ Últim intent: Parcial</span>`;
       } else {
         const errTitle = info.last_error ? `title="${escapeHtml(info.last_error)}"` : '';
         attemptHtml = `<span class="arb-attempt-tag attempt-error" ${errTitle}>❌ Últim intent: Fallit</span>`;
@@ -2575,9 +2581,6 @@ function renderArbitrage() {
       const successTimeStr = lastSuccessIso
         ? new Date(lastSuccessIso).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         : 'Sense registre previ';
-
-      const eventsCount = info.events_count != null ? info.events_count : 0;
-      const oddsCount = info.odds_count != null ? info.odds_count : 0;
 
       // Timestamps distingits: petició, resposta HTTP, generació
       const qStartStr = info.query_start ? new Date(info.query_start).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--';

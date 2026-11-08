@@ -419,6 +419,8 @@ class Bet365Scraper:
         try:
             from scraper.moviodds_client import MoviOddsClient
             movi_client = MoviOddsClient.get_instance()
+            if not movi_client.has_feed() and not self.offline:
+                movi_client.fetch_feed()
             if movi_client.has_feed():
                 api_odds = movi_client.get_match_odds(home_team, away_team, comp_id, match_date_time=match_date_time)
                 if api_odds and api_odds.get("matched") and not api_odds.get("is_stale"):

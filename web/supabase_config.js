@@ -6,3 +6,4 @@ window.SUPABASE_CONFIG = window.SUPABASE_CONFIG || {
   publishableKey: "sb_publishable_tKrhFqa9LagOmqCLEQY7lA_-OONu515",
   userJwt: null
 };
+

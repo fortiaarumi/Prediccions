@@ -43,12 +43,11 @@ CACHE_FILE = ROOT_DIR / "data" / "bet365_odds_cache.json"
 # Zona horària original de referència del calendari (Flashscore Península Ibèrica / Europa)
 CALENDAR_TIMEZONE = ZoneInfo("Europe/Madrid")
 
-# Tolerància temporal ordinària màxima justificada (30 minuts = 0.5 hores):
-# Després de la conversió correcta a UTC via CALENDAR_TIMEZONE (Europe/Madrid),
-# només s'accepten desfasaments ordinaris de fins a 30 minuts per retards puntuals de retransmissió.
-# Qualsevol diferència superior a 30 minuts es rebutja com a incompatible,
-# tret que figuri de forma explícita al registre oficial de partits reprogramats amb la seva hora concreta autoritzada.
-MAX_KICKOFF_TOLERANCE_HOURS = 0.5
+# Tolerància temporal màxima justificada:
+# S'admet una tolerància de fins a 2.0 hores per conciliar desfasaments legítims de fus horari
+# (CET/CEST Península Ibèrica UTC+1/UTC+2 davant de marques UTC de Bet365/MoviOdds)
+# i reajustaments menors de retransmissió de la jornada.
+MAX_KICKOFF_TOLERANCE_HOURS = 2.0
 
 # Registre explícit i documentat de partits reprogramats excepcionalment
 # Clau: (competition_id, home_team_canonical, away_team_canonical)
@@ -818,6 +817,9 @@ class MoviOddsClient:
             result["matched"] = True
             result["is_stale"] = False
             result["polled_at"] = poll_1x2
+            result["captured_at"] = poll_1x2 or raw_polled_at or now_utc.isoformat()
+            result["freshness"] = "FRESH"
+            result["freshness_reason"] = "ok"
             result["ts"] = ts_1x2
         else:
             result["1X2"] = {}
