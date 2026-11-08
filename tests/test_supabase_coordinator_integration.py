@@ -151,6 +151,14 @@ class MockSupabaseServerHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(resp).encode("utf-8"))
             return
 
+        # 4.5 RPC register_agent_heartbeat (Agent en repòs)
+        if self.path == "/rest/v1/rpc/register_agent_heartbeat":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(b"true")
+            return
+
         # 5. RPC complete_session
         if self.path == "/rest/v1/rpc/complete_session":
             s_id = payload.get("p_session_id")
@@ -518,5 +526,29 @@ def test_supabase_coordinator_create_search_session(mock_supabase_server):
     # 3. Rebuig de durada fora de rang (> 1800 segons)
     with pytest.raises(SupabaseCoordinatorError):
         coord.create_search_session(duration_seconds=3600)
+
+
+def test_idle_agent_heartbeat_and_tuple_compatibility(mock_supabase_server):
+    """Verifica el batec en repòs i la compatibilitat tupla/diccionari de HeartbeatResult."""
+    coord = SupabaseCoordinator(
+        supabase_url=mock_supabase_server,
+        publishable_key="sb_publishable_valid",
+        timeout_seconds=2.0
+    )
+
+    # 1. Batec en repòs (sense sessió activa)
+    res_idle = coord.send_heartbeat()
+    assert res_idle.alive is True
+    assert res_idle.cancel_requested is False
+    assert res_idle[0] is True
+    assert res_idle[1] is False
+    assert res_idle.get("cancel_requested") is False
+
+    # 2. Batec com a agent_id + active_session_id
+    res_sess = coord.send_heartbeat("Windows-PC-Local", "session-non-existent")
+    assert res_sess.alive is False
+    assert res_sess.cancel_requested is False
+    assert res_sess.get("cancel_requested") is False
+
 
 

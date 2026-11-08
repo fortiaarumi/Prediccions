@@ -60,7 +60,13 @@ class WindowsSurebetAgent:
         if hasattr(self.coordinator, "send_heartbeat"):
             # SupabaseCoordinator (PostgreSQL RPC)
             res = self.coordinator.send_heartbeat(self.agent_id, self.active_session_id)
-            return bool(res.get("cancel_requested", False))
+            if hasattr(res, "cancel_requested"):
+                return bool(res.cancel_requested)
+            elif isinstance(res, tuple):
+                return bool(res[1])
+            elif isinstance(res, dict):
+                return bool(res.get("cancel_requested", False))
+            return False
         elif hasattr(self.coordinator, "register_heartbeat"):
             # MockCoordinator (Memòria / Proves locals)
             st = status or ("BUSY" if self.active_session_id else "ONLINE")

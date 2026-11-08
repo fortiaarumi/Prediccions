@@ -42,6 +42,27 @@ class SupabaseAuthenticationError(SupabaseCoordinatorError):
     pass
 
 
+class HeartbeatResult(tuple):
+    """Resultat del batec de vida compatible amb desempaquetament de tupla, atributs i mètode .get()."""
+    def __new__(cls, alive: bool, cancel_requested: bool):
+        return super().__new__(cls, (alive, cancel_requested))
+
+    @property
+    def alive(self) -> bool:
+        return self[0]
+
+    @property
+    def cancel_requested(self) -> bool:
+        return self[1]
+
+    def get(self, key: str, default: Any = None) -> Any:
+        if key == "alive":
+            return self[0]
+        if key == "cancel_requested":
+            return self[1]
+        return default
+
+
 class SupabaseCoordinator:
     """
     Client de coordinació per a l'agent Windows cap a l'API REST de Supabase.
@@ -246,19 +267,31 @@ class SupabaseCoordinator:
             started_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         )
 
-    def send_heartbeat(self, session_id: str) -> Tuple[bool, bool]:
+    def send_heartbeat(self, *args: Any, session_id: Optional[str] = None) -> HeartbeatResult:
         """
-        Envia un batec de cor a Supabase per a la sessió en curs.
-        Retorna:
-            (is_alive: bool, is_cancel_requested: bool)
-        Si cancel_requested és True, l'agent ha d'avortar la cerca cooperativament.
+        Envia un batec de cor a Supabase:
+        - Si es passa session_id (com a argument únic, segon argument posicional o kwarg),
+          crida a send_session_heartbeat per a la sessió en curs.
+        - Si no hi ha sessió activa (agent en repòs), crida a register_agent_heartbeat
+          per renovar daemon_agents.last_heartbeat.
+        Retorna HeartbeatResult(alive: bool, cancel_requested: bool).
         """
-        res = self.call_rpc("send_session_heartbeat", {"p_session_id": session_id})
-        if not res or not isinstance(res, list) or len(res) == 0:
-            return False, False
+        target_session = session_id
+        if not target_session and args:
+            if len(args) == 1:
+                target_session = args[0]
+            elif len(args) >= 2:
+                target_session = args[1]
 
-        row = res[0]
-        return bool(row.get("alive", False)), bool(row.get("cancel_requested", False))
+        if target_session:
+            res = self.call_rpc("send_session_heartbeat", {"p_session_id": str(target_session)})
+            if not res or not isinstance(res, list) or len(res) == 0:
+                return HeartbeatResult(False, False)
+            row = res[0]
+            return HeartbeatResult(bool(row.get("alive", False)), bool(row.get("cancel_requested", False)))
+        else:
+            res = self.call_rpc("register_agent_heartbeat", {})
+            return HeartbeatResult(bool(res), False)
 
     def complete_order(self, session_id: str, summary: Optional[Dict[str, Any]] = None) -> bool:
         """Marca la sessió com a completada amb el seu resum executiu."""

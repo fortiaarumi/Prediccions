@@ -54,7 +54,12 @@ CREATE TABLE IF NOT EXISTS surebet_sessions (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- 4. RESTRICCIÓ DE CONCURRÈNCIA REAL (PostgreSQL Engine Level)
+-- 4. RESTRICCIÓ DE CONCURRÈNCIA GLOBAL (PostgreSQL Engine Level)
+-- Impedeix estrictament més d'una sessió activa global (PENDING, RUNNING o CANCEL_REQUESTED) a tot el sistema.
+CREATE UNIQUE INDEX IF NOT EXISTS uq_surebet_single_active_session
+ON surebet_sessions ((id IS NOT NULL))
+WHERE status IN ('PENDING', 'RUNNING', 'CANCEL_REQUESTED');
+
 -- Impedeix que un mateix agent tingui dues sessions en curs (RUNNING o CANCEL_REQUESTED) simultàniament.
 CREATE UNIQUE INDEX IF NOT EXISTS uq_agent_single_active_session
 ON surebet_sessions (claimed_by_agent_id)
@@ -219,48 +224,50 @@ BEGIN
             USING ERRCODE = '42501';
     END IF;
 
-    -- 2. Validació estricta de la durada (entre 60s i 1800s / 1-30 minuts)
-    IF p_duration_seconds < 60 OR p_duration_seconds > 1800 THEN
-        RAISE EXCEPTION 'La durada de la sessió ha d''estar compresa entre 60 i 1800 segons (1-30 minuts)'
+    -- 2. Validació estricta de la durada: no pot ser nul·la i ha d'estar entre 60 i 1800 segons (1-30 minuts)
+    IF p_duration_seconds IS NULL OR p_duration_seconds < 60 OR p_duration_seconds > 1800 THEN
+        RAISE EXCEPTION 'La durada de la sessió no pot ser nul·la i ha d''estar compresa entre 60 i 1800 segons (1-30 minuts)'
             USING ERRCODE = '22000';
     END IF;
 
-    -- 3. Comprovació de disponibilitat d'agents autoritzats
+    -- 3. Comprovació de disponibilitat i autorització d'agents amb connectivitat real (heartbeat recent <= 120 segons)
     SELECT EXISTS (
-        SELECT 1 FROM daemon_agents WHERE is_active = true
+        SELECT 1 FROM daemon_agents da
+        WHERE da.is_active = true
+          AND da.last_heartbeat IS NOT NULL
+          AND da.last_heartbeat >= (clock_timestamp() - INTERVAL '120 seconds')
+          AND (v_user_role = 'admin' OR da.owner_user_id = auth.uid())
     ) INTO v_active_agent_exists;
 
     IF NOT v_active_agent_exists THEN
-        RAISE EXCEPTION 'No hi ha cap agent Windows registrat i actiu per gestionar la cerca de surebets'
+        RAISE EXCEPTION 'No hi ha cap agent Windows actiu, autoritzat i connectat recentment (heartbeat <= 120s)'
             USING ERRCODE = 'P0002';
     END IF;
 
-    -- 4. Prevenció de sessions concurrents o duplicades a la cua
-    IF EXISTS (
-        SELECT 1 FROM surebet_sessions
-        WHERE status IN ('PENDING', 'RUNNING', 'CANCEL_REQUESTED')
-    ) THEN
-        RAISE EXCEPTION 'Ja existeix una sessió de cerca activa o en cua. Espereu que finalitzi o cancel·leu-la.'
-            USING ERRCODE = '23505';
-    END IF;
-
-    -- 5. Inserció controlada: created_by prové exclusivament de auth.uid() al servidor
-    v_session_id := gen_random_uuid();
-    INSERT INTO surebet_sessions (
-        id,
-        created_by,
-        duration_seconds,
-        status,
-        created_at,
-        updated_at
-    ) VALUES (
-        v_session_id,
-        auth.uid(),
-        p_duration_seconds,
-        'PENDING',
-        clock_timestamp(),
-        clock_timestamp()
-    );
+    -- 4. Inserció atòmica controlada: la constraint uq_surebet_single_active_session garanteix
+    -- a nivell de motor de PostgreSQL que cap altra transacció concurrent pugui crear una sessió activa simultània.
+    BEGIN
+        v_session_id := gen_random_uuid();
+        INSERT INTO surebet_sessions (
+            id,
+            created_by,
+            duration_seconds,
+            status,
+            created_at,
+            updated_at
+        ) VALUES (
+            v_session_id,
+            auth.uid(),
+            p_duration_seconds,
+            'PENDING',
+            clock_timestamp(),
+            clock_timestamp()
+        );
+    EXCEPTION
+        WHEN unique_violation THEN
+            RAISE EXCEPTION 'Ja existeix una sessió de cerca activa o en cua (concurrència bloquejada a nivell atòmic)'
+                USING ERRCODE = '23505';
+    END;
 
     RETURN v_session_id;
 END;
@@ -293,6 +300,11 @@ BEGIN
         RAISE EXCEPTION 'Accés denegat: El cridant no correspon a cap agent actiu autoritzat'
             USING ERRCODE = '42501';
     END IF;
+
+    -- Actualitzar el darrer batec de l'agent durant el sondeig de cua
+    UPDATE daemon_agents
+    SET last_heartbeat = v_now
+    WHERE id = v_agent_id;
 
     -- Comprovar que l'agent no té cap sessió activa (RUNNING o CANCEL_REQUESTED)
     IF EXISTS (
@@ -595,18 +607,52 @@ BEGIN
 END;
 $$;
 
--- Permisos estrictes per a les funcions RPC
+-- 7. Registre periòdic del batec de l'agent en repòs (Sense sessió activa)
+CREATE OR REPLACE FUNCTION register_agent_heartbeat()
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+    v_agent_id UUID;
+    v_now TIMESTAMPTZ := clock_timestamp();
+BEGIN
+    SELECT id INTO v_agent_id
+    FROM daemon_agents
+    WHERE agent_user_id = auth.uid()
+      AND is_active = true;
+
+    IF v_agent_id IS NULL THEN
+        RAISE EXCEPTION 'Accés denegat: El cridant no correspon a cap agent actiu autoritzat'
+            USING ERRCODE = '42501';
+    END IF;
+
+    UPDATE daemon_agents
+    SET last_heartbeat = v_now
+    WHERE id = v_agent_id;
+
+    RETURN true;
+END;
+$$;
+
+-- Permisos estrictes per a les funcions RPC (PostgREST Data API)
 REVOKE ALL ON FUNCTION create_search_session(INT) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION claim_next_pending_session() FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION send_session_heartbeat(UUID) FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION register_agent_heartbeat() FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION request_session_cancellation(UUID) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION complete_session(UUID, JSONB) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION fail_session(UUID, TEXT) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION publish_session_snapshot(UUID, INT, VARCHAR, VARCHAR, JSONB, JSONB) FROM PUBLIC, anon;
 
+-- Revocació de la funció trigger interna per evitar exposició directa per Data API
+REVOKE ALL ON FUNCTION trg_fn_validate_session_integrity() FROM PUBLIC, anon, authenticated;
+
 GRANT EXECUTE ON FUNCTION create_search_session(INT) TO authenticated;
 GRANT EXECUTE ON FUNCTION claim_next_pending_session() TO authenticated;
 GRANT EXECUTE ON FUNCTION send_session_heartbeat(UUID) TO authenticated;
+GRANT EXECUTE ON FUNCTION register_agent_heartbeat() TO authenticated;
 GRANT EXECUTE ON FUNCTION request_session_cancellation(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION complete_session(UUID, JSONB) TO authenticated;
 GRANT EXECUTE ON FUNCTION fail_session(UUID, TEXT) TO authenticated;

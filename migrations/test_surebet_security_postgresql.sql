@@ -61,10 +61,10 @@ BEGIN
         (v_viewer_id, 'viewer@prediccions.test', 'viewer')
     ON CONFLICT (user_id) DO NOTHING;
 
-    -- Registrar Agent Windows
-    INSERT INTO daemon_agents (agent_user_id, owner_user_id, agent_name) VALUES
-        (v_agent_user_id, v_oper1_id, 'Windows-PC-Local')
-    ON CONFLICT (agent_name) DO UPDATE SET is_active = true
+    -- Registrar Agent Windows assignat a operador 1 amb heartbeat inicial fresc
+    INSERT INTO daemon_agents (agent_user_id, owner_user_id, agent_name, last_heartbeat) VALUES
+        (v_agent_user_id, v_oper1_id, 'Windows-PC-Local', clock_timestamp())
+    ON CONFLICT (agent_name) DO UPDATE SET is_active = true, last_heartbeat = clock_timestamp()
     RETURNING id INTO v_agent_id;
 
     RAISE NOTICE '[SETUP OK] Identitats de prova registrades.';
@@ -162,21 +162,107 @@ BEGIN
 END $$;
 RESET ROLE;
 
+-- 2.3 Rebuig de creació de sessió si l'agent està desconnectat (heartbeat expirat > 120 segons)
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
+DO $$
+BEGIN
+    -- Simular que l'agent porta 10 minuts sense donar senyals de vida
+    UPDATE daemon_agents
+    SET last_heartbeat = clock_timestamp() - INTERVAL '10 minutes'
+    WHERE agent_name = 'Windows-PC-Local';
+
+    BEGIN
+        PERFORM create_search_session(600);
+        RAISE EXCEPTION '[FAIL 2.3] S''ha acceptat crear sessió amb un agent desconnectat (>120s)!';
+    EXCEPTION
+        WHEN SQLSTATE 'P0002' THEN
+            RAISE NOTICE '[PASS 2.3: AGENT AVAILABILITY] RPC rebutja la creació si l''agent no té un batec recent (<=120s).';
+    END;
+
+    -- Restaurar batec actiu de l'agent
+    UPDATE daemon_agents
+    SET last_heartbeat = clock_timestamp()
+    WHERE agent_name = 'Windows-PC-Local';
+END $$;
+RESET ROLE;
+
+-- 2.4 Rebuig si l'operador no té cap agent autoritzat assignat (operador 2)
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000003'; -- oper2 (no és admin ni propietari de l'agent)
+DO $$
+BEGIN
+    BEGIN
+        PERFORM create_search_session(600);
+        RAISE EXCEPTION '[FAIL 2.4] Operador 2 ha pogut crear sessió sense tenir cap agent propi assignat!';
+    EXCEPTION
+        WHEN SQLSTATE 'P0002' THEN
+            RAISE NOTICE '[PASS 2.4: AGENT AUTH] RPC comprova l''autorització de l''agent respecte a l''usuari que crea la sessió.';
+    END;
+END $$;
+RESET ROLE;
+
+-- 2.5 L'agent autoritzat pot renovar el seu batec en repòs mitjançant register_agent_heartbeat
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000004'; -- agent
+DO $$
+DECLARE
+    v_ok BOOLEAN;
+BEGIN
+    v_ok := register_agent_heartbeat();
+    IF v_ok THEN
+        RAISE NOTICE '[PASS 2.5: AGENT HEARTBEAT] Agent en repòs actualitza satisfactòriament el seu batec de vida.';
+    ELSE
+        RAISE EXCEPTION '[FAIL 2.5] register_agent_heartbeat ha retornat false!';
+    END IF;
+END $$;
+RESET ROLE;
+
 -- =====================================================================
 -- NIVELL 3: PROVES DE CONSTRAINTS I VALIDACIÓ DE PARÀMETRES
 -- =====================================================================
 
--- 3.1 Rebuig de durada fora de rang (> 1800 segons)
+-- 3.1 Rebuig de durada NULL
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
+DO $$
+BEGIN
+    BEGIN
+        PERFORM create_search_session(NULL);
+        RAISE EXCEPTION '[FAIL 3.1] create_search_session ha acceptat durada NULL!';
+    EXCEPTION
+        WHEN SQLSTATE '22000' THEN
+            RAISE NOTICE '[PASS 3.1: CONSTRAINT] RPC valida i rebutja durada NULL.';
+    END;
+END $$;
+RESET ROLE;
+
+-- 3.2 Rebuig de durada fora de rang (> 1800 segons)
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
 DO $$
 BEGIN
     BEGIN
         PERFORM create_search_session(7200); -- 120 minuts
-        RAISE EXCEPTION '[FAIL 3.1] create_search_session ha acceptat 7200 segons!';
+        RAISE EXCEPTION '[FAIL 3.2] create_search_session ha acceptat 7200 segons!';
     EXCEPTION
         WHEN SQLSTATE '22000' THEN
-            RAISE NOTICE '[PASS 3.1: CONSTRAINT] RPC valida i rebutja durada superior a 1800s.';
+            RAISE NOTICE '[PASS 3.2: CONSTRAINT] RPC valida i rebutja durada superior a 1800s.';
+    END;
+END $$;
+RESET ROLE;
+
+-- 3.3 Rebuig de durada inferior al mínim (< 60 segons)
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
+DO $$
+BEGIN
+    BEGIN
+        PERFORM create_search_session(30); -- 30 segons
+        RAISE EXCEPTION '[FAIL 3.3] create_search_session ha acceptat 30 segons!';
+    EXCEPTION
+        WHEN SQLSTATE '22000' THEN
+            RAISE NOTICE '[PASS 3.3: CONSTRAINT] RPC valida i rebutja durada inferior a 60s.';
     END;
 END $$;
 RESET ROLE;
@@ -265,7 +351,7 @@ RESET ROLE;
 -- NIVELL 5: PROVES DE CICLE DE VIDA, CONCURRÈNCIA I ATOMICITAT
 -- =====================================================================
 
--- 5.1 Rebuig de sessió concurrent quan ja n'hi ha una a la cua
+-- 5.1 Rebuig de sessió concurrent quan ja n'hi ha una a la cua (a través de l'RPC)
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'a0000000-0000-4000-8000-000000000002'; -- oper1
 DO $$
@@ -279,6 +365,26 @@ BEGIN
     END;
 END $$;
 RESET ROLE;
+
+-- 5.1B Comprovació de la garantia atòmica a nivell de motor (constraint uq_surebet_single_active_session)
+-- Simula una condició de cursa de dues transaccions concurrents a nivell de PostgreSQL
+DO $$
+BEGIN
+    BEGIN
+        INSERT INTO surebet_sessions (
+            id, created_by, duration_seconds, status
+        ) VALUES (
+            gen_random_uuid(),
+            'a0000000-0000-4000-8000-000000000001'::UUID,
+            600,
+            'PENDING'
+        );
+        RAISE EXCEPTION '[FAIL 5.1B] S''ha pogut inserir una segona sessió activa ignorant la constraint atòmica!';
+    EXCEPTION
+        WHEN unique_violation THEN
+            RAISE NOTICE '[PASS 5.1B: ATOMIC ENGINE CONSTRAINT] L''índex únic parcial uq_surebet_single_active_session garanteix atomicitat absoluta a nivell de motor.';
+    END;
+END $$;
 
 -- 5.2 Agent autoritzat reclama la sessió atòmicament
 SET LOCAL ROLE authenticated;

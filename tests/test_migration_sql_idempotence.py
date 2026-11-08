@@ -102,3 +102,26 @@ def test_no_privileged_secrets_in_migration():
     # Les instruccions actives NO han de concedir ni utilitzar service_role ni sb_secret_
     assert "service_role" not in code_only.lower()
     assert "sb_secret_" not in code_only.lower()
+
+
+def test_atomic_single_active_session_constraint():
+    sql = load_sql_content()
+    # Ha d'existir l'índex únic parcial a nivell de motor per impedir concurrència
+    pattern = r"CREATE\s+UNIQUE\s+INDEX\s+IF\s+NOT\s+EXISTS\s+uq_surebet_single_active_session\s+ON\s+surebet_sessions\s+\(\(id\s+IS\s+NOT\s+NULL\)\)\s+WHERE\s+status\s+IN\s+\('PENDING',\s*'RUNNING',\s*'CANCEL_REQUESTED'\)"
+    assert re.search(pattern, sql, re.IGNORECASE) is not None, "Falta uq_surebet_single_active_session"
+
+
+def test_trigger_function_revoked_from_data_api():
+    sql = load_sql_content()
+    # La funció trigger interna trg_fn_validate_session_integrity ha d'estar explícitament revocada
+    pattern = r"REVOKE\s+ALL\s+ON\s+FUNCTION\s+trg_fn_validate_session_integrity\(\)\s+FROM\s+PUBLIC,\s*anon,\s*authenticated"
+    assert re.search(pattern, sql, re.IGNORECASE) is not None, "trg_fn_validate_session_integrity no està revocada per a Data API"
+
+
+def test_idle_agent_heartbeat_rpc_present():
+    sql = load_sql_content()
+    # La funció register_agent_heartbeat ha d'existir i concedir EXECUTE només a authenticated
+    assert "CREATE OR REPLACE FUNCTION register_agent_heartbeat()" in sql
+    assert re.search(r"GRANT\s+EXECUTE\s+ON\s+FUNCTION\s+register_agent_heartbeat\(\)\s+TO\s+authenticated", sql, re.IGNORECASE) is not None
+    assert re.search(r"REVOKE\s+ALL\s+ON\s+FUNCTION\s+register_agent_heartbeat\(\)\s+FROM\s+PUBLIC,\s*anon", sql, re.IGNORECASE) is not None
+
