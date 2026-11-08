@@ -262,19 +262,18 @@ def test_full_remote_mock_flow_success(mock_supabase_server):
     assert "[TEST SINTÈTIC]" in opps[0]["matchup"]
 
 
-def test_coordinator_normalizes_invalid_opportunity_type(mock_supabase_server):
-    """Verifica que SupabaseCoordinator normalitza qualsevol type invàlid a 'SUREBET' per evitar 23514."""
+def test_coordinator_rejects_invalid_opportunity_type(mock_supabase_server):
+    """Verifica que SupabaseCoordinator rebutja de forma estricta qualsevol type invàlid
+    amb ValueError per evitar fallades 23514 a PostgreSQL, sense conversió silenciosa."""
     coord = SupabaseCoordinator(supabase_url=mock_supabase_server, publishable_key="sb_publishable_test_key_12345")
     coord.set_agent_jwt("mock_agent_jwt")
 
-    snap_id = coord.publish_snapshot(
-        snapshot={"session_id": "test-session-uuid-001", "odds_age_seconds": 1, "market_type": "1X2"},
-        opportunities=[{"opportunity_type": "TEST_SUREBET", "matchup": "Test", "market_key": "1X2"}],
-        snapshot_uuid="test-uuid-norm-01"
-    )
-    assert snap_id is not None
-    stored_opps = MockSupabaseFlowHandler.snapshots["test-uuid-norm-01"]["p_opportunities"]
-    assert stored_opps[0]["opportunity_type"] == "SUREBET"
+    with pytest.raises(ValueError, match="Tipus d'oportunitat desconegut"):
+        coord.publish_snapshot(
+            snapshot={"session_id": "test-session-uuid-001", "odds_age_seconds": 1, "market_type": "1X2"},
+            opportunities=[{"opportunity_type": "TEST_SUREBET", "matchup": "Test", "market_key": "1X2"}],
+            snapshot_uuid="test-uuid-norm-01"
+        )
 
 
 def test_publication_failure_marks_session_failed(mock_supabase_server):

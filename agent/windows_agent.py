@@ -16,6 +16,7 @@ import os
 import sys
 import time
 import signal
+import uuid
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
@@ -39,13 +40,15 @@ class WindowsSurebetAgent:
         agent_id: str = "agent-win-local-01",
         heartbeat_interval_seconds: float = 5.0,
         offline: bool = True,
-        dry_run: bool = True
+        dry_run: bool = True,
+        simulated: bool = False
     ):
         self.coordinator = coordinator
         self.agent_id = agent_id
         self.heartbeat_interval = heartbeat_interval_seconds
         self.offline = offline
         self.dry_run = dry_run
+        self.simulated = simulated
 
         self.running = False
         self.active_session_id: Optional[str] = None
@@ -122,6 +125,94 @@ class WindowsSurebetAgent:
         max_duration_seconds = order.requested_duration_minutes * 60
         self.active_session_id = session_id
         print(f"\n🚀 [AGENT] Iniciant sessió {session_id} (Durada demanada: {order.requested_duration_minutes} min)...")
+
+        # Rama de simulació pura (sense tocar bookmakers reals)
+        if self.simulated:
+            print("🔬 [AGENT] Mode simulat actiu: zero peticions a bookmakers / zero apostes.")
+            start_time = time.time()
+            cycle_count = 0
+            final_status = STATUS_COMPLETED
+            err_msg = None
+
+            try:
+                self.send_heartbeat(status="BUSY")
+                simulated_snapshot = {
+                    "session_id": session_id,
+                    "odds_age_seconds": 2,
+                    "market_type": "1X2",
+                    "match_id": "TEST_SIMULATED_MATCH_001",
+                    "payload": {
+                        "is_synthetic_test": True,
+                        "simulation_label": "AGENT_WINDOWS_SIMULATED_CYCLE",
+                        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                        "source": "WindowsSurebetAgent"
+                    }
+                }
+                simulated_opps = [{
+                    "opportunity_type": "SUREBET",
+                    "matchup": "[TEST SINTÈTIC] Reial Madrid vs FC Barcelona",
+                    "market_key": "1X2",
+                    "net_roi_pct": 3.14,
+                    "gross_margin_pct": 3.50,
+                    "commission_deducted_pct": 0.36,
+                    "bookmakers": [
+                        {"bookmaker": "TEST_BOOKMAKER_A", "selection": "1", "odd": 3.10},
+                        {"bookmaker": "TEST_BOOKMAKER_B", "selection": "X", "odd": 3.40},
+                        {"bookmaker": "TEST_BOOKMAKER_C", "selection": "2", "odd": 2.45}
+                    ]
+                }]
+                snap_id = self.coordinator.publish_snapshot(
+                    snapshot=simulated_snapshot,
+                    opportunities=simulated_opps,
+                    snapshot_uuid=str(uuid.uuid4())
+                )
+                print(f"📊 [AGENT] Snapshot sintètic publicat a Supabase: {snap_id}")
+                cycle_count = 1
+            except Exception as e:
+                print(f"⚠️  [AGENT] Error publicant snapshot sintètic: {e}")
+                final_status = STATUS_FAILED
+                err_msg = str(e)
+                self._finalize_session(session_id, final_status, error_message=err_msg)
+                self.cleanup_resources()
+                self.active_session_id = None
+                return final_status
+
+            # Bucle cooperatiu d'espera activa i vigilància de cancel·lació
+            try:
+                while True:
+                    if self._is_cancel_requested(session_id):
+                        print(f"🛑 [AGENT] Cancel·lació sol·licitada pel web per a {session_id}!")
+                        final_status = STATUS_CANCELLED
+                        break
+
+                    elapsed = time.time() - start_time
+                    if elapsed >= max_duration_seconds:
+                        print(f"🏁 [AGENT] Durada màxima de cerca assolida ({elapsed:.1f}s >= {max_duration_seconds}s).")
+                        final_status = STATUS_COMPLETED
+                        break
+
+                    time.sleep(1.5)
+            except Exception as e:
+                print(f"⚠️  [AGENT] Error en vigilància de sessió simulada: {e}")
+                final_status = STATUS_FAILED
+                err_msg = str(e)
+
+            print(f"✅ [AGENT] Sessió {session_id} finalitzada amb estat: {final_status}.")
+            self._finalize_session(
+                session_id=session_id,
+                final_status=final_status,
+                error_message=err_msg,
+                summary={
+                    "cycles": cycle_count,
+                    "mode": "simulated",
+                    "status": "SUCCESS" if final_status == STATUS_COMPLETED else final_status,
+                    "finished_at": datetime.now(timezone.utc).isoformat()
+                }
+            )
+            self.cleanup_resources()
+            self.active_session_id = None
+            self.send_heartbeat(status="ONLINE")
+            return final_status
 
         # Instanciar el motor SurebetDaemon existent sense duplicar-lo
         daemon = SurebetDaemon(

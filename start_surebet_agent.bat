@@ -7,6 +7,7 @@ echo          PREDICCIONS LLIGA — SUREBET LOCAL MONITOR AGENT
 echo =====================================================================
 echo [*] Inicialitzant entorn d'execucio per a Windows...
 echo [*] Seguretat: Connexio sortint exclusiva (Zero ports oberts al router).
+echo [*] Mode: SIMULAT (Zero peticions a bookmakers / Zero apostes reals).
 echo [*] Prem Ctrl+C per aturar l'agent en qualsevol moment.
 echo =====================================================================
 
@@ -20,9 +21,9 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-:: Executar l'agent en mode modul
+:: Executar l'agent de monitoratge persistent en mode simulat
 set PYTHONUNBUFFERED=1
-python -m agent.windows_agent
+python cli.py surebet-agent --simulated
 
 if %ERRORLEVEL% NEQ 0 (
     echo.

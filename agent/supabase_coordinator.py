@@ -249,7 +249,7 @@ class SupabaseCoordinator:
             raise SupabaseCoordinatorError("No s'ha pogut obtenir l'identificador de sessió creada")
         return str(res)
 
-    def claim_pending_order(self) -> Optional[SearchOrder]:
+    def claim_pending_order(self, *args: Any, **kwargs: Any) -> Optional[SearchOrder]:
         """
         Reclama de forma atòmica la següent ordre de cerca pendent a Supabase.
         L'agent s'identifica automàticament mitjançant auth.uid() al servidor.
@@ -321,6 +321,10 @@ class SupabaseCoordinator:
         })
         return bool(res)
 
+    def cancel_order(self, session_id: str, summary: Optional[Dict[str, Any]] = None) -> bool:
+        """Finalitza cooperativament la sessió cancel·lada mitjançant complete_session."""
+        return self.complete_order(session_id, summary or {"cancelled": True})
+
     # -----------------------------------------------------------------
     # Publicació de Snapshots i Consulta d'Oportunitats
     # -----------------------------------------------------------------
@@ -374,14 +378,19 @@ class SupabaseCoordinator:
         else:
             raise ValueError(f"Format de snapshot no suportat: {type(target_snap)}")
 
-        # Normalització d'oportunitats per a la taula surebet_opportunities
+        # Validació estricta de tipus d'oportunitats (sense conversions arbitràries)
+        ALLOWED_OPPORTUNITY_TYPES = ("SUREBET", "NEAR_ARB")
         opps_payload = []
         if target_opps:
             for opp in target_opps:
-                raw_type = opp.get("opportunity_type", "SUREBET")
-                valid_type = raw_type if raw_type in ("SUREBET", "NEAR_ARB") else "SUREBET"
+                raw_type = opp.get("opportunity_type")
+                if raw_type not in ALLOWED_OPPORTUNITY_TYPES:
+                    raise ValueError(
+                        f"Tipus d'oportunitat desconegut o no autoritzat: '{raw_type}'. "
+                        f"Només s'admeten els tipus permesos per la base de dades: {ALLOWED_OPPORTUNITY_TYPES}"
+                    )
                 opps_payload.append({
-                    "opportunity_type": valid_type,
+                    "opportunity_type": raw_type,
                     "matchup": opp.get("matchup", "[TEST SINTÈTIC] Simulació"),
                     "market_key": opp.get("market_key", market_type),
                     "net_roi_pct": float(opp.get("net_roi_pct", 2.5)),
@@ -418,11 +427,13 @@ class SupabaseCoordinator:
         res = self._request("GET", f"/rest/v1/surebet_snapshots?session_id=eq.{session_id}&select=*")
         return res if isinstance(res, list) else []
 
-    def get_active_opportunities(self, limit: int = 50) -> List[Dict[str, Any]]:
+    def get_active_opportunities(self, limit: int = 50, include_tests: bool = False) -> List[Dict[str, Any]]:
         """
         Consulta les oportunitats matemàtiques actives detectades fa menys de 30 minuts.
+        Aplica filtratge al servidor per excloure dades de prova sintètiques si include_tests=False.
         """
-        path = f"/rest/v1/v_active_surebets?select=*&limit={limit}"
+        filter_clause = "" if include_tests else "&matchup=not.ilike.*TEST*&matchup=not.ilike.*SIMULAC*"
+        path = f"/rest/v1/v_active_surebets?select=*{filter_clause}&limit={limit}"
         res = self._request("GET", path)
         if isinstance(res, list):
             return res

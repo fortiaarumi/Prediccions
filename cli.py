@@ -133,8 +133,8 @@ def cmd_predict_match(home: str, away: str, date: str = None, referee_name: str 
     print(f"      {pdf_path.resolve()}")
     print("=" * 80 + "\n")
 
-def cmd_surebet_agent(dry_run: bool = False, remote_mock_test: bool = False):
-    """Execució de l'Agent Windows per a Surebets (suporta mode local loopback, dry-run o Supabase remot)."""
+def cmd_surebet_agent(dry_run: bool = False, remote_mock_test: bool = False, simulated: bool = False):
+    """Execució de l'Agent Windows per a Surebets (suporta mode local loopback, dry-run, mock test o Supabase remot)."""
     import os
     from agent.supabase_coordinator import SupabaseCoordinator
     from agent.windows_agent import WindowsSurebetAgent
@@ -231,7 +231,14 @@ def cmd_surebet_agent(dry_run: bool = False, remote_mock_test: bool = False):
             print("=" * 65)
             return
 
-        agent = WindowsSurebetAgent(coordinator=coord, agent_id=agent_id, offline=False, dry_run=False)
+        print(f"Mode de treball: {'SIMULAT (Zero peticions a bookmakers / Zero apostes reals)' if simulated else 'PRODUCCIÓ REAL (Scraping actiu)'}")
+        agent = WindowsSurebetAgent(
+            coordinator=coord,
+            agent_id=agent_id,
+            offline=simulated,
+            dry_run=simulated,
+            simulated=simulated
+        )
         agent.run_poll_loop()
     else:
         print("Coordinador: Mode Local (Mock / Loopback)")
@@ -241,7 +248,7 @@ def cmd_surebet_agent(dry_run: bool = False, remote_mock_test: bool = False):
             return
 
         coord = MockCoordinator()
-        agent = WindowsSurebetAgent(coordinator=coord, agent_id=agent_id, offline=True, dry_run=True)
+        agent = WindowsSurebetAgent(coordinator=coord, agent_id=agent_id, offline=True, dry_run=True, simulated=True)
         from agent.local_bridge import LocalCoordinatorServer
         bridge = LocalCoordinatorServer(coordinator=coord, port=8777)
         bridge.start()
@@ -255,7 +262,8 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == "surebet-agent":
         dry_run = "--dry-run" in sys.argv
         remote_mock_test = "--remote-mock-test" in sys.argv
-        cmd_surebet_agent(dry_run=dry_run, remote_mock_test=remote_mock_test)
+        simulated = "--simulated" in sys.argv
+        cmd_surebet_agent(dry_run=dry_run, remote_mock_test=remote_mock_test, simulated=simulated)
         return
 
     parser = argparse.ArgumentParser(description="Sistema Oficial de Prediccions de LaLiga + Winamax Odds")
@@ -269,11 +277,12 @@ def main():
     parser.add_argument("--surebet-agent", action="store_true", help="Inicia l'agent de monitoratge de Surebets")
     parser.add_argument("--dry-run", action="store_true", help="Mode comprovació en sec: verifica autenticació i batec sense iniciar scrapers")
     parser.add_argument("--remote-mock-test", action="store_true", help="Mode prova remota simulada: executa sessió sintètica completa a Supabase sense scraping")
+    parser.add_argument("--simulated", action="store_true", help="Mode simulat: genera snapshots sintètics sense cridar scrapers reals")
 
     args = parser.parse_args()
 
     if args.surebet_agent:
-        cmd_surebet_agent(dry_run=args.dry_run, remote_mock_test=args.remote_mock_test)
+        cmd_surebet_agent(dry_run=args.dry_run, remote_mock_test=args.remote_mock_test, simulated=args.simulated)
     elif args.rebuild_ranks:
         cmd_rebuild_ranks()
     elif args.scrape_jornada is not None:

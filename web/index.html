@@ -287,7 +287,31 @@
           </div>
           <div class="agent-connection-badge" id="agent-connection-badge">
             <span class="agent-pulse-dot" id="agent-pulse-dot"></span>
-            <span id="agent-connection-status-text">Agent PC: Preparat (Local)</span>
+            <span id="agent-connection-status-text">PC Windows: Desconnectat</span>
+          </div>
+        </div>
+
+        <!-- PANELL D'AUTENTICACIÓ OPERADOR SUPABASE -->
+        <div class="operator-auth-container" id="operator-auth-container">
+          <div class="operator-login-form" id="operator-login-form">
+            <div class="operator-auth-inputs">
+              <span class="auth-icon">🔐</span>
+              <input type="email" id="operator-email-input" placeholder="Correu operador (ex: fortiaarumi@gmail.com)" class="surebet-input" autocomplete="username" />
+              <input type="password" id="operator-password-input" placeholder="Contrasenya" class="surebet-input" autocomplete="current-password" />
+              <button id="btn-operator-login" class="btn-surebet-action btn-surebet-login">
+                <span>🔑</span> Iniciar Sessió
+              </button>
+            </div>
+            <div id="operator-login-error" class="operator-error-text" style="display:none;"></div>
+          </div>
+          <div class="operator-user-info" id="operator-user-info" style="display:none;">
+            <div class="operator-badge-group">
+              <span class="operator-status-badge">👤 Operador: <strong id="operator-active-email">--</strong></span>
+              <span class="operator-role-badge">Rol: Operator (Actiu)</span>
+            </div>
+            <button id="btn-operator-logout" class="btn-surebet-logout" title="Tancar sessió">
+              Tancar sessió
+            </button>
           </div>
         </div>
 
@@ -295,8 +319,10 @@
           <div class="surebet-control-group">
             <label for="surebet-duration-select">⏱️ Durada de cerca:</label>
             <select id="surebet-duration-select" class="surebet-select">
+              <option value="60">1 minut (Proves ràpides)</option>
+              <option value="120" selected>2 minuts</option>
               <option value="300">5 minuts</option>
-              <option value="600" selected>10 minuts (Recomanat)</option>
+              <option value="600">10 minuts (Recomanat)</option>
               <option value="900">15 minuts</option>
               <option value="1800">30 minuts (Màxim permès)</option>
             </select>
@@ -1142,6 +1168,7 @@
     </div>
   </div>
 
+  <script src="supabase_config.js"></script>
   <script src="app.js?v=3.5.0"></script>
 
   <!-- Barra de Navegació Inferior per a Mòbil (Dock) -->

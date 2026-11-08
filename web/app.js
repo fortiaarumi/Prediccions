@@ -550,35 +550,194 @@ function setupSurebetAgentControls() {
   const agentBadgeText = document.getElementById('agent-connection-status-text');
   const pulseDot = document.getElementById('agent-pulse-dot');
 
+  // Elements Auth Operador
+  const operatorLoginForm = document.getElementById('operator-login-form');
+  const operatorUserInfo = document.getElementById('operator-user-info');
+  const operatorActiveEmail = document.getElementById('operator-active-email');
+  const operatorEmailInput = document.getElementById('operator-email-input');
+  const operatorPasswordInput = document.getElementById('operator-password-input');
+  const btnOperatorLogin = document.getElementById('btn-operator-login');
+  const btnOperatorLogout = document.getElementById('btn-operator-logout');
+  const operatorLoginError = document.getElementById('operator-login-error');
+
   if (!btnStart || !btnStop) return;
 
   let isAgentOnline = false;
 
+  // -------------------------------------------------------------
+  // Gestió de Sessió d'Operador (Supabase Auth)
+  // -------------------------------------------------------------
+  function updateOperatorAuthUI(userEmail) {
+    if (userEmail) {
+      if (operatorLoginForm) operatorLoginForm.style.display = 'none';
+      if (operatorUserInfo) operatorUserInfo.style.display = 'flex';
+      if (operatorActiveEmail) operatorActiveEmail.textContent = userEmail;
+      if (operatorLoginError) operatorLoginError.style.display = 'none';
+    } else {
+      if (operatorLoginForm) operatorLoginForm.style.display = 'block';
+      if (operatorUserInfo) operatorUserInfo.style.display = 'none';
+      if (operatorActiveEmail) operatorActiveEmail.textContent = '--';
+    }
+  }
+
+  function initOperatorAuth() {
+    try {
+      const stored = sessionStorage.getItem('supabase_operator_session');
+      if (stored) {
+        const sess = JSON.parse(stored);
+        if (sess && sess.token && sess.email) {
+          if (sess.expires_at && Date.now() > sess.expires_at) {
+            sessionStorage.removeItem('supabase_operator_session');
+            updateOperatorAuthUI(null);
+            return;
+          }
+          if (window.SUPABASE_CONFIG) {
+            window.SUPABASE_CONFIG.userJwt = sess.token;
+          }
+          updateOperatorAuthUI(sess.email);
+          checkAgentHeartbeat();
+        }
+      }
+    } catch (e) {
+      console.warn("[Auth] Error restaurant sessió:", e);
+    }
+  }
+
+  if (btnOperatorLogin) {
+    btnOperatorLogin.addEventListener('click', async () => {
+      const email = operatorEmailInput ? operatorEmailInput.value.trim() : '';
+      const password = operatorPasswordInput ? operatorPasswordInput.value : '';
+
+      if (!email || !password) {
+        if (operatorLoginError) {
+          operatorLoginError.textContent = "Introdueix correu i contrasenya d'operador.";
+          operatorLoginError.style.display = 'block';
+        }
+        return;
+      }
+
+      if (!window.SUPABASE_CONFIG || !window.SUPABASE_CONFIG.url) {
+        showToast("Configuració de Supabase no disponible", "error");
+        return;
+      }
+
+      btnOperatorLogin.disabled = true;
+      btnOperatorLogin.textContent = "Autenticant...";
+      if (operatorLoginError) operatorLoginError.style.display = 'none';
+
+      try {
+        const authUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/auth/v1/token?grant_type=password`;
+        const resp = await fetch(authUrl, {
+          method: 'POST',
+          headers: {
+            'apikey': window.SUPABASE_CONFIG.publishableKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          throw new Error(errData.error_description || errData.message || `Error d'autenticació (${resp.status})`);
+        }
+
+        const data = await resp.json();
+        const jwt = data.access_token;
+        const userEmail = (data.user && data.user.email) ? data.user.email : email;
+        const expiresAt = Date.now() + ((data.expires_in || 3600) * 1000);
+
+        window.SUPABASE_CONFIG.userJwt = jwt;
+        sessionStorage.setItem('supabase_operator_session', JSON.stringify({
+          token: jwt,
+          email: userEmail,
+          expires_at: expiresAt
+        }));
+
+        updateOperatorAuthUI(userEmail);
+        showToast(`Operador autenticat: ${userEmail}`, "success");
+        checkAgentHeartbeat();
+
+      } catch (err) {
+        if (operatorLoginError) {
+          operatorLoginError.textContent = err.message || "Error en iniciar sessió.";
+          operatorLoginError.style.display = 'block';
+        }
+        showToast(`Error de login: ${err.message}`, "error");
+      } finally {
+        btnOperatorLogin.disabled = false;
+        btnOperatorLogin.innerHTML = '<span>🔑</span> Iniciar Sessió';
+      }
+    });
+  }
+
+  if (btnOperatorLogout) {
+    btnOperatorLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('supabase_operator_session');
+      if (window.SUPABASE_CONFIG) {
+        window.SUPABASE_CONFIG.userJwt = null;
+      }
+      updateOperatorAuthUI(null);
+      isAgentOnline = false;
+      if (agentBadgeText) agentBadgeText.textContent = "PC Windows Desconnectat (pendent de configuració / autenticació)";
+      if (pulseDot) {
+        pulseDot.style.background = '#94a3b8';
+        pulseDot.style.boxShadow = 'none';
+      }
+      updateJobUI(null);
+      showToast("Sessió d'operador tancada", "info");
+    });
+  }
+
+  initOperatorAuth();
+
+  // -------------------------------------------------------------
+  // Monitoratge de Batec del PC (Heartbeat)
+  // -------------------------------------------------------------
   async function checkAgentHeartbeat() {
-    // 1. Mode Supabase Remot: consulta directament a la taula daemon_agents
-    if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+    // 1. Mode Supabase Remot (només si NO hi ha un dev bridge local explícitament habilitat)
+    if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+      if (!window.SUPABASE_CONFIG.userJwt) {
+        isAgentOnline = false;
+        if (agentBadgeText) agentBadgeText.textContent = "PC Windows Desconnectat (pendent de configuració / autenticació)";
+        if (pulseDot) {
+          pulseDot.style.background = '#94a3b8';
+          pulseDot.style.boxShadow = 'none';
+        }
+        return;
+      }
+
       try {
         const sbUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/daemon_agents?select=agent_name,is_active,last_heartbeat&order=last_heartbeat.desc.nullslast&limit=1`;
         const headers = {
           'apikey': window.SUPABASE_CONFIG.publishableKey,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
         };
-        if (window.SUPABASE_CONFIG.userJwt) {
-          headers['Authorization'] = `Bearer ${window.SUPABASE_CONFIG.userJwt}`;
-        }
         const resp = await fetch(sbUrl, { headers, cache: 'no-store' });
         if (resp.ok) {
           const data = await resp.json();
           if (data && data.length > 0) {
             const agent = data[0];
             const lastHb = agent.last_heartbeat ? new Date(agent.last_heartbeat).getTime() : 0;
-            const ageSec = (Date.now() - lastHb) / 1000;
-            if (agent.is_active && ageSec <= 120) {
+            const ageSec = Math.max(0, (Date.now() - lastHb) / 1000);
+            if (agent.is_active && ageSec <= 60) {
               isAgentOnline = true;
-              if (agentBadgeText) agentBadgeText.textContent = `PC Windows: En línia (${agent.agent_name})`;
+              if (agentBadgeText) agentBadgeText.textContent = `PC Windows: 🟢 En línia (${agent.agent_name} · fa ${Math.round(ageSec)}s)`;
               if (pulseDot) {
                 pulseDot.style.background = '#34d399';
                 pulseDot.style.boxShadow = '0 0 8px #34d399';
+              }
+              if (!_activeSurebetSession || ['COMPLETED', 'CANCELLED', 'FAILED'].includes(_activeSurebetSession.status)) {
+                btnStart.disabled = false;
+              }
+              return;
+            } else {
+              isAgentOnline = false;
+              const ageStr = ageSec > 3600 ? `${Math.round(ageSec/3600)}h` : `${Math.round(ageSec)}s`;
+              if (agentBadgeText) agentBadgeText.textContent = `PC Windows: 🔴 Desconnectat (Últim batec fa ${ageStr})`;
+              if (pulseDot) {
+                pulseDot.style.background = '#ef4444';
+                pulseDot.style.boxShadow = 'none';
               }
               return;
             }
@@ -589,9 +748,9 @@ function setupSurebetAgentControls() {
       }
 
       isAgentOnline = false;
-      if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: Desconnectat (Sense batec recent a Supabase)';
+      if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: 🔴 Desconnectat (Sense connexió)';
       if (pulseDot) {
-        pulseDot.style.background = '#94a3b8';
+        pulseDot.style.background = '#ef4444';
         pulseDot.style.boxShadow = 'none';
       }
       return;
@@ -605,7 +764,7 @@ function setupSurebetAgentControls() {
           const data = await resp.json();
           if (data.connected && data.last_heartbeat) {
             isAgentOnline = true;
-            if (agentBadgeText) agentBadgeText.textContent = `PC Windows: En línia (${data.status})`;
+            if (agentBadgeText) agentBadgeText.textContent = `PC Windows: 🟢 En línia (${data.status})`;
             if (pulseDot) {
               pulseDot.style.background = '#34d399';
               pulseDot.style.boxShadow = '0 0 8px #34d399';
@@ -618,7 +777,7 @@ function setupSurebetAgentControls() {
       }
 
       isAgentOnline = false;
-      if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: Desconnectat (Pont local no detectat)';
+      if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: 🔴 Desconnectat (Pont local no detectat)';
       if (pulseDot) {
         pulseDot.style.background = '#94a3b8';
         pulseDot.style.boxShadow = 'none';
@@ -626,33 +785,48 @@ function setupSurebetAgentControls() {
       return;
     }
 
-    // 3. Web públic de producció sense configuració: Cap crida a 127.0.0.1
+    // 3. Sense configuració
     isAgentOnline = false;
-    if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: Desconnectat (Servei remot pendent de configuració)';
+    if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: Desconnectat (Servei remot pendent)';
     if (pulseDot) {
       pulseDot.style.background = '#94a3b8';
       pulseDot.style.boxShadow = 'none';
     }
   }
 
-  // Comprovar batec inicial i periòdicament només si hi ha mode actiu
+  // Comprovar batec inicial i periòdicament
   checkAgentHeartbeat();
   if ((window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) || isDevBridgeExplicitlyEnabled()) {
     setInterval(checkAgentHeartbeat, 5000);
   }
 
+  // -------------------------------------------------------------
+  // Actualització visual de l'Estat de la Feina
+  // -------------------------------------------------------------
   function updateJobUI(session) {
     if (!session) {
       if (stateVal) stateVal.textContent = 'En repòs (Sense cerca activa)';
       if (timerVal) timerVal.textContent = '--:--';
       if (idVal) idVal.textContent = 'Cap';
-      btnStart.disabled = !isAgentOnline;
+      if (oppsVal) oppsVal.textContent = '0 actives';
+      btnStart.disabled = false;
       btnStop.disabled = true;
       return;
     }
 
-    if (idVal) idVal.textContent = session.id ? session.id.slice(0, 12) + '...' : 'Cap';
-    if (stateVal) stateVal.textContent = session.status;
+    if (idVal) idVal.textContent = session.id ? session.id.slice(0, 13) + '...' : 'Cap';
+
+    const statusDescriptions = {
+      'PENDING': '⏳ En cua (PENDING · Esperant agent Windows...)',
+      'RUNNING': '⚡ Cercant (RUNNING · Agent actiu executant cerca)',
+      'CANCEL_REQUESTED': '🛑 Sol·licitant aturada cooperativa...',
+      'CANCELLED': '🛑 Cerca aturada (CANCELLED)',
+      'COMPLETED': '✅ Cerca finalitzada (COMPLETED)',
+      'FAILED': '❌ Error durant la cerca (FAILED)',
+      'TIMEOUT': '⏰ Temps esgotat (TIMEOUT)'
+    };
+
+    if (stateVal) stateVal.textContent = statusDescriptions[session.status] || session.status;
 
     if (session.status === 'RUNNING' || session.status === 'PENDING') {
       btnStart.disabled = true;
@@ -660,43 +834,54 @@ function setupSurebetAgentControls() {
     } else if (session.status === 'CANCEL_REQUESTED') {
       btnStart.disabled = true;
       btnStop.disabled = true;
-      if (stateVal) stateVal.textContent = 'Aturada sol·licitada a l\'agent...';
     } else {
-      btnStart.disabled = !isAgentOnline;
+      btnStart.disabled = false;
       btnStop.disabled = true;
     }
   }
 
+  // -------------------------------------------------------------
+  // Botó «Buscar surebets»
+  // -------------------------------------------------------------
   btnStart.addEventListener('click', async () => {
-    if (!isAgentOnline) {
-      showToast("L'Agent local no està en marxa al teu PC. Executa 'start_surebet_agent.bat'.", "warning");
+    if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && !window.SUPABASE_CONFIG.userJwt) {
+      showToast("Cal iniciar sessió com a operador abans de llançar la cerca.", "warning");
+      if (operatorEmailInput) operatorEmailInput.focus();
       return;
     }
 
-    const duration = parseInt(durationSelect ? durationSelect.value : '600', 10);
+    if (!isAgentOnline) {
+      showToast("Avís: El PC Windows no sembla en línia. Assegura't d'executar 'start_surebet_agent.bat'.", "warning");
+    }
+
+    const duration = parseInt(durationSelect ? durationSelect.value : '120', 10);
     const durationMins = Math.round(duration / 60);
 
     try {
       let sessionData;
-      if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
-        // Mode Supabase remot: crida a la funció RPC protegida create_search_session
+      if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
+        // Mode Supabase remot: crida a l'RPC protegida create_search_session
         const rpcUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/rpc/create_search_session`;
         const rpcHeaders = {
           'apikey': window.SUPABASE_CONFIG.publishableKey,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
         };
-        if (window.SUPABASE_CONFIG.userJwt) {
-          rpcHeaders['Authorization'] = `Bearer ${window.SUPABASE_CONFIG.userJwt}`;
-        }
+
         const rpcResp = await fetch(rpcUrl, {
           method: 'POST',
           headers: rpcHeaders,
           body: JSON.stringify({ p_duration_seconds: duration })
         });
+
         if (!rpcResp.ok) {
           const errText = await rpcResp.text();
+          if (errText.includes("23505") || errText.includes("Ja existeix una sessió")) {
+            throw new Error("Ja hi ha una cerca activa o en cua. Espera que finalitzi o atura-la abans d'iniciar-ne una de nova.");
+          }
           throw new Error(`Error creant sessió a Supabase (${rpcResp.status}): ${errText}`);
         }
+
         const createdId = await rpcResp.json();
         sessionData = { session_id: createdId, status: 'PENDING' };
       } else if (isDevBridgeExplicitlyEnabled()) {
@@ -712,7 +897,7 @@ function setupSurebetAgentControls() {
         if (!resp.ok) throw new Error("No s'ha pogut crear la sessió al coordinador");
         sessionData = await resp.json();
       } else {
-        throw new Error("El servei de Surebets no està configurat (requereix Supabase o mode local explícit).");
+        throw new Error("El servei de Surebets no està configurat.");
       }
 
       _activeSurebetSession = {
@@ -723,7 +908,7 @@ function setupSurebetAgentControls() {
       };
 
       updateJobUI(_activeSurebetSession);
-      showToast(`Cerca de Surebets iniciada (${durationMins} min) al PC`, 'success');
+      showToast(`Cerca de Surebets iniciada (${durationMins} min) a Supabase`, 'success');
 
       // Temporitzador de seguiment
       if (_surebetSessionTimerInterval) clearInterval(_surebetSessionTimerInterval);
@@ -738,7 +923,7 @@ function setupSurebetAgentControls() {
         if (timerVal) timerVal.textContent = `${mins}:${secs}`;
       }, 1000);
 
-      // Polling de resultats (Supabase o Pont local)
+      // Polling de resultats i estat
       if (_surebetPollInterval) clearInterval(_surebetPollInterval);
       _surebetPollInterval = setInterval(async () => {
         if (!_activeSurebetSession) {
@@ -747,22 +932,22 @@ function setupSurebetAgentControls() {
         }
 
         try {
-          if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
-            // Mode Supabase: Polling d'estat de sessió
-            const sUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_sessions?id=eq.${_activeSurebetSession.id}&select=status`;
+          if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
             const headers = {
               'apikey': window.SUPABASE_CONFIG.publishableKey,
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
             };
-            if (window.SUPABASE_CONFIG.userJwt) {
-              headers['Authorization'] = `Bearer ${window.SUPABASE_CONFIG.userJwt}`;
-            }
+
+            // 1. Estat de la sessió
+            const sUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_sessions?id=eq.${_activeSurebetSession.id}&select=*`;
             const sResp = await fetch(sUrl, { headers, cache: 'no-store' });
             if (sResp.ok) {
               const sData = await sResp.json();
               if (sData && sData.length > 0) {
                 _activeSurebetSession.status = sData[0].status;
                 updateJobUI(_activeSurebetSession);
+
                 if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(sData[0].status)) {
                   clearInterval(_surebetPollInterval);
                   clearInterval(_surebetSessionTimerInterval);
@@ -771,20 +956,24 @@ function setupSurebetAgentControls() {
               }
             }
 
-            // Oportunitats actives des de la vista v_active_surebets
-            const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?select=*`;
+            // 2. Consulta de snapshots per a la sessió
+            const snapUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_snapshots?session_id=eq.${_activeSurebetSession.id}&select=id,opportunities_count`;
+            const snapResp = await fetch(snapUrl, { headers, cache: 'no-store' });
+            if (snapResp.ok) {
+              const snapData = await snapResp.json();
+              if (snapData && oppsVal) {
+                const totalOpps = snapData.reduce((acc, s) => acc + (s.opportunities_count || 0), 0);
+                oppsVal.textContent = `${snapData.length} snap · ${totalOpps} opps`;
+              }
+            }
+
+            // 3. Oportunitats actives des de la vista v_active_surebets amb FILTRATGE SERVIDOR
+            const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?matchup=not.ilike.*TEST*&matchup=not.ilike.*SIMULAC*&select=*`;
             const vResp = await fetch(vUrl, { headers, cache: 'no-store' });
             if (vResp.ok) {
               const vData = await vResp.json();
               if (appData && appData.arbitrage) {
-                // Filtrar oportunitats sintètiques de prova perquè no apareguin com a reals
-                const realData = (vData || []).filter(item => {
-                  if (item.matchup && (item.matchup.includes('[TEST') || item.matchup.includes('TEST_'))) return false;
-                  if (item.match_id && String(item.match_id).startsWith('TEST_')) return false;
-                  if (item.is_synthetic_test) return false;
-                  return true;
-                });
-                appData.arbitrage.surebets = realData;
+                appData.arbitrage.surebets = vData || [];
                 renderArbitrage();
               }
             }
@@ -810,7 +999,7 @@ function setupSurebetAgentControls() {
                 const nowSec = Date.now() / 1000;
                 const validOpps = (oppData.opportunities || []).filter(o => {
                   const age = o.detected_at_epoch ? (nowSec - o.detected_at_epoch) : 0;
-                  return age <= 1800.0;
+                  return age <= 1800.0 && (!o.matchup || !o.matchup.includes('[TEST'));
                 });
 
                 appData.arbitrage.surebets = validOpps.map(o => o.opportunity_payload || o);
@@ -828,6 +1017,9 @@ function setupSurebetAgentControls() {
     }
   });
 
+  // -------------------------------------------------------------
+  // Botó «Aturar cerca»
+  // -------------------------------------------------------------
   btnStop.addEventListener('click', async () => {
     if (_activeSurebetSession && _activeSurebetSession.id) {
       try {
@@ -835,24 +1027,27 @@ function setupSurebetAgentControls() {
         updateJobUI(_activeSurebetSession);
         showToast("Sol·licitant aturada cooperativa a l'Agent...", "warning");
 
-        if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+        if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
           // Mode Supabase remot: crida a l'RPC request_session_cancellation
           const cancelUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/rpc/request_session_cancellation`;
           const cancelHeaders = {
             'apikey': window.SUPABASE_CONFIG.publishableKey,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
           };
-          if (window.SUPABASE_CONFIG.userJwt) {
-            cancelHeaders['Authorization'] = `Bearer ${window.SUPABASE_CONFIG.userJwt}`;
-          }
-          await fetch(cancelUrl, {
+          const cancelResp = await fetch(cancelUrl, {
             method: 'POST',
             headers: cancelHeaders,
             body: JSON.stringify({ p_session_id: _activeSurebetSession.id })
           });
-          _activeSurebetSession.status = 'CANCEL_REQUESTED';
-          updateJobUI(_activeSurebetSession);
-          showToast("Aturada de cerca sol·licitada a Supabase", "info");
+          if (cancelResp.ok) {
+            _activeSurebetSession.status = 'CANCEL_REQUESTED';
+            updateJobUI(_activeSurebetSession);
+            showToast("Aturada de cerca sol·licitada a Supabase", "info");
+          } else {
+            const errText = await cancelResp.text();
+            throw new Error(`Error en sol·licitud de cancel·lació: ${errText}`);
+          }
         } else if (isDevBridgeExplicitlyEnabled()) {
           const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions/${_activeSurebetSession.id}/cancel`, {
             method: 'POST',
