@@ -689,7 +689,11 @@ class SurebetDaemon:
                         if cap:
                             cycle_stats["winamax"]["captured_at"] = cap
                         m_record["odds_winamax_captured_at"] = cap
+                        m_record["odds_winamax_polled_at"] = cap
+                        m_record["odds_winamax_provider_updated_at"] = cap
+                        m_record["odds_winamax_origin_freshness"] = "CONFIRMED"
                         m_record["url_winamax"] = w_odds.get("url")
+                        m_record["odds_winamax"] = w_odds
                 except Exception as e:
                     cycle_stats["winamax"]["errors"].append(str(e))
 
@@ -718,7 +722,11 @@ class SurebetDaemon:
                         if cap:
                             cycle_stats["bet365"]["captured_at"] = cap
                         m_record["odds_bet365_captured_at"] = cap
+                        m_record["odds_bet365_polled_at"] = b_odds.get("polled_at")
+                        m_record["odds_bet365_provider_updated_at"] = b_odds.get("provider_updated_at")
+                        m_record["odds_bet365_origin_freshness"] = b_odds.get("origin_freshness", "UNKNOWN")
                         m_record["url_bet365"] = b_odds.get("url")
+                        m_record["odds_bet365"] = b_odds
                 except Exception as e:
                     cycle_stats["bet365"]["errors"].append(str(e))
 
@@ -747,7 +755,11 @@ class SurebetDaemon:
                         if cap:
                             cycle_stats["betway"]["captured_at"] = cap
                         m_record["odds_betway_captured_at"] = cap
+                        m_record["odds_betway_polled_at"] = cap
+                        m_record["odds_betway_provider_updated_at"] = cap
+                        m_record["odds_betway_origin_freshness"] = "CONFIRMED"
                         m_record["url_betway"] = bw_odds.get("url")
+                        m_record["odds_betway"] = bw_odds
                 except Exception as e:
                     cycle_stats["betway"]["errors"].append(str(e))
 

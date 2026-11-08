@@ -617,15 +617,25 @@ class ArbitrageEngine:
             }
 
         # Classificació de Tiers
+        has_unknown_origin = any(leg.get("origin_freshness") == "UNKNOWN" for leg in legs)
+
         if age_max <= self.max_odds_age_seconds and skew_s <= self.max_skew_seconds:
-            tier = self.TIER_VERIFIED_FRESH
-            is_verified_fresh = True
+            if has_unknown_origin:
+                tier = self.TIER_POTENTIALLY_STALE
+                is_verified_fresh = False
+                reason = "unknown_origin_freshness"
+            else:
+                tier = self.TIER_VERIFIED_FRESH
+                is_verified_fresh = True
+                reason = "ok"
         elif age_max <= 300.0:
             tier = self.TIER_POTENTIALLY_STALE
             is_verified_fresh = False
+            reason = "potentially_stale" if not has_unknown_origin else "unknown_origin_freshness"
         else:
             tier = self.TIER_RECENT_HISTORICAL
             is_verified_fresh = False
+            reason = "recent_historical" if not has_unknown_origin else "unknown_origin_freshness"
 
         return {
             "tier": tier,
@@ -633,7 +643,7 @@ class ArbitrageEngine:
             "is_verified_fresh": is_verified_fresh,
             "age_max": round(age_max, 1),
             "skew_seconds": round(skew_s, 1),
-            "reason": "ok",
+            "reason": reason,
             "leg_ages": leg_ages
         }
 
@@ -1157,8 +1167,8 @@ class ArbitrageEngine:
             "competition_name": match.get("competition_name", "")
         }
 
-        # Helper per extreure timestamp i URL de qualsevol proveïdor
-        def _get_provider_info(p_name: str) -> Tuple[Optional[str], str]:
+        # Helper per extreure timestamp, traçabilitat d'origen i URL de qualsevol proveïdor
+        def _get_provider_info(p_name: str) -> Tuple[Optional[str], str, Optional[str], Optional[str], str]:
             p = p_name.lower().strip()
             url = match.get(f"url_{p}")
             if not url:
@@ -1175,7 +1185,10 @@ class ArbitrageEngine:
                 sub.get("captured_at") or sub.get("polled_at") or
                 match.get(f"odds_{p}_captured_at") or match.get("captured_at")
             )
-            return cap, url
+            polled_at = sub.get("polled_at") or match.get(f"odds_{p}_polled_at") or cap
+            provider_updated_at = sub.get("provider_updated_at") or match.get(f"odds_{p}_provider_updated_at") or sub.get("ts")
+            origin_freshness = sub.get("origin_freshness") or match.get(f"odds_{p}_origin_freshness") or "CONFIRMED"
+            return cap, url, polled_at, provider_updated_at, origin_freshness
 
         # 1. 1X2: Descobriment de tots els proveïdors disponibles (Winamax, Bet365, Betway, Exchanges)
         providers_1x2: Dict[str, Dict[str, float]] = {}
@@ -1195,7 +1208,7 @@ class ArbitrageEngine:
         best_leg_2: Optional[Dict[str, Any]] = None
 
         for bk, odds_dict in providers_1x2.items():
-            cap, url = _get_provider_info(bk)
+            cap, url, poll, prov_ts, orig_fresh = _get_provider_info(bk)
             mid = match.get(f"market_id_1x2_{bk.lower()}")
 
             o1 = odds_dict.get("1", 0.0)
@@ -1205,6 +1218,9 @@ class ArbitrageEngine:
                     "selection": f"1 - Victòria {h_name}",
                     "odd": o1,
                     "captured_at": cap,
+                    "polled_at": poll,
+                    "provider_updated_at": prov_ts,
+                    "origin_freshness": orig_fresh,
                     "url": url,
                     "native_market_id": mid
                 }
@@ -1216,6 +1232,9 @@ class ArbitrageEngine:
                     "selection": "X - Empat",
                     "odd": ox,
                     "captured_at": cap,
+                    "polled_at": poll,
+                    "provider_updated_at": prov_ts,
+                    "origin_freshness": orig_fresh,
                     "url": url,
                     "native_market_id": mid
                 }
@@ -1227,6 +1246,9 @@ class ArbitrageEngine:
                     "selection": f"2 - Victòria {a_name}",
                     "odd": o2,
                     "captured_at": cap,
+                    "polled_at": poll,
+                    "provider_updated_at": prov_ts,
+                    "origin_freshness": orig_fresh,
                     "url": url,
                     "native_market_id": mid
                 }
@@ -1250,13 +1272,13 @@ class ArbitrageEngine:
 
         # Avaluem totes les combinacions creuades entre cases diferents
         for bk_dc, dc_odds in providers_dc.items():
-            cap_dc, url_dc = _get_provider_info(bk_dc)
+            cap_dc, url_dc, poll_dc, prov_ts_dc, orig_fresh_dc = _get_provider_info(bk_dc)
             mid_dc = match.get(f"market_id_dc_{bk_dc.lower()}")
 
             for bk_1x2, single_odds in providers_1x2.items():
                 if bk_dc == bk_1x2:
                     continue  # Mateixa casa mai no constitueix arbitratge
-                cap_single, url_single = _get_provider_info(bk_1x2)
+                cap_single, url_single, poll_single, prov_ts_single, orig_fresh_single = _get_provider_info(bk_1x2)
                 mid_single = match.get(f"market_id_1x2_{bk_1x2.lower()}")
 
                 # 1X vs 2
@@ -1264,8 +1286,8 @@ class ArbitrageEngine:
                 o_2 = single_odds.get("2", 0.0)
                 if o_1x > 1.0 and o_2 > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_dc, "selection": f"1X - {h_name} o Empat", "odd": o_1x, "captured_at": cap_dc, "url": url_dc, "native_market_id": mid_dc},
-                        {"bookmaker": bk_1x2, "selection": f"2 - Victòria {a_name}", "odd": o_2, "captured_at": cap_single, "url": url_single, "native_market_id": mid_single},
+                        {"bookmaker": bk_dc, "selection": f"1X - {h_name} o Empat", "odd": o_1x, "captured_at": cap_dc, "polled_at": poll_dc, "provider_updated_at": prov_ts_dc, "origin_freshness": orig_fresh_dc, "url": url_dc, "native_market_id": mid_dc},
+                        {"bookmaker": bk_1x2, "selection": f"2 - Victòria {a_name}", "odd": o_2, "captured_at": cap_single, "polled_at": poll_single, "provider_updated_at": prov_ts_single, "origin_freshness": orig_fresh_single, "url": url_single, "native_market_id": mid_single},
                         "Doble Oportunitat (1X vs 2)",
                         match_info,
                         now=now,
@@ -1278,8 +1300,8 @@ class ArbitrageEngine:
                 o_1 = single_odds.get("1", 0.0)
                 if o_x2 > 1.0 and o_1 > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_dc, "selection": f"X2 - Empat o {a_name}", "odd": o_x2, "captured_at": cap_dc, "url": url_dc, "native_market_id": mid_dc},
-                        {"bookmaker": bk_1x2, "selection": f"1 - Victòria {h_name}", "odd": o_1, "captured_at": cap_single, "url": url_single, "native_market_id": mid_single},
+                        {"bookmaker": bk_dc, "selection": f"X2 - Empat o {a_name}", "odd": o_x2, "captured_at": cap_dc, "polled_at": poll_dc, "provider_updated_at": prov_ts_dc, "origin_freshness": orig_fresh_dc, "url": url_dc, "native_market_id": mid_dc},
+                        {"bookmaker": bk_1x2, "selection": f"1 - Victòria {h_name}", "odd": o_1, "captured_at": cap_single, "polled_at": poll_single, "provider_updated_at": prov_ts_single, "origin_freshness": orig_fresh_single, "url": url_single, "native_market_id": mid_single},
                         "Doble Oportunitat (X2 vs 1)",
                         match_info,
                         now=now,
@@ -1292,8 +1314,8 @@ class ArbitrageEngine:
                 o_x = single_odds.get("X", 0.0)
                 if o_12 > 1.0 and o_x > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_dc, "selection": f"12 - {h_name} o {a_name}", "odd": o_12, "captured_at": cap_dc, "url": url_dc, "native_market_id": mid_dc},
-                        {"bookmaker": bk_1x2, "selection": "X - Empat", "odd": o_x, "captured_at": cap_single, "url": url_single, "native_market_id": mid_single},
+                        {"bookmaker": bk_dc, "selection": f"12 - {h_name} o {a_name}", "odd": o_12, "captured_at": cap_dc, "polled_at": poll_dc, "provider_updated_at": prov_ts_dc, "origin_freshness": orig_fresh_dc, "url": url_dc, "native_market_id": mid_dc},
+                        {"bookmaker": bk_1x2, "selection": "X - Empat", "odd": o_x, "captured_at": cap_single, "polled_at": poll_single, "provider_updated_at": prov_ts_single, "origin_freshness": orig_fresh_single, "url": url_single, "native_market_id": mid_single},
                         "Doble Oportunitat (12 vs X)",
                         match_info,
                         now=now,
@@ -1319,8 +1341,8 @@ class ArbitrageEngine:
                     continue
                 bk_a = ou_bookies[i]
                 bk_b = ou_bookies[j]
-                cap_a, url_a = _get_provider_info(bk_a)
-                cap_b, url_b = _get_provider_info(bk_b)
+                cap_a, url_a, poll_a, prov_ts_a, orig_fresh_a = _get_provider_info(bk_a)
+                cap_b, url_b, poll_b, prov_ts_b, orig_fresh_b = _get_provider_info(bk_b)
                 mid_a = match.get(f"market_id_ou25_{bk_a.lower()}") or match.get(f"market_id_ou_{bk_a.lower()}")
                 mid_b = match.get(f"market_id_ou25_{bk_b.lower()}") or match.get(f"market_id_ou_{bk_b.lower()}")
 
@@ -1329,8 +1351,8 @@ class ArbitrageEngine:
 
                 if o_over > 1.0 and o_under > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_a, "selection": "Més de 2.5 Gols (Over)", "odd": o_over, "captured_at": cap_a, "url": url_a, "native_market_id": mid_a},
-                        {"bookmaker": bk_b, "selection": "Menys de 2.5 Gols (Under)", "odd": o_under, "captured_at": cap_b, "url": url_b, "native_market_id": mid_b},
+                        {"bookmaker": bk_a, "selection": "Més de 2.5 Gols (Over)", "odd": o_over, "captured_at": cap_a, "polled_at": poll_a, "provider_updated_at": prov_ts_a, "origin_freshness": orig_fresh_a, "url": url_a, "native_market_id": mid_a},
+                        {"bookmaker": bk_b, "selection": "Menys de 2.5 Gols (Under)", "odd": o_under, "captured_at": cap_b, "polled_at": poll_b, "provider_updated_at": prov_ts_b, "origin_freshness": orig_fresh_b, "url": url_b, "native_market_id": mid_b},
                         "Total Gols (Més/Menys 2.5)",
                         match_info,
                         now=now,
@@ -1356,8 +1378,8 @@ class ArbitrageEngine:
                     continue
                 bk_a = btts_bookies[i]
                 bk_b = btts_bookies[j]
-                cap_a, url_a = _get_provider_info(bk_a)
-                cap_b, url_b = _get_provider_info(bk_b)
+                cap_a, url_a, poll_a, prov_ts_a, orig_fresh_a = _get_provider_info(bk_a)
+                cap_b, url_b, poll_b, prov_ts_b, orig_fresh_b = _get_provider_info(bk_b)
                 mid_a = match.get(f"market_id_btts_{bk_a.lower()}")
                 mid_b = match.get(f"market_id_btts_{bk_b.lower()}")
 
@@ -1366,8 +1388,8 @@ class ArbitrageEngine:
 
                 if o_yes > 1.0 and o_no > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_a, "selection": "Ambdós Marquen: SÍ", "odd": o_yes, "captured_at": cap_a, "url": url_a, "native_market_id": mid_a},
-                        {"bookmaker": bk_b, "selection": "Ambdós Marquen: NO", "odd": o_no, "captured_at": cap_b, "url": url_b, "native_market_id": mid_b},
+                        {"bookmaker": bk_a, "selection": "Ambdós Marquen: SÍ", "odd": o_yes, "captured_at": cap_a, "polled_at": poll_a, "provider_updated_at": prov_ts_a, "origin_freshness": orig_fresh_a, "url": url_a, "native_market_id": mid_a},
+                        {"bookmaker": bk_b, "selection": "Ambdós Marquen: NO", "odd": o_no, "captured_at": cap_b, "polled_at": poll_b, "provider_updated_at": prov_ts_b, "origin_freshness": orig_fresh_b, "url": url_b, "native_market_id": mid_b},
                         "Ambdós Marquen (BTTS)",
                         match_info,
                         now=now,

@@ -40,14 +40,15 @@ from typing import Dict, Any, Optional, List, Tuple
 ROOT_DIR = Path(__file__).resolve().parent.parent
 CACHE_FILE = ROOT_DIR / "data" / "bet365_odds_cache.json"
 
-# Zona horària original de referència del calendari (Flashscore Península Ibèrica / Europa)
+# Zona horària de referència peninsular (Europe/Madrid, incloent CET UTC+1 / CEST UTC+2)
 CALENDAR_TIMEZONE = ZoneInfo("Europe/Madrid")
 
-# Tolerància temporal màxima justificada:
-# S'admet una tolerància de fins a 2.0 hores per conciliar desfasaments legítims de fus horari
-# (CET/CEST Península Ibèrica UTC+1/UTC+2 davant de marques UTC de Bet365/MoviOdds)
-# i reajustaments menors de retransmissió de la jornada.
-MAX_KICKOFF_TOLERANCE_HOURS = 2.0
+# Tolerància temporal ordinària estricta i justificada (30 minuts = 0.5 hores):
+# Després de la normalització rigorosa d'horaris a UTC distingint timestamps UTC amb 'Z'
+# i dates locals sense zona de Flashscore/SQLite (gestionades via Europe/Madrid CET/CEST i UTC directe),
+# només s'admet una tolerància màxima de 30 minuts per retards puntuals de retransmissió de partits.
+# Qualsevol desfasament superior a 30 minuts es rebutja categòricament com a no coincident.
+MAX_KICKOFF_TOLERANCE_HOURS = 0.5
 
 # Registre explícit i documentat de partits reprogramats excepcionalment
 # Clau: (competition_id, home_team_canonical, away_team_canonical)
@@ -255,12 +256,20 @@ TEAM_ALIASES = {
 def parse_datetime_utc(dt_val: Any, default_tz: ZoneInfo = CALENDAR_TIMEZONE) -> Optional[datetime]:
     """
     Normalitza de manera segura qualsevol format de data/hora a datetime amb zona horària UTC.
-    Les dates locals sense zona horària (formats DD.MM.YYYY HH:MM o YYYY-MM-DD HH:MM típics de Flashscore / SQLite)
-    es converteixen correctament a UTC a partir de la zona horària original del calendari (Europe/Madrid).
-    Si la data és buida, 'TBD', 'Pendent' o incompatible, retorna None.
+    Distingeix estrictament:
+    1. Timestamps amb offset explícit o amb 'Z' (UTC garantit).
+    2. Valors numèrics (timestamp UNIX absoluts en UTC).
+    3. Dates locals sense zona (formats DD.MM.YYYY HH:MM o YYYY-MM-DD HH:MM),
+       convertides a UTC mitjançant la zona horària indicada (Europe/Madrid, incloent CET/CEST).
+    Si la data és buida, 'TBD', 'Pendent' o no vàlida, retorna None.
     """
     if not dt_val:
         return None
+    if isinstance(dt_val, (int, float)):
+        try:
+            return datetime.fromtimestamp(dt_val, tz=timezone.utc)
+        except Exception:
+            return None
     if isinstance(dt_val, datetime):
         if dt_val.tzinfo:
             return dt_val.astimezone(timezone.utc)
@@ -270,7 +279,19 @@ def parse_datetime_utc(dt_val: Any, default_tz: ZoneInfo = CALENDAR_TIMEZONE) ->
     if not s or s.lower() in ("tbd", "pendent", "none", "null", "postponed"):
         return None
 
-    # 1. Format 'DD.MM.YYYY HH:MM' típic de Flashscore / SQLite
+    # 1. Format ISO 8601 amb offset o 'Z' explícit (UTC certificat)
+    if ("T" in s or " " in s) and (s.endswith("Z") or "+" in s or ("-" in s[10:])):
+        try:
+            clean_iso = re.sub(r"(\.\d{6})\d+Z$", r"\1Z", s)
+            if clean_iso.endswith("Z"):
+                clean_iso = clean_iso[:-1] + "+00:00"
+            dt = datetime.fromisoformat(clean_iso)
+            if dt.tzinfo is not None:
+                return dt.astimezone(timezone.utc)
+        except Exception:
+            pass
+
+    # 2. Format sense zona 'DD.MM.YYYY HH:MM' típic de Flashscore / SQLite
     m = re.match(r"^(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$", s)
     if m:
         day, month, year = int(m.group(1)), int(m.group(2)), int(m.group(3))
@@ -279,7 +300,7 @@ def parse_datetime_utc(dt_val: Any, default_tz: ZoneInfo = CALENDAR_TIMEZONE) ->
         dt_local = datetime(year, month, day, hour, minute, tzinfo=default_tz)
         return dt_local.astimezone(timezone.utc)
 
-    # 2. Format 'YYYY-MM-DD HH:MM'
+    # 3. Format sense zona 'YYYY-MM-DD HH:MM'
     m_iso = re.match(r"^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{1,2}):(\d{2}))?$", s)
     if m_iso:
         year, month, day = int(m_iso.group(1)), int(m_iso.group(2)), int(m_iso.group(3))
@@ -288,19 +309,61 @@ def parse_datetime_utc(dt_val: Any, default_tz: ZoneInfo = CALENDAR_TIMEZONE) ->
         dt_local = datetime(year, month, day, hour, minute, tzinfo=default_tz)
         return dt_local.astimezone(timezone.utc)
 
-    # 3. Format ISO 8601 amb offset o 'Z'
-    try:
-        clean_iso = re.sub(r"(\.\d{6})\d+Z$", r"\1Z", s)
-        if clean_iso.endswith("Z"):
-            clean_iso = clean_iso[:-1] + "+00:00"
-        dt = datetime.fromisoformat(clean_iso)
-        if not dt.tzinfo:
-            dt = dt.replace(tzinfo=default_tz)
-        return dt.astimezone(timezone.utc)
-    except Exception:
-        pass
-
     return None
+
+
+def resolve_kickoff_candidates_utc(dt_val: Any) -> List[datetime]:
+    """
+    Retorna la llista determinista de candidats UTC per a una expressió de data/hora de partit.
+    - Si el valor és numèric o conté indicador de zona ('Z' o offset), retorna exclusivament el seu UTC directe.
+    - Si és una cadena sense zona horària (com les exportades a SQLite des de Flashscore),
+      retorna tant la interpretació UTC directa (com quan es va generar en entorn UTC)
+      com la conversió des d'Europe/Madrid (aplicant exactament CET o CEST segons el mes de l'any).
+    """
+    if not dt_val:
+        return []
+    if isinstance(dt_val, (int, float)):
+        try:
+            return [datetime.fromtimestamp(dt_val, tz=timezone.utc)]
+        except Exception:
+            return []
+    if isinstance(dt_val, datetime):
+        if dt_val.tzinfo is not None:
+            return [dt_val.astimezone(timezone.utc)]
+        dt_madrid = dt_val.replace(tzinfo=CALENDAR_TIMEZONE).astimezone(timezone.utc)
+        dt_utc = dt_val.replace(tzinfo=timezone.utc)
+        return [dt_utc] if dt_utc == dt_madrid else [dt_utc, dt_madrid]
+
+    s = str(dt_val).strip()
+    if not s or s.lower() in ("tbd", "pendent", "none", "null", "postponed"):
+        return []
+
+    # Timestamp amb Z o offset explícit (certificat amb fus)
+    if s.endswith("Z") or ("+" in s) or ("-" in s[10:]):
+        res = parse_datetime_utc(s)
+        return [res] if res else []
+
+    # Dates sense zona: 'DD.MM.YYYY HH:MM' o 'YYYY-MM-DD HH:MM'
+    m_dot = re.match(r"^(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$", s)
+    if m_dot:
+        d, m, y = int(m_dot.group(1)), int(m_dot.group(2)), int(m_dot.group(3))
+        h, mi = int(m_dot.group(4) or 0), int(m_dot.group(5) or 0)
+        dt_raw = datetime(y, m, d, h, mi)
+        dt_direct_utc = dt_raw.replace(tzinfo=timezone.utc)
+        dt_madrid_utc = dt_raw.replace(tzinfo=CALENDAR_TIMEZONE).astimezone(timezone.utc)
+        return [dt_direct_utc] if dt_direct_utc == dt_madrid_utc else [dt_direct_utc, dt_madrid_utc]
+
+    m_dash = re.match(r"^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{1,2}):(\d{2}))?$", s)
+    if m_dash:
+        y, m, d = int(m_dash.group(1)), int(m_dash.group(2)), int(m_dash.group(3))
+        h, mi = int(m_dash.group(4) or 0), int(m_dash.group(5) or 0)
+        dt_raw = datetime(y, m, d, h, mi)
+        dt_direct_utc = dt_raw.replace(tzinfo=timezone.utc)
+        dt_madrid_utc = dt_raw.replace(tzinfo=CALENDAR_TIMEZONE).astimezone(timezone.utc)
+        return [dt_direct_utc] if dt_direct_utc == dt_madrid_utc else [dt_direct_utc, dt_madrid_utc]
+
+    res = parse_datetime_utc(s)
+    return [res] if res else []
 
 
 class MoviOddsClient:
@@ -487,8 +550,8 @@ class MoviOddsClient:
         if not match_date_time:
             return None
 
-        sqlite_dt = parse_datetime_utc(match_date_time)
-        if not sqlite_dt:
+        candidates_utc = resolve_kickoff_candidates_utc(match_date_time)
+        if not candidates_utc:
             return None
 
         # Partits de la mateixa lliga al feed
@@ -511,7 +574,7 @@ class MoviOddsClient:
             if not (h_matches and a_matches):
                 continue
 
-            # 2. Comprovació de coherència temporal amb tolerància estricta (2.5h) i reprogramacions explícites
+            # 2. Comprovació de coherència temporal amb tolerància estricta (0.5h = 30 minuts) i reprogramacions explícites
             ko_str = m.get("kickoff_utc")
             if not ko_str:
                 # Si el feed no té data/hora d'inici, no es pot verificar la coherència
@@ -520,7 +583,8 @@ class MoviOddsClient:
             if not ko_dt:
                 continue
 
-            diff_hours = abs((sqlite_dt - ko_dt).total_seconds()) / 3600.0
+            # Discrepància mínima entre els candidats de la data sol·licitada i el kickoff certificat de la bookmaker
+            diff_hours = min(abs((c_dt - ko_dt).total_seconds()) / 3600.0 for c_dt in candidates_utc)
             if diff_hours > MAX_KICKOFF_TOLERANCE_HOURS:
                 # Comprovar si figura explícitament al registre documentat de reprogramacions
                 # i si coincideix estrictament amb la data/hora concreta autoritzada
@@ -543,7 +607,7 @@ class MoviOddsClient:
                             # Validació que la data sol·licitada coincideix amb la data de calendari autoritzada (tolerància 30 min)
                             cal_match = True
                             if auth_cal_dt:
-                                cal_match = (abs((sqlite_dt - auth_cal_dt).total_seconds()) / 3600.0) <= MAX_KICKOFF_TOLERANCE_HOURS
+                                cal_match = any((abs((c_dt - auth_cal_dt).total_seconds()) / 3600.0) <= MAX_KICKOFF_TOLERANCE_HOURS for c_dt in candidates_utc)
 
                             if ko_match and cal_match:
                                 resched_ok = True
@@ -720,12 +784,12 @@ class MoviOddsClient:
                 market_group_statuses["cards"].append(gst)
 
         # 3. Avaluador de frescor i estat original del mercat abans de filtrar
-        def _eval_market(m_key: str) -> Tuple[bool, bool, bool, str, Optional[str], Optional[str]]:
+        def _eval_market(m_key: str) -> Tuple[bool, bool, bool, str, Optional[str], Optional[str], str]:
             m_raw = raw_market_quotes[m_key]
             m_groups = market_group_statuses[m_key]
 
             if not m_raw and not m_groups:
-                return False, False, False, "absent", None, None
+                return False, False, False, "absent", None, None, "UNKNOWN"
 
             # Timestamp i informació de confirmació
             m_polled = None
@@ -739,11 +803,15 @@ class MoviOddsClient:
                 if p and (m_polled is None or p > m_polled):
                     m_polled = p
 
-            src_time = m_polled or m_ts
-            if not src_time:
-                if not group_status and raw_polled_at:
-                    src_time = raw_polled_at
-                    m_polled = raw_polled_at
+            market_polled = m_polled or raw_polled_at
+
+            # Distinció estricta d'hora d'origen vs hora de recepció:
+            # - m_ts: timestamp de l'última modificació real de la quota a Bet365 (origen)
+            # - market_polled: timestamp en què MoviOdds va consultar/descarregar el mercat (recepció)
+            origin_known = bool(m_ts and m_ts.strip())
+            origin_freshness = "CONFIRMED" if origin_known else "UNKNOWN"
+
+            eval_time = m_ts if origin_known else market_polled
 
             # Comprovar si està marcat com a stale a group_status
             is_group_stale = any(gst.get("stale") is True for gst in m_groups)
@@ -757,11 +825,11 @@ class MoviOddsClient:
             is_group_suspended = any(gst.get("suspended") is True for gst in m_groups)
             all_quotes_suspended = bool(m_raw and all(q.get("suspended") is True for q in m_raw))
 
-            # Comprovar frescor temporal de src_time
+            # Comprovar frescor temporal de eval_time
             is_time_stale = False
             is_unverified = False
-            if src_time:
-                s_dt = parse_datetime_utc(src_time)
+            if eval_time:
+                s_dt = parse_datetime_utc(eval_time)
                 if not s_dt:
                     is_unverified = True
                 else:
@@ -773,19 +841,19 @@ class MoviOddsClient:
 
             # Ordre de causa de rebuig
             if is_group_stale or is_time_stale:
-                return False, True, False, "stale", src_time, m_ts
+                return False, True, False, "stale", market_polled, m_ts, origin_freshness
             if is_group_suspended or all_quotes_suspended:
-                return False, False, True, "suspended", src_time, m_ts
+                return False, False, True, "suspended", market_polled, m_ts, origin_freshness
             if is_unverified:
-                return False, False, False, "unverified", src_time, m_ts
+                return False, False, False, "unverified", market_polled, m_ts, origin_freshness
 
             # En aquest punt el mercat no és stale, no és suspès i està verificat temporalment.
-            return True, False, False, "ok", src_time, m_ts
+            return True, False, False, "ok", market_polled, m_ts, origin_freshness
 
         # 4. Mercat 1X2 (Full Time Result)
         h_norm = self.normalize_name(home_name)
         a_norm = self.normalize_name(away_name)
-        fresh_1x2, is_st_1x2, is_su_1x2, reason_1x2, poll_1x2, ts_1x2 = _eval_market("1X2")
+        fresh_1x2, is_st_1x2, is_su_1x2, reason_1x2, poll_1x2, ts_1x2, orig_fresh_1x2 = _eval_market("1X2")
 
         parsed_1x2 = {}
         if fresh_1x2:
@@ -812,14 +880,24 @@ class MoviOddsClient:
                 "suspended": False,
                 "rejection_reason": "ok",
                 "polled_at": poll_1x2,
-                "ts": ts_1x2
+                "ts": ts_1x2,
+                "provider_updated_at": ts_1x2 or None,
+                "origin_freshness": orig_fresh_1x2
             }
             result["matched"] = True
             result["is_stale"] = False
             result["polled_at"] = poll_1x2
-            result["captured_at"] = poll_1x2 or raw_polled_at or now_utc.isoformat()
-            result["freshness"] = "FRESH"
-            result["freshness_reason"] = "ok"
+            result["provider_updated_at"] = ts_1x2 or None
+            result["origin_freshness"] = orig_fresh_1x2
+            result["captured_at"] = ts_1x2 if ts_1x2 else poll_1x2
+            if orig_fresh_1x2 == "CONFIRMED":
+                ts_dt = parse_datetime_utc(ts_1x2)
+                age_origin = (now_utc - ts_dt).total_seconds() if ts_dt else 9999
+                result["freshness"] = "FRESH" if age_origin <= 60.0 else ("STALE" if age_origin > 300.0 else "RECENT")
+                result["freshness_reason"] = "ok" if age_origin <= 60.0 else "origin_older_than_60s"
+            else:
+                result["freshness"] = "UNKNOWN"
+                result["freshness_reason"] = "reception_time_only_origin_unknown"
             result["ts"] = ts_1x2
         else:
             result["1X2"] = {}
@@ -830,13 +908,15 @@ class MoviOddsClient:
                 "suspended": is_su_1x2,
                 "rejection_reason": final_reason_1x2,
                 "polled_at": poll_1x2,
-                "ts": ts_1x2
+                "ts": ts_1x2,
+                "provider_updated_at": ts_1x2 or None,
+                "origin_freshness": orig_fresh_1x2
             }
             result["matched"] = False
             result["is_stale"] = is_st_1x2
 
         # 5. Doble Oportunitat
-        fresh_dc, is_st_dc, is_su_dc, reason_dc, poll_dc, ts_dc = _eval_market("double_chance")
+        fresh_dc, is_st_dc, is_su_dc, reason_dc, poll_dc, ts_dc, orig_fresh_dc = _eval_market("double_chance")
         parsed_dc = {}
         if fresh_dc:
             for q in raw_market_quotes["double_chance"]:
@@ -876,7 +956,7 @@ class MoviOddsClient:
             }
 
         # 6. Gols Over / Under 2.5 (línia estricta de 2.5)
-        fresh_ou, is_st_ou, is_su_ou, reason_ou, poll_ou, ts_ou = _eval_market("over_under_2_5")
+        fresh_ou, is_st_ou, is_su_ou, reason_ou, poll_ou, ts_ou, orig_fresh_ou = _eval_market("over_under_2_5")
         parsed_ou = {}
         if fresh_ou:
             for q in raw_market_quotes["over_under_2_5"]:
@@ -901,7 +981,9 @@ class MoviOddsClient:
                 "suspended": False,
                 "rejection_reason": "ok",
                 "polled_at": poll_ou,
-                "ts": ts_ou
+                "ts": ts_ou,
+                "provider_updated_at": ts_ou or None,
+                "origin_freshness": orig_fresh_ou
             }
         else:
             result["over_under_2_5"] = {}
@@ -912,11 +994,13 @@ class MoviOddsClient:
                 "suspended": is_su_ou,
                 "rejection_reason": final_reason_ou,
                 "polled_at": poll_ou,
-                "ts": ts_ou
+                "ts": ts_ou,
+                "provider_updated_at": ts_ou or None,
+                "origin_freshness": orig_fresh_ou
             }
 
         # 7. Ambdós Equips Marquen (BTTS)
-        fresh_btts, is_st_btts, is_su_btts, reason_btts, poll_btts, ts_btts = _eval_market("btts")
+        fresh_btts, is_st_btts, is_su_btts, reason_btts, poll_btts, ts_btts, orig_fresh_btts = _eval_market("btts")
         parsed_btts = {}
         if fresh_btts:
             for q in raw_market_quotes["btts"]:
@@ -941,7 +1025,9 @@ class MoviOddsClient:
                 "suspended": False,
                 "rejection_reason": "ok",
                 "polled_at": poll_btts,
-                "ts": ts_btts
+                "ts": ts_btts,
+                "provider_updated_at": ts_btts or None,
+                "origin_freshness": orig_fresh_btts
             }
         else:
             result["btts"] = {}
@@ -952,11 +1038,13 @@ class MoviOddsClient:
                 "suspended": is_su_btts,
                 "rejection_reason": final_reason_btts,
                 "polled_at": poll_btts,
-                "ts": ts_btts
+                "ts": ts_btts,
+                "provider_updated_at": ts_btts or None,
+                "origin_freshness": orig_fresh_btts
             }
 
         # 8. Córners
-        fresh_corn, is_st_corn, is_su_corn, reason_corn, poll_corn, ts_corn = _eval_market("corners")
+        fresh_corn, is_st_corn, is_su_corn, reason_corn, poll_corn, ts_corn, orig_fresh_corn = _eval_market("corners")
         parsed_corners = {}
         if fresh_corn:
             for q in raw_market_quotes["corners"]:
@@ -979,7 +1067,9 @@ class MoviOddsClient:
                 "suspended": False,
                 "rejection_reason": "ok",
                 "polled_at": poll_corn,
-                "ts": ts_corn
+                "ts": ts_corn,
+                "provider_updated_at": ts_corn or None,
+                "origin_freshness": orig_fresh_corn
             }
         else:
             result["corners"] = {}
@@ -990,11 +1080,13 @@ class MoviOddsClient:
                 "suspended": is_su_corn,
                 "rejection_reason": final_reason_corn,
                 "polled_at": poll_corn,
-                "ts": ts_corn
+                "ts": ts_corn,
+                "provider_updated_at": ts_corn or None,
+                "origin_freshness": orig_fresh_corn
             }
 
         # 9. Targetes
-        fresh_card, is_st_card, is_su_card, reason_card, poll_card, ts_card = _eval_market("cards")
+        fresh_card, is_st_card, is_su_card, reason_card, poll_card, ts_card, orig_fresh_card = _eval_market("cards")
         parsed_cards = {}
         if fresh_card:
             for q in raw_market_quotes["cards"]:
@@ -1017,7 +1109,9 @@ class MoviOddsClient:
                 "suspended": False,
                 "rejection_reason": "ok",
                 "polled_at": poll_card,
-                "ts": ts_card
+                "ts": ts_card,
+                "provider_updated_at": ts_card or None,
+                "origin_freshness": orig_fresh_card
             }
         else:
             result["cards"] = {}
@@ -1028,7 +1122,9 @@ class MoviOddsClient:
                 "suspended": is_su_card,
                 "rejection_reason": final_reason_card,
                 "polled_at": poll_card,
-                "ts": ts_card
+                "ts": ts_card,
+                "provider_updated_at": ts_card or None,
+                "origin_freshness": orig_fresh_card
             }
 
         return result
