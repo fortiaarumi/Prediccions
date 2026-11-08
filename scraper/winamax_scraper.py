@@ -370,10 +370,12 @@ class WinamaxScraper:
                     if ev_status in ("PREMATCH", "LIVE", "UNKNOWN"):
                         active_existing += 1
 
-                baseline = active_existing if active_existing >= 10 else len(existing_matches)
-                min_threshold = int(baseline * min_coverage_ratio)
-                if valid_matches_count < min_threshold:
-                    return False, f"insufficient_coverage: {valid_matches_count} valid matches < threshold {min_threshold} (baseline: {baseline})"
+                # Si la nova captura conté almenys 10 partits vàlids amb quotes, és un conjunt legítim i substancial
+                # Si en té menys de 10, comparem contra els partits realment actius de la memòria cau (mai contra els acabats)
+                if valid_matches_count < 10 and active_existing > 0:
+                    min_threshold = max(1, int(active_existing * min_coverage_ratio))
+                    if valid_matches_count < min_threshold:
+                        return False, f"insufficient_coverage: {valid_matches_count} valid matches < threshold {min_threshold} (baseline: {active_existing})"
 
         return True, "ok"
 

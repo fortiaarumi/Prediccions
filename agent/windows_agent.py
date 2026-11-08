@@ -292,11 +292,19 @@ class WindowsSurebetAgent:
 
         # 5. Finalitzar la sessió atòmicament al coordinador
         print(f"✅ [AGENT] Sessió {session_id} finalitzada amb estat: {final_status}.")
+        session_summary: Dict[str, Any] = {
+            "cycles": cycle_count,
+            "status": "SUCCESS" if final_status == STATUS_COMPLETED else final_status,
+            "completed_at": datetime.now(timezone.utc).isoformat(),
+            "bookmakers_status": daemon.get_bookmakers_status() if daemon else {},
+            "evaluated_matches": getattr(daemon, "evaluated_matches_count", 0),
+            "last_generation": getattr(daemon, "last_generation_iso", datetime.now(timezone.utc).isoformat())
+        }
         self._finalize_session(
             session_id=session_id,
             final_status=final_status,
             error_message=err_msg,
-            summary={"cycles": cycle_count, "completed_at": datetime.now(timezone.utc).isoformat()}
+            summary=session_summary
         )
         self.cleanup_resources()
         self.active_session_id = None

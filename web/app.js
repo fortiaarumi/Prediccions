@@ -948,6 +948,17 @@ function setupSurebetAgentControls() {
                 _activeSurebetSession.status = sData[0].status;
                 updateJobUI(_activeSurebetSession);
 
+                // Sincronitzar mètriques de les cases i frescor del resum executiu
+                if (sData[0].summary && sData[0].summary.bookmakers_status) {
+                  if (appData && appData.arbitrage) {
+                    appData.arbitrage.bookmakers_status = sData[0].summary.bookmakers_status;
+                    if (sData[0].summary.last_generation) {
+                      appData.arbitrage.last_generation = sData[0].summary.last_generation;
+                    }
+                    renderArbitrage();
+                  }
+                }
+
                 if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(sData[0].status)) {
                   clearInterval(_surebetPollInterval);
                   clearInterval(_surebetSessionTimerInterval);
@@ -2591,10 +2602,51 @@ function renderArbitrage() {
         ? `<div class="arb-card-error-note">⚠️ Últim intent fallit: ${escapeHtml(info.last_error)}</div>`
         : '';
 
+      const isHistorical = info.is_historical === true || (info.age_seconds != null && info.age_seconds > 300);
+      const historicalBadge = isHistorical
+        ? '<span class="arb-badge-historical" style="font-size:11px; padding:2px 6px; border-radius:4px; margin-left:6px;" title="Aquestes dades tenen més de 5 minuts o provenen de memòria cau arxiva">[Dades històriques]</span>'
+        : '';
+
+      const feedSyncStr = info.feed_synced_at
+        ? new Date(info.feed_synced_at).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        : null;
+      const feedSyncHtml = feedSyncStr
+        ? `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="Hora de sincronització del feed MoviOdds">Sincronització feed:</span>
+            <span class="arb-bookie-detail-val font-mono">${feedSyncStr}</span>
+          </div>
+        `
+        : '';
+
+      const provUpdStr = info.provider_updated_at
+        ? new Date(info.provider_updated_at).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        : (b.key === 'bet365' ? 'Desconeguda (origen)' : null);
+      const provUpdHtml = provUpdStr
+        ? `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="Timestamp real de modificació de la quota a la casa d'apostes (origen)">Actualització origen:</span>
+            <span class="arb-bookie-detail-val font-mono" style="${provUpdStr.includes('Desconeguda') ? 'color: var(--text-muted, #94a3b8);' : ''}">${provUpdStr}</span>
+          </div>
+        `
+        : '';
+
+      let verifiableHtml = '';
+      if (info.verifiable_odds_count != null || info.unverifiable_odds_count != null) {
+        const vCount = info.verifiable_odds_count || 0;
+        const uCount = info.unverifiable_odds_count || 0;
+        verifiableHtml = `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="Quotes amb timestamp de variació d'origen vs quotes només amb hora de recepció">Verificabilitat quotes:</span>
+            <span class="arb-bookie-detail-val font-mono">${vCount} verif. · ${uCount} no verif.</span>
+          </div>
+        `;
+      }
+
       return `
         <div class="arb-bookie-status-card" data-bookie="${b.key}">
           <div class="arb-bookie-header">
-            <span class="arb-bookie-name">${b.icon} ${b.name}</span>
+            <span class="arb-bookie-name">${b.icon} ${b.name} ${historicalBadge}</span>
             <span class="arb-status-pill ${statusClass}">${statusLabel}</span>
           </div>
 
@@ -2626,6 +2678,9 @@ function renderArbitrage() {
               <span class="detail-label" title="Hora de recepció de la resposta del servidor">Resposta HTTP:</span>
               <span class="arb-bookie-detail-val font-mono" title="Hora de captura de dades">${httpCapStr}</span>
             </div>
+            ${feedSyncHtml}
+            ${provUpdHtml}
+            ${verifiableHtml}
           </div>
 
           <div class="arb-card-query-window">

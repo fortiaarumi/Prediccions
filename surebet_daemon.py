@@ -187,6 +187,11 @@ class CircuitBreaker:
         self.events_count: int = 0
         self.odds_count: int = 0
         self.partial_details: Optional[str] = None
+        self.feed_synced_at: Optional[str] = None
+        self.provider_updated_at: Optional[str] = None
+        self.verifiable_odds_count: int = 0
+        self.unverifiable_odds_count: int = 0
+        self.is_historical: bool = False
 
     def record_attempt_start(self, now: Optional[datetime] = None) -> None:
         self.query_start = now or datetime.now(timezone.utc)
@@ -199,7 +204,12 @@ class CircuitBreaker:
         query_end: Optional[datetime] = None,
         http_captured_at: Optional[Any] = None,
         events_count: int = 0,
-        odds_count: int = 0
+        odds_count: int = 0,
+        feed_synced_at: Optional[str] = None,
+        provider_updated_at: Optional[str] = None,
+        verifiable_odds_count: int = 0,
+        unverifiable_odds_count: int = 0,
+        is_historical: bool = False
     ) -> None:
         now_dt = now or datetime.now(timezone.utc)
         self.consecutive_failures = 0
@@ -216,6 +226,11 @@ class CircuitBreaker:
         self.events_count = events_count
         self.odds_count = odds_count
         self.partial_details = None
+        self.feed_synced_at = feed_synced_at
+        self.provider_updated_at = provider_updated_at
+        self.verifiable_odds_count = verifiable_odds_count
+        self.unverifiable_odds_count = unverifiable_odds_count
+        self.is_historical = is_historical
 
     def record_partial(
         self,
@@ -226,7 +241,12 @@ class CircuitBreaker:
         query_end: Optional[datetime] = None,
         http_captured_at: Optional[Any] = None,
         events_count: int = 0,
-        odds_count: int = 0
+        odds_count: int = 0,
+        feed_synced_at: Optional[str] = None,
+        provider_updated_at: Optional[str] = None,
+        verifiable_odds_count: int = 0,
+        unverifiable_odds_count: int = 0,
+        is_historical: bool = False
     ) -> None:
         now_dt = now or datetime.now(timezone.utc)
         self.consecutive_failures = 0
@@ -243,6 +263,11 @@ class CircuitBreaker:
         self.events_count = events_count
         self.odds_count = odds_count
         self.partial_details = reason
+        self.feed_synced_at = feed_synced_at
+        self.provider_updated_at = provider_updated_at
+        self.verifiable_odds_count = verifiable_odds_count
+        self.unverifiable_odds_count = unverifiable_odds_count
+        self.is_historical = is_historical
 
     def record_failure(
         self,
@@ -308,7 +333,12 @@ class CircuitBreaker:
             "http_captured_at": captured_str,
             "events_count": self.events_count,
             "odds_count": self.odds_count,
-            "partial_details": self.partial_details
+            "partial_details": self.partial_details,
+            "feed_synced_at": self.feed_synced_at,
+            "provider_updated_at": self.provider_updated_at,
+            "verifiable_odds_count": self.verifiable_odds_count,
+            "unverifiable_odds_count": self.unverifiable_odds_count,
+            "is_historical": bool(self.is_historical or (age_s is not None and age_s > 300.0))
         }
 
 
@@ -381,6 +411,10 @@ class SurebetDaemon:
         self.session_start_time: Optional[float] = None
         self.max_duration_seconds: Optional[int] = None
         self.cancel_requested: bool = False
+        self.session_cycle_count: int = 0
+        self.last_bookmakers_status: Dict[str, Any] = {}
+        self.last_generation_iso: Optional[str] = None
+        self.evaluated_matches_count: int = 0
 
     def start_session(self, session_id: str, max_duration_seconds: Optional[int] = None) -> None:
         """Inicia una nova sessió de monitoratge amb límits temporals configurables."""
@@ -389,7 +423,17 @@ class SurebetDaemon:
         self.session_start_time = time.time()
         self.max_duration_seconds = max_duration_seconds
         self.cancel_requested = False
+        self.session_cycle_count = 0
         print(f"[*] Sessió {session_id} iniciada amb estat RUNNING (durada màxima: {max_duration_seconds}s).")
+
+    def get_bookmakers_status(self, now: Optional[datetime] = None) -> Dict[str, Any]:
+        """Retorna l'estat consolidat dels Circuit Breakers per a cada bookmaker."""
+        now_dt = now or datetime.now(timezone.utc)
+        return {
+            "winamax": self.breakers["winamax"].to_dict(now_dt),
+            "bet365": self.breakers["bet365"].to_dict(now_dt),
+            "betway": self.breakers["betway"].to_dict(now_dt)
+        }
 
     def request_cancellation(self) -> None:
         """Sol·licita la cancel·lació cooperativa de la sessió en curs."""
@@ -579,12 +623,14 @@ class SurebetDaemon:
         5. Actualitza les dades de la web.
         """
         cycle_start = time.time()
+        self.session_cycle_count += 1
+        is_manual_session = bool(self.session_id)
         now_utc = now or datetime.now(timezone.utc)
         now_madrid = now_utc.astimezone(TZ_MADRID)
         now_iso = now_utc.isoformat()
 
         print("\n" + "=" * 70)
-        print(f"🕒 [SUREBET DAEMON] Cicle iniciat: {now_madrid.strftime('%Y-%m-%d %H:%M:%S')} (Europe/Madrid)")
+        print(f"🕒 [SUREBET DAEMON] Cicle #{self.session_cycle_count} iniciat: {now_madrid.strftime('%Y-%m-%d %H:%M:%S')} (Europe/Madrid)")
         print("=" * 70)
 
         # 0. Vigilància econòmica (CostGuard)
@@ -608,7 +654,14 @@ class SurebetDaemon:
                 print(f"   • {bk_name.capitalize()}: SUSPÈS (Circuit Breaker actiu)")
                 continue
 
-            # Comprovar si toca per política de freqüència
+            # Si és una cerca manual iniciada des del web, forcem la consulta de totes les cases
+            # en el primer cicle per garantir quotes fresques sense esperar intervals de 15/30 minuts.
+            if is_manual_session and self.session_cycle_count <= 1:
+                scrapers_to_run.append(bk_name)
+                print(f"   • {bk_name.capitalize()}: FORÇAT PER CERCA MANUAL EN LÍNIA")
+                continue
+
+            # Comprovar si toca per política de freqüència de fons
             last_run = self.last_run_times[bk_name]
             interval_s = policy.get(bk_name, 300)
             if last_run is None or (now_utc - last_run).total_seconds() >= interval_s:
@@ -619,21 +672,24 @@ class SurebetDaemon:
                 print(f"   • {bk_name.capitalize()}: FRESC ({elapsed:.0f}s / {interval_s:.0f}s)")
 
         # 3. Recollir quotes partit a partit
-        # Per no saturar, prioritzem els partits de les pròximes 24h
-        matches_to_eval = [m for m in matches if m.get("diff_hours", 999) <= 48.0]
-        if not matches_to_eval:
-            matches_to_eval = matches[:15]  # Si no n'hi ha en 48h, avaluem els primers 15
+        # Prioritzem partits en menys de 48h; si n'hi ha menys de 15, completem amb els següents fins a 15 partits
+        # per evitar que períodes entre jornades o amb pocs partits imminents analitzin només 1 partit.
+        imminent = [m for m in matches if m.get("diff_hours", 999) <= 48.0]
+        if len(imminent) >= 15:
+            matches_to_eval = imminent[:15]
+        else:
+            matches_to_eval = matches[:15]
 
         evaluated_matches_flat: List[Dict[str, Any]] = []
 
-        # Estadístiques d'execució d'aquest cicle per a cada casa (FASE 1)
+        # Estadístiques d'execució d'aquest cicle per a cada casa (FASE 1 & FASE 4)
         cycle_stats = {
-            "winamax": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc)},
-            "bet365": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc)},
-            "betway": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc)},
+            "winamax": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "is_historical": False},
+            "bet365": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "is_historical": False},
+            "betway": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "is_historical": False},
         }
 
-        if self.check_cancellation() or self.check_duration_limit():
+        if self.check_cancellation():
             return {}
 
         # Pre-sincronització eficient del feed oficial MoviOdds si Bet365 s'ha d'actualitzar
@@ -644,11 +700,13 @@ class SurebetDaemon:
                 if not m_cli.has_feed():
                     print("   • Bet365: Sincronitzant feed oficial en viu de MoviOdds abans d'avaluar partits...")
                     m_cli.fetch_feed()
+                if m_cli.has_feed():
+                    cycle_stats["bet365"]["feed_synced_at"] = m_cli._last_fetch_iso
             except Exception as e:
                 print(f"   • Bet365: Avís pre-fetch MoviOdds: {e}")
 
         for m in matches_to_eval:
-            if self.check_cancellation() or self.check_duration_limit():
+            if self.check_cancellation():
                 break
             h_name = m["home_team"]["name"]
             a_name = m["away_team"]["name"]
@@ -685,9 +743,11 @@ class SurebetDaemon:
                             m_record["odds_btts_winamax"] = w_odds["btts"]
                             cnt += len(w_odds["btts"])
                         cycle_stats["winamax"]["odds"] += cnt
+                        cycle_stats["winamax"]["verifiable_odds"] += cnt
                         cap = w_odds.get("captured_at")
                         if cap:
                             cycle_stats["winamax"]["captured_at"] = cap
+                            cycle_stats["winamax"]["provider_updated_at"] = cap
                         m_record["odds_winamax_captured_at"] = cap
                         m_record["odds_winamax_polled_at"] = cap
                         m_record["odds_winamax_provider_updated_at"] = cap
@@ -721,6 +781,12 @@ class SurebetDaemon:
                         cap = b_odds.get("captured_at")
                         if cap:
                             cycle_stats["bet365"]["captured_at"] = cap
+                        if b_odds.get("feed_synced_at"):
+                            cycle_stats["bet365"]["feed_synced_at"] = b_odds.get("feed_synced_at")
+                        if b_odds.get("provider_updated_at"):
+                            cycle_stats["bet365"]["provider_updated_at"] = b_odds.get("provider_updated_at")
+                        cycle_stats["bet365"]["verifiable_odds"] += b_odds.get("verifiable_odds_count", 0)
+                        cycle_stats["bet365"]["unverifiable_odds"] += b_odds.get("unverifiable_odds_count", 0)
                         m_record["odds_bet365_captured_at"] = cap
                         m_record["odds_bet365_polled_at"] = b_odds.get("polled_at")
                         m_record["odds_bet365_provider_updated_at"] = b_odds.get("provider_updated_at")
@@ -751,9 +817,11 @@ class SurebetDaemon:
                             m_record["odds_btts_betway"] = bw_odds["btts"]
                             cnt += len(bw_odds["btts"])
                         cycle_stats["betway"]["odds"] += cnt
+                        cycle_stats["betway"]["verifiable_odds"] += cnt
                         cap = bw_odds.get("captured_at")
                         if cap:
                             cycle_stats["betway"]["captured_at"] = cap
+                            cycle_stats["betway"]["provider_updated_at"] = cap
                         m_record["odds_betway_captured_at"] = cap
                         m_record["odds_betway_polled_at"] = cap
                         m_record["odds_betway_provider_updated_at"] = cap
@@ -785,7 +853,12 @@ class SurebetDaemon:
                         query_end=cycle_end,
                         http_captured_at=st["captured_at"] or now_utc,
                         events_count=st["events"],
-                        odds_count=st["odds"]
+                        odds_count=st["odds"],
+                        feed_synced_at=st.get("feed_synced_at"),
+                        provider_updated_at=st.get("provider_updated_at"),
+                        verifiable_odds_count=st.get("verifiable_odds", 0),
+                        unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        is_historical=st.get("is_historical", False)
                     )
                 elif st["events"] > 0:
                     self.breakers[bk_name].record_success(
@@ -794,7 +867,12 @@ class SurebetDaemon:
                         query_end=cycle_end,
                         http_captured_at=st["captured_at"] or now_utc,
                         events_count=st["events"],
-                        odds_count=st["odds"]
+                        odds_count=st["odds"],
+                        feed_synced_at=st.get("feed_synced_at"),
+                        provider_updated_at=st.get("provider_updated_at"),
+                        verifiable_odds_count=st.get("verifiable_odds", 0),
+                        unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        is_historical=st.get("is_historical", False)
                     )
                 else:
                     self.breakers[bk_name].record_partial(
@@ -804,7 +882,12 @@ class SurebetDaemon:
                         query_end=cycle_end,
                         http_captured_at=st["captured_at"] or now_utc,
                         events_count=0,
-                        odds_count=0
+                        odds_count=0,
+                        feed_synced_at=st.get("feed_synced_at"),
+                        provider_updated_at=st.get("provider_updated_at"),
+                        verifiable_odds_count=st.get("verifiable_odds", 0),
+                        unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        is_historical=st.get("is_historical", False)
                     )
 
         # Actualitzar marques temporals d'última execució dels scrapers que han corregut
@@ -858,6 +941,9 @@ class SurebetDaemon:
             "bet365": self.breakers["bet365"].to_dict(now_utc),
             "betway": self.breakers["betway"].to_dict(now_utc)
         }
+        self.last_bookmakers_status = bookmakers_status
+        self.last_generation_iso = now_iso
+        self.evaluated_matches_count = len(evaluated_matches_flat)
 
         arbitrage_payload = {
             "summary": {

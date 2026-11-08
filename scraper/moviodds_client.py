@@ -376,6 +376,7 @@ class MoviOddsClient:
         self._cache_ttl = cache_ttl_seconds
         self._raw_matches: List[Dict[str, Any]] = []
         self._last_fetch_time: float = 0.0
+        self._last_fetch_iso: Optional[str] = None
         self._indexed_matches: Dict[str, List[Dict[str, Any]]] = {}
         self._parsed_odds_cache: Dict[str, Dict[str, Any]] = {}
         self._db_manager = None
@@ -466,6 +467,7 @@ class MoviOddsClient:
                 matches = data.get("matches", []) if isinstance(data, dict) else []
                 self._raw_matches = matches
                 self._last_fetch_time = time.time()
+                self._last_fetch_iso = datetime.now(timezone.utc).isoformat()
                 self._index_matches()
                 duration = time.time() - start_t
                 print(f"[MoviOddsClient] Descarregat feed global: {len(matches)} partits en {duration:.2f}s.")
@@ -716,6 +718,14 @@ class MoviOddsClient:
             }
 
         quotes = raw_match.get("quotes", [])
+        total_quotes = len(quotes)
+        verifiable_quotes = sum(1 for q in quotes if q.get("ts") and str(q.get("ts")).strip())
+        unverifiable_quotes = total_quotes - verifiable_quotes
+        feed_sync_iso = self._last_fetch_iso or raw_match.get("polled_at")
+        result["feed_synced_at"] = feed_sync_iso
+        result["verifiable_odds_count"] = verifiable_quotes
+        result["unverifiable_odds_count"] = unverifiable_quotes
+
         if not quotes and not group_status:
             return result
 
@@ -803,14 +813,13 @@ class MoviOddsClient:
                 if p and (m_polled is None or p > m_polled):
                     m_polled = p
 
-            market_polled = m_polled or raw_polled_at
-
             # Distinció estricta d'hora d'origen vs hora de recepció:
             # - m_ts: timestamp de l'última modificació real de la quota a Bet365 (origen)
-            # - market_polled: timestamp en què MoviOdds va consultar/descarregar el mercat (recepció)
+            # - m_polled: timestamp en què MoviOdds va consultar/descarregar el mercat (recepció)
             origin_known = bool(m_ts and m_ts.strip())
             origin_freshness = "CONFIRMED" if origin_known else "UNKNOWN"
 
+            market_polled = m_polled or raw_polled_at
             eval_time = m_ts if origin_known else market_polled
 
             # Comprovar si està marcat com a stale a group_status
@@ -1109,9 +1118,7 @@ class MoviOddsClient:
                 "suspended": False,
                 "rejection_reason": "ok",
                 "polled_at": poll_card,
-                "ts": ts_card,
-                "provider_updated_at": ts_card or None,
-                "origin_freshness": orig_fresh_card
+                "ts": ts_card
             }
         else:
             result["cards"] = {}
@@ -1122,9 +1129,7 @@ class MoviOddsClient:
                 "suspended": is_su_card,
                 "rejection_reason": final_reason_card,
                 "polled_at": poll_card,
-                "ts": ts_card,
-                "provider_updated_at": ts_card or None,
-                "origin_freshness": orig_fresh_card
+                "ts": ts_card
             }
 
         return result
