@@ -34,7 +34,7 @@
     "last_predicted_date": "2026-10-19",
     "last_scraped_jornada": 11
   },
-  "updated_at": "2026-11-09T01:48:52.673128",
+  "updated_at": "2026-11-09T16:40:37.098176",
   "pipeline_status": {
     "workflow_name": "Pipeline Diari Autònom de Prediccions",
     "workflow_file": "daily_pipeline.yml",
