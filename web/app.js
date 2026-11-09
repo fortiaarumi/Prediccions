@@ -826,6 +826,13 @@ function setupSurebetAgentControls() {
       'TIMEOUT': '⏰ Temps esgotat (TIMEOUT)'
     };
 
+    if (session.isExpired) {
+      if (stateVal) stateVal.innerHTML = `<span style="color:#ef4444; font-weight:600;">⚠️ Sessió caducada (${session.status})</span>`;
+      btnStart.disabled = false;
+      btnStop.disabled = false;
+      return;
+    }
+
     if (stateVal) stateVal.textContent = statusDescriptions[session.status] || session.status;
 
     if (session.status === 'RUNNING' || session.status === 'PENDING') {
@@ -833,12 +840,181 @@ function setupSurebetAgentControls() {
       btnStop.disabled = false;
     } else if (session.status === 'CANCEL_REQUESTED') {
       btnStart.disabled = true;
-      btnStop.disabled = true;
+      btnStop.disabled = false; // Permetre insistir en la cancel·lació si queda encallada
     } else {
       btnStart.disabled = false;
       btnStop.disabled = true;
     }
   }
+
+  // Funció centralitzada de seguiment actiu de sessió (Timer + Polling)
+  function startSessionTracking() {
+    if (_surebetSessionTimerInterval) clearInterval(_surebetSessionTimerInterval);
+    _surebetSessionTimerInterval = setInterval(() => {
+      if (!_activeSurebetSession) {
+        clearInterval(_surebetSessionTimerInterval);
+        return;
+      }
+      const elapsed = Math.floor((Date.now() - _activeSurebetSession.startTime) / 1000);
+      const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const secs = String(elapsed % 60).padStart(2, '0');
+      if (timerVal) timerVal.textContent = `${mins}:${secs}`;
+
+      if (_activeSurebetSession.expiresAt && Date.now() > _activeSurebetSession.expiresAt) {
+        _activeSurebetSession.isExpired = true;
+        updateJobUI(_activeSurebetSession);
+      }
+    }, 1000);
+
+    if (_surebetPollInterval) clearInterval(_surebetPollInterval);
+    _surebetPollInterval = setInterval(async () => {
+      if (!_activeSurebetSession) {
+        clearInterval(_surebetPollInterval);
+        return;
+      }
+
+      try {
+        if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
+          const headers = {
+            'apikey': window.SUPABASE_CONFIG.publishableKey,
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
+          };
+
+          // 1. Estat de la sessió
+          const sUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_sessions?id=eq.${_activeSurebetSession.id}&select=*`;
+          const sResp = await fetch(sUrl, { headers, cache: 'no-store' });
+          if (sResp.ok) {
+            const sData = await sResp.json();
+            if (sData && sData.length > 0) {
+              const row = sData[0];
+              _activeSurebetSession.status = row.status;
+              if (row.expires_at && Date.now() > new Date(row.expires_at).getTime()) {
+                _activeSurebetSession.isExpired = true;
+              }
+              updateJobUI(_activeSurebetSession);
+
+              if (row.summary && row.summary.bookmakers_status) {
+                if (appData && appData.arbitrage) {
+                  appData.arbitrage.bookmakers_status = row.summary.bookmakers_status;
+                  if (row.summary.coverage_by_bookmaker) {
+                    appData.arbitrage.summary = appData.arbitrage.summary || {};
+                    appData.arbitrage.summary.coverage_by_bookmaker = row.summary.coverage_by_bookmaker;
+                    appData.arbitrage.summary.matches_with_2plus_bookmakers = row.summary.matches_with_2plus_bookmakers;
+                    appData.arbitrage.summary.matches_with_3_bookmakers = row.summary.matches_with_3_bookmakers;
+                  }
+                  if (row.summary.last_generation) {
+                    appData.arbitrage.last_generation = row.summary.last_generation;
+                  }
+                  renderArbitrage();
+                }
+              }
+
+              if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(row.status)) {
+                clearInterval(_surebetPollInterval);
+                clearInterval(_surebetSessionTimerInterval);
+                _activeSurebetSession = null;
+                updateJobUI(null);
+                showToast(`Sessió finalitzada: ${row.status}`, 'info');
+                return;
+              }
+            }
+          }
+
+          // 2. Snapshots
+          const snapUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_snapshots?session_id=eq.${_activeSurebetSession.id}&select=id,opportunities_count`;
+          const snapResp = await fetch(snapUrl, { headers, cache: 'no-store' });
+          if (snapResp.ok) {
+            const snapData = await snapResp.json();
+            if (snapData && oppsVal) {
+              const totalOpps = snapData.reduce((acc, s) => acc + (s.opportunities_count || 0), 0);
+              oppsVal.textContent = `${snapData.length} snap · ${totalOpps} opps`;
+            }
+          }
+
+          // 3. Oportunitats actives
+          const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?select=*`;
+          const vResp = await fetch(vUrl, { headers, cache: 'no-store' });
+          if (vResp.ok) {
+            const vData = await vResp.json();
+            if (appData && appData.arbitrage) {
+              const realData = (vData || []).filter(item => {
+                if (item.is_synthetic === true || item.is_synthetic === 'true') return false;
+                if (item.bookmakers && Array.isArray(item.bookmakers) && item.bookmakers.some(b => b && b.is_synthetic)) return false;
+                return true;
+              });
+              appData.arbitrage.surebets = realData;
+              renderArbitrage();
+            }
+          }
+        } else if (isDevBridgeExplicitlyEnabled()) {
+          const sResp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions/${_activeSurebetSession.id}`, { cache: 'no-store' });
+          if (sResp.ok) {
+            const sData = await sResp.json();
+            _activeSurebetSession.status = sData.status;
+            updateJobUI(_activeSurebetSession);
+
+            if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(sData.status)) {
+              clearInterval(_surebetPollInterval);
+              clearInterval(_surebetSessionTimerInterval);
+              _activeSurebetSession = null;
+              updateJobUI(null);
+              showToast(`Sessió finalitzada: ${sData.status}`, 'info');
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("[Surebet Polling] Error consultant estat:", err);
+      }
+    }, 2000);
+  }
+
+  // Restauració de sessions actives existents a Supabase en carregar la pàgina
+  async function restoreActiveSessionFromRemote() {
+    if (!window.SUPABASE_CONFIG || !window.SUPABASE_CONFIG.url) return;
+    try {
+      const headers = {
+        'apikey': window.SUPABASE_CONFIG.publishableKey,
+        'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt || window.SUPABASE_CONFIG.publishableKey}`,
+        'Content-Type': 'application/json'
+      };
+      const qUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_sessions?status=in.(PENDING,RUNNING,CANCEL_REQUESTED)&order=created_at.desc&limit=1`;
+      const qResp = await fetch(qUrl, { headers, cache: 'no-store' });
+      if (qResp.ok) {
+        const rows = await qResp.json();
+        if (rows && rows.length > 0) {
+          const sess = rows[0];
+          const createdAtMs = new Date(sess.created_at).getTime();
+          const expiresAtMs = sess.expires_at ? new Date(sess.expires_at).getTime() : (createdAtMs + (sess.duration_seconds || 600) * 1000);
+          const isExpired = Date.now() > expiresAtMs;
+
+          _activeSurebetSession = {
+            id: sess.id,
+            status: sess.status,
+            durationSeconds: sess.duration_seconds || 600,
+            startTime: createdAtMs,
+            expiresAt: expiresAtMs,
+            isExpired: isExpired
+          };
+
+          updateJobUI(_activeSurebetSession);
+          startSessionTracking();
+
+          if (isExpired) {
+            showToast("S'ha detectat una sessió activa caducada a Supabase. Prem 'Aturar cerca' per alliberar-la.", "warning");
+          } else {
+            showToast(`S'ha sincronitzat la cerca en curs (${sess.status}) des de Supabase`, "info");
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("[Surebet Agent] Error restaurant sessió activa:", err);
+    }
+  }
+
+  // Restaurar sessions en iniciar
+  restoreActiveSessionFromRemote();
 
   // -------------------------------------------------------------
   // Botó «Buscar surebets»
@@ -962,130 +1138,8 @@ function setupSurebetAgentControls() {
       updateJobUI(_activeSurebetSession);
       showToast(`Cerca de Surebets iniciada (${durationMins} min) a Supabase`, 'success');
 
-      // Temporitzador de seguiment
-      if (_surebetSessionTimerInterval) clearInterval(_surebetSessionTimerInterval);
-      _surebetSessionTimerInterval = setInterval(() => {
-        if (!_activeSurebetSession) {
-          clearInterval(_surebetSessionTimerInterval);
-          return;
-        }
-        const elapsed = Math.floor((Date.now() - _activeSurebetSession.startTime) / 1000);
-        const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
-        const secs = String(elapsed % 60).padStart(2, '0');
-        if (timerVal) timerVal.textContent = `${mins}:${secs}`;
-      }, 1000);
-
-      // Polling de resultats i estat
-      if (_surebetPollInterval) clearInterval(_surebetPollInterval);
-      _surebetPollInterval = setInterval(async () => {
-        if (!_activeSurebetSession) {
-          clearInterval(_surebetPollInterval);
-          return;
-        }
-
-        try {
-          if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
-            const headers = {
-              'apikey': window.SUPABASE_CONFIG.publishableKey,
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
-            };
-
-            // 1. Estat de la sessió
-            const sUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_sessions?id=eq.${_activeSurebetSession.id}&select=*`;
-            const sResp = await fetch(sUrl, { headers, cache: 'no-store' });
-            if (sResp.ok) {
-              const sData = await sResp.json();
-              if (sData && sData.length > 0) {
-                _activeSurebetSession.status = sData[0].status;
-                updateJobUI(_activeSurebetSession);
-
-                // Sincronitzar mètriques de les cases i frescor del resum executiu
-                if (sData[0].summary && sData[0].summary.bookmakers_status) {
-                  if (appData && appData.arbitrage) {
-                    appData.arbitrage.bookmakers_status = sData[0].summary.bookmakers_status;
-                    if (sData[0].summary.coverage_by_bookmaker) {
-                      appData.arbitrage.summary = appData.arbitrage.summary || {};
-                      appData.arbitrage.summary.coverage_by_bookmaker = sData[0].summary.coverage_by_bookmaker;
-                      appData.arbitrage.summary.matches_with_2plus_bookmakers = sData[0].summary.matches_with_2plus_bookmakers;
-                      appData.arbitrage.summary.matches_with_3_bookmakers = sData[0].summary.matches_with_3_bookmakers;
-                    }
-                    if (sData[0].summary.last_generation) {
-                      appData.arbitrage.last_generation = sData[0].summary.last_generation;
-                    }
-                    renderArbitrage();
-                  }
-                }
-
-                if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(sData[0].status)) {
-                  clearInterval(_surebetPollInterval);
-                  clearInterval(_surebetSessionTimerInterval);
-                  showToast(`Sessió finalitzada: ${sData[0].status}`, 'info');
-                }
-              }
-            }
-
-            // 2. Consulta de snapshots per a la sessió
-            const snapUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_snapshots?session_id=eq.${_activeSurebetSession.id}&select=id,opportunities_count`;
-            const snapResp = await fetch(snapUrl, { headers, cache: 'no-store' });
-            if (snapResp.ok) {
-              const snapData = await snapResp.json();
-              if (snapData && oppsVal) {
-                const totalOpps = snapData.reduce((acc, s) => acc + (s.opportunities_count || 0), 0);
-                oppsVal.textContent = `${snapData.length} snap · ${totalOpps} opps`;
-              }
-            }
-
-            // 3. Oportunitats actives des de la vista v_active_surebets
-            const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?select=*`;
-            const vResp = await fetch(vUrl, { headers, cache: 'no-store' });
-            if (vResp.ok) {
-              const vData = await vResp.json();
-              if (appData && appData.arbitrage) {
-                // Filtratge estructurat de seguretat (booleans de simulació i metadades)
-                const realData = (vData || []).filter(item => {
-                  if (item.is_synthetic === true || item.is_synthetic === 'true') return false;
-                  if (item.bookmakers && Array.isArray(item.bookmakers) && item.bookmakers.some(b => b && b.is_synthetic)) return false;
-                  return true;
-                });
-                appData.arbitrage.surebets = realData;
-                renderArbitrage();
-              }
-            }
-          } else if (isDevBridgeExplicitlyEnabled()) {
-            // Mode Local: Pont HTTP 127.0.0.1
-            const sResp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions/${_activeSurebetSession.id}`, { cache: 'no-store' });
-            if (sResp.ok) {
-              const sData = await sResp.json();
-              _activeSurebetSession.status = sData.status;
-              updateJobUI(_activeSurebetSession);
-
-              if (['COMPLETED', 'CANCELLED', 'FAILED'].includes(sData.status)) {
-                clearInterval(_surebetPollInterval);
-                clearInterval(_surebetSessionTimerInterval);
-                showToast(`Sessió de cerca finalitzada: ${sData.status}`, 'info');
-              }
-            }
-
-            const oppResp = await fetch(`${LOCAL_BRIDGE_URL}/api/opportunities`, { cache: 'no-store' });
-            if (oppResp.ok) {
-              const oppData = await oppResp.json();
-              if (appData && appData.arbitrage) {
-                const nowSec = Date.now() / 1000;
-                const validOpps = (oppData.opportunities || []).filter(o => {
-                  const age = o.detected_at_epoch ? (nowSec - o.detected_at_epoch) : 0;
-                  return age <= 1800.0 && (!o.matchup || !o.matchup.includes('[TEST'));
-                });
-
-                appData.arbitrage.surebets = validOpps.map(o => o.opportunity_payload || o);
-                renderArbitrage();
-              }
-            }
-          }
-        } catch (err) {
-          console.warn("[Surebet Polling] Error consultant estat:", err);
-        }
-      }, 2000);
+      // Iniciar temporitzador i sondeig centralitzat
+      startSessionTracking();
 
     } catch (err) {
       showToast(`Error iniciant cerca: ${err.message}`, 'error');
@@ -1116,11 +1170,27 @@ function setupSurebetAgentControls() {
             body: JSON.stringify({ p_session_id: _activeSurebetSession.id })
           });
           if (cancelResp.ok) {
-            _activeSurebetSession.status = 'CANCEL_REQUESTED';
-            updateJobUI(_activeSurebetSession);
-            showToast("Aturada de cerca sol·licitada a Supabase", "info");
+            showToast("Sol·licitud d'aturada processada a Supabase", "info");
+            if (_activeSurebetSession.isExpired || !isAgentOnline) {
+              _activeSurebetSession.status = 'CANCELLED';
+              clearInterval(_surebetPollInterval);
+              clearInterval(_surebetSessionTimerInterval);
+              _activeSurebetSession = null;
+              updateJobUI(null);
+              showToast("Sessió alliberada i bloqueig de cerca eliminat", "success");
+            } else {
+              _activeSurebetSession.status = 'CANCEL_REQUESTED';
+              updateJobUI(_activeSurebetSession);
+            }
           } else {
             const errText = await cancelResp.text();
+            // Si la sessió ja estava caducada i falla l'RPC, alliberar localment
+            if (_activeSurebetSession.isExpired) {
+              _activeSurebetSession = null;
+              updateJobUI(null);
+              showToast("Sessió caducada alliberada localment", "warning");
+              return;
+            }
             throw new Error(`Error en sol·licitud de cancel·lació: ${errText}`);
           }
         } else if (isDevBridgeExplicitlyEnabled()) {

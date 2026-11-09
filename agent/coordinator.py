@@ -66,10 +66,10 @@ class MockCoordinator:
             self.snapshots[s_id] = []
             return order
 
-    def request_cancellation(self, session_id: str, requesting_user_id: str) -> SearchOrder:
+    def request_cancellation(self, session_id: str, requesting_user_id: Optional[str] = None) -> SearchOrder:
         """
         Sol·licita la cancel·lació d'una sessió.
-        Seguretat (RLS): Només l'usuari propietari pot cancel·lar la seva sessió.
+        Seguretat (RLS): Si s'especifica un usuari, només el propietari pot cancel·lar.
         """
         with self._lock:
             order = self.orders.get(session_id)
@@ -77,7 +77,7 @@ class MockCoordinator:
                 raise KeyError(f"Sessió {session_id} no trobada")
 
             # Comprovació de privilegis d'usuari (Simulació RLS)
-            if order.user_id != requesting_user_id:
+            if requesting_user_id and order.user_id != requesting_user_id:
                 raise PermissionError(
                     f"Accés denegat: L'usuari '{requesting_user_id}' no té permís per cancel·lar la sessió de '{order.user_id}'"
                 )
@@ -139,6 +139,9 @@ class MockCoordinator:
         Garanteix amb bloqueig que dues crides simultànies no assignin la mateixa feina.
         """
         with self._lock:
+            # 1. Neteja preventiva de sessions caducades per timeout
+            self.check_timeouts()
+
             for order in self.orders.values():
                 if order.status == STATUS_PENDING:
                     # Assignar de forma atòmica

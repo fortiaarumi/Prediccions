@@ -109,7 +109,7 @@ class WindowsSurebetAgent:
             if hasattr(self.coordinator, "cancel_order"):
                 self.coordinator.cancel_order(session_id)
             elif hasattr(self.coordinator, "update_session_state"):
-                self.coordinator.update_session_state(session_id, STATUS_CANCELLED, self.agent_id)
+                self.coordinator.update_session_state(session_id, STATUS_CANCELLED, self.agent_id, error_message=error_message)
         else:
             if hasattr(self.coordinator, "fail_order"):
                 self.coordinator.fail_order(session_id, error_message=error_message or "Error d'execució")
@@ -285,6 +285,44 @@ class WindowsSurebetAgent:
                 if final_status == STATUS_CANCELLED:
                     break
 
+        except (KeyboardInterrupt, SystemExit) as sig_err:
+            print(f"\n⚠️  [AGENT] Interrupció manual detectada (Ctrl+C / Senyal de sortida) a la sessió {session_id}!")
+            final_status = STATUS_CANCELLED
+            err_msg = "Sessió cancel·lada cooperativament per aturada de l'Agent Windows (Ctrl+C)"
+            session_summary = {
+                "cycles": cycle_count,
+                "status": "CANCELLED_BY_INTERRUPT",
+                "completed_at": datetime.now(timezone.utc).isoformat()
+            }
+            try:
+                # Transitar primer per CANCEL_REQUESTED si el coordinador ho requereix
+                if hasattr(self.coordinator, "request_cancellation"):
+                    try:
+                        self.coordinator.request_cancellation(session_id)
+                    except Exception:
+                        pass
+                self._finalize_session(
+                    session_id=session_id,
+                    final_status=final_status,
+                    error_message=err_msg,
+                    summary=session_summary
+                )
+                print(f"✅ [AGENT] Sessió {session_id} alliberada atòmicament com a CANCELLED.")
+            except Exception as fe:
+                # Si la màquina d'estats rebutja CANCELLED des de RUNNING, finalitzar com a FAILED per alliberar el bloqueig
+                try:
+                    self._finalize_session(
+                        session_id=session_id,
+                        final_status=STATUS_FAILED,
+                        error_message=err_msg,
+                        summary=session_summary
+                    )
+                    print(f"✅ [AGENT] Sessió {session_id} alliberada atòmicament com a FAILED.")
+                except Exception:
+                    print(f"[!] Avís: No s'ha pogut notificar la cancel·lació al coordinador: {fe}")
+            self.cleanup_resources()
+            self.active_session_id = None
+            raise sig_err
         except Exception as e:
             print(f"⚠️  [AGENT] Error durant l'execució de la sessió: {e}")
             final_status = STATUS_FAILED
@@ -321,11 +359,28 @@ class WindowsSurebetAgent:
             self.current_daemon = None
         print("🧹 [AGENT] Recursos i processos locals alliberats correctament.")
 
+    def recover_stale_sessions(self) -> None:
+        """Comprova i recupera sessions que haguessin quedat penjades en RUNNING per tancaments abruptes."""
+        try:
+            if hasattr(self.coordinator, "recover_orphaned_sessions"):
+                recovered = self.coordinator.recover_orphaned_sessions(self.agent_id)
+                if recovered:
+                    print(f"[+] [RECUPERACIÓ] S'han recuperat {len(recovered)} sessions orfes a Supabase.")
+            elif hasattr(self.coordinator, "check_timeouts"):
+                recovered = self.coordinator.check_timeouts()
+                if recovered:
+                    print(f"[+] [RECUPERACIÓ] S'han marcat com a TIMEOUT {len(recovered)} sessions locals.")
+        except Exception as e:
+            print(f"[*] Avís durant la comprovació de recuperació de sessions: {e}")
+
     def run_poll_loop(self, max_idle_cycles: Optional[int] = None) -> None:
         """Bucle principal de l'agent: escolta feines a la cua i envia pols periòdic."""
         self.running = True
         print(f"[*] Agent Windows '{self.agent_id}' actiu i connectat al coordinador.")
         print("[*] Connexió sortint segura establerta (Pull-based HTTPS). Esperant ordres...")
+
+        # Recuperació proactiva de sessions zombis anteriors abans de començar el sondeig
+        self.recover_stale_sessions()
 
         idle_cycles = 0
         while self.running:

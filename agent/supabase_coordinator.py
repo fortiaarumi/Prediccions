@@ -325,6 +325,33 @@ class SupabaseCoordinator:
         """Finalitza cooperativament la sessió cancel·lada mitjançant complete_session."""
         return self.complete_order(session_id, summary or {"cancelled": True})
 
+    def recover_orphaned_sessions(self, agent_id: Optional[str] = None) -> List[str]:
+        """
+        Detecta i recupera sessions que haguessin quedat en estat RUNNING o CANCEL_REQUESTED
+        perquè l'agent es va aturar abruptament (Ctrl+C).
+        """
+        try:
+            # 1. Cridar a claim_next_pending_session que amb la migració actualitzada neteja automàticament
+            self.call_rpc("claim_next_pending_session", {})
+
+            # 2. Consultar si queden sessions en estat no terminal expirades de l'agent
+            now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 90))
+            endpoint = f"/surebet_sessions?status=in.(RUNNING,CANCEL_REQUESTED)&heartbeat_at=lt.{now_iso}&select=id"
+            rows = self._request("GET", endpoint)
+            recovered = []
+            if isinstance(rows, list):
+                for r in rows:
+                    sid = r.get("id")
+                    if sid:
+                        try:
+                            self.fail_order(sid, "Sessió recuperada per l'agent Windows: batec anterior perdut")
+                            recovered.append(sid)
+                        except Exception:
+                            pass
+            return recovered
+        except Exception:
+            return []
+
     # -----------------------------------------------------------------
     # Publicació de Snapshots i Consulta d'Oportunitats
     # -----------------------------------------------------------------
