@@ -24,3 +24,18 @@ scratch/
 .DS_Store
 Thumbs.db
 *.log
+
+# Còpies de seguretat locals i bases de dades de test
+data/*.bak*
+data/*.db.bak*
+data/test_*.db
+
+# Estat local i bloquejos de Cost Guard
+data/cost_guard_state.json
+data/.cost_guard_state*
+
+# Captures JSON temporals de partits individuals de scrapers
+data/winamax_match_*.json
+
+# Artefactes de sistema Windows
+NUL
