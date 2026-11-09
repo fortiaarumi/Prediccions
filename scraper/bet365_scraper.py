@@ -511,8 +511,10 @@ class Bet365Scraper:
             cand_ts = entry.get("captured_at") or entry.get("polled_at") or entry.get("ts")
             freshness_info = evaluate_freshness(cand_ts, now=now_utc, max_age_hours=self.max_odds_age_hours)
 
-        entry["captured_at"] = freshness_info.get("captured_at")
-        entry["polled_at"] = freshness_info.get("captured_at")
+        entry["captured_at"] = freshness_info.get("captured_at") or entry.get("captured_at") or now_utc.isoformat()
+        # Preservar el polled_at original de la consulta/feed sense sobreescriure'l amb captured_at
+        if not entry.get("polled_at"):
+            entry["polled_at"] = entry["captured_at"]
         entry["freshness"] = freshness_info.get("freshness")
         entry["is_stale"] = freshness_info.get("is_stale")
         entry["freshness_reason"] = freshness_info.get("rejection_reason")
@@ -660,9 +662,36 @@ class Bet365Scraper:
                 }
                 continue
 
-            max_s = self.max_odds_age_hours * 3600.0
-            age_s = (now_utc - s_dt).total_seconds()
-            if age_s < -DEFAULT_MAX_FUTURE_SKEW_SECONDS or age_s > max_s:
+            # Límit adaptatiu de modificació del proveïdor segons proximitat al kickoff
+            kickoff_utc_str = entry.get("kickoff_utc") or entry.get("match_start")
+            kickoff_dt = parse_datetime_utc(kickoff_utc_str) if kickoff_utc_str else None
+            hours_to_kickoff = (kickoff_dt - now_utc).total_seconds() / 3600.0 if kickoff_dt else None
+
+            if hours_to_kickoff is None or hours_to_kickoff > 24.0:
+                max_provider_mod_s = 72.0 * 3600.0   # 72h per a partits prematch llunyans (>24h)
+            elif hours_to_kickoff > 2.0:
+                max_provider_mod_s = 24.0 * 3600.0   # 24h per a partits pròxims (2-24h)
+            elif hours_to_kickoff >= 0.0:
+                max_provider_mod_s = 4.0 * 3600.0    # 4h per a partits imminents (0-2h)
+            else:
+                max_provider_mod_s = 3600.0          # 1h per a partits en curs
+
+            # Validació de frescor de la darrera observació (polled_at o captured_at)
+            max_obs_s = self.max_odds_age_hours * 3600.0
+            obs_raw = st.get("captured_at") or st.get("polled_at") or m_time
+            obs_dt = parse_datetime_utc(obs_raw)
+            age_obs_s = (now_utc - obs_dt).total_seconds() if obs_dt else 999999.0
+
+            # Validació de frescor de la modificació del proveïdor (provider_updated_at o ts)
+            prov_raw = st.get("provider_updated_at") or st.get("ts")
+            prov_dt = parse_datetime_utc(prov_raw) if prov_raw else None
+            age_prov_s = (now_utc - prov_dt).total_seconds() if prov_dt else None
+
+            is_stale_obs = (age_obs_s < -DEFAULT_MAX_FUTURE_SKEW_SECONDS or age_obs_s > max_obs_s)
+            is_stale_prov = (prov_dt is not None and (age_prov_s < -DEFAULT_MAX_FUTURE_SKEW_SECONDS or age_prov_s > max_provider_mod_s))
+
+            if is_stale_obs or is_stale_prov:
+                reason = "future_clock_skew" if (age_obs_s < -DEFAULT_MAX_FUTURE_SKEW_SECONDS or (age_prov_s is not None and age_prov_s < -DEFAULT_MAX_FUTURE_SKEW_SECONDS)) else ("origin_exceeded_kickoff_horizon" if is_stale_prov else "stale")
                 # Mercat caducat/obsolet individualment o amb clock skew:
                 # La quota històrica i el timestamp es conserven a nivell d'auditoria,
                 # però s'esborren del diccionari actiu per excloure'l d'all_value_bets
@@ -672,9 +701,10 @@ class Bet365Scraper:
                     "valid": False,
                     "stale": True,
                     "suspended": False,
-                    "rejection_reason": "future_clock_skew" if age_s < -DEFAULT_MAX_FUTURE_SKEW_SECONDS else "stale",
+                    "rejection_reason": reason,
                     "polled_at": st.get("polled_at"),
                     "ts": st.get("ts"),
+                    "provider_updated_at": st.get("provider_updated_at") or st.get("ts"),
                     "captured_at": st.get("captured_at"),
                     "historical_odds": copy.deepcopy(m_val),
                 }
@@ -688,6 +718,9 @@ class Bet365Scraper:
                 "rejection_reason": "ok",
                 "polled_at": st.get("polled_at"),
                 "ts": st.get("ts"),
+                "provider_updated_at": st.get("provider_updated_at") or st.get("ts"),
+                "origin_freshness": st.get("origin_freshness", "CONFIRMED"),
+                "captured_at": st.get("captured_at"),
             }
 
         # 5. El mercat principal 1X2 ha de ser vàlid i complet

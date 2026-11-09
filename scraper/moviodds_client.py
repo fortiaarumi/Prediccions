@@ -793,6 +793,19 @@ class MoviOddsClient:
             elif "card" in gname.lower() and gst not in market_group_statuses["cards"]:
                 market_group_statuses["cards"].append(gst)
 
+        # Límit adaptatiu de modificació del proveïdor segons proximitat al kickoff
+        kickoff_str = raw_match.get("kickoff_utc")
+        k_dt = parse_datetime_utc(kickoff_str) if kickoff_str else None
+        h_to_ko = (k_dt - now_utc).total_seconds() / 3600.0 if k_dt else None
+        if h_to_ko is None or h_to_ko > 24.0:
+            max_origin_age = 72.0 * 3600.0  # 72h per a partits llunyans (>24h)
+        elif h_to_ko > 2.0:
+            max_origin_age = 24.0 * 3600.0  # 24h per a partits pròxims (2-24h)
+        elif h_to_ko >= 0.0:
+            max_origin_age = 4.0 * 3600.0   # 4h per a partits imminents (0-2h)
+        else:
+            max_origin_age = 3600.0         # 1h per a partits en joc
+
         # 3. Avaluador de frescor i estat original del mercat abans de filtrar
         def _eval_market(m_key: str) -> Tuple[bool, bool, bool, str, Optional[str], Optional[str], str]:
             m_raw = raw_market_quotes[m_key]
@@ -834,18 +847,26 @@ class MoviOddsClient:
             is_group_suspended = any(gst.get("suspended") is True for gst in m_groups)
             all_quotes_suspended = bool(m_raw and all(q.get("suspended") is True for q in m_raw))
 
-            # Comprovar frescor temporal de eval_time
+            # 1. Comprovar frescor de la darrera observació del feed (market_polled)
             is_time_stale = False
             is_unverified = False
-            if eval_time:
-                s_dt = parse_datetime_utc(eval_time)
-                if not s_dt:
+            if market_polled:
+                poll_dt = parse_datetime_utc(market_polled)
+                if poll_dt:
+                    age_poll_s = (now_utc - poll_dt).total_seconds()
+                    if age_poll_s > 1800.0:  # Observació del feed superior a 30 minuts
+                        is_time_stale = True
+
+            # 2. Comprovar frescor de la darrera modificació en origen (m_ts)
+            if origin_known and m_ts:
+                ts_dt = parse_datetime_utc(m_ts)
+                if not ts_dt:
                     is_unverified = True
                 else:
-                    age_s = (now_utc - s_dt).total_seconds()
-                    if age_s < 0 or age_s > MAX_ODDS_AGE_SECONDS:
+                    age_mod_s = (now_utc - ts_dt).total_seconds()
+                    if age_mod_s < -5.0 or age_mod_s > max_origin_age:
                         is_time_stale = True
-            else:
+            elif not market_polled and not origin_known:
                 is_unverified = True
 
             # Ordre de causa de rebuig
@@ -898,12 +919,22 @@ class MoviOddsClient:
             result["polled_at"] = poll_1x2
             result["provider_updated_at"] = ts_1x2 or None
             result["origin_freshness"] = orig_fresh_1x2
-            result["captured_at"] = ts_1x2 if ts_1x2 else poll_1x2
+            result["captured_at"] = now_utc.isoformat()
             if orig_fresh_1x2 == "CONFIRMED":
                 ts_dt = parse_datetime_utc(ts_1x2)
                 age_origin = (now_utc - ts_dt).total_seconds() if ts_dt else 9999
-                result["freshness"] = "FRESH" if age_origin <= 60.0 else ("STALE" if age_origin > 300.0 else "RECENT")
-                result["freshness_reason"] = "ok" if age_origin <= 60.0 else "origin_older_than_60s"
+                if age_origin < -5.0:
+                    result["freshness"] = "UNKNOWN"
+                    result["is_stale"] = True
+                    result["freshness_reason"] = "future_clock_skew"
+                elif age_origin > max_origin_age:
+                    result["freshness"] = "STALE"
+                    result["is_stale"] = True
+                    result["freshness_reason"] = f"origin_older_than_kickoff_horizon_{int(max_origin_age//3600)}h"
+                else:
+                    result["freshness"] = "FRESH"
+                    result["is_stale"] = False
+                    result["freshness_reason"] = "ok"
             else:
                 result["freshness"] = "UNKNOWN"
                 result["freshness_reason"] = "reception_time_only_origin_unknown"
@@ -950,7 +981,9 @@ class MoviOddsClient:
                 "suspended": False,
                 "rejection_reason": "ok",
                 "polled_at": poll_dc,
-                "ts": ts_dc
+                "ts": ts_dc,
+                "provider_updated_at": ts_dc or None,
+                "origin_freshness": orig_fresh_dc
             }
         else:
             result["double_chance"] = {}
@@ -961,7 +994,9 @@ class MoviOddsClient:
                 "suspended": is_su_dc,
                 "rejection_reason": final_reason_dc,
                 "polled_at": poll_dc,
-                "ts": ts_dc
+                "ts": ts_dc,
+                "provider_updated_at": ts_dc or None,
+                "origin_freshness": orig_fresh_dc
             }
 
         # 6. Gols Over / Under 2.5 (línia estricta de 2.5)

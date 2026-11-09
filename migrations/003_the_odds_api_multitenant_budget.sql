@@ -175,6 +175,22 @@ BEGIN
         RAISE EXCEPTION 'La durada ha d''estar entre 60 i 1800 segons' USING ERRCODE = '22000';
     END IF;
 
+    -- Neteja preventiva de sessions zombis o expirades abans de comprovar o inserir
+    UPDATE surebet_sessions
+    SET status = 'TIMEOUT',
+        error_message = 'Sessió tancada automàticament per timeout abans d''iniciar una nova cerca',
+        updated_at = clock_timestamp()
+    WHERE status IN ('RUNNING', 'CANCEL_REQUESTED')
+      AND (clock_timestamp() > expires_at OR clock_timestamp() - COALESCE(heartbeat_at, claimed_at) > INTERVAL '90 seconds');
+
+    -- Neteja de sessions PENDING abandonades fa més de 10 minuts
+    UPDATE surebet_sessions
+    SET status = 'CANCELLED',
+        error_message = 'Sessió en cua cancel·lada automàticament per manca d''agent disponible',
+        updated_at = clock_timestamp()
+    WHERE status = 'PENDING'
+      AND clock_timestamp() - created_at > INTERVAL '600 seconds';
+
     -- Bifurcació segons origen
     IF p_source_type = 'WINDOWS_AGENT' THEN
         -- Comprovació de l'agent Windows viu (batec <= 120s)

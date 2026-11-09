@@ -164,16 +164,21 @@ def test_team_matching_rejects_similarly_named_clubs():
 
 def test_moviodds_real_odds_freshness_traceability():
     """
-    Verifica la traçabilitat de frescor real:
-    - Si existeix 'ts' recent: origin_freshness='CONFIRMED', freshness='FRESH'.
-    - Si només existeix hora de descàrrega ('polled_at') sense 'ts': origin_freshness='UNKNOWN', freshness='UNKNOWN'.
-    - Si 'ts' és antic (> 300s): freshness='STALE'.
+    Verifica la política de frescor explícita segons la informació de MoviOdds:
+    1. Si existeix 'ts' recent (< 60s): origin_freshness='CONFIRMED', freshness='FRESH'.
+    2. Si només existeix hora de descàrrega ('polled_at') sense 'ts': origin_freshness='UNKNOWN', freshness='UNKNOWN'.
+    3. Partit prematch (> 24h) amb quotes estables de fa diverses hores (ex: 7h) i polled_at recent:
+       origin_freshness='CONFIRMED', freshness='FRESH', is_stale=False (no descartat).
+    4. Partit imminent (< 2h) amb quotes que superen l'horitzó adaptatiu (ex: 5h > 4h): freshness='STALE'.
+    5. Feed obsolet amb darrera observació polled_at > 30 minuts (> 1800s): freshness='STALE'.
     """
     client = MoviOddsClient.get_instance()
     now_utc = datetime.now(timezone.utc)
     ts_fresh = (now_utc - timedelta(seconds=10)).isoformat()
-    ts_stale = (now_utc - timedelta(seconds=400)).isoformat()
+    ts_7h = (now_utc - timedelta(hours=7)).isoformat()
+    ts_5h = (now_utc - timedelta(hours=5)).isoformat()
     polled_iso = now_utc.isoformat()
+    polled_stale = (now_utc - timedelta(minutes=35)).isoformat()
 
     # 1. Quota amb ts recent (< 60s)
     raw_fresh = {
@@ -181,7 +186,7 @@ def test_moviodds_real_odds_freshness_traceability():
         "home": "Atletico Madrid",
         "away": "Barcelona",
         "league": "Spain La Liga",
-        "kickoff_utc": "2026-11-08T20:00:00Z",
+        "kickoff_utc": (now_utc + timedelta(days=2)).isoformat(),
         "polled_at": polled_iso,
         "quotes": [
             {"group_id": "1", "group_name": "Full Time Result", "label": "Home", "odds_dec": 3.4, "ts": ts_fresh},
@@ -194,6 +199,7 @@ def test_moviodds_real_odds_freshness_traceability():
     assert parsed_fresh["origin_freshness"] == "CONFIRMED"
     assert parsed_fresh["provider_updated_at"] == ts_fresh
     assert parsed_fresh["polled_at"] == polled_iso
+    assert parsed_fresh["captured_at"] is not None
     assert parsed_fresh["freshness"] == "FRESH"
     assert parsed_fresh["freshness_reason"] == "ok"
 
@@ -203,7 +209,7 @@ def test_moviodds_real_odds_freshness_traceability():
         "home": "Atletico Madrid",
         "away": "Barcelona",
         "league": "Spain La Liga",
-        "kickoff_utc": "2026-11-08T20:00:00Z",
+        "kickoff_utc": (now_utc + timedelta(days=2)).isoformat(),
         "polled_at": polled_iso,
         "quotes": [
             {"group_id": "1", "group_name": "Full Time Result", "label": "Home", "odds_dec": 3.4},
@@ -219,24 +225,62 @@ def test_moviodds_real_odds_freshness_traceability():
     assert parsed_unknown["freshness"] == "UNKNOWN"
     assert parsed_unknown["freshness_reason"] == "reception_time_only_origin_unknown"
 
-    # 3. Quota amb ts antic (> 300s)
-    raw_stale = {
-        "id": "FIXTURE_TEST_STALE",
+    # 3. Cas Championship: Partit prematch (> 24h) amb preu estable de fa 7 hores i observació recent
+    raw_prematch_stable = {
+        "id": "FIXTURE_TEST_CHAMPIONSHIP",
         "home": "Atletico Madrid",
         "away": "Barcelona",
         "league": "Spain La Liga",
-        "kickoff_utc": "2026-11-08T20:00:00Z",
+        "kickoff_utc": (now_utc + timedelta(days=5)).isoformat(),
         "polled_at": polled_iso,
         "quotes": [
-            {"group_id": "1", "group_name": "Full Time Result", "label": "Home", "odds_dec": 3.4, "ts": ts_stale},
-            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 4.5, "ts": ts_stale},
-            {"group_id": "1", "group_name": "Full Time Result", "label": "Away", "odds_dec": 1.85, "ts": ts_stale},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Home", "odds_dec": 3.4, "ts": ts_7h},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 4.5, "ts": ts_7h},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Away", "odds_dec": 1.85, "ts": ts_7h},
         ]
     }
-    parsed_stale = client.parse_match_odds(raw_stale, "LALIGA")
-    assert parsed_stale["matched"] is True
-    assert parsed_stale["origin_freshness"] == "CONFIRMED"
-    assert parsed_stale["freshness"] == "STALE"
+    parsed_stable = client.parse_match_odds(raw_prematch_stable, "LALIGA")
+    assert parsed_stable["matched"] is True
+    assert parsed_stable["origin_freshness"] == "CONFIRMED"
+    assert parsed_stable["provider_updated_at"] == ts_7h
+    assert parsed_stable["freshness"] == "FRESH"
+    assert parsed_stable["is_stale"] is False
+
+    # 4. Partit imminent (< 2h) amb ts de fa 5 hores (> 4h llindar imminent) -> STALE
+    raw_imminent_stale = {
+        "id": "FIXTURE_TEST_IMMINENT_STALE",
+        "home": "Atletico Madrid",
+        "away": "Barcelona",
+        "league": "Spain La Liga",
+        "kickoff_utc": (now_utc + timedelta(hours=1)).isoformat(),
+        "polled_at": polled_iso,
+        "quotes": [
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Home", "odds_dec": 3.4, "ts": ts_5h},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 4.5, "ts": ts_5h},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Away", "odds_dec": 1.85, "ts": ts_5h},
+        ]
+    }
+    parsed_imminent = client.parse_match_odds(raw_imminent_stale, "LALIGA")
+    assert parsed_imminent["matched"] is False
+    assert parsed_imminent["is_stale"] is True
+
+    # 5. Darrera observació obsoleta (polled_at fa 35 minuts > 30 minuts) -> STALE
+    raw_feed_stale = {
+        "id": "FIXTURE_TEST_FEED_STALE",
+        "home": "Atletico Madrid",
+        "away": "Barcelona",
+        "league": "Spain La Liga",
+        "kickoff_utc": (now_utc + timedelta(days=2)).isoformat(),
+        "polled_at": polled_stale,
+        "quotes": [
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Home", "odds_dec": 3.4, "ts": ts_fresh},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Draw", "odds_dec": 4.5, "ts": ts_fresh},
+            {"group_id": "1", "group_name": "Full Time Result", "label": "Away", "odds_dec": 1.85, "ts": ts_fresh},
+        ]
+    }
+    parsed_feed_stale = client.parse_match_odds(raw_feed_stale, "LALIGA")
+    assert parsed_feed_stale["matched"] is False
+    assert parsed_feed_stale["is_stale"] is True
 
 
 def test_arbitrage_engine_blocks_unknown_origin_from_verified_fresh():
