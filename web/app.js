@@ -15,7 +15,7 @@ if (typeof window === 'undefined') {
   global.window = {};
 }
 if (typeof localStorage === 'undefined') {
-  global.localStorage = { getItem: () => null, setItem: () => {}, removeItem: () => {} };
+  global.localStorage = { getItem: () => null, setItem: () => { }, removeItem: () => { } };
 }
 
 let appData = null;
@@ -733,7 +733,7 @@ function setupSurebetAgentControls() {
               return;
             } else {
               isAgentOnline = false;
-              const ageStr = ageSec > 3600 ? `${Math.round(ageSec/3600)}h` : `${Math.round(ageSec)}s`;
+              const ageStr = ageSec > 3600 ? `${Math.round(ageSec / 3600)}h` : `${Math.round(ageSec)}s`;
               if (agentBadgeText) agentBadgeText.textContent = `PC Windows: 🔴 Desconnectat (Últim batec fa ${ageStr})`;
               if (pulseDot) {
                 pulseDot.style.background = '#ef4444';
@@ -851,7 +851,59 @@ function setupSurebetAgentControls() {
     }
 
     if (!isAgentOnline) {
-      showToast("Avís: El PC Windows no sembla en línia. Assegura't d'executar 'start_surebet_agent.bat'.", "warning");
+      if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+        // Mode Autònom al Núvol (The Odds API) sense necessitat del PC encès
+        showToast("PC Windows desconnectat: executant cerca al núvol via The Odds API...", "info");
+        btnStart.disabled = true;
+        const stateElem = document.getElementById('surebet-job-state');
+        if (stateElem) stateElem.textContent = "Cercant al núvol (The Odds API)...";
+
+        try {
+          const edgeUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/functions/v1/search-surebets`;
+          const edgeHeaders = {
+            'apikey': window.SUPABASE_CONFIG.publishableKey,
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt || window.SUPABASE_CONFIG.publishableKey}`
+          };
+
+          const edgeResp = await fetch(edgeUrl, { method: 'POST', headers: edgeHeaders });
+          if (!edgeResp.ok) {
+            const errData = await edgeResp.json().catch(() => ({}));
+            throw new Error(errData.error || errData.message || `Error del núvol: HTTP ${edgeResp.status}`);
+          }
+
+          const cloudResult = await edgeResp.json();
+          showToast(cloudResult.message || "Cerca al núvol completada!", "success");
+
+          // Actualitzar badge de crèdits
+          if (cloudResult.credits_remaining != null) {
+            const cloudBadge = document.getElementById('cloud-connection-status-text');
+            if (cloudBadge) {
+              cloudBadge.textContent = `Núvol (The Odds API): 🟢 Actiu · ${cloudResult.credits_remaining} crèdits restants (Reserva: 50)`;
+            }
+          }
+
+          // Recarregar oportunitats actives des de Supabase
+          const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?select=*`;
+          const vResp = await fetch(vUrl, { headers: edgeHeaders, cache: 'no-store' });
+          if (vResp.ok) {
+            const vData = await vResp.json();
+            if (appData && appData.arbitrage) {
+              appData.arbitrage.surebets = vData || [];
+              renderArbitrage();
+            }
+          }
+          if (stateElem) stateElem.textContent = `Completada (${cloudResult.credits_spent || 0} crèdits consumits)`;
+        } catch (cloudErr) {
+          showToast(`Error al núvol: ${cloudErr.message}`, "error");
+          if (stateElem) stateElem.textContent = "Error al núvol";
+        } finally {
+          btnStart.disabled = false;
+        }
+        return;
+      } else {
+        showToast("Avís: El PC Windows no sembla en línia i no hi ha configuració al núvol.", "warning");
+      }
     }
 
     const duration = parseInt(durationSelect ? durationSelect.value : '120', 10);
@@ -2736,8 +2788,8 @@ function renderArbitrage() {
     const isOldSnapshot = lastGenDate ? (Date.now() - lastGenDate.getTime() > 24 * 3600 * 1000) : false;
     const lastGenStr = lastGenDate
       ? (isOldSnapshot
-          ? `${lastGenDate.toLocaleDateString('ca-ES')} a les ${lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' })}`
-          : lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
+        ? `${lastGenDate.toLocaleDateString('ca-ES')} a les ${lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' })}`
+        : lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
       : 'N/A';
 
     bookmakersBar.innerHTML = `
@@ -3019,7 +3071,12 @@ function renderArbitrage() {
       <div class="arb-card ${cardGlowClass}">
         <div class="arb-card-header">
           <div>
-            <div class="arb-league-badge">${arb.competition_name || arb.competition_id} · 📅 ${arb.date}</div>
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 4px;">
+              <div class="arb-league-badge">${arb.competition_name || arb.competition_id} · 📅 ${arb.date}</div>
+              <span class="arb-pipeline-badge" style="font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 500; ${arb.source_pipeline === 'THE_ODDS_API' ? 'background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3);' : 'background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3);'}">
+                ${arb.source_pipeline === 'THE_ODDS_API' ? (arb.is_theoretical ? '🌐 The Odds API (Teòric)' : '🌐 The Odds API (DGOJ)') : '🖥️ Agent Windows (DGOJ)'}
+              </span>
+            </div>
             <h3 class="arb-matchup-title">${arb.matchup}</h3>
             <div class="arb-market-name">🎯 ${arb.market_name}</div>
             ${noticeHtml}

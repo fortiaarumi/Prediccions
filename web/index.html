@@ -285,9 +285,15 @@
               <p class="surebet-agent-subtitle">Execució d'scrapers en temps real des de la teva IP residencial amb connexió sortint segura.</p>
             </div>
           </div>
-          <div class="agent-connection-badge" id="agent-connection-badge">
-            <span class="agent-pulse-dot" id="agent-pulse-dot"></span>
-            <span id="agent-connection-status-text">PC Windows: Desconnectat</span>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <div class="agent-connection-badge" id="agent-connection-badge">
+              <span class="agent-pulse-dot" id="agent-pulse-dot"></span>
+              <span id="agent-connection-status-text">PC Windows: Desconnectat</span>
+            </div>
+            <div class="agent-connection-badge" id="cloud-odds-api-badge" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.08);">
+              <span class="agent-pulse-dot" id="cloud-pulse-dot" style="background: #3b82f6; box-shadow: 0 0 8px #3b82f6;"></span>
+              <span id="cloud-connection-status-text">Núvol (The Odds API): 🟢 Actiu · 450/450 crèdits</span>
+            </div>
           </div>
         </div>
 
