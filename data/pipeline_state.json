@@ -2,12 +2,12 @@
   "LALIGA": {
     "last_predicted_jornada": 9,
     "last_predicted_date": "2026-10-16",
-    "last_scraped_jornada": 11
+    "last_scraped_jornada": 12
   },
   "PREMIER": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-17",
-    "last_scraped_jornada": 9
+    "last_scraped_jornada": 10
   },
   "HYPERMOTION": {
     "last_predicted_jornada": 10,
@@ -22,19 +22,19 @@
   "BUNDESLIGA": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-19",
-    "last_scraped_jornada": 8
+    "last_scraped_jornada": 9
   },
   "LIGUE1": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-18",
-    "last_scraped_jornada": 9
+    "last_scraped_jornada": 10
   },
   "SERIEA": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-19",
-    "last_scraped_jornada": 10
+    "last_scraped_jornada": 11
   },
-  "updated_at": "2026-11-08T13:45:24.404314",
+  "updated_at": "2026-11-09T01:48:52.673128",
   "pipeline_status": {
     "workflow_name": "Pipeline Diari Autònom de Prediccions",
     "workflow_file": "daily_pipeline.yml",
