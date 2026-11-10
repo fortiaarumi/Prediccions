@@ -302,19 +302,35 @@ def test_scenario_8_jurisdiction_tagging_spanish_dgoj_vs_international():
     client = TheOddsApiClient(api_key="test_api_key_12345")
     orchestrator = OddsApiOrchestrator(client=client)
 
-    opp_spanish = {
+    # 1. Quota expressament confirmada per a Espanya (.es / scraper local)
+    opp_confirmed_spanish = {
         "net_roi_pct": 2.5,
+        "legs": [
+            {"bookmaker": "winamax", "selection": "1", "odd": 2.20, "confirmed_spain": True},
+            {"bookmaker": "bet365", "selection": "X", "odd": 3.60, "confirmed_spain": True},
+            {"bookmaker": "betfair", "selection": "2", "odd": 3.50, "confirmed_spain": True}
+        ]
+    }
+    orchestrator._enrich_jurisdiction_and_tags(opp_confirmed_spanish)
+    assert opp_confirmed_spanish["executable_in_spain"] is True
+    assert opp_confirmed_spanish["is_theoretical"] is False
+    assert "DGOJ" in opp_confirmed_spanish["verification_badge"]
+
+    # 2. Quota amb marques DGOJ però sense confirmació expressa per a Espanya (The Odds API feed eu)
+    opp_dgoj_unconfirmed = {
+        "net_roi_pct": 2.1,
         "legs": [
             {"bookmaker": "winamax", "selection": "1", "odd": 2.20},
             {"bookmaker": "bet365", "selection": "X", "odd": 3.60},
             {"bookmaker": "betfair", "selection": "2", "odd": 3.50}
         ]
     }
-    orchestrator._enrich_jurisdiction_and_tags(opp_spanish)
-    assert opp_spanish["executable_in_spain"] is True
-    assert opp_spanish["is_theoretical"] is False
-    assert "DGOJ" in opp_spanish["verification_badge"]
+    orchestrator._enrich_jurisdiction_and_tags(opp_dgoj_unconfirmed)
+    assert opp_dgoj_unconfirmed["executable_in_spain"] is False
+    assert opp_dgoj_unconfirmed["is_theoretical"] is True
+    assert "Teòric" in opp_dgoj_unconfirmed["verification_badge"]
 
+    # 3. Quota offshore internacional
     opp_offshore = {
         "net_roi_pct": 3.2,
         "legs": [

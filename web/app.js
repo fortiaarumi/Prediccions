@@ -874,7 +874,7 @@ function setupSurebetAgentControls() {
       }
 
       try {
-        if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
+        if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
           const headers = {
             'apikey': window.SUPABASE_CONFIG.publishableKey,
             'Content-Type': 'application/json',
@@ -913,8 +913,9 @@ function setupSurebetAgentControls() {
               if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(row.status)) {
                 clearInterval(_surebetPollInterval);
                 clearInterval(_surebetSessionTimerInterval);
+                _activeSurebetSession.status = row.status;
+                updateJobUI(_activeSurebetSession);
                 _activeSurebetSession = null;
-                updateJobUI(null);
                 showToast(`Sessió finalitzada: ${row.status}`, 'info');
                 return;
               }
@@ -957,10 +958,21 @@ function setupSurebetAgentControls() {
             if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(sData.status)) {
               clearInterval(_surebetPollInterval);
               clearInterval(_surebetSessionTimerInterval);
+              _activeSurebetSession.status = sData.status;
+              updateJobUI(_activeSurebetSession);
               _activeSurebetSession = null;
-              updateJobUI(null);
               showToast(`Sessió finalitzada: ${sData.status}`, 'info');
               return;
+            }
+          }
+
+          const oppsResp = await fetch(`${LOCAL_BRIDGE_URL}/api/opportunities`, { cache: 'no-store' });
+          if (oppsResp.ok) {
+            const oppsData = await oppsResp.json();
+            if (appData && appData.arbitrage) {
+              const oppsList = Array.isArray(oppsData) ? oppsData : (oppsData.opportunities || []);
+              appData.arbitrage.surebets = oppsList;
+              renderArbitrage();
             }
           }
         }
@@ -1027,7 +1039,7 @@ function setupSurebetAgentControls() {
     }
 
     if (!isAgentOnline) {
-      if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+      if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
         // Mode Autònom al Núvol (The Odds API) sense necessitat del PC encès
         showToast("PC Windows desconnectat: executant cerca al núvol via The Odds API...", "info");
         btnStart.disabled = true;
@@ -1156,7 +1168,7 @@ function setupSurebetAgentControls() {
         updateJobUI(_activeSurebetSession);
         showToast("Sol·licitant aturada cooperativa a l'Agent...", "warning");
 
-        if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
+        if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
           // Mode Supabase remot: crida a l'RPC request_session_cancellation
           const cancelUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/rpc/request_session_cancellation`;
           const cancelHeaders = {

@@ -489,28 +489,36 @@ class OddsApiOrchestrator:
 
     def _enrich_jurisdiction_and_tags(self, opp: Dict[str, Any]) -> None:
         """
-        Enriqueix una oportunitat amb informació de jurisdicció,
-        marcant si és directament executable a Espanya o és teòrica/internacional.
+        Enriqueix una oportunitat amb informació de jurisdicció.
+        Regla de seguretat estricta: que una marca tingui llicència DGOJ no la fa automàticament
+        executable a Espanya si prové de The Odds API (feed internacional regions=eu).
+        Només una quota confirmada expressament per a Espanya (amb domini .es certificat o verificada
+        localment) es pot etiquetar com a executable. Tota la resta es marca com a teòrica.
         """
         opp["source_pipeline"] = "THE_ODDS_API"
         legs = opp.get("legs", [])
-        all_spanish_dgoj = True
+        all_confirmed_spain = True
 
         for leg in legs:
             bk_raw = str(leg.get("bookmaker") or "").lower().strip()
-            # Netetjar sufixos com _eu o _uk
             bk_base = bk_raw.split("_")[0]
-            if bk_base in SPANISH_DGOJ_BOOKMAKERS:
-                leg["jurisdiction"] = "ES_DGOJ"
+            is_confirmed_es = bool(leg.get("confirmed_spain") or leg.get("is_local_spanish") or leg.get("is_confirmed_es"))
+
+            if is_confirmed_es:
+                leg["jurisdiction"] = "ES_DGOJ_CONFIRMED"
                 leg["is_local_spanish"] = True
+            elif bk_base in SPANISH_DGOJ_BOOKMAKERS:
+                leg["jurisdiction"] = "INT_DGOJ_BRAND_UNCONFIRMED"
+                leg["is_local_spanish"] = False
+                all_confirmed_spain = False
             else:
                 leg["jurisdiction"] = "INT_OFFSHORE"
                 leg["is_local_spanish"] = False
-                all_spanish_dgoj = False
+                all_confirmed_spain = False
 
-        opp["executable_in_spain"] = all_spanish_dgoj
-        opp["is_theoretical"] = not all_spanish_dgoj
-        if not all_spanish_dgoj:
-            opp["verification_badge"] = "⚠️ Quotes Internacionals (Teòric / Revisa disponibilitat a Espanya)"
+        opp["executable_in_spain"] = all_confirmed_spain
+        opp["is_theoretical"] = not all_confirmed_spain
+        if not all_confirmed_spain:
+            opp["verification_badge"] = "⚠️ The Odds API (Feed Internacional / Teòric — Cal verificar al domini .es)"
         else:
-            opp["verification_badge"] = "✅ Operadors Regulats a Espanya (DGOJ)"
+            opp["verification_badge"] = "✅ Operadors Confirmats a Espanya (DGOJ)"

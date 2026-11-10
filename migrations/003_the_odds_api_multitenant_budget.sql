@@ -256,9 +256,32 @@ BEGIN
 END;
 $$;
 
--- 7. VISTA MILLORADA PER AL PANEL WEB AMB TRAÇABILITAT (v_active_surebets_v3)
--- Conserva compatibilitat amb v_active_surebets i n'afegeix de noves
+-- 7. VISTA MILLORADA PER AL PANEL WEB AMB TRAÇABILITAT (v_active_surebets_v3 i v_active_surebets)
+-- Conserva compatibilitat amb consultes a v_active_surebets i exposa camps de traçabilitat
 CREATE OR REPLACE VIEW v_active_surebets_v3
+WITH (security_invoker = on) AS
+SELECT 
+    o.id,
+    o.session_id,
+    o.opportunity_type,
+    o.matchup,
+    o.market_key,
+    o.net_roi_pct,
+    o.gross_margin_pct,
+    o.commission_deducted_pct,
+    o.bookmakers,
+    o.detected_at,
+    EXTRACT(EPOCH FROM (now() - o.detected_at))::INT AS age_seconds,
+    o.source_pipeline,
+    o.is_theoretical,
+    o.executable_in_spain
+FROM surebet_opportunities o
+WHERE o.detected_at >= (now() - INTERVAL '30 minutes')
+  AND o.is_stale = false
+  AND o.is_synthetic = false
+ORDER BY o.net_roi_pct DESC;
+
+CREATE OR REPLACE VIEW v_active_surebets
 WITH (security_invoker = on) AS
 SELECT 
     o.id,
@@ -303,5 +326,6 @@ GRANT SELECT ON api_search_logs TO authenticated;
 GRANT EXECUTE ON FUNCTION reconcile_api_budget TO authenticated;
 GRANT EXECUTE ON FUNCTION create_search_session_v2 TO authenticated;
 GRANT SELECT ON v_active_surebets_v3 TO authenticated;
+GRANT SELECT ON v_active_surebets TO authenticated;
 
 COMMIT;

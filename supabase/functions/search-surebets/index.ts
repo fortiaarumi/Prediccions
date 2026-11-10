@@ -194,9 +194,29 @@ serve(async (req: Request) => {
       );
     }
 
-    // 5. Crear sessió de cerca
+    // 4.5 Comprovar si ja hi ha una sessió activa en curs (protecció de concurrència i quota)
+    const { data: runningSessions } = await supabase
+      .from("surebet_sessions")
+      .select("id, status, created_at, source_type")
+      .in("status", ["PENDING", "RUNNING", "CANCEL_REQUESTED"])
+      .limit(1);
+
+    if (runningSessions && runningSessions.length > 0) {
+      const activeSess = runningSessions[0];
+      return new Response(
+        JSON.stringify({
+          status: "SESSION_IN_PROGRESS",
+          message: `Ja hi ha una sessió activa en curs (${activeSess.source_type}: ${activeSess.status}). No es poden iniciar cerques concurrents per protegir la quota.`,
+          session_id: activeSess.id,
+          credits_spent: 0
+        }),
+        { status: 409, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
+      );
+    }
+
+    // 5. Crear sessió de cerca de manera atòmica
     const sessionId = crypto.randomUUID();
-    await supabase.from("surebet_sessions").insert({
+    const { error: insertErr } = await supabase.from("surebet_sessions").insert({
       id: sessionId,
       created_by: user.id,
       duration_seconds: 600,
@@ -204,6 +224,17 @@ serve(async (req: Request) => {
       source_type: "THE_ODDS_API",
       active_leagues: Object.keys(activeLeagues)
     });
+
+    if (insertErr) {
+      return new Response(
+        JSON.stringify({
+          status: "CONCURRENCY_BLOCKED",
+          error: `No s'ha pogut iniciar la sessió (concurrència bloquejada per la base de dades): ${insertErr.message}`,
+          credits_spent: 0
+        }),
+        { status: 409, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
+      );
+    }
 
     // 6. Consultar 1X2 per a cada lliga activa (1 crèdit per lliga)
     const allMatches1x2: any[] = [];
@@ -282,10 +313,12 @@ serve(async (req: Request) => {
         const grossMarginPct = (1 - invSum) * 100;
         const netRoiPct = grossMarginPct; // Bookies tradicionals (0% comissió)
 
-        const isDgoj1 = SPANISH_DGOJ_BOOKMAKERS.has(best1.bookmaker.toLowerCase());
-        const isDgojX = SPANISH_DGOJ_BOOKMAKERS.has(bestX.bookmaker.toLowerCase());
-        const isDgoj2 = SPANISH_DGOJ_BOOKMAKERS.has(best2.bookmaker.toLowerCase());
-        const executableInSpain = isDgoj1 && isDgojX && isDgoj2;
+        // The Odds API consulta exclusivament feeds internacionals europeus (regions=eu).
+        // El fet que una marca tingui llicència DGOJ no garanteix que la quota coincideixi
+        // ni estigui disponible al mercat espanyol regulat (.es).
+        // Totes les quotes de The Odds API es classifiquen com a teòriques (unconfirmed Spain).
+        const executableInSpain = false;
+        const isTheoretical = true;
 
         if (netRoiPct >= -2.5) {
           detectedOpportunities.push({
@@ -298,12 +331,12 @@ serve(async (req: Request) => {
             gross_margin_pct: Math.round(grossMarginPct * 1000) / 1000,
             commission_deducted_pct: 0,
             source_pipeline: "THE_ODDS_API",
-            is_theoretical: !executableInSpain,
+            is_theoretical: isTheoretical,
             executable_in_spain: executableInSpain,
             bookmakers: {
-              leg1: { selection: `1 - ${m.home_team}`, odd: best1.price, bookmaker: best1.bookmaker },
-              legX: { selection: "X - Empat", odd: bestX.price, bookmaker: bestX.bookmaker },
-              leg2: { selection: `2 - ${m.away_team}`, odd: best2.price, bookmaker: best2.bookmaker },
+              leg1: { selection: `1 - ${m.home_team}`, odd: best1.price, bookmaker: best1.bookmaker, jurisdiction: "INT_EUROPEAN_UNCONFIRMED" },
+              legX: { selection: "X - Empat", odd: bestX.price, bookmaker: bestX.bookmaker, jurisdiction: "INT_EUROPEAN_UNCONFIRMED" },
+              leg2: { selection: `2 - ${m.away_team}`, odd: best2.price, bookmaker: best2.bookmaker, jurisdiction: "INT_EUROPEAN_UNCONFIRMED" },
             },
             detected_at: now.toISOString()
           });
