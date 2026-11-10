@@ -84,6 +84,28 @@ serve(async (req: Request) => {
       );
     }
 
+    // 1.5 Validar autorització de rol: només usuaris 'admin' o 'operator' actius a app_users
+    //     o el UUID configurat com a operador autoritzat al servidor (AUTHORIZED_OPERATOR_UUID)
+    const { data: appUserData, error: roleErr } = await supabase
+      .from("app_users")
+      .select("role, is_active")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    const authorizedUuid = Deno.env.get("AUTHORIZED_OPERATOR_UUID") || "";
+    const isAuthorizedRole = appUserData && appUserData.is_active && ["admin", "operator"].includes(appUserData.role);
+    const isAuthorizedId = Boolean(authorizedUuid && user.id === authorizedUuid);
+
+    if (!isAuthorizedRole && !isAuthorizedId) {
+      return new Response(
+        JSON.stringify({
+          error: "Accés denegat: es requereixen privilegis d'operador o administrador actiu.",
+          code: "FORBIDDEN_OPERATOR_REQUIRED"
+        }),
+        { status: 403, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
+      );
+    }
+
     // 2. Comprovar si hi ha una cerca recent completada (< 15 minuts)
     const { data: recentSessions } = await supabase
       .from("surebet_sessions")
