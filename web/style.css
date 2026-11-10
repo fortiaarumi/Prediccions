@@ -5927,6 +5927,13 @@ body {
   border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
+.arb-status-inactive,
+.arb-status-pending {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
 .arb-bookie-detail {
   display: flex;
   justify-content: space-between;
@@ -5939,6 +5946,20 @@ body {
   font-family: var(--font-mono);
   font-weight: 600;
   color: var(--text-primary);
+}
+
+/* Barra de Cobertura Creuada */
+.arb-daemon-coverage-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  background: rgba(30, 41, 59, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: #cbd5e1;
 }
 
 /* Metadata del Daemon */
@@ -5990,6 +6011,33 @@ body {
 .arb-stale-notice {
   font-size: 11.5px;
   color: #f59e0b;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+/* Targetes de Surebets Històriques Recents (5-30 min) */
+.arb-card.arb-card-historical {
+  border-color: rgba(249, 115, 22, 0.35);
+  background: radial-gradient(circle at top right, rgba(249, 115, 22, 0.05), rgba(15, 23, 42, 0.8) 60%);
+  opacity: 0.88;
+}
+
+.arb-card.arb-card-historical:hover {
+  border-color: rgba(249, 115, 22, 0.55);
+}
+
+.arb-badge-historical {
+  background: rgba(249, 115, 22, 0.2);
+  border: 1px solid rgba(249, 115, 22, 0.5);
+  color: #fdba74;
+}
+
+.arb-historical-notice {
+  font-size: 11.5px;
+  color: #fb923c;
   margin-top: 4px;
   display: flex;
   align-items: center;
@@ -6364,6 +6412,307 @@ body {
   .pipeline-tasks-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ==========================================================================
+   PANELL DE CONTROL: SUREBET MONITOR LOCAL (AGENT WINDOWS)
+   ========================================================================== */
+.surebet-agent-panel {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+}
+
+.surebet-agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.surebet-agent-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.surebet-agent-icon {
+  font-size: 28px;
+}
+
+.surebet-agent-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.surebet-agent-subtitle {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin: 2px 0 0 0;
+}
+
+.agent-connection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #34d399;
+}
+
+.agent-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulse-ring 2s infinite;
+}
+
+/* Auth Operador Supabase */
+.operator-auth-container {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.operator-auth-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.auth-icon {
+  font-size: 1.2rem;
+}
+
+.surebet-input {
+  background: #0f172a;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  outline: none;
+  min-width: 220px;
+}
+
+.surebet-input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.btn-surebet-login {
+  background: #0284c7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-surebet-login:hover {
+  background: #0369a1;
+}
+
+.operator-error-text {
+  color: #f87171;
+  font-size: 0.82rem;
+  margin-top: 6px;
+}
+
+.operator-user-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.operator-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.operator-status-badge {
+  color: #38bdf8;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.operator-role-badge {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #7dd3fc;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.btn-surebet-logout {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-surebet-logout:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #fff;
+}
+
+.surebet-agent-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 0 14px 0;
+}
+
+.surebet-control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.surebet-control-group label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.surebet-select {
+  background: #0f172a;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.surebet-select:focus {
+  border-color: #38bdf8;
+}
+
+.surebet-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-surebet-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-surebet-start {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.btn-surebet-start:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0369a1, #1d4ed8);
+  transform: translateY(-1px);
+}
+
+.btn-surebet-start:disabled {
+  background: #334155;
+  color: #64748b;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-surebet-stop {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.btn-surebet-stop:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.btn-surebet-stop:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.surebet-job-status-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 6px;
+}
+
+.job-status-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.job-status-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.job-status-val {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.job-status-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  color: #94a3b8;
 }
 
 

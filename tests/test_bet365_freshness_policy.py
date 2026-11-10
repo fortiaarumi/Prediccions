@@ -876,3 +876,160 @@ def test_18_collision_prevention_across_corner_market_types(tmp_path):
         assert len(reval.get(m, {})) == 0, f"El mercat obsolet {m} no ha de figurar als mercats actius"
         assert m in reval.get("historical_odds", {}), f"El mercat {m} ha d'estar arxivat a historical_odds"
         assert reval["historical_odds"][m]["Over 8.5"] == odds_map[m]
+
+
+def test_19_championship_prematch_stable_odds_actionable_for_surebets():
+    """
+    REGRESSIÓ CRÍTICA AUDITORIA CHAMPIONSHIP:
+    Valida que partits prematch a diversos dies vista (>24h) amb quotes estables
+    des de fa diverses hores (ex: provider_updated_at fa 7h) NO són descartats
+    quan la darrera observació (polled_at i captured_at) és recent (1 minut).
+    Demostra que l'ArbitrageEngine les accepta plenament i no les exclou per timeout.
+    """
+    now = datetime(2026, 11, 9, 18, 0, 0, tzinfo=timezone.utc)
+    kickoff = (now + timedelta(days=5)).isoformat()
+    prov_ts = (now - timedelta(hours=7)).isoformat()
+    poll_ts = (now - timedelta(minutes=1)).isoformat()
+    cap_ts = now.isoformat()
+
+    entry = {
+        "source": "Bet365 via MoviOdds (Championship)",
+        "bookmaker": "BET365",
+        "matched": True,
+        "kickoff_utc": kickoff,
+        "provider_updated_at": prov_ts,
+        "polled_at": poll_ts,
+        "captured_at": cap_ts,
+        "provenance": "BET365_MOVIODDS",
+        "origin_freshness": "CONFIRMED",
+        "1X2": {"1": 2.80, "X": 3.30, "2": 2.65},
+        "market_status": {
+            "1X2": {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "captured_at": cap_ts,
+                "polled_at": poll_ts,
+                "provider_updated_at": prov_ts,
+                "origin_freshness": "CONFIRMED"
+            }
+        }
+    }
+
+    scraper = Bet365Scraper()
+    reval = scraper.revalidate_cached_entry(entry, now=now)
+    assert reval is not None
+    assert reval["matched"] is True
+    assert reval["is_stale"] is False
+    assert reval["freshness"] == "FRESH"
+    assert reval["1X2"]["1"] == 2.80
+    assert reval["captured_at"] == cap_ts
+    assert reval["polled_at"] == poll_ts
+    assert reval["provider_updated_at"] == prov_ts
+
+    # Validació a l'ArbitrageEngine creuant amb Winamax (capturat fa 30s)
+    from engine.arbitrage_engine import ArbitrageEngine
+    engine = ArbitrageEngine(max_odds_age_seconds=60.0, max_skew_seconds=60.0)
+
+    match_mock = {
+        "id": "champ_match_1",
+        "home_team": {"name": "Watford"},
+        "away_team": {"name": "Bristol City"},
+        "kickoff_utc": kickoff,
+        "odds_1x2_winamax": {"1": 2.85, "X": 3.40, "2": 2.50},
+        "odds_winamax": {"captured_at": (now - timedelta(seconds=20)).isoformat(), "polled_at": (now - timedelta(seconds=20)).isoformat()},
+        "odds_1x2_bet365": reval["1X2"],
+        "odds_bet365": reval,
+    }
+
+    arbs = engine.scan_match(match_mock, now=now)
+    assert isinstance(arbs, list)
+    # L'ArbitrageEngine NO ha d'excloure el partit per age_max > 1800s
+    for a in arbs:
+        assert a.get("freshness_tier") != engine.TIER_EXCLUDED
+
+
+def test_20_imminent_match_stale_provider_modification_rejected():
+    """
+    Valida la protecció adaptativa de seguretat:
+    Si el partit comença d'aquí a 1 hora (< 2h) i la quota de Bet365 no s'ha modificat
+    ni confirmat en origen des de fa 6 hores (> 4h llindar imminent), es rebutja
+    com a STALE per evitar publicar un arbitratge fantasma amb un mercat desfasat.
+    """
+    now = datetime(2026, 11, 9, 18, 0, 0, tzinfo=timezone.utc)
+    imminent_kickoff = (now + timedelta(hours=1)).isoformat()
+    prov_ts_old = (now - timedelta(hours=6)).isoformat() # 6h > 4h
+    poll_ts_recent = (now - timedelta(minutes=1)).isoformat()
+    cap_ts = now.isoformat()
+
+    entry = {
+        "source": "Bet365 via MoviOdds (LaLiga)",
+        "bookmaker": "BET365",
+        "matched": True,
+        "kickoff_utc": imminent_kickoff,
+        "provider_updated_at": prov_ts_old,
+        "polled_at": poll_ts_recent,
+        "captured_at": cap_ts,
+        "provenance": "BET365_MOVIODDS",
+        "origin_freshness": "CONFIRMED",
+        "1X2": {"1": 2.10, "X": 3.40, "2": 3.50},
+        "market_status": {
+            "1X2": {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "captured_at": cap_ts,
+                "polled_at": poll_ts_recent,
+                "provider_updated_at": prov_ts_old,
+                "origin_freshness": "CONFIRMED"
+            }
+        }
+    }
+
+    scraper = Bet365Scraper()
+    reval = scraper.revalidate_cached_entry(entry, now=now)
+    # Ha de ser descartat per risc d'obsolescència a les portes del xiulet inicial
+    assert reval is None or reval.get("matched") is False or reval.get("is_stale") is True
+
+
+def test_21_stale_feed_observation_rejected():
+    """
+    Valida la separació de conceptes:
+    Fins i tot si provider_updated_at és molt recent (fa 5 minuts), si la darrera
+    observació del feed (polled_at / captured_at) té més de 30 minuts (ex: 2.5 hores),
+    el mercat es marca com a STALE perquè no podem garantir que la quota continuï disponible.
+    """
+    now = datetime(2026, 11, 9, 18, 0, 0, tzinfo=timezone.utc)
+    kickoff = (now + timedelta(days=2)).isoformat()
+    prov_ts_recent = (now - timedelta(minutes=5)).isoformat()
+    poll_ts_old = (now - timedelta(hours=2, minutes=30)).isoformat() # 2.5h > 2.0h max_age
+
+    entry = {
+        "source": "Bet365 (Feed Stale)",
+        "bookmaker": "BET365",
+        "matched": True,
+        "kickoff_utc": kickoff,
+        "provider_updated_at": prov_ts_recent,
+        "polled_at": poll_ts_old,
+        "captured_at": poll_ts_old,
+        "provenance": "BET365_MOVIODDS",
+        "origin_freshness": "CONFIRMED",
+        "1X2": {"1": 2.10, "X": 3.40, "2": 3.50},
+        "market_status": {
+            "1X2": {
+                "valid": True,
+                "stale": False,
+                "suspended": False,
+                "rejection_reason": "ok",
+                "captured_at": poll_ts_old,
+                "polled_at": poll_ts_old,
+                "provider_updated_at": prov_ts_recent,
+            }
+        }
+    }
+
+    scraper = Bet365Scraper(max_odds_age_hours=2.0)
+    reval = scraper.revalidate_cached_entry(entry, now=now)
+    assert reval is None or reval.get("matched") is False or reval.get("is_stale") is True

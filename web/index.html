@@ -275,6 +275,96 @@
         </div>
       </div>
 
+      <!-- PANELL INTERACTIU DE CONTROL: SUREBET MONITOR LOCAL (AGENT WINDOWS) -->
+      <div class="surebet-agent-panel" id="surebet-agent-panel">
+        <div class="surebet-agent-header">
+          <div class="surebet-agent-title-group">
+            <span class="surebet-agent-icon">🖥️</span>
+            <div>
+              <h3 class="surebet-agent-title">Control de Cerca Remota (Agent Windows)</h3>
+              <p class="surebet-agent-subtitle">Execució d'scrapers en temps real des de la teva IP residencial amb connexió sortint segura.</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <div class="agent-connection-badge" id="agent-connection-badge">
+              <span class="agent-pulse-dot" id="agent-pulse-dot"></span>
+              <span id="agent-connection-status-text">PC Windows: Desconnectat</span>
+            </div>
+            <div class="agent-connection-badge" id="cloud-odds-api-badge" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.08);">
+              <span class="agent-pulse-dot" id="cloud-pulse-dot" style="background: #3b82f6; box-shadow: 0 0 8px #3b82f6;"></span>
+              <span id="cloud-connection-status-text">Núvol (The Odds API): 🟢 Actiu · 450/450 crèdits</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANELL D'AUTENTICACIÓ OPERADOR SUPABASE -->
+        <div class="operator-auth-container" id="operator-auth-container">
+          <div class="operator-login-form" id="operator-login-form">
+            <div class="operator-auth-inputs">
+              <span class="auth-icon">🔐</span>
+              <input type="email" id="operator-email-input" placeholder="Correu operador (ex: fortiaarumi@gmail.com)" class="surebet-input" autocomplete="username" />
+              <input type="password" id="operator-password-input" placeholder="Contrasenya" class="surebet-input" autocomplete="current-password" />
+              <button id="btn-operator-login" class="btn-surebet-action btn-surebet-login">
+                <span>🔑</span> Iniciar Sessió
+              </button>
+            </div>
+            <div id="operator-login-error" class="operator-error-text" style="display:none;"></div>
+          </div>
+          <div class="operator-user-info" id="operator-user-info" style="display:none;">
+            <div class="operator-badge-group">
+              <span class="operator-status-badge">👤 Operador: <strong id="operator-active-email">--</strong></span>
+              <span class="operator-role-badge">Rol: Operator (Actiu)</span>
+            </div>
+            <button id="btn-operator-logout" class="btn-surebet-logout" title="Tancar sessió">
+              Tancar sessió
+            </button>
+          </div>
+        </div>
+
+        <div class="surebet-agent-controls-row">
+          <div class="surebet-control-group">
+            <label for="surebet-duration-select">⏱️ Durada de cerca:</label>
+            <select id="surebet-duration-select" class="surebet-select">
+              <option value="60">1 minut (Proves ràpides)</option>
+              <option value="120" selected>2 minuts</option>
+              <option value="300">5 minuts</option>
+              <option value="600">10 minuts (Recomanat)</option>
+              <option value="900">15 minuts</option>
+              <option value="1800">30 minuts (Màxim permès)</option>
+            </select>
+          </div>
+
+          <div class="surebet-btn-group">
+            <button id="btn-start-surebet-search" class="btn-surebet-action btn-surebet-start">
+              <span>🔍</span> Buscar surebets
+            </button>
+            <button id="btn-stop-surebet-search" class="btn-surebet-action btn-surebet-stop" disabled>
+              <span>🛑</span> Aturar cerca
+            </button>
+          </div>
+        </div>
+
+        <!-- TARGETA D'ESTAT DE LA FEINA EN CURS -->
+        <div class="surebet-job-status-card" id="surebet-job-status-card">
+          <div class="job-status-col">
+            <span class="job-status-label">Estat de la feina</span>
+            <span class="job-status-val" id="surebet-job-state">En repòs (Sense cerca activa)</span>
+          </div>
+          <div class="job-status-col">
+            <span class="job-status-label">Temps transcorregut</span>
+            <span class="job-status-val" id="surebet-job-timer">--:--</span>
+          </div>
+          <div class="job-status-col">
+            <span class="job-status-label">Oportunitats en finestra (≤30m)</span>
+            <span class="job-status-val" id="surebet-job-opps">0 actives</span>
+          </div>
+          <div class="job-status-col">
+            <span class="job-status-label">Sessió ID</span>
+            <span class="job-status-val job-status-code" id="surebet-job-id">Cap</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Panell de Transparència i Monitoratge del Sistema (Bloc A: Surebets | Bloc B: GitHub Actions) -->
       <div class="system-monitoring-panel" id="system-monitoring-panel">
         <!-- BLOC A: MONITORATGE DE QUOTES EN TEMPS REAL -->
@@ -384,25 +474,34 @@
 
       <!-- Surebets Grid -->
       <div class="arbitrage-grid-wrapper">
-        <!-- Secció 1: Surebets Vigents (Quotes Fresques) -->
+        <!-- Nivell 1: Recentment Verificada (≤60s) -->
         <div class="arb-section-header">
-          <h2 class="arb-section-heading">🔥 Surebets Vigents (Quotes Fresques ≤60s)</h2>
+          <h2 class="arb-section-heading">🔥 Surebets Verificades Recentment (≤60s)</h2>
           <span class="arb-section-count" id="surebets-count-badge">0 oportunitats</span>
         </div>
         <div class="arbitrage-grid" id="surebets-container">
           <!-- Generat per JS -->
         </div>
 
-        <!-- Secció 2: Oportunitats Caducades / Stale (>60s) -->
+        <!-- Nivell 2: Potencialment Desactualitzada (1–5 min) -->
         <div class="arb-section-header stale-arb-header" id="stale-arbs-header" style="margin-top: 36px;">
-          <h2 class="arb-section-heading" style="color: #fbbf24;">⚠️ Oportunitats Caducades / Stale (Quotes >60s)</h2>
+          <h2 class="arb-section-heading" style="color: #fbbf24;">⚠️ Surebets Potencialment Desactualitzades (1–5 min)</h2>
           <span class="arb-section-count" id="stale-arbs-count-badge">0 oportunitats</span>
         </div>
         <div class="arbitrage-grid" id="stale-arbs-container">
           <!-- Generat per JS -->
         </div>
 
-        <!-- Secció 3: Monitorització de Mercat (Quasi-Arbitratge / Marge Estret) -->
+        <!-- Nivell 3: Històrica Recent (5–30 min) -->
+        <div class="arb-section-header historical-arb-header" id="historical-arbs-header" style="margin-top: 36px;">
+          <h2 class="arb-section-heading" style="color: #f97316;">📜 Surebets Històriques Recents (5–30 min)</h2>
+          <span class="arb-section-count" id="historical-arbs-count-badge">0 oportunitats</span>
+        </div>
+        <div class="arbitrage-grid" id="historical-arbs-container">
+          <!-- Generat per JS -->
+        </div>
+
+        <!-- Secció 4: Monitorització de Mercat (Quasi-Arbitratge / Marge Estret) -->
         <div class="arb-section-header near-arb-header" style="margin-top: 36px;">
           <h2 class="arb-section-heading near-arb-heading">👀 Monitorització de Mercat (Quasi-Arbitratge / Marge Estret)</h2>
           <span class="arb-section-count" id="near-arbs-count-badge">0 partits</span>
@@ -1075,6 +1174,7 @@
     </div>
   </div>
 
+  <script src="supabase_config.js"></script>
   <script src="app.js?v=3.5.0"></script>
 
   <!-- Barra de Navegació Inferior per a Mòbil (Dock) -->

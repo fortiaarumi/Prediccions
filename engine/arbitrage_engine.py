@@ -463,6 +463,11 @@ class ArbitrageEngine:
 
         return total_net_pnl
 
+    TIER_VERIFIED_FRESH = "VERIFIED_FRESH"
+    TIER_POTENTIALLY_STALE = "POTENTIALLY_STALE"
+    TIER_RECENT_HISTORICAL = "RECENT_HISTORICAL"
+    TIER_EXCLUDED = "EXCLUDED"
+
     @staticmethod
     def _parse_ts(ts_val: Any) -> Optional[datetime]:
         """Converteix un timestamp ISO o enter a datetime UTC."""
@@ -479,34 +484,180 @@ class ArbitrageEngine:
         except Exception:
             return None
 
-    def validate_legs_freshness(self, legs: List[Dict[str, Any]], now: Optional[datetime] = None) -> Tuple[bool, str, float]:
+    def evaluate_freshness_tier(
+        self,
+        legs: List[Dict[str, Any]],
+        match_info: Optional[Dict[str, Any]] = None,
+        now: Optional[datetime] = None
+    ) -> Dict[str, Any]:
         """
-        Valida que totes les quotes compleixin els criteris d'edat màxima i de decalatge temporal (skew).
-        Retorna (is_valid, reason, max_skew_seconds_found).
+        Classifica de forma estricta la frescor d'un conjunt de quotes segons la política de 30 minuts:
+        - age_max = max_i (now - captured_at_i)
+        - skew_s = max_i (captured_at_i) - min_i (captured_at_i)
+        
+        Llindars de classificació:
+        1. VERIFIED_FRESH: age_max <= 60.0s AND skew_s <= 30.0s.
+        2. POTENTIALLY_STALE: (60.0s < age_max <= 300.0s OR skew_s > 30.0s) AND age_max <= 300.0s.
+        3. RECENT_HISTORICAL: 300.0s < age_max <= 1800.0s.
+        4. EXCLUDED: age_max > 1800.0s, timestamps invàlids/futurs (> now + 5s) o partit ja començat/finalitzat.
         """
         ref_now = now or datetime.now(timezone.utc)
         timestamps = []
+        leg_ages = []
 
+        if not legs:
+            return {
+                "tier": self.TIER_EXCLUDED,
+                "is_valid": False,
+                "is_verified_fresh": False,
+                "age_max": None,
+                "skew_seconds": 0.0,
+                "reason": "empty_legs",
+                "leg_ages": []
+            }
+
+        # Si cap pota no conté timestamp i no s'exigeix frescor estricta, és un fixture sintètic de test matemàtic
+        has_any_timestamp = any(bool(l.get("captured_at") or l.get("polled_at") or l.get("timestamp")) for l in legs)
+        if not has_any_timestamp:
+            if self.enforce_strict_freshness:
+                return {
+                    "tier": self.TIER_EXCLUDED,
+                    "is_valid": False,
+                    "is_verified_fresh": False,
+                    "age_max": None,
+                    "skew_seconds": 0.0,
+                    "reason": "missing_timestamps",
+                    "leg_ages": []
+                }
+            else:
+                return {
+                    "tier": self.TIER_VERIFIED_FRESH,
+                    "is_valid": True,
+                    "is_verified_fresh": True,
+                    "age_max": 0.0,
+                    "skew_seconds": 0.0,
+                    "reason": "synthetic_no_timestamp",
+                    "leg_ages": [0.0] * len(legs)
+                }
+
+        # 1. Comprovació del partit (si ja ha començat o finalitzat, queda exclòs)
+        if match_info:
+            match_dt_raw = match_info.get("date_time") or match_info.get("date")
+            if match_dt_raw:
+                match_dt = self._parse_ts(match_dt_raw)
+                if match_dt and match_dt < ref_now:
+                    return {
+                        "tier": self.TIER_EXCLUDED,
+                        "is_valid": False,
+                        "is_verified_fresh": False,
+                        "age_max": None,
+                        "skew_seconds": 0.0,
+                        "reason": "match_already_started",
+                        "leg_ages": []
+                    }
+
+        # 2. Anàlisi i validació estricta de cada pota
         for idx, leg in enumerate(legs):
             ts_str = leg.get("captured_at") or leg.get("polled_at") or leg.get("timestamp")
+            if not ts_str:
+                return {
+                    "tier": self.TIER_EXCLUDED,
+                    "is_valid": False,
+                    "is_verified_fresh": False,
+                    "age_max": None,
+                    "skew_seconds": 0.0,
+                    "reason": f"missing_timestamp_leg_{idx+1}",
+                    "leg_ages": leg_ages
+                }
+
             dt = self._parse_ts(ts_str)
             if not dt:
-                if self.enforce_strict_freshness:
-                    return False, f"missing_timestamp_leg_{idx+1}", 0.0
+                return {
+                    "tier": self.TIER_EXCLUDED,
+                    "is_valid": False,
+                    "is_verified_fresh": False,
+                    "age_max": None,
+                    "skew_seconds": 0.0,
+                    "reason": f"unparseable_timestamp_leg_{idx+1}",
+                    "leg_ages": leg_ages
+                }
+
+            age_s = (ref_now - dt).total_seconds()
+            # Timestamp futur amb tolerància de 5s per jitter de xarxa
+            if age_s < -5.0:
+                return {
+                    "tier": self.TIER_EXCLUDED,
+                    "is_valid": False,
+                    "is_verified_fresh": False,
+                    "age_max": round(age_s, 1),
+                    "skew_seconds": 0.0,
+                    "reason": f"future_timestamp_leg_{idx+1}",
+                    "leg_ages": leg_ages
+                }
+
+            # Normalitzar jitter lleuger entre 0 i -5s a 0.0s
+            effective_age = max(0.0, age_s)
+            timestamps.append(dt)
+            leg_ages.append(round(effective_age, 1))
+
+        age_max = max(leg_ages)
+        epochs = [t.timestamp() for t in timestamps]
+        skew_s = max(epochs) - min(epochs) if len(epochs) >= 2 else 0.0
+
+        # Límit màxim absolut: 1800 segons (30 minuts)
+        if age_max > 1800.0:
+            return {
+                "tier": self.TIER_EXCLUDED,
+                "is_valid": False,
+                "is_verified_fresh": False,
+                "age_max": round(age_max, 1),
+                "skew_seconds": round(skew_s, 1),
+                "reason": f"exceeds_max_age_1800s_{int(age_max)}s",
+                "leg_ages": leg_ages
+            }
+
+        # Classificació de Tiers
+        has_unknown_origin = any(leg.get("origin_freshness") == "UNKNOWN" for leg in legs)
+
+        if age_max <= self.max_odds_age_seconds and skew_s <= self.max_skew_seconds:
+            if has_unknown_origin:
+                tier = self.TIER_POTENTIALLY_STALE
+                is_verified_fresh = False
+                reason = "unknown_origin_freshness"
             else:
-                age_s = (ref_now - dt).total_seconds()
-                if self.enforce_strict_freshness and age_s > self.max_odds_age_seconds:
-                    return False, f"stale_odds_leg_{idx+1}_age_{int(age_s)}s", 0.0
-                timestamps.append(dt)
+                tier = self.TIER_VERIFIED_FRESH
+                is_verified_fresh = True
+                reason = "ok"
+        elif age_max <= 300.0:
+            tier = self.TIER_POTENTIALLY_STALE
+            is_verified_fresh = False
+            reason = "potentially_stale" if not has_unknown_origin else "unknown_origin_freshness"
+        else:
+            tier = self.TIER_RECENT_HISTORICAL
+            is_verified_fresh = False
+            reason = "recent_historical" if not has_unknown_origin else "unknown_origin_freshness"
 
-        if len(timestamps) >= 2:
-            epochs = [t.timestamp() for t in timestamps]
-            skew_s = max(epochs) - min(epochs)
-            if self.enforce_strict_freshness and skew_s > self.max_skew_seconds:
-                return False, f"clock_skew_exceeded_{int(skew_s)}s", skew_s
-            return True, "ok", skew_s
+        return {
+            "tier": tier,
+            "is_valid": True,
+            "is_verified_fresh": is_verified_fresh,
+            "age_max": round(age_max, 1),
+            "skew_seconds": round(skew_s, 1),
+            "reason": reason,
+            "leg_ages": leg_ages
+        }
 
-        return True, "ok", 0.0
+    def validate_legs_freshness(self, legs: List[Dict[str, Any]], now: Optional[datetime] = None) -> Tuple[bool, str, float]:
+        """
+        Valida que totes les quotes compleixin els criteris d'edat màxima i de decalatge temporal (skew).
+        Retorna (is_valid_fresh, reason, skew_seconds).
+        """
+        eval_res = self.evaluate_freshness_tier(legs, now=now)
+        if not eval_res["is_valid"]:
+            return False, eval_res["reason"], eval_res["skew_seconds"]
+        if self.enforce_strict_freshness:
+            return eval_res["is_verified_fresh"], eval_res["reason"], eval_res["skew_seconds"]
+        return True, "ok", eval_res["skew_seconds"]
 
     def calculate_2way_arbitrage(
         self,
@@ -524,10 +675,19 @@ class ArbitrageEngine:
         if o1 <= 1.01 or o2 <= 1.01 or o1 > 15.0 or o2 > 15.0:
             return None
 
-        # Validació de frescor estricta i decalatge temporal
-        is_fresh, fresh_reason, skew_found = self.validate_legs_freshness([leg1, leg2], now=now)
-        if not is_fresh and self.enforce_strict_freshness:
+        # Validació de frescor estricta i decalatge temporal segons la política de 30 minuts
+        fresh_eval = self.evaluate_freshness_tier([leg1, leg2], match_info=match_info, now=now)
+        if fresh_eval["tier"] == self.TIER_EXCLUDED:
             return None
+        if self.enforce_strict_freshness and fresh_eval["tier"] != self.TIER_VERIFIED_FRESH:
+            return None
+
+        is_fresh = fresh_eval["is_verified_fresh"]
+        fresh_tier = fresh_eval["tier"]
+        fresh_reason = fresh_eval["reason"]
+        skew_found = fresh_eval["skew_seconds"]
+        age_max = fresh_eval["age_max"]
+        leg_ages = fresh_eval["leg_ages"]
 
         # Suma de probabilitats implícites (Invers de les quotes)
         sum_inv = (1.0 / o1) + (1.0 / o2)
@@ -607,7 +767,7 @@ class ArbitrageEngine:
         min_return = min(ret1, ret2)
         actual_net_profit = round(min_return - base_bankroll, 2)
         net_profit_pct = round((actual_net_profit / base_bankroll) * 100.0, 2)
-        is_pure_surebet = (actual_net_profit > self.min_profit) and is_fresh
+        is_pure_surebet = (actual_net_profit > self.min_profit)
 
         comm1 = self.get_leg_commission(leg1)
         comm2 = self.get_leg_commission(leg2)
@@ -624,6 +784,9 @@ class ArbitrageEngine:
             "competition_name": match_info.get("competition_name", ""),
             "is_surebet": is_pure_surebet,
             "status": "SUREBET" if is_pure_surebet else "NEAR_ARB",
+            "freshness_tier": fresh_tier,
+            "is_verified_fresh": (fresh_tier == self.TIER_VERIFIED_FRESH and is_pure_surebet),
+            "age_max_seconds": age_max,
             "profit_pct": net_profit_pct,
             "gross_profit_pct": gross_profit_pct,
             "net_profit_pct": net_profit_pct,
@@ -634,7 +797,7 @@ class ArbitrageEngine:
             "scenario_total_returns": [ret1, ret2],
             "scenario_net_pnls": [round(pnl_scenario_0, 2), round(pnl_scenario_1, 2)],
             "skew_seconds": round(skew_found, 1),
-            "freshness_valid": is_fresh,
+            "freshness_valid": fresh_eval["is_valid"],
             "freshness_reason": fresh_reason,
             "legs": [
                 {
@@ -650,6 +813,7 @@ class ArbitrageEngine:
                     "gross_payout": gross_payout_1,
                     "expected_return": ret1,  # Retorn global de cartera en escenari 1 (compatibilitat)
                     "captured_at": leg1.get("captured_at"),
+                    "age_seconds": leg_ages[0] if len(leg_ages) > 0 else None,
                     "url": leg1.get("url", "")
                 },
                 {
@@ -665,6 +829,7 @@ class ArbitrageEngine:
                     "gross_payout": gross_payout_2,
                     "expected_return": ret2,  # Retorn global de cartera en escenari 2 (compatibilitat)
                     "captured_at": leg2.get("captured_at"),
+                    "age_seconds": leg_ages[1] if len(leg_ages) > 1 else None,
                     "url": leg2.get("url", "")
                 }
             ]
@@ -692,10 +857,19 @@ class ArbitrageEngine:
         if len(bookies) < 2:
             return None
 
-        # Validació de frescor estricta i decalatge temporal
-        is_fresh, fresh_reason, skew_found = self.validate_legs_freshness([leg1, legX, leg2], now=now)
-        if not is_fresh and self.enforce_strict_freshness:
+        # Validació de frescor estricta i decalatge temporal segons la política de 30 minuts
+        fresh_eval = self.evaluate_freshness_tier([leg1, legX, leg2], match_info=match_info, now=now)
+        if fresh_eval["tier"] == self.TIER_EXCLUDED:
             return None
+        if self.enforce_strict_freshness and fresh_eval["tier"] != self.TIER_VERIFIED_FRESH:
+            return None
+
+        is_fresh = fresh_eval["is_verified_fresh"]
+        fresh_tier = fresh_eval["tier"]
+        fresh_reason = fresh_eval["reason"]
+        skew_found = fresh_eval["skew_seconds"]
+        age_max = fresh_eval["age_max"]
+        leg_ages = fresh_eval["leg_ages"]
 
         sum_inv = (1.0 / o1) + (1.0 / ox) + (1.0 / o2)
         if sum_inv <= 0.0:
@@ -797,7 +971,7 @@ class ArbitrageEngine:
         min_return = min(ret1, retx, ret2)
         actual_net_profit = round(min_return - base_bankroll, 2)
         net_profit_pct = round((actual_net_profit / base_bankroll) * 100.0, 2)
-        is_pure_surebet = (actual_net_profit > self.min_profit) and is_fresh
+        is_pure_surebet = (actual_net_profit > self.min_profit)
 
         gross_payout_1 = round(best_round_s1 * o1, 2)
         gross_payout_x = round(best_round_sx * ox, 2)
@@ -812,6 +986,9 @@ class ArbitrageEngine:
             "competition_name": match_info.get("competition_name", ""),
             "is_surebet": is_pure_surebet,
             "status": "SUREBET" if is_pure_surebet else "NEAR_ARB",
+            "freshness_tier": fresh_tier,
+            "is_verified_fresh": (fresh_tier == self.TIER_VERIFIED_FRESH and is_pure_surebet),
+            "age_max_seconds": age_max,
             "profit_pct": net_profit_pct,
             "gross_profit_pct": gross_profit_pct,
             "net_profit_pct": net_profit_pct,
@@ -822,7 +999,7 @@ class ArbitrageEngine:
             "scenario_total_returns": [ret1, retx, ret2],
             "scenario_net_pnls": [round(pnl_s0, 2), round(pnl_sx, 2), round(pnl_s2, 2)],
             "skew_seconds": round(skew_found, 1),
-            "freshness_valid": is_fresh,
+            "freshness_valid": fresh_eval["is_valid"],
             "freshness_reason": fresh_reason,
             "legs": [
                 {
@@ -838,6 +1015,7 @@ class ArbitrageEngine:
                     "gross_payout": gross_payout_1,
                     "expected_return": ret1,  # Retorn global de cartera en escenari 1 (compatibilitat)
                     "captured_at": leg1.get("captured_at"),
+                    "age_seconds": leg_ages[0] if len(leg_ages) > 0 else None,
                     "url": leg1.get("url", "")
                 },
                 {
@@ -853,6 +1031,7 @@ class ArbitrageEngine:
                     "gross_payout": gross_payout_x,
                     "expected_return": retx,  # Retorn global de cartera en escenari 2 (compatibilitat)
                     "captured_at": legX.get("captured_at"),
+                    "age_seconds": leg_ages[1] if len(leg_ages) > 1 else None,
                     "url": legX.get("url", "")
                 },
                 {
@@ -868,6 +1047,7 @@ class ArbitrageEngine:
                     "gross_payout": gross_payout_2,
                     "expected_return": ret2,  # Retorn global de cartera en escenari 3 (compatibilitat)
                     "captured_at": leg2.get("captured_at"),
+                    "age_seconds": leg_ages[2] if len(leg_ages) > 2 else None,
                     "url": leg2.get("url", "")
                 }
             ]
@@ -982,12 +1162,13 @@ class ArbitrageEngine:
         match_info = {
             "matchup": f"{h_name} vs {a_name}",
             "date": match.get("date", "Pendent"),
+            "date_time": match.get("date_time") or match.get("date"),
             "competition_id": match.get("competition_id", ""),
             "competition_name": match.get("competition_name", "")
         }
 
-        # Helper per extreure timestamp i URL de qualsevol proveïdor
-        def _get_provider_info(p_name: str) -> Tuple[Optional[str], str]:
+        # Helper per extreure timestamp, traçabilitat d'origen i URL de qualsevol proveïdor
+        def _get_provider_info(p_name: str) -> Tuple[Optional[str], str, Optional[str], Optional[str], str]:
             p = p_name.lower().strip()
             url = match.get(f"url_{p}")
             if not url:
@@ -1004,7 +1185,10 @@ class ArbitrageEngine:
                 sub.get("captured_at") or sub.get("polled_at") or
                 match.get(f"odds_{p}_captured_at") or match.get("captured_at")
             )
-            return cap, url
+            polled_at = sub.get("polled_at") or match.get(f"odds_{p}_polled_at") or cap
+            provider_updated_at = sub.get("provider_updated_at") or match.get(f"odds_{p}_provider_updated_at") or sub.get("ts")
+            origin_freshness = sub.get("origin_freshness") or match.get(f"odds_{p}_origin_freshness") or "CONFIRMED"
+            return cap, url, polled_at, provider_updated_at, origin_freshness
 
         # 1. 1X2: Descobriment de tots els proveïdors disponibles (Winamax, Bet365, Betway, Exchanges)
         providers_1x2: Dict[str, Dict[str, float]] = {}
@@ -1024,7 +1208,7 @@ class ArbitrageEngine:
         best_leg_2: Optional[Dict[str, Any]] = None
 
         for bk, odds_dict in providers_1x2.items():
-            cap, url = _get_provider_info(bk)
+            cap, url, poll, prov_ts, orig_fresh = _get_provider_info(bk)
             mid = match.get(f"market_id_1x2_{bk.lower()}")
 
             o1 = odds_dict.get("1", 0.0)
@@ -1034,6 +1218,9 @@ class ArbitrageEngine:
                     "selection": f"1 - Victòria {h_name}",
                     "odd": o1,
                     "captured_at": cap,
+                    "polled_at": poll,
+                    "provider_updated_at": prov_ts,
+                    "origin_freshness": orig_fresh,
                     "url": url,
                     "native_market_id": mid
                 }
@@ -1045,6 +1232,9 @@ class ArbitrageEngine:
                     "selection": "X - Empat",
                     "odd": ox,
                     "captured_at": cap,
+                    "polled_at": poll,
+                    "provider_updated_at": prov_ts,
+                    "origin_freshness": orig_fresh,
                     "url": url,
                     "native_market_id": mid
                 }
@@ -1056,6 +1246,9 @@ class ArbitrageEngine:
                     "selection": f"2 - Victòria {a_name}",
                     "odd": o2,
                     "captured_at": cap,
+                    "polled_at": poll,
+                    "provider_updated_at": prov_ts,
+                    "origin_freshness": orig_fresh,
                     "url": url,
                     "native_market_id": mid
                 }
@@ -1079,13 +1272,13 @@ class ArbitrageEngine:
 
         # Avaluem totes les combinacions creuades entre cases diferents
         for bk_dc, dc_odds in providers_dc.items():
-            cap_dc, url_dc = _get_provider_info(bk_dc)
+            cap_dc, url_dc, poll_dc, prov_ts_dc, orig_fresh_dc = _get_provider_info(bk_dc)
             mid_dc = match.get(f"market_id_dc_{bk_dc.lower()}")
 
             for bk_1x2, single_odds in providers_1x2.items():
                 if bk_dc == bk_1x2:
                     continue  # Mateixa casa mai no constitueix arbitratge
-                cap_single, url_single = _get_provider_info(bk_1x2)
+                cap_single, url_single, poll_single, prov_ts_single, orig_fresh_single = _get_provider_info(bk_1x2)
                 mid_single = match.get(f"market_id_1x2_{bk_1x2.lower()}")
 
                 # 1X vs 2
@@ -1093,8 +1286,8 @@ class ArbitrageEngine:
                 o_2 = single_odds.get("2", 0.0)
                 if o_1x > 1.0 and o_2 > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_dc, "selection": f"1X - {h_name} o Empat", "odd": o_1x, "captured_at": cap_dc, "url": url_dc, "native_market_id": mid_dc},
-                        {"bookmaker": bk_1x2, "selection": f"2 - Victòria {a_name}", "odd": o_2, "captured_at": cap_single, "url": url_single, "native_market_id": mid_single},
+                        {"bookmaker": bk_dc, "selection": f"1X - {h_name} o Empat", "odd": o_1x, "captured_at": cap_dc, "polled_at": poll_dc, "provider_updated_at": prov_ts_dc, "origin_freshness": orig_fresh_dc, "url": url_dc, "native_market_id": mid_dc},
+                        {"bookmaker": bk_1x2, "selection": f"2 - Victòria {a_name}", "odd": o_2, "captured_at": cap_single, "polled_at": poll_single, "provider_updated_at": prov_ts_single, "origin_freshness": orig_fresh_single, "url": url_single, "native_market_id": mid_single},
                         "Doble Oportunitat (1X vs 2)",
                         match_info,
                         now=now,
@@ -1107,8 +1300,8 @@ class ArbitrageEngine:
                 o_1 = single_odds.get("1", 0.0)
                 if o_x2 > 1.0 and o_1 > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_dc, "selection": f"X2 - Empat o {a_name}", "odd": o_x2, "captured_at": cap_dc, "url": url_dc, "native_market_id": mid_dc},
-                        {"bookmaker": bk_1x2, "selection": f"1 - Victòria {h_name}", "odd": o_1, "captured_at": cap_single, "url": url_single, "native_market_id": mid_single},
+                        {"bookmaker": bk_dc, "selection": f"X2 - Empat o {a_name}", "odd": o_x2, "captured_at": cap_dc, "polled_at": poll_dc, "provider_updated_at": prov_ts_dc, "origin_freshness": orig_fresh_dc, "url": url_dc, "native_market_id": mid_dc},
+                        {"bookmaker": bk_1x2, "selection": f"1 - Victòria {h_name}", "odd": o_1, "captured_at": cap_single, "polled_at": poll_single, "provider_updated_at": prov_ts_single, "origin_freshness": orig_fresh_single, "url": url_single, "native_market_id": mid_single},
                         "Doble Oportunitat (X2 vs 1)",
                         match_info,
                         now=now,
@@ -1121,8 +1314,8 @@ class ArbitrageEngine:
                 o_x = single_odds.get("X", 0.0)
                 if o_12 > 1.0 and o_x > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_dc, "selection": f"12 - {h_name} o {a_name}", "odd": o_12, "captured_at": cap_dc, "url": url_dc, "native_market_id": mid_dc},
-                        {"bookmaker": bk_1x2, "selection": "X - Empat", "odd": o_x, "captured_at": cap_single, "url": url_single, "native_market_id": mid_single},
+                        {"bookmaker": bk_dc, "selection": f"12 - {h_name} o {a_name}", "odd": o_12, "captured_at": cap_dc, "polled_at": poll_dc, "provider_updated_at": prov_ts_dc, "origin_freshness": orig_fresh_dc, "url": url_dc, "native_market_id": mid_dc},
+                        {"bookmaker": bk_1x2, "selection": "X - Empat", "odd": o_x, "captured_at": cap_single, "polled_at": poll_single, "provider_updated_at": prov_ts_single, "origin_freshness": orig_fresh_single, "url": url_single, "native_market_id": mid_single},
                         "Doble Oportunitat (12 vs X)",
                         match_info,
                         now=now,
@@ -1148,8 +1341,8 @@ class ArbitrageEngine:
                     continue
                 bk_a = ou_bookies[i]
                 bk_b = ou_bookies[j]
-                cap_a, url_a = _get_provider_info(bk_a)
-                cap_b, url_b = _get_provider_info(bk_b)
+                cap_a, url_a, poll_a, prov_ts_a, orig_fresh_a = _get_provider_info(bk_a)
+                cap_b, url_b, poll_b, prov_ts_b, orig_fresh_b = _get_provider_info(bk_b)
                 mid_a = match.get(f"market_id_ou25_{bk_a.lower()}") or match.get(f"market_id_ou_{bk_a.lower()}")
                 mid_b = match.get(f"market_id_ou25_{bk_b.lower()}") or match.get(f"market_id_ou_{bk_b.lower()}")
 
@@ -1158,8 +1351,8 @@ class ArbitrageEngine:
 
                 if o_over > 1.0 and o_under > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_a, "selection": "Més de 2.5 Gols (Over)", "odd": o_over, "captured_at": cap_a, "url": url_a, "native_market_id": mid_a},
-                        {"bookmaker": bk_b, "selection": "Menys de 2.5 Gols (Under)", "odd": o_under, "captured_at": cap_b, "url": url_b, "native_market_id": mid_b},
+                        {"bookmaker": bk_a, "selection": "Més de 2.5 Gols (Over)", "odd": o_over, "captured_at": cap_a, "polled_at": poll_a, "provider_updated_at": prov_ts_a, "origin_freshness": orig_fresh_a, "url": url_a, "native_market_id": mid_a},
+                        {"bookmaker": bk_b, "selection": "Menys de 2.5 Gols (Under)", "odd": o_under, "captured_at": cap_b, "polled_at": poll_b, "provider_updated_at": prov_ts_b, "origin_freshness": orig_fresh_b, "url": url_b, "native_market_id": mid_b},
                         "Total Gols (Més/Menys 2.5)",
                         match_info,
                         now=now,
@@ -1185,8 +1378,8 @@ class ArbitrageEngine:
                     continue
                 bk_a = btts_bookies[i]
                 bk_b = btts_bookies[j]
-                cap_a, url_a = _get_provider_info(bk_a)
-                cap_b, url_b = _get_provider_info(bk_b)
+                cap_a, url_a, poll_a, prov_ts_a, orig_fresh_a = _get_provider_info(bk_a)
+                cap_b, url_b, poll_b, prov_ts_b, orig_fresh_b = _get_provider_info(bk_b)
                 mid_a = match.get(f"market_id_btts_{bk_a.lower()}")
                 mid_b = match.get(f"market_id_btts_{bk_b.lower()}")
 
@@ -1195,8 +1388,8 @@ class ArbitrageEngine:
 
                 if o_yes > 1.0 and o_no > 1.0:
                     arb = self.calculate_2way_arbitrage(
-                        {"bookmaker": bk_a, "selection": "Ambdós Marquen: SÍ", "odd": o_yes, "captured_at": cap_a, "url": url_a, "native_market_id": mid_a},
-                        {"bookmaker": bk_b, "selection": "Ambdós Marquen: NO", "odd": o_no, "captured_at": cap_b, "url": url_b, "native_market_id": mid_b},
+                        {"bookmaker": bk_a, "selection": "Ambdós Marquen: SÍ", "odd": o_yes, "captured_at": cap_a, "polled_at": poll_a, "provider_updated_at": prov_ts_a, "origin_freshness": orig_fresh_a, "url": url_a, "native_market_id": mid_a},
+                        {"bookmaker": bk_b, "selection": "Ambdós Marquen: NO", "odd": o_no, "captured_at": cap_b, "polled_at": poll_b, "provider_updated_at": prov_ts_b, "origin_freshness": orig_fresh_b, "url": url_b, "native_market_id": mid_b},
                         "Ambdós Marquen (BTTS)",
                         match_info,
                         now=now,
@@ -1206,32 +1399,45 @@ class ArbitrageEngine:
 
         return arbs
 
-    def scan_all_matches(self, matches: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Escaneja una llista de partits i retorna l'informe complet d'arbitratge."""
+    def scan_all_matches(self, matches: List[Dict[str, Any]], now: Optional[datetime] = None) -> Dict[str, Any]:
+        """
+        Escaneja una llista de partits i retorna l'informe complet d'arbitratge
+        amb classificació estricta en 4 nivells de frescor (fins a 30 minuts).
+        """
         all_arbs = []
         for m in matches:
-            found = self.scan_match(m)
+            found = self.scan_match(m, now=now)
             all_arbs.extend(found)
 
         # Ordenar de major a menor benefici garantit (% Profit)
         all_arbs.sort(key=lambda x: x.get("profit_pct", -999.0), reverse=True)
 
-        surebets = [a for a in all_arbs if a["is_surebet"]]
-        near_arbs = [a for a in all_arbs if not a["is_surebet"]]
+        verified_fresh = [a for a in all_arbs if a["is_surebet"] and a.get("freshness_tier") == self.TIER_VERIFIED_FRESH]
+        potentially_stale = [a for a in all_arbs if a["is_surebet"] and a.get("freshness_tier") == self.TIER_POTENTIALLY_STALE]
+        recent_historical = [a for a in all_arbs if a["is_surebet"] and a.get("freshness_tier") == self.TIER_RECENT_HISTORICAL]
+        near_arbs = [a for a in all_arbs if not a["is_surebet"] and a.get("freshness_tier") != self.TIER_EXCLUDED]
 
         # Estadístiques globals
-        max_p = surebets[0]["profit_pct"] if surebets else (near_arbs[0]["profit_pct"] if near_arbs else 0.0)
-        avg_p = round(sum(a["profit_pct"] for a in surebets) / len(surebets), 2) if surebets else 0.0
+        max_p = verified_fresh[0]["profit_pct"] if verified_fresh else (potentially_stale[0]["profit_pct"] if potentially_stale else (recent_historical[0]["profit_pct"] if recent_historical else (near_arbs[0]["profit_pct"] if near_arbs else 0.0)))
+        avg_p = round(sum(a["profit_pct"] for a in verified_fresh) / len(verified_fresh), 2) if verified_fresh else 0.0
 
         return {
             "summary": {
-                "total_surebets": len(surebets),
+                "total_surebets": len(verified_fresh),
+                "total_verified_fresh": len(verified_fresh),
+                "total_potentially_stale": len(potentially_stale),
+                "total_recent_historical": len(recent_historical),
+                "total_stale_surebets": len(potentially_stale) + len(recent_historical),
                 "total_near_arbs": len(near_arbs),
                 "max_profit_pct": max_p,
                 "avg_profit_pct": avg_p,
                 "evaluated_matches": len(matches)
             },
-            "surebets": surebets,
-            "near_arbs": near_arbs[:10], # Mostrar les 10 oportunitats més properes a arbitratge
-            "all_opportunities": all_arbs
+            "surebets": verified_fresh,
+            "verified_fresh_surebets": verified_fresh,
+            "potentially_stale_surebets": potentially_stale,
+            "recent_historical_surebets": recent_historical,
+            "stale_surebets": potentially_stale + recent_historical,
+            "near_arbs": near_arbs[:10],
+            "all_opportunities": verified_fresh + potentially_stale + recent_historical + near_arbs[:10]
         }

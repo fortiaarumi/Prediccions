@@ -657,12 +657,13 @@ class ComboBetEngine:
         max_per_comp: int = 5,
         forbidden_exact: Optional[Set[str]] = None,
         counts: Optional[Dict[str, int]] = None,
-        max_usage: int = 2
+        max_usage: int = 2,
+        require_positive_ev: bool = True
     ) -> List[Dict[str, Any]]:
         """
         Prepara el pool de partits seleccionant mercats complementaris de diferents categories
         (Doble Oportunitat, 1X2, Gols, Córners, Targetes, BTTS) per garantir varietat,
-        filtrant seleccions prohibides o que ja hagin assolit el límit d'ús (màxim 2 combinades).
+        filtrant seleccions prohibides, que hagin assolit el límit d'ús o amb EV individual negatiu.
         """
         forbidden_exact = forbidden_exact or set()
         counts = counts or {}
@@ -675,6 +676,13 @@ class ComboBetEngine:
                     continue
                 if counts.get(k, 0) >= max_usage:
                     continue
+                # NOTA D'AUDITORIA: El filtre `leg_ev_factor >= 0.90` (p_i * odd_i >= 0.90) és una
+                # heurística provisional tolerant al marge habitual del bookmaker (vig de fins al 10%).
+                # Evita que seleccions severament descalibrades degradin l'EV combinat de forma paràsita.
+                # Aquesta regla està PENDENT DE VALIDACIÓ RETROSPECTIVA i NO garanteix rendibilitat.
+                leg_ev_factor = float(m.get("model_prob", 0.0)) / 100.0 * float(m.get("bookie_odd", 1.0))
+                if require_positive_ev and leg_ev_factor < 0.90:
+                    continue
                 if m["model_prob"] >= min_prob and m["bookie_odd"] >= min_odd:
                     valid.append(m)
 
@@ -682,6 +690,9 @@ class ComboBetEngine:
                 for m in mm.get("markets", []):
                     k = self._get_leg_key(m)
                     if k in forbidden_exact or counts.get(k, 0) >= max_usage:
+                        continue
+                    leg_ev_factor = float(m.get("model_prob", 0.0)) / 100.0 * float(m.get("bookie_odd", 1.0))
+                    if require_positive_ev and leg_ev_factor < 0.90:
                         continue
                     if m["model_prob"] >= (min_prob * 0.70) and m["bookie_odd"] >= 1.05:
                         valid.append(m)
@@ -788,6 +799,11 @@ class ComboBetEngine:
             if cand.get("sig") == c1_sig:
                 continue
             cand_legs = cand.get("legs", [])
+            cand_leg_keys = {self._get_leg_key(l) for l in cand_legs}
+            # Evitar estrictament combinades que siguin un superconjunt o subconjunt directe de c1
+            # (evita afegir seleccions paràsites a les mateixes apostes base de c1)
+            if c1_leg_keys and cand_leg_keys and (c1_leg_keys.issubset(cand_leg_keys) or cand_leg_keys.issubset(c1_leg_keys)):
+                continue
             if any(temp_counts.get(self._get_leg_key(l), 0) >= max_usage for l in cand_legs):
                 continue
             if any(self._get_leg_key(l) in forbidden_exact for l in cand_legs):
@@ -824,6 +840,9 @@ class ComboBetEngine:
             if cand.get("sig") == c1_sig:
                 continue
             cand_legs = cand.get("legs", [])
+            cand_leg_keys = {self._get_leg_key(l) for l in cand_legs}
+            if c1_leg_keys and cand_leg_keys and (c1_leg_keys.issubset(cand_leg_keys) or cand_leg_keys.issubset(c1_leg_keys)):
+                continue
             overlap_exact_legs = sum(1 for l in cand_legs if self._get_leg_key(l) in c1_leg_keys)
             if overlap_exact_legs < len(c1_legs):
                 return cand
@@ -871,7 +890,8 @@ class ComboBetEngine:
             max_per_comp=4,
             forbidden_exact=forbidden_exact,
             counts=global_counts,
-            max_usage=max_usage
+            max_usage=max_usage,
+            require_positive_ev=require_positive_ev
         )
 
         if len(pools) < 2:
@@ -1015,7 +1035,8 @@ class ComboBetEngine:
             max_per_comp=4,
             forbidden_exact=forbidden_exact,
             counts=global_counts,
-            max_usage=max_usage
+            max_usage=max_usage,
+            require_positive_ev=require_positive_ev
         )
 
         if len(pools) < 2:
@@ -1180,7 +1201,8 @@ class ComboBetEngine:
             max_per_comp=4,
             forbidden_exact=forbidden_exact,
             counts=global_counts,
-            max_usage=max_usage
+            max_usage=max_usage,
+            require_positive_ev=require_positive_ev
         )
 
         if len(pools) < 2:
@@ -1699,7 +1721,12 @@ class ComboBetEngine:
             candidates = []
             for k in range(2, len(match_pools) + 1):
                 for match_combo in itertools.combinations(match_pools, k):
-                    cand_lists = [[m for m in mp["markets"] if m.get("model_prob", 0) >= min_leg_prob][:4] for mp in match_combo]
+                    cand_lists = [
+                        [m for m in mp["markets"]
+                         if (not require_positive_ev or (float(m.get("model_prob", 0.0)) / 100.0 * float(m.get("bookie_odd", 1.0)) >= 0.90))
+                         and m.get("model_prob", 0) >= min_leg_prob][:4]
+                        for mp in match_combo
+                    ]
                     if any(len(cl) == 0 for cl in cand_lists):
                         continue
                     for choice in itertools.product(*cand_lists):
@@ -1750,10 +1777,19 @@ class ComboBetEngine:
             c1 = cands[0]
             c2 = None
             c1_sig = c1.get("sig", frozenset())
+            c1_legs = c1.get("legs", [])
+            c1_leg_keys = {self._get_leg_key(l) for l in c1_legs}
             for c in cands[1:]:
-                if c.get("sig") != c1_sig:
-                    c2 = c
-                    break
+                c_sig = c.get("sig", frozenset())
+                if c_sig == c1_sig:
+                    continue
+                c_legs = c.get("legs", [])
+                c_leg_keys = {self._get_leg_key(l) for l in c_legs}
+                # Evitar estrictament que c2 sigui un superconjunt o subconjunt de c1
+                if c1_leg_keys and c_leg_keys and (c1_leg_keys.issubset(c_leg_keys) or c_leg_keys.issubset(c1_leg_keys)):
+                    continue
+                c2 = c
+                break
             res = []
             s1 = self.calculate_combo_summary(c1.get("legs", []), profile_name_1)
             s1["category_code"] = cat_code

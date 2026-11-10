@@ -173,6 +173,8 @@ def isolate_data_and_enforce_offline_reproducibility(tmp_path_factory):
         host = address[0] if isinstance(address, (tuple, list)) else str(address)
         if host in ("127.0.0.1", "localhost", "::1"):
             return orig_socket_connect(self, address)
+        if os.environ.get("ALLOW_SUPABASE_REAL") == "1":
+            return orig_socket_connect(self, address)
         raise RuntimeError(
             f"[BLOCATGE OFFLINE]: S'ha interceptat un intent de connexió externa no permesa a '{address}' durant l'execució de tests."
         )
@@ -180,6 +182,8 @@ def isolate_data_and_enforce_offline_reproducibility(tmp_path_factory):
     def offline_socket_connect_ex(self, address):
         host = address[0] if isinstance(address, (tuple, list)) else str(address)
         if host in ("127.0.0.1", "localhost", "::1"):
+            return orig_socket_connect_ex(self, address)
+        if os.environ.get("ALLOW_SUPABASE_REAL") == "1":
             return orig_socket_connect_ex(self, address)
         # 10061 (WSAECONNREFUSED / ECONNREFUSED) indica rebuig absolut de connexió offline
         return 10061
@@ -211,6 +215,12 @@ def isolate_data_and_enforce_offline_reproducibility(tmp_path_factory):
     orig_urlopen = urllib.request.urlopen
     def offline_urlopen(url_or_req, *args, **kwargs):
         url_str = url_or_req.full_url if hasattr(url_or_req, "full_url") else str(url_or_req)
+        # Si és connexió local per a servidors de prova (localhost / 127.0.0.1), permetre
+        if "127.0.0.1" in url_str or "localhost" in url_str or "::1" in url_str:
+            return orig_urlopen(url_or_req, *args, **kwargs)
+        # Permetre connexió al Supabase real exclusivament quan s'executen tests d'integració reals
+        if os.environ.get("ALLOW_SUPABASE_REAL") == "1" and "supabase.co" in url_str:
+            return orig_urlopen(url_or_req, *args, **kwargs)
         # Si no és local, llançar error d'inaccessibilitat
         raise urllib.error.URLError(f"[BLOCATGE OFFLINE]: Accés HTTP extern bloquejat a '{url_str}' pel harness de proves.")
 

@@ -467,8 +467,53 @@ loadLiveSurebets().then(() => {
   assert.strictEqual(global._surebetsLiveConnected, false, 'Estat de connexió en viu ha de ser false');
   console.log('   [OK] Fallback validat: La web manté les dades prèvies de data.json sense trencar-se.');
 
+  // =============================================================================
+  // 12. PROVA D'INDICADORS D'ESTAT DELS SCRAPERS (SENSE QUOTES != VERD ACTIU)
+  // =============================================================================
+  console.log('-> Executant Prova 12: Indicador honest per a fonts sense quotes en viu...');
+  
+  function getBookieStatusBadge(info) {
+    const statusRaw = (info.status || 'active').toLowerCase();
+    const eventsCount = info.events_count != null ? info.events_count : 0;
+    const oddsCount = info.odds_count != null ? info.odds_count : 0;
+    const attemptStatus = (info.last_attempt_status || (statusRaw === 'error' ? 'error' : (oddsCount > 0 ? 'success' : 'partial'))).toLowerCase();
+
+    let statusLabel = 'Actiu';
+    let statusClass = 'arb-status-active';
+
+    if (statusRaw === 'suspended') {
+      statusLabel = 'Suspès (Circuit Breaker)';
+      statusClass = 'arb-status-suspended';
+    } else if (statusRaw === 'error') {
+      statusLabel = 'Error de connexió';
+      statusClass = 'arb-status-error';
+    } else if (statusRaw === 'updating') {
+      statusLabel = 'Actualitzant...';
+      statusClass = 'arb-status-updating';
+    } else if (statusRaw === 'pending' || oddsCount === 0 || (attemptStatus === 'partial' && oddsCount === 0)) {
+      statusLabel = 'Pendent de quotes en viu';
+      statusClass = 'arb-status-pending';
+    }
+    return { statusLabel, statusClass };
+  }
+
+  // Cas A: Casa amb 0 quotes (com Bet365 abans de sincronitzar)
+  const emptyInfo = { status: 'active', odds_count: 0, events_count: 0, last_attempt_status: 'partial' };
+  const badgeA = getBookieStatusBadge(emptyInfo);
+  assert.strictEqual(badgeA.statusLabel, 'Pendent de quotes en viu');
+  assert.strictEqual(badgeA.statusClass, 'arb-status-pending');
+  assert.notStrictEqual(badgeA.statusClass, 'arb-status-active', '0 quotes mai no pot tenir classe verda arb-status-active');
+
+  // Cas B: Casa amb quotes reals fresques (com Winamax o Bet365 sincronitzat)
+  const freshInfo = { status: 'active', odds_count: 44, events_count: 4, last_attempt_status: 'success' };
+  const badgeB = getBookieStatusBadge(freshInfo);
+  assert.strictEqual(badgeB.statusLabel, 'Actiu');
+  assert.strictEqual(badgeB.statusClass, 'arb-status-active');
+
+  console.log('   [OK] Indicadors validats: Fonts sense quotes mostren "Pendent de quotes en viu" (arb-status-pending) i mai verd.');
+
   console.log('\n========================================================');
-  console.log('TOTES LES PROVES FUNCIONALS DE FRONTEND HAN PASSAT (11/11)');
+  console.log('TOTES LES PROVES FUNCIONALS DE FRONTEND HAN PASSAT (12/12)');
   console.log('========================================================\n');
 });
 

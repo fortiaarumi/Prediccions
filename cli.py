@@ -14,8 +14,16 @@ import io
 from pathlib import Path
 
 # Sortida UTF-8 per a Windows
-if hasattr(sys.stdout, 'buffer'):
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+elif hasattr(sys.stdout, 'buffer') and not getattr(sys.stdout, '_is_pytest_capture', False):
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 from database.db_manager import DatabaseManager
 from scraper.live_crawler import LiveCrawler
@@ -125,7 +133,139 @@ def cmd_predict_match(home: str, away: str, date: str = None, referee_name: str 
     print(f"      {pdf_path.resolve()}")
     print("=" * 80 + "\n")
 
+def cmd_surebet_agent(dry_run: bool = False, remote_mock_test: bool = False, simulated: bool = False):
+    """Execució de l'Agent Windows per a Surebets (suporta mode local loopback, dry-run, mock test o Supabase remot)."""
+    import os
+    from agent.supabase_coordinator import SupabaseCoordinator
+    from agent.windows_agent import WindowsSurebetAgent
+    from agent.coordinator import MockCoordinator
+
+    # Carregar variables de fitxer .env local si existeix (ignorat per git)
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except Exception:
+        pass
+
+    supabase_url = os.environ.get("SUPABASE_URL", "").strip()
+    supabase_key = os.environ.get("SUPABASE_PUBLISHABLE_KEY", os.environ.get("SUPABASE_KEY", "")).strip()
+    agent_email = os.environ.get("SUREBET_AGENT_EMAIL", "").strip()
+    agent_password = os.environ.get("SUREBET_AGENT_PASSWORD", "").strip()
+    operator_email = os.environ.get("SUREBET_OPERATOR_EMAIL", "").strip()
+    operator_password = os.environ.get("SUREBET_OPERATOR_PASSWORD", "").strip()
+    agent_id = os.environ.get("SUREBET_AGENT_ID", "Windows-PC-Local").strip()
+
+    # Si s'ha demanat la prova remota simulada (--remote-mock-test)
+    if remote_mock_test:
+        from agent.remote_mock_runner import run_remote_mock_flow
+        if not supabase_url or not supabase_key:
+            print("[!] Error: Cal definir SUPABASE_URL i SUPABASE_PUBLISHABLE_KEY per executar --remote-mock-test.")
+            sys.exit(1)
+        if not agent_email or not agent_password:
+            print("[!] Error: Cal definir SUREBET_AGENT_EMAIL i SUREBET_AGENT_PASSWORD per a l'agent.")
+            sys.exit(1)
+
+        res = run_remote_mock_flow(
+            supabase_url=supabase_url,
+            publishable_key=supabase_key,
+            agent_email=agent_email,
+            agent_password=agent_password,
+            operator_email=operator_email or None,
+            operator_password=operator_password or None,
+            agent_name=agent_id
+        )
+        if not res.get("success"):
+            print("[!] La prova remota simulada ha fallat. Codi de sortida: 1.")
+            sys.exit(1)
+        print("[+] Prova remota simulada finalitzada amb èxit de punta a punta (Codi de sortida: 0).")
+        return
+
+    print("=" * 65)
+    print("      PREDICCIONS LLIGA — SUREBET MONITOR (AGENT WINDOWS)")
+    print("=" * 65)
+    print(f"Agent ID: {agent_id}")
+    print(f"Mode: {'--dry-run (Comprovació de connectivitat)' if dry_run else 'Operació contínua'}")
+
+    if supabase_url and supabase_key:
+        print(f"Coordinador: Supabase Remot ({supabase_url})")
+        coord = SupabaseCoordinator(
+            supabase_url=supabase_url,
+            publishable_key=supabase_key,
+            agent_name=agent_id
+        )
+
+        if agent_email and agent_password:
+            print(f"[*] Autenticant agent com a '{agent_email}' a Supabase Auth...")
+            try:
+                coord.authenticate_agent_user(agent_email, agent_password)
+                print("[+] Autenticació d'agent satisfactòria via JWT (token generat pel servidor).")
+            except Exception as e:
+                print(f"[!] Error d'autenticació a Supabase: {e}")
+                if dry_run:
+                    print("\n[!] Mode --dry-run finalitzat amb error d'autenticació.")
+                    print("=" * 65)
+                    return
+                raise
+        else:
+            print("[*] Avís: sense SUREBET_AGENT_EMAIL / SUREBET_AGENT_PASSWORD; utilitzant clau pública.")
+
+        # Enviar batec de vida en repòs
+        print("[*] Enviant batec de presència (heartbeat) a PostgreSQL...")
+        try:
+            hb_res = coord.send_heartbeat()
+            if hb_res.alive:
+                print("[+] [HEARTBEAT] Batec de vida registrat satisfactòriament a Supabase per a l'agent.")
+            else:
+                print("[!] Avís: No s'ha pogut registrar el batec (revisa que l'agent estigui registrat a daemon_agents).")
+        except Exception as e:
+            print(f"[!] Error enviant batec a Supabase: {e}")
+            if dry_run:
+                print("\n[!] Mode --dry-run finalitzat amb error en el batec.")
+                print("=" * 65)
+                return
+            raise
+
+        if dry_run:
+            print("\n[+] Mode --dry-run: comprovació de connexió remota completada.")
+            print("[+] No s'han enviat peticions als bookmakers ni s'ha activat cap procés de scraping.")
+            print("=" * 65)
+            return
+
+        print(f"Mode de treball: {'SIMULAT (Zero peticions a bookmakers / Zero apostes reals)' if simulated else 'PRODUCCIÓ REAL (Scraping actiu)'}")
+        agent = WindowsSurebetAgent(
+            coordinator=coord,
+            agent_id=agent_id,
+            offline=simulated,
+            dry_run=simulated,
+            simulated=simulated
+        )
+        agent.run_poll_loop()
+    else:
+        print("Coordinador: Mode Local (Mock / Loopback)")
+        if dry_run:
+            print("[+] Mode --dry-run en entorn local completat amb èxit.")
+            print("=" * 65)
+            return
+
+        coord = MockCoordinator()
+        agent = WindowsSurebetAgent(coordinator=coord, agent_id=agent_id, offline=True, dry_run=True, simulated=True)
+        from agent.local_bridge import LocalCoordinatorServer
+        bridge = LocalCoordinatorServer(coordinator=coord, port=8777)
+        bridge.start()
+        try:
+            agent.run_poll_loop()
+        finally:
+            bridge.stop()
+
+
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "surebet-agent":
+        dry_run = "--dry-run" in sys.argv
+        remote_mock_test = "--remote-mock-test" in sys.argv
+        simulated = "--simulated" in sys.argv
+        cmd_surebet_agent(dry_run=dry_run, remote_mock_test=remote_mock_test, simulated=simulated)
+        return
+
     parser = argparse.ArgumentParser(description="Sistema Oficial de Prediccions de LaLiga + Winamax Odds")
     parser.add_argument("--scrape-jornada", type=int, help="Descobreix els enllaços, corre l'scraper i actualitza rànquings")
     parser.add_argument("--predict-jornada", type=int, help="Prediu tots els partits de la Jornada N i genera informe PDF")
@@ -134,10 +274,16 @@ def main():
     parser.add_argument("--date", type=str, help="Data del partit (YYYY-MM-DD)")
     parser.add_argument("--referee", type=str, default=None, help="Nom o ID de l'àrbitre (opcional: si s'omet, es resol automàticament)")
     parser.add_argument("--rebuild-ranks", action="store_true", help="Reconstrueix deterministament els rànquings (tri-ranks) històrics a partir dels partits acabats")
+    parser.add_argument("--surebet-agent", action="store_true", help="Inicia l'agent de monitoratge de Surebets")
+    parser.add_argument("--dry-run", action="store_true", help="Mode comprovació en sec: verifica autenticació i batec sense iniciar scrapers")
+    parser.add_argument("--remote-mock-test", action="store_true", help="Mode prova remota simulada: executa sessió sintètica completa a Supabase sense scraping")
+    parser.add_argument("--simulated", action="store_true", help="Mode simulat: genera snapshots sintètics sense cridar scrapers reals")
 
     args = parser.parse_args()
 
-    if args.rebuild_ranks:
+    if args.surebet_agent:
+        cmd_surebet_agent(dry_run=args.dry_run, remote_mock_test=args.remote_mock_test, simulated=args.simulated)
+    elif args.rebuild_ranks:
         cmd_rebuild_ranks()
     elif args.scrape_jornada is not None:
         cmd_scrape_jornada(args.scrape_jornada, league=args.league)

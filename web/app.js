@@ -15,7 +15,7 @@ if (typeof window === 'undefined') {
   global.window = {};
 }
 if (typeof localStorage === 'undefined') {
-  global.localStorage = { getItem: () => null, setItem: () => {}, removeItem: () => {} };
+  global.localStorage = { getItem: () => null, setItem: () => { }, removeItem: () => { } };
 }
 
 let appData = null;
@@ -503,6 +503,730 @@ function initEventListeners() {
       showToast(`Apostes recalculades per a ${currentArbTotalStake}€ d'inversió total!`, 'info');
     });
   }
+
+  // Surebet Agent Controls (Local Windows Monitor)
+  setupSurebetAgentControls();
+}
+
+// Gestió de l'Agent Windows per a Surebets (Mode Supabase Remot vs Mode Desenvolupament Local Explícit)
+let _activeSurebetSession = null;
+let _surebetSessionTimerInterval = null;
+let _surebetPollInterval = null;
+const LOCAL_BRIDGE_URL = 'http://127.0.0.1:8777';
+
+// El pont local només és admissible si es compleixen TOTES les condicions de seguretat:
+// 1. Hostname és estrictament loopback local ('localhost' o '127.0.0.1') sota protocol HTTP (bloqueig total a Vercel/producció).
+// 2. Prohibició absoluta de vectors controlats per visitants: ni paràmetres URL (?local_bridge, ?dev) ni localStorage.
+// 3. Requereix una configuració de compilació/test explícitament immutable (Object.defineProperty amb writable: false i configurable: false).
+function isDevBridgeExplicitlyEnabled() {
+  if (typeof window === 'undefined' || !window.location) return false;
+
+  // 1. Bloqueig d'origen: mai permès fora de loopback local (rebuig immediat de dominis públics o Vercel)
+  const host = window.location.hostname;
+  if (host !== 'localhost' && host !== '127.0.0.1') return false;
+
+  // 2. Bloqueig de protocol: en HTTPS (producció) mai s'admet connectivitat loopback
+  if (window.location.protocol !== 'http:') return false;
+
+  // 3. Verificació de configuració de compilació/test immutable (no modificable per visitants)
+  try {
+    const desc = Object.getOwnPropertyDescriptor(window, '__PREDICCIONS_DEV_BUILD__');
+    if (desc && desc.configurable === false && desc.writable === false && desc.value === true) {
+      return true;
+    }
+  } catch (e) { }
+
+  return false;
+}
+
+function setupSurebetAgentControls() {
+  const btnStart = document.getElementById('btn-start-surebet-search');
+  const btnStop = document.getElementById('btn-stop-surebet-search');
+  const durationSelect = document.getElementById('surebet-duration-select');
+  const stateVal = document.getElementById('surebet-job-state');
+  const timerVal = document.getElementById('surebet-job-timer');
+  const oppsVal = document.getElementById('surebet-job-opps');
+  const idVal = document.getElementById('surebet-job-id');
+  const agentBadgeText = document.getElementById('agent-connection-status-text');
+  const pulseDot = document.getElementById('agent-pulse-dot');
+
+  // Elements Auth Operador
+  const operatorLoginForm = document.getElementById('operator-login-form');
+  const operatorUserInfo = document.getElementById('operator-user-info');
+  const operatorActiveEmail = document.getElementById('operator-active-email');
+  const operatorEmailInput = document.getElementById('operator-email-input');
+  const operatorPasswordInput = document.getElementById('operator-password-input');
+  const btnOperatorLogin = document.getElementById('btn-operator-login');
+  const btnOperatorLogout = document.getElementById('btn-operator-logout');
+  const operatorLoginError = document.getElementById('operator-login-error');
+
+  if (!btnStart || !btnStop) return;
+
+  let isAgentOnline = false;
+
+  // -------------------------------------------------------------
+  // Gestió de Sessió d'Operador (Supabase Auth)
+  // -------------------------------------------------------------
+  function updateOperatorAuthUI(userEmail) {
+    if (userEmail) {
+      if (operatorLoginForm) operatorLoginForm.style.display = 'none';
+      if (operatorUserInfo) operatorUserInfo.style.display = 'flex';
+      if (operatorActiveEmail) operatorActiveEmail.textContent = userEmail;
+      if (operatorLoginError) operatorLoginError.style.display = 'none';
+    } else {
+      if (operatorLoginForm) operatorLoginForm.style.display = 'block';
+      if (operatorUserInfo) operatorUserInfo.style.display = 'none';
+      if (operatorActiveEmail) operatorActiveEmail.textContent = '--';
+    }
+  }
+
+  function initOperatorAuth() {
+    try {
+      const stored = sessionStorage.getItem('supabase_operator_session');
+      if (stored) {
+        const sess = JSON.parse(stored);
+        if (sess && sess.token && sess.email) {
+          if (sess.expires_at && Date.now() > sess.expires_at) {
+            sessionStorage.removeItem('supabase_operator_session');
+            updateOperatorAuthUI(null);
+            return;
+          }
+          if (window.SUPABASE_CONFIG) {
+            window.SUPABASE_CONFIG.userJwt = sess.token;
+          }
+          updateOperatorAuthUI(sess.email);
+          checkAgentHeartbeat();
+        }
+      }
+    } catch (e) {
+      console.warn("[Auth] Error restaurant sessió:", e);
+    }
+  }
+
+  if (btnOperatorLogin) {
+    btnOperatorLogin.addEventListener('click', async () => {
+      const email = operatorEmailInput ? operatorEmailInput.value.trim() : '';
+      const password = operatorPasswordInput ? operatorPasswordInput.value : '';
+
+      if (!email || !password) {
+        if (operatorLoginError) {
+          operatorLoginError.textContent = "Introdueix correu i contrasenya d'operador.";
+          operatorLoginError.style.display = 'block';
+        }
+        return;
+      }
+
+      if (!window.SUPABASE_CONFIG || !window.SUPABASE_CONFIG.url) {
+        showToast("Configuració de Supabase no disponible", "error");
+        return;
+      }
+
+      btnOperatorLogin.disabled = true;
+      btnOperatorLogin.textContent = "Autenticant...";
+      if (operatorLoginError) operatorLoginError.style.display = 'none';
+
+      try {
+        const authUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/auth/v1/token?grant_type=password`;
+        const resp = await fetch(authUrl, {
+          method: 'POST',
+          headers: {
+            'apikey': window.SUPABASE_CONFIG.publishableKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          throw new Error(errData.error_description || errData.message || `Error d'autenticació (${resp.status})`);
+        }
+
+        const data = await resp.json();
+        const jwt = data.access_token;
+        const userEmail = (data.user && data.user.email) ? data.user.email : email;
+        const expiresAt = Date.now() + ((data.expires_in || 3600) * 1000);
+
+        window.SUPABASE_CONFIG.userJwt = jwt;
+        sessionStorage.setItem('supabase_operator_session', JSON.stringify({
+          token: jwt,
+          email: userEmail,
+          expires_at: expiresAt
+        }));
+
+        updateOperatorAuthUI(userEmail);
+        showToast(`Operador autenticat: ${userEmail}`, "success");
+        checkAgentHeartbeat();
+
+      } catch (err) {
+        if (operatorLoginError) {
+          operatorLoginError.textContent = err.message || "Error en iniciar sessió.";
+          operatorLoginError.style.display = 'block';
+        }
+        showToast(`Error de login: ${err.message}`, "error");
+      } finally {
+        btnOperatorLogin.disabled = false;
+        btnOperatorLogin.innerHTML = '<span>🔑</span> Iniciar Sessió';
+      }
+    });
+  }
+
+  if (btnOperatorLogout) {
+    btnOperatorLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('supabase_operator_session');
+      if (window.SUPABASE_CONFIG) {
+        window.SUPABASE_CONFIG.userJwt = null;
+      }
+      updateOperatorAuthUI(null);
+      isAgentOnline = false;
+      if (agentBadgeText) agentBadgeText.textContent = "PC Windows Desconnectat (pendent de configuració / autenticació)";
+      if (pulseDot) {
+        pulseDot.style.background = '#94a3b8';
+        pulseDot.style.boxShadow = 'none';
+      }
+      updateJobUI(null);
+      showToast("Sessió d'operador tancada", "info");
+    });
+  }
+
+  initOperatorAuth();
+
+  // -------------------------------------------------------------
+  // Monitoratge de Batec del PC (Heartbeat)
+  // -------------------------------------------------------------
+  async function checkAgentHeartbeat() {
+    // 1. Mode Supabase Remot (només si NO hi ha un dev bridge local explícitament habilitat)
+    if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+      if (!window.SUPABASE_CONFIG.userJwt) {
+        isAgentOnline = false;
+        if (agentBadgeText) agentBadgeText.textContent = "PC Windows Desconnectat (pendent de configuració / autenticació)";
+        if (pulseDot) {
+          pulseDot.style.background = '#94a3b8';
+          pulseDot.style.boxShadow = 'none';
+        }
+        return;
+      }
+
+      try {
+        const sbUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/daemon_agents?select=agent_name,is_active,last_heartbeat&order=last_heartbeat.desc.nullslast&limit=1`;
+        const headers = {
+          'apikey': window.SUPABASE_CONFIG.publishableKey,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
+        };
+        const resp = await fetch(sbUrl, { headers, cache: 'no-store' });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && data.length > 0) {
+            const agent = data[0];
+            const lastHb = agent.last_heartbeat ? new Date(agent.last_heartbeat).getTime() : 0;
+            const ageSec = Math.max(0, (Date.now() - lastHb) / 1000);
+            if (agent.is_active && ageSec <= 60) {
+              isAgentOnline = true;
+              if (agentBadgeText) agentBadgeText.textContent = `PC Windows: 🟢 En línia (${agent.agent_name} · fa ${Math.round(ageSec)}s)`;
+              if (pulseDot) {
+                pulseDot.style.background = '#34d399';
+                pulseDot.style.boxShadow = '0 0 8px #34d399';
+              }
+              if (!_activeSurebetSession || ['COMPLETED', 'CANCELLED', 'FAILED'].includes(_activeSurebetSession.status)) {
+                btnStart.disabled = false;
+              }
+              return;
+            } else {
+              isAgentOnline = false;
+              const ageStr = ageSec > 3600 ? `${Math.round(ageSec / 3600)}h` : `${Math.round(ageSec)}s`;
+              if (agentBadgeText) agentBadgeText.textContent = `PC Windows: 🔴 Desconnectat (Últim batec fa ${ageStr})`;
+              if (pulseDot) {
+                pulseDot.style.background = '#ef4444';
+                pulseDot.style.boxShadow = 'none';
+              }
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("[Surebet Agent] Error comprovant batec a Supabase:", err);
+      }
+
+      isAgentOnline = false;
+      if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: 🔴 Desconnectat (Sense connexió)';
+      if (pulseDot) {
+        pulseDot.style.background = '#ef4444';
+        pulseDot.style.boxShadow = 'none';
+      }
+      return;
+    }
+
+    // 2. Mode Desenvolupament Local: només si està explícitament habilitat
+    if (isDevBridgeExplicitlyEnabled()) {
+      try {
+        const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/agent/status`, { cache: 'no-store' });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.connected && data.last_heartbeat) {
+            isAgentOnline = true;
+            if (agentBadgeText) agentBadgeText.textContent = `PC Windows: 🟢 En línia (${data.status})`;
+            if (pulseDot) {
+              pulseDot.style.background = '#34d399';
+              pulseDot.style.boxShadow = '0 0 8px #34d399';
+            }
+            return;
+          }
+        }
+      } catch (e) {
+        // Servidor pont local no disponible
+      }
+
+      isAgentOnline = false;
+      if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: 🔴 Desconnectat (Pont local no detectat)';
+      if (pulseDot) {
+        pulseDot.style.background = '#94a3b8';
+        pulseDot.style.boxShadow = 'none';
+      }
+      return;
+    }
+
+    // 3. Sense configuració
+    isAgentOnline = false;
+    if (agentBadgeText) agentBadgeText.textContent = 'PC Windows: Desconnectat (Servei remot pendent)';
+    if (pulseDot) {
+      pulseDot.style.background = '#94a3b8';
+      pulseDot.style.boxShadow = 'none';
+    }
+  }
+
+  // Comprovar batec inicial i periòdicament
+  checkAgentHeartbeat();
+  if ((window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) || isDevBridgeExplicitlyEnabled()) {
+    setInterval(checkAgentHeartbeat, 5000);
+  }
+
+  // -------------------------------------------------------------
+  // Actualització visual de l'Estat de la Feina
+  // -------------------------------------------------------------
+  function updateJobUI(session) {
+    if (!session) {
+      if (stateVal) stateVal.textContent = 'En repòs (Sense cerca activa)';
+      if (timerVal) timerVal.textContent = '--:--';
+      if (idVal) idVal.textContent = 'Cap';
+      if (oppsVal) oppsVal.textContent = '0 actives';
+      btnStart.disabled = false;
+      btnStop.disabled = true;
+      return;
+    }
+
+    if (idVal) idVal.textContent = session.id ? session.id.slice(0, 13) + '...' : 'Cap';
+
+    const statusDescriptions = {
+      'PENDING': '⏳ En cua (PENDING · Esperant agent Windows...)',
+      'RUNNING': '⚡ Cercant (RUNNING · Agent actiu executant cerca)',
+      'CANCEL_REQUESTED': '🛑 Sol·licitant aturada cooperativa...',
+      'CANCELLED': '🛑 Cerca aturada (CANCELLED)',
+      'COMPLETED': '✅ Cerca finalitzada (COMPLETED)',
+      'FAILED': '❌ Error durant la cerca (FAILED)',
+      'TIMEOUT': '⏰ Temps esgotat (TIMEOUT)'
+    };
+
+    if (session.isExpired) {
+      if (stateVal) stateVal.innerHTML = `<span style="color:#ef4444; font-weight:600;">⚠️ Sessió caducada (${session.status})</span>`;
+      btnStart.disabled = false;
+      btnStop.disabled = false;
+      return;
+    }
+
+    if (stateVal) stateVal.textContent = statusDescriptions[session.status] || session.status;
+
+    if (session.status === 'RUNNING' || session.status === 'PENDING') {
+      btnStart.disabled = true;
+      btnStop.disabled = false;
+    } else if (session.status === 'CANCEL_REQUESTED') {
+      btnStart.disabled = true;
+      btnStop.disabled = false; // Permetre insistir en la cancel·lació si queda encallada
+    } else {
+      btnStart.disabled = false;
+      btnStop.disabled = true;
+    }
+  }
+
+  // Funció centralitzada de seguiment actiu de sessió (Timer + Polling)
+  function startSessionTracking() {
+    if (_surebetSessionTimerInterval) clearInterval(_surebetSessionTimerInterval);
+    _surebetSessionTimerInterval = setInterval(() => {
+      if (!_activeSurebetSession) {
+        clearInterval(_surebetSessionTimerInterval);
+        return;
+      }
+      const elapsed = Math.floor((Date.now() - _activeSurebetSession.startTime) / 1000);
+      const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const secs = String(elapsed % 60).padStart(2, '0');
+      if (timerVal) timerVal.textContent = `${mins}:${secs}`;
+
+      if (_activeSurebetSession.expiresAt && Date.now() > _activeSurebetSession.expiresAt) {
+        _activeSurebetSession.isExpired = true;
+        updateJobUI(_activeSurebetSession);
+      }
+    }, 1000);
+
+    if (_surebetPollInterval) clearInterval(_surebetPollInterval);
+    _surebetPollInterval = setInterval(async () => {
+      if (!_activeSurebetSession) {
+        clearInterval(_surebetPollInterval);
+        return;
+      }
+
+      try {
+        if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
+          const headers = {
+            'apikey': window.SUPABASE_CONFIG.publishableKey,
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
+          };
+
+          // 1. Estat de la sessió
+          const sUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_sessions?id=eq.${_activeSurebetSession.id}&select=*`;
+          const sResp = await fetch(sUrl, { headers, cache: 'no-store' });
+          if (sResp.ok) {
+            const sData = await sResp.json();
+            if (sData && sData.length > 0) {
+              const row = sData[0];
+              _activeSurebetSession.status = row.status;
+              if (row.expires_at && Date.now() > new Date(row.expires_at).getTime()) {
+                _activeSurebetSession.isExpired = true;
+              }
+              updateJobUI(_activeSurebetSession);
+
+              if (row.summary && row.summary.bookmakers_status) {
+                if (appData && appData.arbitrage) {
+                  appData.arbitrage.bookmakers_status = row.summary.bookmakers_status;
+                  if (row.summary.coverage_by_bookmaker) {
+                    appData.arbitrage.summary = appData.arbitrage.summary || {};
+                    appData.arbitrage.summary.coverage_by_bookmaker = row.summary.coverage_by_bookmaker;
+                    appData.arbitrage.summary.matches_with_2plus_bookmakers = row.summary.matches_with_2plus_bookmakers;
+                    appData.arbitrage.summary.matches_with_3_bookmakers = row.summary.matches_with_3_bookmakers;
+                  }
+                  if (row.summary.last_generation) {
+                    appData.arbitrage.last_generation = row.summary.last_generation;
+                  }
+                  renderArbitrage();
+                }
+              }
+
+              if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(row.status)) {
+                clearInterval(_surebetPollInterval);
+                clearInterval(_surebetSessionTimerInterval);
+                _activeSurebetSession.status = row.status;
+                updateJobUI(_activeSurebetSession);
+                _activeSurebetSession = null;
+                showToast(`Sessió finalitzada: ${row.status}`, 'info');
+                return;
+              }
+            }
+          }
+
+          // 2. Snapshots
+          const snapUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_snapshots?session_id=eq.${_activeSurebetSession.id}&select=id,opportunities_count`;
+          const snapResp = await fetch(snapUrl, { headers, cache: 'no-store' });
+          if (snapResp.ok) {
+            const snapData = await snapResp.json();
+            if (snapData && oppsVal) {
+              const totalOpps = snapData.reduce((acc, s) => acc + (s.opportunities_count || 0), 0);
+              oppsVal.textContent = `${snapData.length} snap · ${totalOpps} opps`;
+            }
+          }
+
+          // 3. Oportunitats actives
+          const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?select=*`;
+          const vResp = await fetch(vUrl, { headers, cache: 'no-store' });
+          if (vResp.ok) {
+            const vData = await vResp.json();
+            if (appData && appData.arbitrage) {
+              const realData = (vData || []).filter(item => {
+                if (item.is_synthetic === true || item.is_synthetic === 'true') return false;
+                if (item.bookmakers && Array.isArray(item.bookmakers) && item.bookmakers.some(b => b && b.is_synthetic)) return false;
+                return true;
+              });
+              appData.arbitrage.surebets = realData;
+              renderArbitrage();
+            }
+          }
+        } else if (isDevBridgeExplicitlyEnabled()) {
+          const sResp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions/${_activeSurebetSession.id}`, { cache: 'no-store' });
+          if (sResp.ok) {
+            const sData = await sResp.json();
+            _activeSurebetSession.status = sData.status;
+            updateJobUI(_activeSurebetSession);
+
+            if (['COMPLETED', 'CANCELLED', 'FAILED', 'TIMEOUT'].includes(sData.status)) {
+              clearInterval(_surebetPollInterval);
+              clearInterval(_surebetSessionTimerInterval);
+              _activeSurebetSession.status = sData.status;
+              updateJobUI(_activeSurebetSession);
+              _activeSurebetSession = null;
+              showToast(`Sessió finalitzada: ${sData.status}`, 'info');
+              return;
+            }
+          }
+
+          const oppsResp = await fetch(`${LOCAL_BRIDGE_URL}/api/opportunities`, { cache: 'no-store' });
+          if (oppsResp.ok) {
+            const oppsData = await oppsResp.json();
+            if (appData && appData.arbitrage) {
+              const oppsList = Array.isArray(oppsData) ? oppsData : (oppsData.opportunities || []);
+              appData.arbitrage.surebets = oppsList;
+              renderArbitrage();
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("[Surebet Polling] Error consultant estat:", err);
+      }
+    }, 2000);
+  }
+
+  // Restauració de sessions actives existents a Supabase en carregar la pàgina
+  async function restoreActiveSessionFromRemote() {
+    if (!window.SUPABASE_CONFIG || !window.SUPABASE_CONFIG.url) return;
+    try {
+      const headers = {
+        'apikey': window.SUPABASE_CONFIG.publishableKey,
+        'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt || window.SUPABASE_CONFIG.publishableKey}`,
+        'Content-Type': 'application/json'
+      };
+      const qUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/surebet_sessions?status=in.(PENDING,RUNNING,CANCEL_REQUESTED)&order=created_at.desc&limit=1`;
+      const qResp = await fetch(qUrl, { headers, cache: 'no-store' });
+      if (qResp.ok) {
+        const rows = await qResp.json();
+        if (rows && rows.length > 0) {
+          const sess = rows[0];
+          const createdAtMs = new Date(sess.created_at).getTime();
+          const expiresAtMs = sess.expires_at ? new Date(sess.expires_at).getTime() : (createdAtMs + (sess.duration_seconds || 600) * 1000);
+          const isExpired = Date.now() > expiresAtMs;
+
+          _activeSurebetSession = {
+            id: sess.id,
+            status: sess.status,
+            durationSeconds: sess.duration_seconds || 600,
+            startTime: createdAtMs,
+            expiresAt: expiresAtMs,
+            isExpired: isExpired
+          };
+
+          updateJobUI(_activeSurebetSession);
+          startSessionTracking();
+
+          if (isExpired) {
+            showToast("S'ha detectat una sessió activa caducada a Supabase. Prem 'Aturar cerca' per alliberar-la.", "warning");
+          } else {
+            showToast(`S'ha sincronitzat la cerca en curs (${sess.status}) des de Supabase`, "info");
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("[Surebet Agent] Error restaurant sessió activa:", err);
+    }
+  }
+
+  // Restaurar sessions en iniciar
+  restoreActiveSessionFromRemote();
+
+  // -------------------------------------------------------------
+  // Botó «Buscar surebets»
+  // -------------------------------------------------------------
+  btnStart.addEventListener('click', async () => {
+    if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && !window.SUPABASE_CONFIG.userJwt) {
+      showToast("Cal iniciar sessió com a operador abans de llançar la cerca.", "warning");
+      if (operatorEmailInput) operatorEmailInput.focus();
+      return;
+    }
+
+    if (!isAgentOnline) {
+      if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url) {
+        // Mode Autònom al Núvol (The Odds API) sense necessitat del PC encès
+        showToast("PC Windows desconnectat: executant cerca al núvol via The Odds API...", "info");
+        btnStart.disabled = true;
+        const stateElem = document.getElementById('surebet-job-state');
+        if (stateElem) stateElem.textContent = "Cercant al núvol (The Odds API)...";
+
+        try {
+          const edgeUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/functions/v1/search-surebets`;
+          const edgeHeaders = {
+            'apikey': window.SUPABASE_CONFIG.publishableKey,
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt || window.SUPABASE_CONFIG.publishableKey}`
+          };
+
+          const edgeResp = await fetch(edgeUrl, { method: 'POST', headers: edgeHeaders });
+          if (!edgeResp.ok) {
+            const errData = await edgeResp.json().catch(() => ({}));
+            throw new Error(errData.error || errData.message || `Error del núvol: HTTP ${edgeResp.status}`);
+          }
+
+          const cloudResult = await edgeResp.json();
+          showToast(cloudResult.message || "Cerca al núvol completada!", "success");
+
+          // Actualitzar badge de crèdits
+          if (cloudResult.credits_remaining != null) {
+            const cloudBadge = document.getElementById('cloud-connection-status-text');
+            if (cloudBadge) {
+              cloudBadge.textContent = `Núvol (The Odds API): 🟢 Actiu · ${cloudResult.credits_remaining} crèdits restants (Reserva: 50)`;
+            }
+          }
+
+          // Recarregar oportunitats actives des de Supabase
+          const vUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/v_active_surebets?select=*`;
+          const vResp = await fetch(vUrl, { headers: edgeHeaders, cache: 'no-store' });
+          if (vResp.ok) {
+            const vData = await vResp.json();
+            if (appData && appData.arbitrage) {
+              appData.arbitrage.surebets = vData || [];
+              renderArbitrage();
+            }
+          }
+          if (stateElem) stateElem.textContent = `Completada (${cloudResult.credits_spent || 0} crèdits consumits)`;
+        } catch (cloudErr) {
+          showToast(`Error al núvol: ${cloudErr.message}`, "error");
+          if (stateElem) stateElem.textContent = "Error al núvol";
+        } finally {
+          btnStart.disabled = false;
+        }
+        return;
+      } else {
+        showToast("Avís: El PC Windows no sembla en línia i no hi ha configuració al núvol.", "warning");
+      }
+    }
+
+    const duration = parseInt(durationSelect ? durationSelect.value : '120', 10);
+    const durationMins = Math.round(duration / 60);
+
+    try {
+      let sessionData;
+      if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
+        // Mode Supabase remot: crida a l'RPC protegida create_search_session
+        const rpcUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/rpc/create_search_session`;
+        const rpcHeaders = {
+          'apikey': window.SUPABASE_CONFIG.publishableKey,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
+        };
+
+        const rpcResp = await fetch(rpcUrl, {
+          method: 'POST',
+          headers: rpcHeaders,
+          body: JSON.stringify({ p_duration_seconds: duration })
+        });
+
+        if (!rpcResp.ok) {
+          const errText = await rpcResp.text();
+          if (errText.includes("23505") || errText.includes("Ja existeix una sessió")) {
+            throw new Error("Ja hi ha una cerca activa o en cua. Espera que finalitzi o atura-la abans d'iniciar-ne una de nova.");
+          }
+          throw new Error(`Error creant sessió a Supabase (${rpcResp.status}): ${errText}`);
+        }
+
+        const createdId = await rpcResp.json();
+        sessionData = { session_id: createdId, status: 'PENDING' };
+      } else if (isDevBridgeExplicitlyEnabled()) {
+        const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ duration_minutes: durationMins, user_id: 'user_local_web' })
+        });
+
+        if (!resp.ok) throw new Error("No s'ha pogut crear la sessió al coordinador");
+        sessionData = await resp.json();
+      } else {
+        throw new Error("El servei de Surebets no està configurat.");
+      }
+
+      _activeSurebetSession = {
+        id: sessionData.session_id,
+        status: sessionData.status,
+        durationSeconds: duration,
+        startTime: Date.now()
+      };
+
+      updateJobUI(_activeSurebetSession);
+      showToast(`Cerca de Surebets iniciada (${durationMins} min) a Supabase`, 'success');
+
+      // Iniciar temporitzador i sondeig centralitzat
+      startSessionTracking();
+
+    } catch (err) {
+      showToast(`Error iniciant cerca: ${err.message}`, 'error');
+    }
+  });
+
+  // -------------------------------------------------------------
+  // Botó «Aturar cerca»
+  // -------------------------------------------------------------
+  btnStop.addEventListener('click', async () => {
+    if (_activeSurebetSession && _activeSurebetSession.id) {
+      try {
+        _activeSurebetSession.status = 'CANCEL_REQUESTED';
+        updateJobUI(_activeSurebetSession);
+        showToast("Sol·licitant aturada cooperativa a l'Agent...", "warning");
+
+        if (!isDevBridgeExplicitlyEnabled() && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.userJwt) {
+          // Mode Supabase remot: crida a l'RPC request_session_cancellation
+          const cancelUrl = `${window.SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/rpc/request_session_cancellation`;
+          const cancelHeaders = {
+            'apikey': window.SUPABASE_CONFIG.publishableKey,
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.SUPABASE_CONFIG.userJwt}`
+          };
+          const cancelResp = await fetch(cancelUrl, {
+            method: 'POST',
+            headers: cancelHeaders,
+            body: JSON.stringify({ p_session_id: _activeSurebetSession.id })
+          });
+          if (cancelResp.ok) {
+            showToast("Sol·licitud d'aturada processada a Supabase", "info");
+            if (_activeSurebetSession.isExpired || !isAgentOnline) {
+              _activeSurebetSession.status = 'CANCELLED';
+              clearInterval(_surebetPollInterval);
+              clearInterval(_surebetSessionTimerInterval);
+              _activeSurebetSession = null;
+              updateJobUI(null);
+              showToast("Sessió alliberada i bloqueig de cerca eliminat", "success");
+            } else {
+              _activeSurebetSession.status = 'CANCEL_REQUESTED';
+              updateJobUI(_activeSurebetSession);
+            }
+          } else {
+            const errText = await cancelResp.text();
+            // Si la sessió ja estava caducada i falla l'RPC, alliberar localment
+            if (_activeSurebetSession.isExpired) {
+              _activeSurebetSession = null;
+              updateJobUI(null);
+              showToast("Sessió caducada alliberada localment", "warning");
+              return;
+            }
+            throw new Error(`Error en sol·licitud de cancel·lació: ${errText}`);
+          }
+        } else if (isDevBridgeExplicitlyEnabled()) {
+          const resp = await fetch(`${LOCAL_BRIDGE_URL}/api/sessions/${_activeSurebetSession.id}/cancel`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ user_id: 'user_local_web' })
+          });
+
+          if (resp.ok) {
+            const resData = await resp.json();
+            _activeSurebetSession.status = resData.status || 'CANCELLED';
+            updateJobUI(_activeSurebetSession);
+            showToast("Cerca aturada correctament", "info");
+          }
+        }
+      } catch (e) {
+        showToast("Error comunicant aturada a l'Agent", "error");
+      }
+    }
+  });
 }
 
 function switchTab(tabId) {
@@ -1682,7 +2406,7 @@ function formatArbitrageInstructions(arb, totalBankroll) {
   const legs = arb.legs || [];
   const { bankroll: effectiveBankroll, roundStakes, grossPayouts, minReturn, netProfit, profitPct, isPositive } = computeArbitrageValues(arb, total);
 
-  let text = `⚡ INSTRUCCIONS D'ARBITRATGE SEGUR (+${profitPct.toFixed(1)}% NET GARANTIT)\n`;
+  let text = `⚡ INSTRUCCIONS D'ARBITRATGE MATEMÀTIC (+${profitPct.toFixed(1)}% Teòric)\n`;
   text += `Partit: ${arb.matchup} (${arb.competition_name || arb.competition_id})\n`;
   text += `Mercat: ${arb.market_name}\n`;
   text += `Data: ${arb.date}\n`;
@@ -1700,7 +2424,7 @@ function formatArbitrageInstructions(arb, totalBankroll) {
 
   text += `--------------------------------------------------\n`;
   text += `💼 RETORN GLOBAL MÍNIM DE CARTERA: ${minReturn.toFixed(2)} € (després de cobrir la resta d'apostes i comissions)\n`;
-  text += `💰 BENEFICI NET GARANTIT: ${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)} € (Passi el que passi al partit!)\n`;
+  text += `💰 BENEFICI NET GARANTIT: ${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)} € (Teòric matemàtic: subjecte a reconfirmació de quotes i liquiditat a cada casa)\n`;
 
   return text;
 }
@@ -1930,21 +2654,22 @@ function renderArbitrage() {
   const containerSurebets = document.getElementById('surebets-container');
   const containerStale = document.getElementById('stale-arbs-container');
   const staleHeader = document.getElementById('stale-arbs-header');
+  const containerHistorical = document.getElementById('historical-arbs-container');
+  const historicalHeader = document.getElementById('historical-arbs-header');
   const containerNear = document.getElementById('near-arbs-container');
   const heroBanner = document.getElementById('arbitrage-hero-banner');
   const bookmakersBar = document.getElementById('arbitrage-bookmakers-bar');
   const countBadge = document.getElementById('surebets-count-badge');
   const countStaleBadge = document.getElementById('stale-arbs-count-badge');
+  const countHistoricalBadge = document.getElementById('historical-arbs-count-badge');
   const countNearBadge = document.getElementById('near-arbs-count-badge');
 
   if (!containerSurebets || !appData || !appData.arbitrage) return;
 
   const arbData = appData.arbitrage;
   const summary = arbData.summary || {};
-  let surebets = arbData.surebets || [];
-  let staleSurebets = arbData.stale_surebets || [];
-  let nearArbs = arbData.near_arbs || [];
   const bStatus = arbData.bookmakers_status || {};
+  const nowMs = Date.now();
 
   // Funció auxiliar per formatar edat de quotes
   function formatRelativeAge(seconds, isoDate) {
@@ -1971,6 +2696,10 @@ function renderArbitrage() {
     const cardsHtml = bookies.map(b => {
       const info = bStatus[b.key] || {};
       const statusRaw = (info.status || 'active').toLowerCase();
+      const eventsCount = info.events_count != null ? info.events_count : 0;
+      const oddsCount = info.odds_count != null ? info.odds_count : 0;
+      const attemptStatus = (info.last_attempt_status || (statusRaw === 'error' ? 'error' : (oddsCount > 0 ? 'success' : 'partial'))).toLowerCase();
+
       let statusLabel = 'Actiu';
       let statusClass = 'arb-status-active';
 
@@ -1983,15 +2712,17 @@ function renderArbitrage() {
       } else if (statusRaw === 'updating') {
         statusLabel = 'Actualitzant...';
         statusClass = 'arb-status-updating';
+      } else if (statusRaw === 'pending' || oddsCount === 0 || (attemptStatus === 'partial' && oddsCount === 0)) {
+        statusLabel = 'Pendent de quotes en viu';
+        statusClass = 'arb-status-pending';
       }
 
       // Resultat de l'últim intent (èxit, error o parcial)
-      const attemptStatus = (info.last_attempt_status || (statusRaw === 'error' ? 'error' : 'success')).toLowerCase();
       let attemptHtml = '';
-      if (attemptStatus === 'success') {
+      if (attemptStatus === 'success' && oddsCount > 0) {
         attemptHtml = '<span class="arb-attempt-tag attempt-success">✅ Últim intent: Èxit</span>';
-      } else if (attemptStatus === 'partial') {
-        attemptHtml = `<span class="arb-attempt-tag attempt-partial" title="${escapeHtml(info.partial_details || 'Dades parcials')}">⚠️ Últim intent: Parcial</span>`;
+      } else if (attemptStatus === 'partial' || oddsCount === 0) {
+        attemptHtml = `<span class="arb-attempt-tag attempt-partial" title="${escapeHtml(info.partial_details || (oddsCount === 0 ? 'Sense quotes fresques disponibles en aquest cicle' : 'Dades parcials'))}">⚠️ Últim intent: Parcial</span>`;
       } else {
         const errTitle = info.last_error ? `title="${escapeHtml(info.last_error)}"` : '';
         attemptHtml = `<span class="arb-attempt-tag attempt-error" ${errTitle}>❌ Últim intent: Fallit</span>`;
@@ -2002,9 +2733,6 @@ function renderArbitrage() {
         ? new Date(lastSuccessIso).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         : 'Sense registre previ';
 
-      const eventsCount = info.events_count != null ? info.events_count : 0;
-      const oddsCount = info.odds_count != null ? info.odds_count : 0;
-
       // Timestamps distingits: petició, resposta HTTP, generació
       const qStartStr = info.query_start ? new Date(info.query_start).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--';
       const qEndStr = info.query_end ? new Date(info.query_end).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--';
@@ -2014,10 +2742,72 @@ function renderArbitrage() {
         ? `<div class="arb-card-error-note">⚠️ Últim intent fallit: ${escapeHtml(info.last_error)}</div>`
         : '';
 
+      const isHistorical = info.is_historical === true || (info.age_seconds != null && info.age_seconds > 300);
+      const historicalBadge = isHistorical
+        ? '<span class="arb-badge-historical" style="font-size:11px; padding:2px 6px; border-radius:4px; margin-left:6px;" title="Aquestes dades tenen més de 5 minuts o provenen de memòria cau arxiva">[Dades històriques]</span>'
+        : '';
+
+      const feedSyncStr = info.feed_synced_at
+        ? new Date(info.feed_synced_at).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        : null;
+      const feedSyncHtml = feedSyncStr
+        ? `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="Hora de sincronització del feed MoviOdds">Sincronització feed:</span>
+            <span class="arb-bookie-detail-val font-mono">${feedSyncStr}</span>
+          </div>
+        `
+        : '';
+
+      let provUpdHtml = '';
+      if (info.provider_updated_at) {
+        const provDate = new Date(info.provider_updated_at);
+        const provTimeStr = provDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const diffMs = Math.max(0, Date.now() - provDate.getTime());
+        const diffH = Math.floor(diffMs / 3600000);
+        const diffM = Math.floor((diffMs % 3600000) / 60000);
+        const ageLabel = diffH > 0 ? `fa ${diffH}h ${diffM}m` : (diffM > 0 ? `fa ${diffM}m` : 'fa <1m');
+        provUpdHtml = `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="Timestamp d'origen de la darrera modificació de quota: ${info.provider_updated_at}">Actualització origen:</span>
+            <span class="arb-bookie-detail-val font-mono" title="Data UTC d'origen: ${info.provider_updated_at}">${provTimeStr} (${ageLabel})</span>
+          </div>
+        `;
+      } else if (b.key === 'bet365') {
+        provUpdHtml = `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="La font no proporciona timestamp d'origen per a aquestes quotes">Actualització origen:</span>
+            <span class="arb-bookie-detail-val font-mono" style="color: var(--text-muted, #94a3b8);">Desconeguda</span>
+          </div>
+        `;
+      }
+
+      let verifiableHtml = '';
+      if (info.verifiable_odds_count != null || info.unverifiable_odds_count != null) {
+        const vCount = info.verifiable_odds_count || 0;
+        const uCount = info.unverifiable_odds_count || 0;
+        verifiableHtml = `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="Quotes de la sessió amb timestamp d'origen confirmat vs quotes amb origen desconegut">Verificabilitat quotes:</span>
+            <span class="arb-bookie-detail-val font-mono">${vCount} verif. · ${uCount} no verif.</span>
+          </div>
+        `;
+      }
+
+      let rawFeedHtml = '';
+      if (info.raw_feed_odds_count != null && info.raw_feed_odds_count > 0) {
+        rawFeedHtml = `
+          <div class="arb-bookie-detail">
+            <span class="detail-label" title="Total de línies de quota contingudes al feed global brut dels partits analitzats">Feed global brut:</span>
+            <span class="arb-bookie-detail-val font-mono" style="color: var(--text-muted, #94a3b8);">${Number(info.raw_feed_odds_count).toLocaleString('ca-ES')} quotes</span>
+          </div>
+        `;
+      }
+
       return `
         <div class="arb-bookie-status-card" data-bookie="${b.key}">
           <div class="arb-bookie-header">
-            <span class="arb-bookie-name">${b.icon} ${b.name}</span>
+            <span class="arb-bookie-name">${b.icon} ${b.name} ${historicalBadge}</span>
             <span class="arb-status-pill ${statusClass}">${statusLabel}</span>
           </div>
 
@@ -2049,6 +2839,10 @@ function renderArbitrage() {
               <span class="detail-label" title="Hora de recepció de la resposta del servidor">Resposta HTTP:</span>
               <span class="arb-bookie-detail-val font-mono" title="Hora de captura de dades">${httpCapStr}</span>
             </div>
+            ${feedSyncHtml}
+            ${provUpdHtml}
+            ${verifiableHtml}
+            ${rawFeedHtml}
           </div>
 
           <div class="arb-card-query-window">
@@ -2060,21 +2854,32 @@ function renderArbitrage() {
       `;
     }).join('');
 
+    const cov = summary.coverage_by_bookmaker || {};
+    const covWinamax = cov.winamax ? `${cov.winamax.matches} partits · ${cov.winamax.usable_odds} quotes` : '';
+    const covBet365 = cov.bet365 ? `${cov.bet365.matches} partits · ${cov.bet365.usable_odds} quotes` : '';
+    const covBetway = cov.betway ? `${cov.betway.matches} partits · ${cov.betway.usable_odds} quotes` : '';
+    const multiCov = summary.matches_with_2plus_bookmakers != null
+      ? `<div class="arb-daemon-coverage-bar">
+           <span>🤝 <strong>Cobertura creuada:</strong> ${summary.matches_with_2plus_bookmakers} partits amb quotes de 2 o més cases (${summary.matches_with_3_bookmakers || 0} amb 3 cases)</span>
+           <span>📊 <strong>Quotes utilitzables per casa:</strong> Winamax (${covWinamax || '--'}) · Bet365 (${covBet365 || '--'}) · Betway (${covBetway || '--'})</span>
+         </div>`
+      : '';
+
     const lastGen = arbData.last_generation || (appData.metadata && appData.metadata.generated_at);
     const lastGenDate = lastGen ? new Date(lastGen) : null;
     const isOldSnapshot = lastGenDate ? (Date.now() - lastGenDate.getTime() > 24 * 3600 * 1000) : false;
     const lastGenStr = lastGenDate
       ? (isOldSnapshot
-          ? `${lastGenDate.toLocaleDateString('ca-ES')} a les ${lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' })}`
-          : lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
+        ? `${lastGenDate.toLocaleDateString('ca-ES')} a les ${lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' })}`
+        : lastGenDate.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
       : 'N/A';
-    const cycleSec = arbData.cycle_duration_seconds != null ? `${arbData.cycle_duration_seconds}s` : 'Lleuger';
 
     bookmakersBar.innerHTML = `
       ${cardsHtml}
+      ${multiCov}
       <div class="arb-daemon-meta">
         <span>📁 <strong>Surebet Snapshot:</strong> Darrera comprovació ${isOldSnapshot ? 'd\'arxiu ' : ''}${lastGenStr}</span>
-        <span>📡 Monitoratge sota demanda des del web: Pendent d'activació</span>
+        <span>📡 Monitoratge sota demanda des del web: Actiu</span>
       </div>
     `;
 
@@ -2089,102 +2894,234 @@ function renderArbitrage() {
   // Renderitzar Bloc B: Pipeline de GitHub Actions
   renderPipelineStatus();
 
+  // Avaluació dinàmica de frescor i classificació en 4 nivells de la política de 30 minuts
+  function computeDynamicFreshness(arb) {
+    const legs = arb.legs || [];
+    if (!legs.length) return { tier: 'EXCLUDED', ageMax: 99999, skew: 0, legAges: [] };
+    let minTs = Infinity;
+    let maxTs = -Infinity;
+    let hasMissing = false;
+    let hasFuture = false;
+    const legAges = [];
+
+    for (const l of legs) {
+      const tsStr = l.captured_at || l.timestamp || l.polled_at;
+      if (!tsStr) {
+        hasMissing = true;
+        break;
+      }
+      const t = new Date(tsStr).getTime();
+      if (isNaN(t)) {
+        hasMissing = true;
+        break;
+      }
+      // Tolerància de 5s per timestamps futurs
+      if (t > nowMs + 5000) {
+        hasFuture = true;
+        break;
+      }
+      if (t < minTs) minTs = t;
+      if (t > maxTs) maxTs = t;
+      const legAge = Math.max(0, (nowMs - t) / 1000);
+      legAges.push(legAge);
+    }
+
+    if (hasMissing || hasFuture) {
+      return { tier: 'EXCLUDED', ageMax: 99999, skew: 0, legAges: [] };
+    }
+
+    // Exclusió de partits ja començats o finalitzats
+    if (arb.date) {
+      const mMs = parseMatchDateToMs(arb.date);
+      if (mMs && mMs < nowMs) {
+        return { tier: 'EXCLUDED', ageMax: 99999, skew: 0, legAges: [], isPastMatch: true };
+      }
+    }
+
+    const ageMax = Math.max(0, (nowMs - minTs) / 1000);
+    const skew = Math.max(0, (maxTs - minTs) / 1000);
+
+    // Màxim absolut 1800s (30 minuts)
+    if (ageMax > 1800) {
+      return { tier: 'EXCLUDED', ageMax, skew, legAges };
+    }
+    if (ageMax <= 60 && skew <= 30) {
+      return { tier: 'VERIFIED_FRESH', ageMax, skew, legAges };
+    }
+    if (ageMax <= 300) {
+      return { tier: 'POTENTIALLY_STALE', ageMax, skew, legAges };
+    }
+    return { tier: 'RECENT_HISTORICAL', ageMax, skew, legAges };
+  }
+
+  // Agrupació de totes les fonts de surebets per re-avaluar l'envelliment dinàmic
+  const allSurebetSources = [
+    ...(arbData.surebets || []),
+    ...(arbData.verified_fresh_surebets || []),
+    ...(arbData.potentially_stale_surebets || []),
+    ...(arbData.recent_historical_surebets || []),
+    ...(arbData.stale_surebets || [])
+  ];
+
+  const seenKeys = new Set();
+  const rawUniqueSurebets = [];
+  for (const s of allSurebetSources) {
+    const k = `${s.matchup}::${s.market_name}::${(s.legs || []).map(l => `${l.bookmaker}@${l.odd}`).join('|')}`;
+    if (!seenKeys.has(k)) {
+      seenKeys.add(k);
+      rawUniqueSurebets.push(s);
+    }
+  }
+
+  let verifiedFreshSurebets = [];
+  let potentiallyStaleSurebets = [];
+  let recentHistoricalSurebets = [];
+
+  for (const arb of rawUniqueSurebets) {
+    const freshMeta = computeDynamicFreshness(arb);
+    arb._dynamicFreshness = freshMeta;
+    if (freshMeta.tier === 'VERIFIED_FRESH') {
+      verifiedFreshSurebets.push(arb);
+    } else if (freshMeta.tier === 'POTENTIALLY_STALE') {
+      potentiallyStaleSurebets.push(arb);
+    } else if (freshMeta.tier === 'RECENT_HISTORICAL') {
+      recentHistoricalSurebets.push(arb);
+    }
+  }
+
+  let nearArbs = (arbData.near_arbs || []).filter(a => {
+    const freshMeta = computeDynamicFreshness(a);
+    a._dynamicFreshness = freshMeta;
+    return freshMeta.tier !== 'EXCLUDED';
+  });
+
   // Filtre per cerca de text
   if (currentSearch) {
     const q = currentSearch.toLowerCase();
-    surebets = surebets.filter(a =>
+    const filterFn = a =>
       a.matchup.toLowerCase().includes(q) ||
       a.market_name.toLowerCase().includes(q) ||
-      (a.legs && a.legs.some(l => l.selection.toLowerCase().includes(q)))
-    );
-    staleSurebets = staleSurebets.filter(a =>
-      a.matchup.toLowerCase().includes(q) ||
-      a.market_name.toLowerCase().includes(q) ||
-      (a.legs && a.legs.some(l => l.selection.toLowerCase().includes(q)))
-    );
-    nearArbs = nearArbs.filter(a =>
-      a.matchup.toLowerCase().includes(q) ||
-      a.market_name.toLowerCase().includes(q)
-    );
-  }
+      (a.legs && a.legs.some(l => (l.selection || '').toLowerCase().includes(q)));
 
-  // Filtrar que cap partit ja finalitzat o començat passi com a surebet vigent
-  const nowMs = Date.now();
-  surebets = surebets.filter(a => parseMatchDateToMs(a.date) > nowMs);
+    verifiedFreshSurebets = verifiedFreshSurebets.filter(filterFn);
+    potentiallyStaleSurebets = potentiallyStaleSurebets.filter(filterFn);
+    recentHistoricalSurebets = recentHistoricalSurebets.filter(filterFn);
+    nearArbs = nearArbs.filter(filterFn);
+  }
 
   // Render Hero KPI Banner
   if (heroBanner) {
-    const maxP = surebets.length > 0 ? Math.max(...surebets.map(s => s.profit_pct)) : summary.max_profit_pct || 0;
-    const avgP = surebets.length > 0 ? (surebets.reduce((acc, s) => acc + s.profit_pct, 0) / surebets.length) : summary.avg_profit_pct || 0;
+    const maxP = verifiedFreshSurebets.length > 0
+      ? Math.max(...verifiedFreshSurebets.map(s => s.profit_pct))
+      : (summary.max_profit_pct || 0);
+    const avgP = verifiedFreshSurebets.length > 0
+      ? (verifiedFreshSurebets.reduce((acc, s) => acc + s.profit_pct, 0) / verifiedFreshSurebets.length)
+      : (summary.avg_profit_pct || 0);
 
     heroBanner.innerHTML = `
       <div class="arb-hero-card">
         <span class="arb-hero-icon">⚡</span>
-        <div class="arb-hero-val">${surebets.length}</div>
-        <div class="arb-hero-lbl">Surebets Vigents (≤60s)</div>
+        <div class="arb-hero-val">${verifiedFreshSurebets.length}</div>
+        <div class="arb-hero-lbl">Verificades Recentment (≤60s)</div>
       </div>
       <div class="arb-hero-card glow-green">
         <span class="arb-hero-icon">📈</span>
         <div class="arb-hero-val">+${Number(maxP).toFixed(1)}%</div>
-        <div class="arb-hero-lbl">Benefici Màx. Garantit</div>
+        <div class="arb-hero-lbl">Diferencial Màxim Teòric</div>
       </div>
       <div class="arb-hero-card">
         <span class="arb-hero-icon">💰</span>
         <div class="arb-hero-val">+${Number(avgP).toFixed(1)}%</div>
-        <div class="arb-hero-lbl">Retorn Mitjà per Arb</div>
+        <div class="arb-hero-lbl">Retorn Mitjà (Fresc)</div>
       </div>
       <div class="arb-hero-card">
         <span class="arb-hero-icon">🛡️</span>
-        <div class="arb-hero-val">100%</div>
-        <div class="arb-hero-lbl">Risc Esportiu Cobert</div>
+        <div class="arb-hero-val">30 min</div>
+        <div class="arb-hero-lbl">Finestra de Monitoratge</div>
       </div>
     `;
   }
 
-  if (countBadge) countBadge.textContent = `${surebets.length} oportunitats`;
-  if (countStaleBadge) countStaleBadge.textContent = `${staleSurebets.length} oportunitats`;
+  if (countBadge) countBadge.textContent = `${verifiedFreshSurebets.length} oportunitats`;
+  if (countStaleBadge) countStaleBadge.textContent = `${potentiallyStaleSurebets.length} oportunitats`;
+  if (countHistoricalBadge) countHistoricalBadge.textContent = `${recentHistoricalSurebets.length} oportunitats`;
   if (countNearBadge) countNearBadge.textContent = `${nearArbs.length} partits`;
+
+  const totalActiveWindowOpps = verifiedFreshSurebets.length + potentiallyStaleSurebets.length + recentHistoricalSurebets.length;
+  const oppsVal = document.getElementById('surebet-job-opps');
+  if (oppsVal) oppsVal.textContent = `${totalActiveWindowOpps} actives (≤30m)`;
 
   window.arbitrageRegistry = {};
   const totalBankroll = currentArbTotalStake || 100;
 
-  function renderCard(arb, idx, type) {
-    const isSurebet = type === 'sure';
-    const isStale = type === 'stale';
-    const arbKey = `arb_${arb.competition_id}_${idx}_${type}`;
+  function renderCard(arb, idx, tierType) {
+    const arbKey = `arb_${arb.competition_id || 'match'}_${idx}_${tierType}`;
     window.arbitrageRegistry[arbKey] = arb;
 
     const legs = arb.legs || [];
     const { bankroll: effectiveBankroll, roundStakes, grossPayouts, minReturn, netProfit, profitPct, isPositive } = computeArbitrageValues(arb, totalBankroll);
 
-    const matchMs = parseMatchDateToMs(arb.date);
-    const isPast = matchMs < Date.now();
+    const freshMeta = arb._dynamicFreshness || computeDynamicFreshness(arb);
+    const ageMax = freshMeta.ageMax || 0;
+    const legAges = freshMeta.legAges || [];
 
     let badgeClass = 'arb-badge-near';
     let badgeText = `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
     let cardGlowClass = 'arb-card-near';
+    let noticeHtml = '';
+    let profitLabel = 'Diferencial Net Teòric:';
 
-    if (isPast) {
-      badgeClass = 'arb-badge-stale';
-      badgeText = '🏁 PARTIT FINALITZAT (HISTÒRIC)';
-      cardGlowClass = 'arb-card-stale';
-    } else if (isSurebet) {
+    if (tierType === 'fresh') {
       badgeClass = isPositive ? 'arb-badge-profit' : 'arb-badge-near';
-      badgeText = isPositive ? `+${profitPct.toFixed(1)}% NET GARANTIT` : `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
+      badgeText = isPositive ? `+${profitPct.toFixed(1)}% Teòric (≤60s)` : `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
       cardGlowClass = 'arb-card-surebet';
-    } else if (isStale) {
+      profitLabel = 'Diferencial Net Teòric:';
+      noticeHtml = `
+        <div class="arb-fresh-notice" style="font-size: 11.5px; color: #10b981; margin-top: 4px; display: flex; align-items: center; gap: 4px; font-weight: 500;">
+          <span>⚡</span>
+          <span><strong>Captura Recent (≤60s):</strong> Discrepància detectada fa menys d'un minut. Requereix reconfirmació immediata de quotes i liquiditat a les cases abans d'operar.</span>
+        </div>
+      `;
+    } else if (tierType === 'stale') {
       badgeClass = 'arb-badge-stale';
-      badgeText = `⚠️ +${profitPct.toFixed(1)}% (QUOTES >60s)`;
+      badgeText = `⚠️ +${profitPct.toFixed(1)}% (1-5 min)`;
       cardGlowClass = 'arb-card-stale';
+      profitLabel = 'Benefici Teòric Estimat:';
+      noticeHtml = `
+        <div class="arb-stale-notice">
+          <span>⚠️</span>
+          <span><strong>Oportunitat Potencialment Desactualitzada:</strong> Quotes capturades fa entre 1 i 5 minuts (${Math.round(ageMax)}s). Les quotes de les cases poden haver canviat; comprova els preus actuals abans d'apostar.</span>
+        </div>
+      `;
+    } else if (tierType === 'historical') {
+      badgeClass = 'arb-badge-historical';
+      badgeText = `📜 +${profitPct.toFixed(1)}% (5-30 min)`;
+      cardGlowClass = 'arb-card-historical';
+      profitLabel = 'Benefici Teòric d\'Arxiu:';
+      noticeHtml = `
+        <div class="arb-historical-notice">
+          <span>📜</span>
+          <span><strong>Registre Històric Recent:</strong> Quotes capturades fa entre 5 i 30 minuts (${Math.round(ageMax / 60)} min). Caràcter purament informatiu d'arxiu; benefici NO garantit ja que el mercat sol corregir la discrepància.</span>
+        </div>
+      `;
+    } else if (tierType === 'near') {
+      badgeClass = 'arb-badge-near';
+      badgeText = `Marge: ${Number(arb.margin_pct || 100).toFixed(1)}%`;
+      cardGlowClass = 'arb-card-near';
+      profitLabel = 'Dèficit de Marge:';
     }
 
     const legsHtml = legs.map((leg, i) => {
       const op = getOperatorInfo(leg.bookmaker, leg.url);
-      const actionBtnHtml = isPast
-        ? `<span class="btn-arb-leg btn-arb-leg-disabled" title="El partit ja ha finalitzat">Partit finalitzat</span>`
-        : (op.hasValidUrl
-          ? `<a href="${op.validUrl}" target="_blank" rel="noopener noreferrer" class="btn-arb-leg ${op.btnClass}">${op.actionLabel}</a>`
-          : `<span class="btn-arb-leg btn-arb-leg-disabled" title="No hi ha enllaç directe disponible">Sense enllaç directe</span>`);
+      const legAge = legAges[i] != null ? legAges[i] : (leg.age_seconds != null ? leg.age_seconds : null);
+      const legCapTimeStr = leg.captured_at
+        ? new Date(leg.captured_at).toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        : '--';
+      const legAgeStr = formatRelativeAge(legAge, leg.captured_at);
+
+      const actionBtnHtml = op.hasValidUrl
+        ? `<a href="${op.validUrl}" target="_blank" rel="noopener noreferrer" class="btn-arb-leg ${op.btnClass}">${op.actionLabel}</a>`
+        : `<span class="btn-arb-leg btn-arb-leg-disabled" title="No hi ha enllaç directe disponible">Sense enllaç directe</span>`;
 
       return `
         <div class="arb-leg-box">
@@ -2199,35 +3136,32 @@ function renderArbitrage() {
               <span class="arb-m-val stake-val">${roundStakes[i]} €</span>
             </div>
             <div class="arb-leg-mitem">
-              <span class="arb-m-label">Pagament brut individual:</span>
+              <span class="arb-m-label">Pagament brut:</span>
               <span class="arb-m-val return-val">${grossPayouts[i].toFixed(2)} €</span>
             </div>
+          </div>
+          <div class="arb-leg-time-footer" style="font-size: 10.5px; color: var(--text-muted); margin-top: 4px; display: flex; justify-content: space-between;">
+            <span>🕒 Captura: ${legCapTimeStr}</span>
+            <span>(${legAgeStr})</span>
           </div>
           ${actionBtnHtml}
         </div>
       `;
     }).join('');
 
-    const staleWarningHtml = isPast ? `
-      <div class="arb-stale-notice" style="background: rgba(100, 116, 139, 0.15); border-color: rgba(148, 163, 184, 0.3); color: #cbd5e1;">
-        <span>🏁</span>
-        <span>Aquest partit ja s'ha disputat (${arb.date}). Registre exclusivament informatiu d'arxiu (no apostable).</span>
-      </div>
-    ` : (isStale ? `
-      <div class="arb-stale-notice">
-        <span>⚠️</span>
-        <span>Aquesta oportunitat utilitza quotes capturades fa més de 60 segons. Comprova el preu abans d'apostar.</span>
-      </div>
-    ` : '');
-
     return `
       <div class="arb-card ${cardGlowClass}">
         <div class="arb-card-header">
           <div>
-            <div class="arb-league-badge">${arb.competition_name || arb.competition_id} · 📅 ${arb.date}</div>
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 4px;">
+              <div class="arb-league-badge">${arb.competition_name || arb.competition_id} · 📅 ${arb.date}</div>
+              <span class="arb-pipeline-badge" style="font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 500; ${arb.source_pipeline === 'THE_ODDS_API' ? 'background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3);' : 'background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3);'}">
+                ${arb.source_pipeline === 'THE_ODDS_API' ? (arb.is_theoretical ? '🌐 The Odds API (Teòric)' : '🌐 The Odds API (DGOJ)') : '🖥️ Agent Windows (DGOJ)'}
+              </span>
+            </div>
             <h3 class="arb-matchup-title">${arb.matchup}</h3>
             <div class="arb-market-name">🎯 ${arb.market_name}</div>
-            ${staleWarningHtml}
+            ${noticeHtml}
           </div>
           <div class="arb-badge-container">
             <span class="arb-badge ${badgeClass}">${badgeText}</span>
@@ -2249,53 +3183,62 @@ function renderArbitrage() {
               <span class="arb-sum-val" style="color: #6ee7b7;">${minReturn.toFixed(2)} €</span>
             </div>
             <div class="arb-summary-item">
-              <span class="arb-sum-lbl">Benefici Net Garantit:</span>
+              <span class="arb-sum-lbl">${profitLabel}</span>
               <span class="arb-sum-val ${isPositive ? 'profit-green' : 'loss-orange'}">${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)} €</span>
             </div>
           </div>
           <div class="arb-card-actions">
-            ${isPast ? `
-              <span class="arb-past-disclaimer" style="font-size: 11px; color: var(--text-muted); padding: 6px 12px; background: rgba(255,255,255,0.05); border-radius: 6px;">📁 Registre d'arxiu</span>
-            ` : `
-              <button class="btn-copy-arb" onclick="copyArbitrageInstructions('${arbKey}')" title="Copia instruccions detallades per executar l'arbitratge pas a pas">
-                📋 Copiar Instruccions
-              </button>
-            `}
+            <button class="btn-copy-arb" onclick="copyArbitrageInstructions('${arbKey}')" title="Copia instruccions detallades per executar l'arbitratge pas a pas">
+              📋 Copiar Instruccions
+            </button>
           </div>
         </div>
       </div>
     `;
   }
 
-  // Render Surebets Vigents (Quotes Fresques)
-  if (surebets.length === 0) {
+  // Nivell 1: Surebets Verificades Recentment (≤60s)
+  if (verifiedFreshSurebets.length === 0) {
     containerSurebets.innerHTML = `
       <div class="empty-jornada-state" style="grid-column: 1/-1; text-align: center; padding: 36px 20px; background: rgba(17, 24, 39, 0.45); border: 1px dashed rgba(255,255,255,0.12); border-radius: var(--radius-md);">
         <span style="font-size: 36px; display: block; margin-bottom: 8px;">⚡</span>
-        <h3 style="font-size: 17px; color: var(--text-primary); margin-bottom: 6px;">No hi ha surebets fresques actives en aquest moment</h3>
+        <h3 style="font-size: 17px; color: var(--text-primary); margin-bottom: 6px;">No hi ha surebets verificades recentment (≤60s)</h3>
         <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto; font-size: 13px;">
-          El motor només mostra com a vigents les oportunitats amb quotes actualitzades en els darrers 60 segons simultàniament entre les cases.
+          El motor només mostra com a verificades les oportunitats amb quotes capturades en els darrers 60 segons i amb decalatge ≤30s entre les cases.
         </p>
       </div>
     `;
   } else {
-    containerSurebets.innerHTML = surebets.map((arb, i) => renderCard(arb, i, 'sure')).join('');
+    containerSurebets.innerHTML = verifiedFreshSurebets.map((arb, i) => renderCard(arb, i, 'fresh')).join('');
   }
 
-  // Render Surebets Caducades / Stale
+  // Nivell 2: Surebets Potencialment Desactualitzades (1–5 min)
   if (containerStale) {
-    if (staleSurebets.length === 0) {
+    if (potentiallyStaleSurebets.length === 0) {
       if (staleHeader) staleHeader.style.display = 'none';
       containerStale.style.display = 'none';
       containerStale.innerHTML = '';
     } else {
       if (staleHeader) staleHeader.style.display = 'flex';
       containerStale.style.display = 'grid';
-      containerStale.innerHTML = staleSurebets.map((arb, i) => renderCard(arb, i, 'stale')).join('');
+      containerStale.innerHTML = potentiallyStaleSurebets.map((arb, i) => renderCard(arb, i, 'stale')).join('');
     }
   }
 
-  // Render Near-Arbs
+  // Nivell 3: Surebets Històriques Recents (5–30 min)
+  if (containerHistorical) {
+    if (recentHistoricalSurebets.length === 0) {
+      if (historicalHeader) historicalHeader.style.display = 'none';
+      containerHistorical.style.display = 'none';
+      containerHistorical.innerHTML = '';
+    } else {
+      if (historicalHeader) historicalHeader.style.display = 'flex';
+      containerHistorical.style.display = 'grid';
+      containerHistorical.innerHTML = recentHistoricalSurebets.map((arb, i) => renderCard(arb, i, 'historical')).join('');
+    }
+  }
+
+  // Nivell 4: Near-Arbs (Marge Estret)
   if (containerNear) {
     if (nearArbs.length === 0) {
       containerNear.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 24px;">No hi ha partits en monitorització d'estretor de marge.</p>`;
@@ -2305,6 +3248,21 @@ function renderArbitrage() {
   }
 }
 window.renderArbitrage = renderArbitrage;
+
+// Temporitzador per a l'envelliment dinàmic en temps real (cada 10s al navegador)
+if (typeof window !== 'undefined' && typeof document !== 'undefined' && !window._arbitrageAgingInterval) {
+  const agingTimer = setInterval(() => {
+    if (typeof document === 'undefined') return;
+    const containerSurebets = document.getElementById('surebets-container');
+    if (containerSurebets && typeof appData !== 'undefined' && appData && appData.arbitrage) {
+      renderArbitrage();
+    }
+  }, 10000);
+  if (agingTimer && typeof agingTimer.unref === 'function') {
+    agingTimer.unref();
+  }
+  window._arbitrageAgingInterval = agingTimer;
+}
 
 // -----------------------------------------------------------------------------
 // 4. COMBINADES RECOMANADES (6 PER LLIGA + COMBINADES DEL DIA)

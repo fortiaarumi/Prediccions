@@ -187,6 +187,12 @@ class CircuitBreaker:
         self.events_count: int = 0
         self.odds_count: int = 0
         self.partial_details: Optional[str] = None
+        self.feed_synced_at: Optional[str] = None
+        self.provider_updated_at: Optional[str] = None
+        self.verifiable_odds_count: int = 0
+        self.unverifiable_odds_count: int = 0
+        self.raw_feed_odds_count: int = 0
+        self.is_historical: bool = False
 
     def record_attempt_start(self, now: Optional[datetime] = None) -> None:
         self.query_start = now or datetime.now(timezone.utc)
@@ -199,7 +205,13 @@ class CircuitBreaker:
         query_end: Optional[datetime] = None,
         http_captured_at: Optional[Any] = None,
         events_count: int = 0,
-        odds_count: int = 0
+        odds_count: int = 0,
+        feed_synced_at: Optional[str] = None,
+        provider_updated_at: Optional[str] = None,
+        verifiable_odds_count: int = 0,
+        unverifiable_odds_count: int = 0,
+        raw_feed_odds_count: int = 0,
+        is_historical: bool = False
     ) -> None:
         now_dt = now or datetime.now(timezone.utc)
         self.consecutive_failures = 0
@@ -216,6 +228,12 @@ class CircuitBreaker:
         self.events_count = events_count
         self.odds_count = odds_count
         self.partial_details = None
+        self.feed_synced_at = feed_synced_at
+        self.provider_updated_at = provider_updated_at
+        self.verifiable_odds_count = verifiable_odds_count
+        self.unverifiable_odds_count = unverifiable_odds_count
+        self.raw_feed_odds_count = raw_feed_odds_count
+        self.is_historical = is_historical
 
     def record_partial(
         self,
@@ -226,7 +244,13 @@ class CircuitBreaker:
         query_end: Optional[datetime] = None,
         http_captured_at: Optional[Any] = None,
         events_count: int = 0,
-        odds_count: int = 0
+        odds_count: int = 0,
+        feed_synced_at: Optional[str] = None,
+        provider_updated_at: Optional[str] = None,
+        verifiable_odds_count: int = 0,
+        unverifiable_odds_count: int = 0,
+        raw_feed_odds_count: int = 0,
+        is_historical: bool = False
     ) -> None:
         now_dt = now or datetime.now(timezone.utc)
         self.consecutive_failures = 0
@@ -243,6 +267,12 @@ class CircuitBreaker:
         self.events_count = events_count
         self.odds_count = odds_count
         self.partial_details = reason
+        self.feed_synced_at = feed_synced_at
+        self.provider_updated_at = provider_updated_at
+        self.verifiable_odds_count = verifiable_odds_count
+        self.unverifiable_odds_count = unverifiable_odds_count
+        self.raw_feed_odds_count = raw_feed_odds_count
+        self.is_historical = is_historical
 
     def record_failure(
         self,
@@ -308,7 +338,13 @@ class CircuitBreaker:
             "http_captured_at": captured_str,
             "events_count": self.events_count,
             "odds_count": self.odds_count,
-            "partial_details": self.partial_details
+            "partial_details": self.partial_details,
+            "feed_synced_at": self.feed_synced_at,
+            "provider_updated_at": self.provider_updated_at,
+            "verifiable_odds_count": self.verifiable_odds_count,
+            "unverifiable_odds_count": self.unverifiable_odds_count,
+            "raw_feed_odds_count": self.raw_feed_odds_count,
+            "is_historical": bool(self.is_historical or (age_s is not None and age_s > 300.0))
         }
 
 
@@ -372,6 +408,86 @@ class SurebetDaemon:
         }
 
         self.running = False
+
+        # Control de sessió cancellable i cicle de vida (FASE 2)
+        # Transicions d'estat: PENDING -> RUNNING -> CANCEL_REQUESTED -> CANCELLED
+        # Finalització natural sense cancel·lació: RUNNING -> COMPLETED
+        self.session_id: Optional[str] = None
+        self.session_status: str = "PENDING"
+        self.session_start_time: Optional[float] = None
+        self.max_duration_seconds: Optional[int] = None
+        self.cancel_requested: bool = False
+        self.session_cycle_count: int = 0
+        self.last_bookmakers_status: Dict[str, Any] = {}
+        self.last_generation_iso: Optional[str] = None
+        self.evaluated_matches_count: int = 0
+        self.coverage_by_bookmaker: Dict[str, Any] = {}
+        self.matches_with_2plus_bookmakers: int = 0
+        self.matches_with_3_bookmakers: int = 0
+
+    def start_session(self, session_id: str, max_duration_seconds: Optional[int] = None) -> None:
+        """Inicia una nova sessió de monitoratge amb límits temporals configurables."""
+        self.session_id = session_id
+        self.session_status = "RUNNING"
+        self.session_start_time = time.time()
+        self.max_duration_seconds = max_duration_seconds
+        self.cancel_requested = False
+        self.session_cycle_count = 0
+        print(f"[*] Sessió {session_id} iniciada amb estat RUNNING (durada màxima: {max_duration_seconds}s).")
+
+    def get_bookmakers_status(self, now: Optional[datetime] = None) -> Dict[str, Any]:
+        """Retorna l'estat consolidat dels Circuit Breakers per a cada bookmaker."""
+        now_dt = now or datetime.now(timezone.utc)
+        return {
+            "winamax": self.breakers["winamax"].to_dict(now_dt),
+            "bet365": self.breakers["bet365"].to_dict(now_dt),
+            "betway": self.breakers["betway"].to_dict(now_dt)
+        }
+
+    def request_cancellation(self) -> None:
+        """Sol·licita la cancel·lació cooperativa de la sessió en curs."""
+        self.cancel_requested = True
+        self.session_status = "CANCEL_REQUESTED"
+        print(f"⚠️  Cancel·lació sol·licitada per a la sessió {self.session_id}. Estat: CANCEL_REQUESTED.")
+
+    def check_cancellation(self) -> bool:
+        """Comprova si s'ha sol·licitat la cancel·lació i aplica la transició atòmica a CANCELLED."""
+        if self.cancel_requested:
+            self.session_status = "CANCELLED"
+            self.running = False
+            print(f"🛑 Sessió {self.session_id} cancel·lada correctament. Estat final: CANCELLED.")
+            return True
+        return False
+
+    def check_duration_limit(self) -> bool:
+        """Comprova si s'ha assolit la durada màxima de la sessió."""
+        if self.max_duration_seconds and self.session_start_time:
+            elapsed = time.time() - self.session_start_time
+            if elapsed >= self.max_duration_seconds:
+                # IMPORTANT: Si hi ha una cancel·lació demanada, preval CANCELLED
+                if self.cancel_requested:
+                    self.session_status = "CANCELLED"
+                else:
+                    self.session_status = "COMPLETED"
+                self.running = False
+                print(f"🏁 Sessió {self.session_id} ha assolit la durada màxima ({elapsed:.1f}s >= {self.max_duration_seconds}s). Estat: {self.session_status}.")
+                return True
+        return False
+
+    def get_session_state(self) -> Dict[str, Any]:
+        """Retorna l'estat actual de la sessió per a telemetria web i API."""
+        elapsed = round(time.time() - self.session_start_time, 1) if self.session_start_time else 0.0
+        remaining = None
+        if self.max_duration_seconds and self.session_start_time:
+            remaining = max(0.0, round(self.max_duration_seconds - elapsed, 1))
+        return {
+            "session_id": self.session_id,
+            "status": self.session_status,
+            "cancel_requested": self.cancel_requested,
+            "elapsed_seconds": elapsed,
+            "remaining_seconds": remaining,
+            "max_duration_seconds": self.max_duration_seconds
+        }
 
     # ----- Avaluació de la finestra de partits i càlcul de freqüències -----
 
@@ -516,12 +632,14 @@ class SurebetDaemon:
         5. Actualitza les dades de la web.
         """
         cycle_start = time.time()
+        self.session_cycle_count += 1
+        is_manual_session = bool(self.session_id)
         now_utc = now or datetime.now(timezone.utc)
         now_madrid = now_utc.astimezone(TZ_MADRID)
         now_iso = now_utc.isoformat()
 
         print("\n" + "=" * 70)
-        print(f"🕒 [SUREBET DAEMON] Cicle iniciat: {now_madrid.strftime('%Y-%m-%d %H:%M:%S')} (Europe/Madrid)")
+        print(f"🕒 [SUREBET DAEMON] Cicle #{self.session_cycle_count} iniciat: {now_madrid.strftime('%Y-%m-%d %H:%M:%S')} (Europe/Madrid)")
         print("=" * 70)
 
         # 0. Vigilància econòmica (CostGuard)
@@ -545,7 +663,14 @@ class SurebetDaemon:
                 print(f"   • {bk_name.capitalize()}: SUSPÈS (Circuit Breaker actiu)")
                 continue
 
-            # Comprovar si toca per política de freqüència
+            # Si és una cerca manual iniciada des del web, forcem la consulta de totes les cases
+            # en el primer cicle per garantir quotes fresques sense esperar intervals de 15/30 minuts.
+            if is_manual_session and self.session_cycle_count <= 1:
+                scrapers_to_run.append(bk_name)
+                print(f"   • {bk_name.capitalize()}: FORÇAT PER CERCA MANUAL EN LÍNIA")
+                continue
+
+            # Comprovar si toca per política de freqüència de fons
             last_run = self.last_run_times[bk_name]
             interval_s = policy.get(bk_name, 300)
             if last_run is None or (now_utc - last_run).total_seconds() >= interval_s:
@@ -556,21 +681,42 @@ class SurebetDaemon:
                 print(f"   • {bk_name.capitalize()}: FRESC ({elapsed:.0f}s / {interval_s:.0f}s)")
 
         # 3. Recollir quotes partit a partit
-        # Per no saturar, prioritzem els partits de les pròximes 24h
-        matches_to_eval = [m for m in matches if m.get("diff_hours", 999) <= 48.0]
-        if not matches_to_eval:
-            matches_to_eval = matches[:15]  # Si no n'hi ha en 48h, avaluem els primers 15
+        # Prioritzem partits en menys de 48h; si n'hi ha menys de 15, completem amb els següents fins a 15 partits
+        # per evitar que períodes entre jornades o amb pocs partits imminents analitzin només 1 partit.
+        imminent = [m for m in matches if m.get("diff_hours", 999) <= 48.0]
+        if len(imminent) >= 15:
+            matches_to_eval = imminent[:15]
+        else:
+            matches_to_eval = matches[:15]
 
         evaluated_matches_flat: List[Dict[str, Any]] = []
 
-        # Estadístiques d'execució d'aquest cicle per a cada casa (FASE 1)
+        # Estadístiques d'execució d'aquest cicle per a cada casa (FASE 1 & FASE 4)
         cycle_stats = {
-            "winamax": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc)},
-            "bet365": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc)},
-            "betway": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc)},
+            "winamax": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "raw_feed_odds": 0, "is_historical": False},
+            "bet365": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "raw_feed_odds": 0, "is_historical": False},
+            "betway": {"events": 0, "odds": 0, "captured_at": None, "errors": [], "start": datetime.now(timezone.utc), "feed_synced_at": None, "provider_updated_at": None, "verifiable_odds": 0, "unverifiable_odds": 0, "raw_feed_odds": 0, "is_historical": False},
         }
 
+        if self.check_cancellation():
+            return {}
+
+        # Pre-sincronització eficient del feed oficial MoviOdds si Bet365 s'ha d'actualitzar
+        if "bet365" in scrapers_to_run and not self.offline:
+            try:
+                from scraper.moviodds_client import MoviOddsClient
+                m_cli = MoviOddsClient.get_instance()
+                if not m_cli.has_feed():
+                    print("   • Bet365: Sincronitzant feed oficial en viu de MoviOdds abans d'avaluar partits...")
+                    m_cli.fetch_feed()
+                if m_cli.has_feed():
+                    cycle_stats["bet365"]["feed_synced_at"] = m_cli._last_fetch_iso
+            except Exception as e:
+                print(f"   • Bet365: Avís pre-fetch MoviOdds: {e}")
+
         for m in matches_to_eval:
+            if self.check_cancellation():
+                break
             h_name = m["home_team"]["name"]
             a_name = m["away_team"]["name"]
             comp_id = m.get("competition_id", "LALIGA")
@@ -606,11 +752,19 @@ class SurebetDaemon:
                             m_record["odds_btts_winamax"] = w_odds["btts"]
                             cnt += len(w_odds["btts"])
                         cycle_stats["winamax"]["odds"] += cnt
+                        cycle_stats["winamax"]["verifiable_odds"] += cnt
                         cap = w_odds.get("captured_at")
                         if cap:
                             cycle_stats["winamax"]["captured_at"] = cap
+                            curr_upd = cycle_stats["winamax"].get("provider_updated_at")
+                            if not curr_upd or cap > curr_upd:
+                                cycle_stats["winamax"]["provider_updated_at"] = cap
                         m_record["odds_winamax_captured_at"] = cap
+                        m_record["odds_winamax_polled_at"] = cap
+                        m_record["odds_winamax_provider_updated_at"] = cap
+                        m_record["odds_winamax_origin_freshness"] = "CONFIRMED"
                         m_record["url_winamax"] = w_odds.get("url")
+                        m_record["odds_winamax"] = w_odds
                 except Exception as e:
                     cycle_stats["winamax"]["errors"].append(str(e))
 
@@ -638,8 +792,26 @@ class SurebetDaemon:
                         cap = b_odds.get("captured_at")
                         if cap:
                             cycle_stats["bet365"]["captured_at"] = cap
+                        if b_odds.get("feed_synced_at"):
+                            cycle_stats["bet365"]["feed_synced_at"] = b_odds.get("feed_synced_at")
+                        b_upd = b_odds.get("provider_updated_at")
+                        if b_upd:
+                            curr_upd = cycle_stats["bet365"].get("provider_updated_at")
+                            if not curr_upd or b_upd > curr_upd:
+                                cycle_stats["bet365"]["provider_updated_at"] = b_upd
+                        # Distinció rigorosa: verifiable_odds reflecteix les quotes utilitzables amb ts confirmat
+                        if b_odds.get("origin_freshness") == "CONFIRMED":
+                            cycle_stats["bet365"]["verifiable_odds"] += cnt
+                        else:
+                            cycle_stats["bet365"]["unverifiable_odds"] += cnt
+                        # raw_feed_odds emmagatzema les quotes contingudes al feed global de MoviOdds per a telemetria
+                        cycle_stats["bet365"]["raw_feed_odds"] += (b_odds.get("verifiable_odds_count", 0) + b_odds.get("unverifiable_odds_count", 0))
                         m_record["odds_bet365_captured_at"] = cap
+                        m_record["odds_bet365_polled_at"] = b_odds.get("polled_at")
+                        m_record["odds_bet365_provider_updated_at"] = b_odds.get("provider_updated_at")
+                        m_record["odds_bet365_origin_freshness"] = b_odds.get("origin_freshness", "UNKNOWN")
                         m_record["url_bet365"] = b_odds.get("url")
+                        m_record["odds_bet365"] = b_odds
                 except Exception as e:
                     cycle_stats["bet365"]["errors"].append(str(e))
 
@@ -664,11 +836,19 @@ class SurebetDaemon:
                             m_record["odds_btts_betway"] = bw_odds["btts"]
                             cnt += len(bw_odds["btts"])
                         cycle_stats["betway"]["odds"] += cnt
+                        cycle_stats["betway"]["verifiable_odds"] += cnt
                         cap = bw_odds.get("captured_at")
                         if cap:
                             cycle_stats["betway"]["captured_at"] = cap
+                            curr_upd = cycle_stats["betway"].get("provider_updated_at")
+                            if not curr_upd or cap > curr_upd:
+                                cycle_stats["betway"]["provider_updated_at"] = cap
                         m_record["odds_betway_captured_at"] = cap
+                        m_record["odds_betway_polled_at"] = cap
+                        m_record["odds_betway_provider_updated_at"] = cap
+                        m_record["odds_betway_origin_freshness"] = "CONFIRMED"
                         m_record["url_betway"] = bw_odds.get("url")
+                        m_record["odds_betway"] = bw_odds
                 except Exception as e:
                     cycle_stats["betway"]["errors"].append(str(e))
 
@@ -694,7 +874,13 @@ class SurebetDaemon:
                         query_end=cycle_end,
                         http_captured_at=st["captured_at"] or now_utc,
                         events_count=st["events"],
-                        odds_count=st["odds"]
+                        odds_count=st["odds"],
+                        feed_synced_at=st.get("feed_synced_at"),
+                        provider_updated_at=st.get("provider_updated_at"),
+                        verifiable_odds_count=st.get("verifiable_odds", 0),
+                        unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        raw_feed_odds_count=st.get("raw_feed_odds", 0),
+                        is_historical=st.get("is_historical", False)
                     )
                 elif st["events"] > 0:
                     self.breakers[bk_name].record_success(
@@ -703,7 +889,13 @@ class SurebetDaemon:
                         query_end=cycle_end,
                         http_captured_at=st["captured_at"] or now_utc,
                         events_count=st["events"],
-                        odds_count=st["odds"]
+                        odds_count=st["odds"],
+                        feed_synced_at=st.get("feed_synced_at"),
+                        provider_updated_at=st.get("provider_updated_at"),
+                        verifiable_odds_count=st.get("verifiable_odds", 0),
+                        unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        raw_feed_odds_count=st.get("raw_feed_odds", 0),
+                        is_historical=st.get("is_historical", False)
                     )
                 else:
                     self.breakers[bk_name].record_partial(
@@ -713,7 +905,13 @@ class SurebetDaemon:
                         query_end=cycle_end,
                         http_captured_at=st["captured_at"] or now_utc,
                         events_count=0,
-                        odds_count=0
+                        odds_count=0,
+                        feed_synced_at=st.get("feed_synced_at"),
+                        provider_updated_at=st.get("provider_updated_at"),
+                        verifiable_odds_count=st.get("verifiable_odds", 0),
+                        unverifiable_odds_count=st.get("unverifiable_odds", 0),
+                        raw_feed_odds_count=st.get("raw_feed_odds", 0),
+                        is_historical=st.get("is_historical", False)
                     )
 
         # Actualitzar marques temporals d'última execució dels scrapers que han corregut
@@ -723,38 +921,87 @@ class SurebetDaemon:
         # 4. Escaneig de Surebets amb el motor matemàtic
         print(f"🔍 Escanejant oportunitats d'arbitratge per a {len(evaluated_matches_flat)} partits...")
 
-        # 4.1 Escaneig ampli (detecta surebets i near-arbs)
-        broad_report = self.broad_engine.scan_all_matches(evaluated_matches_flat)
+        # 4.1 Escaneig ampli amb política de 30 minuts
+        broad_report = self.broad_engine.scan_all_matches(evaluated_matches_flat, now=now_utc)
         all_found = broad_report.get("all_opportunities", [])
 
-        # 4.2 Validació estricta de frescor per a cada oportunitat
-        fresh_surebets: List[Dict[str, Any]] = []
-        stale_surebets: List[Dict[str, Any]] = []
+        # 4.2 Classificació estricta en 4 nivells de frescor (fins a 30 minuts)
+        verified_fresh_surebets: List[Dict[str, Any]] = []
+        potentially_stale_surebets: List[Dict[str, Any]] = []
+        recent_historical_surebets: List[Dict[str, Any]] = []
         near_arbs: List[Dict[str, Any]] = []
 
         for arb in all_found:
-            legs = arb.get("legs", [])
-            is_fresh, fresh_reason, age_s = self.strict_engine.validate_legs_freshness(legs, now_utc)
-
-            arb["is_fresh"] = is_fresh
-            arb["freshness_reason"] = fresh_reason
-            arb["max_leg_age_seconds"] = age_s
-
-            if arb.get("is_surebet"):
-                if is_fresh or not self.enforce_strict_freshness:
-                    fresh_surebets.append(arb)
-                else:
-                    # Surebet matemàtica però descartada per quotes no fresques
-                    stale_surebets.append(arb)
+            tier = arb.get("freshness_tier")
+            is_surebet = arb.get("is_surebet", False)
+            if is_surebet:
+                if tier == ArbitrageEngine.TIER_VERIFIED_FRESH:
+                    verified_fresh_surebets.append(arb)
+                elif tier == ArbitrageEngine.TIER_POTENTIALLY_STALE:
+                    potentially_stale_surebets.append(arb)
+                elif tier == ArbitrageEngine.TIER_RECENT_HISTORICAL:
+                    recent_historical_surebets.append(arb)
             else:
-                near_arbs.append(arb)
+                if tier != ArbitrageEngine.TIER_EXCLUDED:
+                    near_arbs.append(arb)
 
-        fresh_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
-        stale_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
+        verified_fresh_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
+        potentially_stale_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
+        recent_historical_surebets.sort(key=lambda x: x.get("profit_pct", 0.0), reverse=True)
         near_arbs.sort(key=lambda x: x.get("profit_pct", -999.0), reverse=True)
 
-        max_profit = fresh_surebets[0]["profit_pct"] if fresh_surebets else (near_arbs[0]["profit_pct"] if near_arbs else 0.0)
-        avg_profit = round(sum(a["profit_pct"] for a in fresh_surebets) / len(fresh_surebets), 2) if fresh_surebets else 0.0
+        max_profit = verified_fresh_surebets[0]["profit_pct"] if verified_fresh_surebets else (
+            potentially_stale_surebets[0]["profit_pct"] if potentially_stale_surebets else (
+                recent_historical_surebets[0]["profit_pct"] if recent_historical_surebets else (
+                    near_arbs[0]["profit_pct"] if near_arbs else 0.0
+                )
+            )
+        )
+        avg_profit = round(sum(a["profit_pct"] for a in verified_fresh_surebets) / len(verified_fresh_surebets), 2) if verified_fresh_surebets else 0.0
+
+        # Càlcul estructurat de cobertura real i partits multi-casa (Punts 4 i 5)
+        coverage_by_bookmaker = {
+            "winamax": {"matches": 0, "usable_odds": 0, "verifiable_odds": 0, "unverifiable_odds": 0},
+            "bet365": {"matches": 0, "usable_odds": 0, "verifiable_odds": 0, "unverifiable_odds": 0},
+            "betway": {"matches": 0, "usable_odds": 0, "verifiable_odds": 0, "unverifiable_odds": 0}
+        }
+        matches_with_2plus_bookmakers = 0
+        matches_with_3_bookmakers = 0
+
+        for m_rec in evaluated_matches_flat:
+            w_cnt = len(m_rec.get("odds_1x2_winamax", {})) + len(m_rec.get("odds_dc_winamax", {})) + len(m_rec.get("odds_ou25_winamax", {})) + len(m_rec.get("odds_btts_winamax", {}))
+            b_cnt = len(m_rec.get("odds_1x2_bet365", {})) + len(m_rec.get("odds_dc_bet365", {})) + len(m_rec.get("odds_ou25_bet365", {})) + len(m_rec.get("odds_btts_bet365", {}))
+            bw_cnt = len(m_rec.get("odds_1x2_betway", {})) + len(m_rec.get("odds_dc_betway", {})) + len(m_rec.get("odds_ou25_betway", {})) + len(m_rec.get("odds_btts_betway", {}))
+
+            has_w = w_cnt > 0
+            has_b = b_cnt > 0
+            has_bw = bw_cnt > 0
+
+            if has_w:
+                coverage_by_bookmaker["winamax"]["matches"] += 1
+                coverage_by_bookmaker["winamax"]["usable_odds"] += w_cnt
+                coverage_by_bookmaker["winamax"]["verifiable_odds"] += w_cnt
+            if has_b:
+                coverage_by_bookmaker["bet365"]["matches"] += 1
+                coverage_by_bookmaker["bet365"]["usable_odds"] += b_cnt
+                if m_rec.get("odds_bet365_origin_freshness") == "CONFIRMED":
+                    coverage_by_bookmaker["bet365"]["verifiable_odds"] += b_cnt
+                else:
+                    coverage_by_bookmaker["bet365"]["unverifiable_odds"] += b_cnt
+            if has_bw:
+                coverage_by_bookmaker["betway"]["matches"] += 1
+                coverage_by_bookmaker["betway"]["usable_odds"] += bw_cnt
+                coverage_by_bookmaker["betway"]["verifiable_odds"] += bw_cnt
+
+            active_cnt = (1 if has_w else 0) + (1 if has_b else 0) + (1 if has_bw else 0)
+            if active_cnt >= 2:
+                matches_with_2plus_bookmakers += 1
+            if active_cnt >= 3:
+                matches_with_3_bookmakers += 1
+
+        self.coverage_by_bookmaker = coverage_by_bookmaker
+        self.matches_with_2plus_bookmakers = matches_with_2plus_bookmakers
+        self.matches_with_3_bookmakers = matches_with_3_bookmakers
 
         # Estat consolidat de les cases d'apostes amb timestamps independents
         bookmakers_status = {
@@ -762,31 +1009,46 @@ class SurebetDaemon:
             "bet365": self.breakers["bet365"].to_dict(now_utc),
             "betway": self.breakers["betway"].to_dict(now_utc)
         }
+        self.last_bookmakers_status = bookmakers_status
+        self.last_generation_iso = now_iso
+        self.evaluated_matches_count = len(evaluated_matches_flat)
 
         arbitrage_payload = {
             "summary": {
-                "total_surebets": len(fresh_surebets),
-                "total_stale_surebets": len(stale_surebets),
+                "total_surebets": len(verified_fresh_surebets),
+                "total_verified_fresh": len(verified_fresh_surebets),
+                "total_potentially_stale": len(potentially_stale_surebets),
+                "total_recent_historical": len(recent_historical_surebets),
+                "total_stale_surebets": len(potentially_stale_surebets) + len(recent_historical_surebets),
                 "total_near_arbs": len(near_arbs),
                 "max_profit_pct": max_profit,
                 "avg_profit_pct": avg_profit,
                 "evaluated_matches": len(evaluated_matches_flat),
                 "frequency_category": freq_category,
                 "min_hours_until_kickoff": round(min_hours, 2),
-                "enforce_strict_freshness": self.enforce_strict_freshness
+                "enforce_strict_freshness": self.enforce_strict_freshness,
+                "coverage_by_bookmaker": coverage_by_bookmaker,
+                "matches_with_2plus_bookmakers": matches_with_2plus_bookmakers,
+                "matches_with_3_bookmakers": matches_with_3_bookmakers
             },
-            "surebets": fresh_surebets,
-            "stale_surebets": stale_surebets[:10],
+            "surebets": verified_fresh_surebets,
+            "verified_fresh_surebets": verified_fresh_surebets,
+            "potentially_stale_surebets": potentially_stale_surebets,
+            "recent_historical_surebets": recent_historical_surebets,
+            "stale_surebets": potentially_stale_surebets + recent_historical_surebets,
             "near_arbs": near_arbs[:10],
-            "all_opportunities": fresh_surebets + stale_surebets + near_arbs[:10],
+            "all_opportunities": verified_fresh_surebets + potentially_stale_surebets + recent_historical_surebets + near_arbs[:10],
             "bookmakers_status": bookmakers_status,
+            "session": self.get_session_state(),
             "last_generation": now_iso,
             "cycle_duration_seconds": round(time.time() - cycle_start, 2),
             "next_cycle_seconds": policy["cycle_min"]
         }
 
-        print(f"✅ Resultats: {len(fresh_surebets)} Surebets fresques | {len(stale_surebets)} Surebets caducades | {len(near_arbs)} Near-Arbs")
+        print(f"✅ Resultats: {len(verified_fresh_surebets)} Verificades (≤60s) | {len(potentially_stale_surebets)} Potencialment Desactualitzades (1-5m) | {len(recent_historical_surebets)} Històriques Recents (5-30m) | {len(near_arbs)} Near-Arbs")
         print(f"⏱️  Cicle completat en {arbitrage_payload['cycle_duration_seconds']}s. Proper cicle en {policy['cycle_min']}s.")
+        if not scrapers_to_run:
+            print(f"ℹ️  [Freqüència] Reavaluació en memòria ({arbitrage_payload['cycle_duration_seconds']}s): Scrapers en repòs per política de refresc ({policy['cycle_min']}s).")
 
         # 5. Actualització atòmica a web/data/data.json
         if not self.dry_run:
@@ -844,28 +1106,55 @@ class SurebetDaemon:
     # ----- Bucle continu del daemon -----
 
     def start(self, once: bool = False, interval_override: Optional[int] = None) -> None:
-        """Inicia el bucle d'execució continu del daemon."""
+        """Inicia el bucle d'execució continu del daemon amb suport per a cancel·lació cooperativa."""
         self.running = True
+        if self.session_status == "PENDING":
+            self.session_status = "RUNNING"
+            self.session_start_time = time.time()
         print("[*] Iniciant Surebet Daemon persistent...")
 
         while self.running:
+            if self.check_cancellation():
+                break
+            if self.check_duration_limit():
+                break
             try:
                 res = self.run_cycle()
+                if self.check_cancellation():
+                    break
+                if self.check_duration_limit():
+                    break
                 if once:
+                    if not self.cancel_requested:
+                        self.session_status = "COMPLETED"
                     break
 
                 sleep_s = interval_override if interval_override is not None else res.get("next_cycle_seconds", 300)
                 print(f"💤 Esperant {sleep_s} segons fins al següent cicle...\n")
-                time.sleep(sleep_s)
+
+                # Dormir en intervals petits de 1s per permetre cancel·lació cooperativa immediata
+                for _ in range(int(sleep_s)):
+                    if not self.running or self.cancel_requested:
+                        break
+                    if self.max_duration_seconds and self.session_start_time:
+                        if time.time() - self.session_start_time >= self.max_duration_seconds:
+                            break
+                    time.sleep(1)
             except KeyboardInterrupt:
                 print("\n[!] Aturada manual del Surebet Daemon.")
+                self.session_status = "CANCELLED"
                 self.running = False
                 break
             except Exception as e:
                 print(f"[!] Error inesperat al bucle del daemon: {e}")
                 if once:
                     break
-                time.sleep(30)
+                time.sleep(5)
+
+        if self.session_status == "CANCEL_REQUESTED":
+            self.session_status = "CANCELLED"
+        elif self.session_status == "RUNNING" and not self.cancel_requested:
+            self.session_status = "COMPLETED"
 
 
 def main():

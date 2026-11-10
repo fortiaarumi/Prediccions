@@ -820,3 +820,74 @@ def test_20_web_data_exporter_export_void_settlement(temp_db):
         assert row["payout"] == 20.0
         assert row["profit"] == 0.0
 
+
+def test_parasitic_leg_rejection_and_diverse_c2(combo_engine):
+    """
+    Verifica que:
+    1. Una selecció amb EV individual fortament negatiu (com PSG @1.11 amb prob 47.4%, p*o = 0.526)
+       és rebutjada dels pools de combinades quan require_positive_ev=True.
+    2. c2 mai és un superconjunt clònic directe de c1 afegint una selecció paràsita que dilueixi l'EV.
+    """
+    three_matches = [
+        {
+            "id": "M_PARMA",
+            "competition_id": "SERIE_A",
+            "matchup": "Parma vs Bologna",
+            "home_team": {"id": "PAR", "name": "Parma"},
+            "away_team": {"id": "BOL", "name": "Bologna"},
+            "date": "2026-11-07 18:30",
+            "bet_analysis": {
+                "single_markets": [
+                    {"name": "1 - Victòria Parma", "category": "1X2", "bookie_odd": 4.20, "model_prob": 39.5}
+                ]
+            }
+        },
+        {
+            "id": "M_AUXERRE",
+            "competition_id": "LIGUE1",
+            "matchup": "Auxerre vs Marseille",
+            "home_team": {"id": "AUX", "name": "Auxerre"},
+            "away_team": {"id": "MAR", "name": "Marseille"},
+            "date": "2026-11-07 20:45",
+            "bet_analysis": {
+                "single_markets": [
+                    {"name": "1 - Victòria Auxerre", "category": "1X2", "bookie_odd": 3.40, "model_prob": 37.0}
+                ]
+            }
+        },
+        {
+            "id": "M_PSG",
+            "competition_id": "LIGUE1",
+            "matchup": "PSG vs Troyes",
+            "home_team": {"id": "PSG", "name": "Paris Saint-Germain"},
+            "away_team": {"id": "EST", "name": "Troyes"},
+            "date": "2026-11-07 21:00",
+            "bet_analysis": {
+                "single_markets": [
+                    {"name": "1 - Victòria PSG", "category": "1X2", "bookie_odd": 1.11, "model_prob": 47.4}
+                ]
+            }
+        }
+    ]
+
+    suite = combo_engine.generate_few_matches_combos_suite(three_matches, require_positive_ev=True)
+    semi_combos = suite.get("semi", [])
+
+    # Ha de generar com a mínim Semi #1 (Parma + Auxerre @14.28, EV > 100%)
+    assert len(semi_combos) >= 1
+    c1 = semi_combos[0]
+    c1_matchups = {l["matchup"] for l in c1["legs"]}
+    assert "Parma vs Bologna" in c1_matchups
+    assert "Auxerre vs Marseille" in c1_matchups
+    assert "PSG vs Troyes" not in c1_matchups
+    assert c1["ev_pct"] > 100.0
+
+    # Si es genera Semi #2, MAI no ha de ser un superconjunt amb PSG @1.11 afegit paràsitament
+    if len(semi_combos) >= 2:
+        c2 = semi_combos[1]
+        c2_legs_names = {l["name"] for l in c2["legs"]}
+        c1_legs_names = {l["name"] for l in c1["legs"]}
+        assert not (c1_legs_names.issubset(c2_legs_names)), "c2 no pot ser un superconjunt clònic de c1"
+        assert "1 - Victòria PSG" not in c2_legs_names, "PSG @1.11 no pot ser admès per ser fortament negatiu"
+
+
