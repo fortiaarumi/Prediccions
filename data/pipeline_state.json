@@ -12,7 +12,7 @@
   "HYPERMOTION": {
     "last_predicted_jornada": 10,
     "last_predicted_date": "2026-10-16",
-    "last_scraped_jornada": 12
+    "last_scraped_jornada": 13
   },
   "CHAMPIONSHIP": {
     "last_predicted_jornada": 11,
@@ -34,7 +34,7 @@
     "last_predicted_date": "2026-10-19",
     "last_scraped_jornada": 11
   },
-  "updated_at": "2026-11-09T16:40:37.098176",
+  "updated_at": "2026-11-10T04:14:17.310833",
   "pipeline_status": {
     "workflow_name": "Pipeline Diari Autònom de Prediccions",
     "workflow_file": "daily_pipeline.yml",
