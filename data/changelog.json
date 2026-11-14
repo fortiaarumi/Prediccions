@@ -1,5 +1,77 @@
 [
   {
+    "date": "2026-11-14",
+    "timestamp": "2026-11-14T02:35:50.806591",
+    "title": "Actualització Diària del Model · 14/11/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
+      "   • [HYPERMOTION J14] Leganés 3 - 1 Burgos CF | xG: 1.45-1.35 | Targetes: 7 🟨 | Córners: 13 🚩 | Àrbitre: Romero G.",
+      "📊 Actualització de Power Rànquings Elo:",
+      "   • Leganés (+17.5 ➔ 1507.8) | Burgos CF (-17.5 ➔ 1521.2)",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "🎯 Generades 4 noves combinades recomanades (Segures, Semi i Arriscades) per a: DAILY.",
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+    ],
+    "matches": [
+      {
+        "match_id": "HYPERMOTION_2026-2027_Isu3IKt0",
+        "competition_id": "HYPERMOTION",
+        "jornada": 14,
+        "home_team": "Leganés",
+        "away_team": "Burgos CF",
+        "home_team_id": "LEG",
+        "away_team_id": "BUR",
+        "home_goals": 3,
+        "away_goals": 1,
+        "score": "3 - 1",
+        "home_xg": 1.45,
+        "away_xg": 1.35,
+        "home_yellow_cards": 3,
+        "away_yellow_cards": 4,
+        "home_red_cards": 0,
+        "away_red_cards": 0,
+        "home_corners": 4,
+        "away_corners": 9,
+        "referee": "Romero G.",
+        "elo_change_home": 17.5,
+        "elo_change_away": -17.5,
+        "new_elo_home": 1507.8,
+        "new_elo_away": 1521.2,
+        "date": "13.11.2026 19:30"
+      }
+    ],
+    "combos_evaluated": [],
+    "combos_generated": [
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SAFE_1",
+        "odd": 2.05
+      },
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SAFE_2",
+        "odd": 2.71
+      },
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SEMI_1",
+        "odd": 9.31
+      },
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SEMI_2",
+        "odd": 9.66
+      }
+    ],
+    "referee_updates": []
+  },
+  {
     "date": "2026-11-13",
     "timestamp": "2026-11-13T14:46:09.465737",
     "title": "Actualització Diària del Model · 13/11/2026",
@@ -10733,23 +10805,5 @@
         }
       }
     ]
-  },
-  {
-    "date": "2026-10-15",
-    "timestamp": "2026-10-15T00:34:53.369370",
-    "title": "Actualització Diària del Model · 15/10/2026",
-    "badge": "Diari (08:00 UTC)",
-    "badge_type": "primary",
-    "items": [
-      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
-      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
-      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
-      "ℹ️ Sincronització de les darreres dades i mètriques del model."
-    ],
-    "matches": [],
-    "combos_evaluated": [],
-    "combos_generated": [],
-    "referee_updates": []
   }
 ]
