@@ -1,46 +1,18 @@
 [
   {
     "date": "2026-11-17",
-    "timestamp": "2026-11-17T04:54:06.808913",
+    "timestamp": "2026-11-17T16:31:42.765861",
     "title": "Actualització Diària del Model · 17/11/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
     "items": [
-      "⚽ S'han ingesta resultats oficials i mètriques de 1 partit(s) disputat(s):",
-      "   • [HYPERMOTION J14] Albacete 1 - 0 Celta de Vigo B | xG: 2.04-1.33 | Targetes: 8 🟨 | Córners: 14 🚩 | Àrbitre: Mallo E.",
-      "📊 Actualització de Power Rànquings Elo:",
-      "   • Albacete (+10.1 ➔ 1466.1) | Celta de Vigo B (-10.1 ➔ 1463.8)",
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
       "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada."
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+      "ℹ️ Sincronització de les darreres dades i mètriques del model."
     ],
-    "matches": [
-      {
-        "match_id": "HYPERMOTION_2026-2027_treV3LR6",
-        "competition_id": "HYPERMOTION",
-        "jornada": 14,
-        "home_team": "Albacete",
-        "away_team": "Celta de Vigo B",
-        "home_team_id": "ALB",
-        "away_team_id": "CDV",
-        "home_goals": 1,
-        "away_goals": 0,
-        "score": "1 - 0",
-        "home_xg": 2.04,
-        "away_xg": 1.33,
-        "home_yellow_cards": 3,
-        "away_yellow_cards": 5,
-        "home_red_cards": 0,
-        "away_red_cards": 0,
-        "home_corners": 9,
-        "away_corners": 5,
-        "referee": "Mallo E.",
-        "elo_change_home": 10.1,
-        "elo_change_away": -10.1,
-        "new_elo_home": 1466.1,
-        "new_elo_away": 1463.8,
-        "date": "16.11.2026 19:30"
-      }
-    ],
+    "matches": [],
     "combos_evaluated": [],
     "combos_generated": [],
     "referee_updates": []
