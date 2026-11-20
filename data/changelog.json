@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-11-20",
+    "timestamp": "2026-11-20T03:48:34.527249",
+    "title": "Actualització Diària del Model · 20/11/2026",
+    "badge": "Diari (08:00 UTC)",
+    "badge_type": "primary",
+    "items": [
+      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
+      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
+      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
+      "🎯 Generades 1 noves combinades recomanades (Segures, Semi i Arriscades) per a: DAILY.",
+      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
+      "ℹ️ Sincronització de les darreres dades i mètriques del model."
+    ],
+    "matches": [],
+    "combos_evaluated": [],
+    "combos_generated": [
+      {
+        "competition_id": "DAILY",
+        "jornada": 0,
+        "profile": "SEMI_1",
+        "odd": 13.43
+      }
+    ],
+    "referee_updates": []
+  },
+  {
     "date": "2026-11-19",
     "timestamp": "2026-11-19T16:09:15.999722",
     "title": "Actualització Diària del Model · 19/11/2026",
@@ -8007,24 +8033,6 @@
     "date": "2026-10-22",
     "timestamp": "2026-10-22T18:04:56.244191",
     "title": "Actualització Diària del Model · 22/10/2026",
-    "badge": "Diari (08:00 UTC)",
-    "badge_type": "primary",
-    "items": [
-      "⚽ Partits: Cap partit oficial disputat en les darreres 24h a les lligues en seguiment.",
-      "📊 Power Rànquings: Elos de tots els equips intactes i calibrats segons la darrera jornada.",
-      "⏳ Combinades en curs: Les seleccions de les combinades pendents segueixen actives a l'espera dels propers partits.",
-      "⚖️ Designacions Arbitrals: S'han verificat les designacions oficials del CTA i PGMOL per a la propera jornada.",
-      "ℹ️ Sincronització de les darreres dades i mètriques del model."
-    ],
-    "matches": [],
-    "combos_evaluated": [],
-    "combos_generated": [],
-    "referee_updates": []
-  },
-  {
-    "date": "2026-10-21",
-    "timestamp": "2026-10-21T18:10:31.725482",
-    "title": "Actualització Diària del Model · 21/10/2026",
     "badge": "Diari (08:00 UTC)",
     "badge_type": "primary",
     "items": [
