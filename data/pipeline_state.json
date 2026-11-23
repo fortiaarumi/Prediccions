@@ -22,19 +22,19 @@
   "BUNDESLIGA": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-19",
-    "last_scraped_jornada": 9
+    "last_scraped_jornada": 10
   },
   "LIGUE1": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-18",
-    "last_scraped_jornada": 10
+    "last_scraped_jornada": 11
   },
   "SERIEA": {
     "last_predicted_jornada": 7,
     "last_predicted_date": "2026-10-19",
     "last_scraped_jornada": 11
   },
-  "updated_at": "2026-11-22T14:55:51.565957",
+  "updated_at": "2026-11-23T03:04:08.819699",
   "pipeline_status": {
     "workflow_name": "Pipeline Diari Autònom de Prediccions",
     "workflow_file": "daily_pipeline.yml",
